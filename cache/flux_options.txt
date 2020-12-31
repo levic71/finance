@@ -1,1 +1,0 @@
-a:7:{s:10:"photo_icon";s:1:"0";s:10:"video_icon";s:1:"1";s:12:"sondage_home";s:1:"0";s:21:"sondage_question_home";s:1:"0";s:11:"photos_home";s:1:"0";s:11:"partenariat";s:1:"0";s:10:"zone_libre";s:1:"1";}

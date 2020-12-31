@@ -1,1 +1,0 @@
-a:7:{s:10:"nb_saisons";s:1:"2";s:10:"nb_joueurs";s:1:"0";s:10:"nb_equipes";s:2:"15";s:11:"nb_journees";s:2:"50";s:9:"nb_matchs";s:3:"350";s:11:"nb_messages";s:1:"0";s:23:"nb_joueurs_saisonactive";i:0;}
