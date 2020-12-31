@@ -1,0 +1,786 @@
+/*******************************************************************************
+* IMAGE AVEC AGRANDISSEMENT
+* 
+* <a class="thumbnail" href="#thumb"><img src="media/tree_thumb.jpg" width="100px" height="66px" border="0" /><span><img src="media/tree.jpg" /><br />Simply beautiful.</span></a>
+* <a class="thumbnail" href="#thumb">Zoka Coffee<span><img src="media/zoka.gif" /><br />Zoka Coffee</span></a>
+*******************************************************************************/
+.thumbnail {
+	position: relative;
+	z-index: 0;
+}
+.thumbnail:hover {
+	background-color: transparent;
+	z-index: 50;
+}
+.thumbnail span { /*CSS for enlarged image*/
+	position: absolute;
+	background-color: lightyellow;
+	padding: 5px;
+	left: -1000px;
+	border: 2px solid #AAAAAA;
+	visibility: hidden;
+	color: black;
+	text-decoration: none;
+}
+.thumbnail span img { /*CSS for enlarged image*/
+	border-width: 0;
+	padding: 2px;
+}
+.thumbnail:hover span { /*CSS for enlarged image on hover*/
+	visibility: visible;
+	top: 0;
+	left: 60px; /*position where enlarged image should offset horizontally */
+}
+
+
+/* Page Forum championnat */
+#forum_page .bck1_1 {
+	background: #D5D9EA;
+}
+#forum_page .bck1_2 {
+	background: #BCC5EA;
+}
+#forum_page .bck2_1 {
+	background: #BCC5EA;
+}
+#forum_page .bck2_2 {
+	background: none;
+}
+#forum_page #mytable {
+	border: 1px solid #AAAAAA;
+}
+#forum_page #mytable .FXList_BODY {
+	background: white;
+}
+#forum_page #mytable .FXList_BODY td {
+	background: #EFEFEF;
+	border-left: 5px solid white;
+	border-right: 5px solid white;
+	border-top: 3px solid white;
+	border-bottom: 2px solid white;
+	margin: 3px;
+}
+#forum_page .bloc_forum {
+	padding: 5px;
+	margin: 3px;
+	height: 100%;
+}
+#forum_page .bloc_forum .smiley {
+	width: 120px;
+	float: left;
+}
+#forum_page .bloc_forum .smiley img {
+	border: 2px solid white;
+	background: #DDDDDD;
+	padding: 5px;
+}
+#forum_page .bloc_forum .reponse {
+	width: 540px;
+	float: left;
+	overflow: auto;
+}
+#forum_page .bloc_forum .reponse .auteur {
+	font-size: 10px;
+	height: 20px;
+	background: url('../images/templates/defaut/ciseau.gif') no-repeat bottom right;
+}
+#forum_page .bloc_forum .reponse .auteur .titre {
+	color: #FD8B0E;
+}
+#forum_page .bloc_forum .reponse .auteur .date {
+	font-weight: normal;
+	font-style: italic;
+}
+#forum_page .bloc_forum .reponse .auteur a {
+	color: #6699CC;
+}
+#forum_page .bloc_forum .reponse .message {
+	padding: 5px 0px 0px 0px;
+	font-weight: normal;
+	color: black;
+}
+#forum_page .bloc_forum .reponse .message p {
+	margin: 2px 0px 2px 0px;
+}
+#forum_page .bloc_forum .reponse .image {
+	padding: 5px;
+	text-align: center;
+}
+#forum_page .bloc_forum .reponse .admin {
+	height: 15px;
+}
+#forum_page .bloc_forum .reponse .admin input {
+	font-size: 9px;
+	float: right;
+}
+
+/* ------- Url embed -----*/
+#redirect {
+	border: 1px dotted #696969;
+	margin: 0px 0px 0px 20px;
+	padding: 5px;
+}
+#redirect .box {
+	margin: 0px
+	padding: 0px;
+}
+#redirect .label {
+	float: left;
+	width: 110px;
+	background: #AAAAAA;
+	color: white;
+	padding: 0px 0px 0px 3px;
+}
+#redirect input {
+	border: 1px solid #AAAAAA;
+	color: #777777;
+}
+/* ------- Titre composé des tableaux -----*/
+/*.tc_box, .tc_box div { border: 1px dashed red; }*/
+.tc_box { margin: -5px 0px 0px 0px; }
+.tc_box .box1 { width: 60px;  float: left; }
+.tc_box .box2 {	width: 560px; float: left; padding-top: 5px; }
+.tc_box .box3 { width: 60px;  float: right; }
+html>body .tc_box .box2 { padding-top: 0px; }
+
+/* ------- Liste des équipes --------------*/
+ul.nb_joueurs {
+	list-style: none;
+	padding: 0px 0px 0px 25px;
+	margin: 0px;
+}
+ul.nb_joueurs li { float:left; }
+ul.nb_joueurs li.numb { padding: 3px 3px 0px 0px; }
+
+
+#victoire, #defaite, #nul {
+	float: left;
+	margin-right: 20px;
+}
+div.info {
+	text-align: left;
+	visibility: hidden;
+	position: absolute;
+	background-color: #eeeeee;
+	border:4px solid #AAAAAA;
+	padding: 5px 5px 5px 5px;
+	margin: 0px;
+	z-index: 100;
+}
+.hl {
+	Background-Color : #FFCC99;
+}
+h4 {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : normal;
+	font-size    : 12px;
+	color        : #4863A0;
+	font-family  : sans-serif;
+	background: url('../images/fleche.gif') no-repeat 0px 5px;
+	padding: 0px 0px 0px 15px;
+	margin: 0px 0px 5px 20px;
+	text-align: left;
+}
+#decouvrir li {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : normal;
+	font-size    : 11px;
+}
+a.black {
+  text-decoration : none;
+}
+a.blue:visited { color: #555555; }
+a.blue:hover   { color: #666666; }
+a.blue:link    { color: #666666; }
+a.blue:active  { color: #666666; }
+
+a.blue_none {
+  text-decoration : none;
+}
+a.blue_none:visited { color: #666666; }
+a.blue_none:hover   { color: #666666; }
+a.blue_none:link    { color: #666666; }
+a.blue_none:active  { color: #666666; }
+
+a.white:visited { color: #FFFFFF; }
+a.white:hover   { color: #FFFFFF; }
+a.white:link    { color: #FFFFFF; }
+a.white:active  { color: #FFFFFF; }
+
+div.choix_saisons2 {
+	width: 98%;
+	text-align: right;
+	position:absolute;
+	margin: 50px 0px 0px 0px;
+}
+div.nom_championnat2 {
+	width: 98%;
+	text-align: right;
+	position:absolute;
+	margin: 32px 5px 0px 0px;
+}
+
+.tb_nom {
+	background   : url('../images/jorkers/images/icon_home.gif') no-repeat 0px -2px;
+	padding-left : 20px;
+	font-weight  : bold;
+	color        : white;
+	font-size    : 11px;
+}
+.tb_nom {
+  text-decoration : none;
+}
+.tb_nom span {
+	font-weight: normal;
+}
+font.classic, span.classic {
+	font-variant : normal;
+	font-weight  : normal;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+}
+font.big, span.big {
+	font-size   : x-small;
+	font-variant: normal;
+	font-family : sans-serif;
+	color       : white;
+	font-size   : 18px;
+}
+
+big.xlist_title {
+	font-size   : x-small;
+	color       : white;
+	font-variant: normal;
+	font-weight : bold;
+	font-family : sans-serif;
+	font-size   : 18pt;
+	height      : 40px;
+	text-align : center;
+}
+small {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+}
+
+strong {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 30px;
+}
+
+body {
+    margin       : 0px;
+    background: url(../images/croix_fond.gif);
+}
+
+input.submit {
+	font-family:   Verdana, Arial,Geneva,  Helvetica,sans-serif;
+	font-size: 8pt;
+	color:#000000;
+}
+
+
+input.text {
+	border-width : 1px;
+	border-color : #666666;
+}
+
+checkbox {
+	border-width : 1px;
+	border-color : #666666;
+}
+
+select {
+	border-width : 1px;
+	border-color : #666666;
+}
+
+option {
+	border-width : 1px;
+	border-color : #666666;
+}
+
+button {
+	background  : transparent;
+	border      : none;
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	font-family  : sans-serif;
+	font-size    : 11px;
+}
+
+button.matchs {
+	background  : transparent;
+	border      : none;
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : left;
+}
+
+td {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+}
+
+td.label_r {
+	text-align : right;
+	color     : #6781BB;
+}
+
+td.label_l {
+	text-align: left;
+	color     : #6781BB;
+}
+
+td.label_c {
+	text-align: center;
+	color     : #6781BB;
+}
+
+td.cell_left_gray {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #DDDDDD;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : left;
+}
+
+td.cell_right_gray {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #DDDDDD;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : right;
+}
+
+td.cell_center_gray {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #DDDDDD;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+td.cell_left_white {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #FFFFFF;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : left;
+}
+
+td.cell_right_white {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #FFFFFF;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : right;
+}
+
+td.cell_center_white {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #FFFFFF;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+td.cell_left_navy {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : white;
+	background-color: #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : left;
+}
+
+td.cell_right_navy {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : white;
+	background-color: #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : right;
+}
+
+td.cell_center_navy {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : white;
+	background-color: #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+td.cell_left_lightblue {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #D5D9EA;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : left;
+}
+
+td.cell_right_lightblue {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #D5D9EA;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : right;
+}
+
+TD.cell_center_lightblue {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #D5D9EA;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TD.cell_left_lightblue2 {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #BCC5EA;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : left;
+}
+
+TD.cell_right_lightblue2 {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #BCC5EA;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : right;
+}
+
+TD.cell_center_lightblue2 {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #BCC5EA;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TD.cell_center_lightgreen {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #88F99E;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TD.cell_center_lightred {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #F9A288;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TD.cell_center_pinkie {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : gray;
+	background-color: #EEEDE2;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TD.cell_center_pinkie2 {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : gray;
+	background-color: #D5D9EA;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TD.cellCT {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TD.cellLT {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : left;
+}
+
+TD.cellRT {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : right;
+}
+
+TD.cellCLB2 {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #666666;
+	background-color: #BCC5EA;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TD.cellCN {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : white;
+	background-color: #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	text-align   : center;
+}
+
+TABLE.master {
+	border: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	width: 700px;
+}
+
+TABLE.masterfree {
+	border: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	width: 100%;
+}
+
+TABLE.score {
+	border: 0px;
+	padding: 0px;
+	border-style: solid;
+	border-color: #003366;
+	border-width: 1px;
+	border-collapse:collapse
+}
+
+TD.score {
+	border: 0px;
+	padding: 0px 3px 0px 3px;
+	border-style: solid;
+	border-color: #003366;
+	border-width: 1px;
+}
+
+
+TD.score_gagne {
+	border: 0px;
+	padding: 0px 2px 0px 2px;
+	border-style: solid;
+	border-color: #003366;
+	border-width: 1px;
+	background-color: brown;
+}
+
+TD.score_perdu {
+	border: 0px;
+	padding: 0px 2px 0px 2px;
+	border-style: solid;
+	border-color: #003366;
+	border-width: 1px;
+	background-color: transparent;
+}
+
+FONT.score_gagne {
+	color: #FFFFCC;
+}
+FONT.score_perdu {
+	font-weight:normal;
+}
+FONT.equipe_gagne {
+	color: #003366;
+}
+FONT.equipe_perdu {
+	font-weight:normal;
+}
+TR .on {
+	background-color: #DDDDDD;
+}
+TR .off {
+	background-color: transparent;
+}
+P.p {
+	border-left: 1px dashed #666666;
+	background:url('../www/arrow.gif') no-repeat 7px 5px;
+	padding-left: 20px;
+}
+P.pp {
+	border-left: 1px dashed #666666;
+	background:url('../www/bulle.gif') no-repeat 2px 0px;
+	padding-left: 20px;
+}
+TABLE.tt {
+	border-right:  1px dashed #666666;
+	border-left:  1px dashed #666666;
+}
+P.pimg {
+	border-top: 1px dashed #BCC5EA;
+	border-left: 1px dashed #666666;
+	background:url('../www/arrow.gif') no-repeat 7px 5px;
+	padding: 5px 5px 5px 20px;
+}
+textarea.forum {
+  border: 1px solid #0000FF;
+}
+.big_blanc {
+	color: white;
+	font-size: 24px;
+}
+.icon_0 {
+	background: url('../images/jorkers/images/icon_libre.gif') no-repeat 0px 3px;
+	padding: 0px 0px 0px 15px;
+}
+.icon_1 {
+	background: url('../images/jorkers/images/icon_champ.gif') no-repeat 0px 3px;
+	padding: 0px 0px 0px 15px;
+}
+.icon_2 {
+	background: url('../images/jorkers/images/icon_tournoi.gif') no-repeat 0px 3px;
+	padding: 0px 0px 0px 15px;
+}
+A.rsslink {
+	background: url('../images/jorkers/images/rss.gif');
+	width:22px;
+	height:12px;
+	float: right;
+}
+A.rsslink SPAN {
+	display: none;
+}
+.allaccess {
+	text-align: right;
+	margin: 5px 0px 0px 0px;
+}
+.allaccess A {
+	color: black;
+	background: url('../images/fleche2.gif') no-repeat 0px 2px;
+	padding: 0px 5px 0px 15px;
+}
+/* -------------------- PAGE PARTENAIRES --------------------- */
+.part_main {
+	margin: 10px;
+	width: 90%;
+}
+.part_main .titre {
+	margin: 0px 0px 0px 0px;
+}
+.part_main .titre A {
+	font-weight: bold;
+	padding-left: 20px;
+	background: url('../images/fleche.gif') no-repeat 3px;
+}
+.part_main .corps {
+	margin: 0px 0px 15px 20px;
+	font-weight: normal;
+}
+.part_main .detail {
+	float: left;
+	padding: 0px 0px 0px 20px;
+	width: 250px;
+}
+.part_main .detail2 {
+	margin-top: 20px;
+}
+.part_main .detail2 .item {
+	padding: 0px 0px 10px 0px;
+	display: inline;
+	width: 500px;
+}
+.part_main .detail2 .left {
+	float: left;
+	width: 150px;
+}
+.part_main .detail2 .right {
+}
+.part_main .detail2 .right2 {
+	float: left;
+	width: 150px;
+}
+.part_main .infos {
+	margin-left: 250px;
+}

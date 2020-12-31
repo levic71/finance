@@ -1,0 +1,41 @@
+.central {
+	margin: 0px;
+}
+.main {
+	border: 0px;
+	top:0px;
+}
+.corps {
+	border: 0px;
+	min-height:420px;
+	padding: 0px;
+}
+#header, #pied, #gauche, #droite { 
+	display: none;
+}
+* html body .corps {
+	height:420px;
+}
+
+.FXList_BODY TD {
+	white-space:nowrap;
+	font-size: 14px;
+}
+
+A:hover, A:visited, A:active, A:link {
+	text-decoration: none;
+}
+
+.titre_planning {
+	margin: 0px;
+	padding: 2px 0px 2px 5px;
+	background: #525252;
+	font-weight: bold;
+	color: white;
+	border: 1px black solid;
+	font-size: 14px;
+}
+
+.div_equipe {
+    height: 15px;
+}

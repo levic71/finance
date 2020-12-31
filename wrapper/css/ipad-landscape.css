@@ -1,0 +1,8 @@
+.jkgrid th { padding-top: 3px !important; padding-bottom: 3px !important; }
+.jkgrid td { padding-top: 1px !important; padding-bottom: 1px !important; }
+
+#dash #matches td.c2, #dash #matches td.c4, #dash #matches td.c3 { padding: 2px 0px !important; }
+
+#dash .dashcounter button { height: 32px !important; line-height: 20px; font-size: 20px; }
+#dash .dashcounter .txt { display: none; }
+#dash .dashcounter .box { padding-top: 0px; background-size: 20px 20px; }

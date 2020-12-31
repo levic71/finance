@@ -1,0 +1,133 @@
+<html>
+<body>
+
+<style>
+body { font-family: arial; }
+.nav { margin: 0px; padding: 0px; border: 1px solid red; height: 50px; }
+.nav a.bt { float: left; margin: 5px 5px; }
+.nav li { display: none; float: left; list-style: none; width: 30px; border: 1px dashed #ccc; margin: 0px 5px; text-align: center; padding: 5px; }
+
+.tags{
+	margin:0;
+	padding:0;
+	position:absolute;
+	right:24px;
+	top:20px;
+	list-style:none;
+	}
+.tags li, .tags a{
+	float:left;
+	height:24px;
+	line-height:24px;
+	position:relative;
+	font-size:11px;
+	}
+.tags a{
+	margin-left:20px;
+	padding:0 10px 0 12px;
+	background:#0089e0;
+	color:#fff;
+	text-decoration:none;
+	-moz-border-radius-bottomright:6px;
+	-webkit-border-bottom-right-radius:6px;
+	border-bottom-right-radius:6px;
+	-moz-border-radius-topright:6px;
+	-webkit-border-top-right-radius:6px;
+	border-top-right-radius:6px;
+	}
+.tags a:before{
+	content:"";
+	float:left;
+	position:absolute;
+	top:0;
+	left:-12px;
+	width:0;
+	height:0;
+	border-color:transparent #0089e0 transparent transparent;
+	border-style:solid;
+	border-width:12px 12px 12px 0;
+	}
+.tags a:after{
+	content:"";
+	position:absolute;
+	top:10px;
+	left:0;
+	float:left;
+	width:4px;
+	height:4px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+	border-radius:2px;
+	background:#fff;
+	-moz-box-shadow:-1px -1px 2px #004977;
+	-webkit-box-shadow:-1px -1px 2px #004977;
+	box-shadow:-1px -1px 2px #004977;
+	}
+.tags a:hover{background:#555;}
+.tags a:hover:before{border-color:transparent #555 transparent transparent;}
+</style>
+
+
+<div class="nav">
+<a href="#" onclick="nav_prev('pages', 5);" class="bt">prev</a>
+<ul id="pages">
+<li><a href="#">1</a></li>
+<li><a href="#">2</a></li>
+<li><a href="#">13</a></li>
+</ul>
+<a href="#" onclick="nav_next('pages', 5);" class="bt">next</a>
+
+
+</div>
+
+<ul class="tags">
+	<li><a href="#">tag</a></li>
+	<li><a href="#">tag name</a></li>
+</ul>
+
+
+
+
+<script>
+nav_prev = function(name, delta) {
+	elt = document.getElementById(name);
+	if (!elt.hasChildNodes()) return;
+
+	var ind = 0;
+	var children = elt.getElementsByTagName("LI");
+	for(var j=0; j < children.length; j++) {
+		if (children[j].style.display == 'block') { ind = j; break; }
+	}
+
+	nav_show(name, ind < delta ? 0 : ind - delta, delta);
+}
+
+nav_next = function(name, delta) {
+	elt = document.getElementById(name);
+	if (!elt.hasChildNodes()) return;
+
+	var ind = 0;
+	var children = elt.getElementsByTagName("LI");
+	for(var j=0; j < children.length; j++) {
+		if (children[j].style.display == 'block') { ind = j; }
+	}
+
+	if ((ind + 1) < children.length) nav_show(name, (ind + 1), delta);
+}
+
+nav_show = function(name, start, delta) {
+	elt = document.getElementById(name);
+	if (!elt.hasChildNodes()) return;
+
+	var children = elt.getElementsByTagName("LI");
+	for(var j=0; j < children.length; j++) children[j].style.display = 'none';
+	for(var j=start; j < children.length && j < (start+delta); j++) children[j].style.display = 'block';
+}
+
+window.onload = function() {
+	nav_show("pages", 0, 5);
+}
+</script>
+
+</body>
+</html>

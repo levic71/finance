@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLEVIEWER_DATA
+					maxImageDimension="400"
+					textColor="0x000000"
+					frameColor="0xCCCCCC"
+					bgColor="0x000000"
+					frameWidth="10"
+					stagePadding="10"
+					thumbnailColumns="2"
+					thumbnailRows="5"
+					navPosition="right"
+					navDirection="LTR"
+					title=""
+					imagePath="../uploads/"
+					thumbPath="../thumbs/">
+<IMAGE>
+	<NAME>ALBUM_37_22_CF_BIS.jpg</NAME>
+	<CAPTION><![CDATA[<B></B>]]></CAPTION>
+</IMAGE>
+</SIMPLEVIEWER_DATA>

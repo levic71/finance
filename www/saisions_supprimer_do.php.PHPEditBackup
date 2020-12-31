@@ -1,0 +1,30 @@
+<?php
+
+include "../include/sess_context.php";
+
+session_start();
+
+include "common.php";
+include "../include/inc_db.php";
+
+$db = dbc::connect();
+
+$id_saison = str_replace(" WHERE id=", "", $pkeys_where);
+
+$delete = "DELETE FROM jb_matchs id_champ=".$sess_context->getRealChampionnatId();
+$res = dbc::execSQL($delete);
+
+$delete = "DELETE FROM jb_journees id_champ=".$sess_context->getRealChampionnatId();
+$res = dbc::execSQL($delete);
+
+$delete = "DELETE FROM jb_classement_poules ".urldecode($pkeys_where)." AND id_champ=".$sess_context->getRealChampionnatId();
+$res = dbc::execSQL($delete);
+
+$delete = "DELETE FROM jb_saisons ".urldecode($pkeys_where)." AND id_champ=".$sess_context->getRealChampionnatId();
+$res = dbc::execSQL($delete);
+
+mysql_close ($db);
+
+ToolBox::do_redirect("saisons.php");
+
+?>

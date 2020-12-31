@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/include/inc_db.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/wrapper/contacter.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/wrapper/dashboard.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/wrapper/dashboard_journee.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/wrapper/grid.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/wrapper/help.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/wrapper/inscription.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/wrapper/js/jk.js" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/wrapper/table_players.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/wrapper/table_teams.php" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/wrapper/wrapper_fcts.php" charset="ISO-8859-1" />
+    <file url="PROJECT" charset="ISO-8859-1" />
+  </component>
+</project>

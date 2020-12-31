@@ -1,0 +1,36 @@
+#head {
+	top: 10px;
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	-moz-box-shadow: 0 0  5px #21440e;
+	-webkit-box-shadow: 0 0 5px #21440e;
+	box-shadow: 0 0 5px #21440e;
+}
+
+#shortcuts li { border-bottom-color: transparent; }
+
+#footer {
+	border-radius: 0px 0px 15px 15px;
+	-moz-border-radius: 0px 0px 15px 15px;
+	-webkit-border-radius: 0px 0px 15px 15px;
+}
+
+h2.grid, h2.dashboard, .iPhoneCal .calheader {
+	border-radius: 10px 10px 0px 0px;
+	-moz-border-radius: 10px 10px 0px 0px;
+	-webkit-border-radius: 10px 10px 0px 0px;
+}
+
+.calweekswrapper .weekbox:last-child .daybox:first-child {
+	border-radius: 0px 0px 0px 10px !important;
+	-moz-border-radius: 0px 0px 0px 10px !important;
+	-webkit-border-radius: 0px 0px 0px 10px !important;
+}
+
+.calweekswrapper .weekbox:last-child .daybox:last-child {
+	border-radius: 0px 0px 10px 0px !important;
+	-moz-border-radius: 0px 0px 10px 0px !important;
+	-webkit-border-radius: 0px 0px 10px 0px !important;
+}
+

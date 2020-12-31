@@ -1,0 +1,162 @@
+#news .titre {
+	height:25px;
+}
+#news .fond {
+	width: 100%;
+}
+#news #titre9 {
+	background: url('../images/templates/defaut/home_news_title.jpg') no-repeat;
+}
+#titre9 SPAN {
+	display: none;
+}
+ .corps, .corps A, .corps A:visited {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : normal;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+}
+.corps {
+	margin: 5px 0px 5px 0px;
+	text-align: justify;
+}
+.rss_info {
+	margin: 0px 0px 2px 0px;
+}
+.pair {
+	background: #EEDDDD;
+}
+.rss_info .date, .rss_info .title, .rss_info .desc {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+}
+.rss_info .date {
+	float: left;
+	color: #6699CC;
+	padding: 0px 5px 0px 5px;
+	width: 90px;
+}
+.rss_info .title, .rss_info .title a, .rss_info .title a:visited {
+	text-decoration: none;
+	color: #DB7F1D;
+}
+.rss_info .title a:hover {
+	text-decoration: none;
+	font-weight  : bold;
+}
+.rss_info .desc {
+	overflow: hidden;
+	margin: 0px 5px 5px 100px;
+}
+#news .detail {
+	margin: 0px 0px 0px 550px;
+}
+#news .detail A, #news .detail A:visited {
+	text-decoration: none;
+	background: url('../images/fleche.gif') no-repeat 0px 2px;
+	padding: 0px 0px 0px 15px;
+}
+#news .detail A:hover   {
+	color: #777777;
+	font-weight: bold;
+	padding: 0px 0px 0px 12px;
+}
+#news .actu_none {
+	display: none;
+}
+
+/* --------------------------- Tableau de bord ---------------------------------- */
+#tdb .corps {
+	margin: 0px;
+	padding: 0px 0px 0px 5px;
+	height: 172px;
+	overflow: hidden;
+	background: url('../images/templates/defaut/home_herbe.jpg') no-repeat right bottom;
+}
+#tdb .titre {
+	height:25px;
+}
+#tdb .fond {
+	width: 100%;
+}
+#tdb #titre1 {
+	float: left;
+	height:25px;
+	width: 100%;
+	background: url('../images/templates/defaut/home_whatsup_title.jpg') no-repeat;
+}
+#tdb #titre1 SPAN {
+	display: none;
+}
+#tdb #box3 {
+	display: none;
+}
+#tdb #box3 .leftlabel {
+	float: left;
+	width: 35px;
+	text-align: right;
+	padding: 0px 10px 0px 0px;
+}
+#tdb #box3 .rightlabel {
+	padding: 0px 15px 0px 0px;
+	width: 120px;
+}
+.actubox {
+	background: url('../images/jorkers/images/tag_orange.png') no-repeat;
+	padding: 0px 0px 0px 20px;
+	margin: 0px 0px 3px 0px;
+	overflow: hidden;
+	border-bottom: 1px dotted #CCCCCC;
+}
+.actubox strong {
+	color: black;
+}
+.actubox A {
+	text-decoration: none;
+}
+.actubox .date {
+	float: left;
+	width: 100%;
+	text-align: left;
+	font-weight: bold;
+}
+.actubox .texte {
+	float: left;
+	width: 100%;
+	text-align: left;
+	color: black;
+	margin: 0px 0px 10px 0px;
+}
+.actubox .hot  {
+	padding: 0px 20px 0px 0px;
+	background: url('../images/templates/defaut/new.png') no-repeat top right;
+	width: 80px;
+}
+#tdb #box4 .actuclip {
+	padding: 5px 5px 0px 0px;
+	height: 140px;
+	overflow: hidden;
+}
+
+#tdb #box4 .actubox a {
+	text-decoration: none;
+}
+#tdb #box4 .actubox .date {
+	padding: 0px 0px 2px 0px;
+	font-weight: normal;
+	color: #DB7F1D;
+}
+#tdb #box4 .actubox .resume {
+	text-align: left;
+	color: black;
+	font-weight: bold;
+}
+#tdb #box4 .actubox .texte {
+	text-align: left;
+	color: black;
+	font-weight: normal;
+	margin: 0px 0px 5px 0px;
+}
+

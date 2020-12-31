@@ -1,0 +1,15 @@
+/* ------------------------------------------ */
+/* CONTENT CSS */
+/* ------------------------------------------ */
+
+@font-face {
+    font-family: 'logo7';
+    src: url('../../fonts/komikax.eot');
+    src: url('../../fonts/komikax.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/komikax.woff') format('woff'),
+         url('../../fonts/komikax.ttf') format('truetype'),
+         url('../../fonts/komikax.svg#komika_axisregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

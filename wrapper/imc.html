@@ -1,0 +1,53 @@
+<html>
+<head>
+<style>
+#leftg {
+background: #000;
+background-image: linear-gradient(left , #1D1221 39%, #923FB0 100%);
+background-image: -o-linear-gradient(left , #1D1221 39%, #923FB0 100%);
+background-image: -moz-linear-gradient(left , #1D1221 39%, #923FB0 100%);
+background-image; -webkit-linear-gradient(left , #1D1221 39%, #923FB0 100%);
+background-image: -ms-linear-gradient(left , #1D1221 39%, #923FB0 100%);
+background-image: -webkit·gradient(linear, left top, right top, color-stop(0.39, #1D1221), color-stop(1, #923FB0));
+}
+#leftc { background: #923FB0; }
+#leftd {
+background: #000;
+background-image: linear-gradient(right , #1D1221 39%, #923FB0 100%);
+background-image: -o-linear-gradient(right , #1D1221 39%, #923FB0 100%);
+background-image: -moz-linear-gradient(right , #1D1221 39%, #923FB0 100%);
+background-image: -webkit-linear-gradient(right , #1D1221 39%, #923FB0 100%);
+background-image: -ms-linear-gradient(right , #1D1221 39%, #923FB0 100%);
+background-image: -webkit-gradient(linear, right top, left top, color-stop(0.39, #1D1221), color-stop(1, #923FB0));
+}
+</style>
+</head>
+
+<body>
+largeur = 150
+tier = (largeur / 3) = 50
+val = 75
+min = 72
+max = 79
+x = (val - min) / (max - min) = 0.4285
+pos curseur = tier + (tier * x) = 71
+
+<div>
+
+<div style="float: left; clear: both; height: 20px; width: 150px; background: url('img/tick_16.png') no-repeat 71px 0px;"></div>
+
+<div style="float: left; clear: both;">
+	<div id="leftg" style="float: left; width: 49px; height: 10px; border-right: 1px solid #000;"></div>
+	<div id="leftc" style="float: left; width: 49px; height: 10px; border-right: 1px solid #000;"></div>
+	<div id="leftd" style="float: left; width: 50px; height: 10px;"></div>
+</div>
+
+<div style="float: left; clear: both;">
+	<div style="float: left; margin-left: 25px; width: 50px; height: 20px; text-align: center;">72</div>
+	<div style="float: left; width: 50px; height: 20px; text-align: center;">79</div>
+</div>
+
+</div>
+
+</body>
+</html>

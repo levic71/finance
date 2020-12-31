@@ -1,0 +1,23 @@
+
+
+<div id="spotlight" class="home_left_div">
+	<div class="fond">
+		<div class="titre"><span lang="en">Spotlight</span></div>
+	</div>
+	<div class="corps">
+
+		<table border="0" cellspacing="0" cellpadding="0">
+		<thead>
+			<tr class="caption">
+				<th colspan="5">
+					SPOTLIGHT on<br /><span>Ligue 1 Orange</span><br />géré par strada				</th>
+			</tr>
+<tr><th style="width: 10px;">&nbsp;</th><th align="left" style="width: 50%;">Equipe</th><th align="right">Nb points</th><th align="right">Goal Avg</th></tr></thead><tr class="odd"><td>1</td><td>Lyon</td><td align="right">31</td><td align="right">+16</td></tr><tr><td>2</td><td>Nancy</td><td align="right">28</td><td align="right">+13</td></tr><tr class="odd"><td>3</td><td>Bordeaux</td><td align="right">25</td><td align="right">+7</td></tr><tr><td>4</td><td>Rennes</td><td align="right">24</td><td align="right">+4</td></tr><tr class="odd"><td>5</td><td>Le Mans</td><td align="right">23</td><td align="right">+1</td></tr>		<tfoot>
+			<tr><td colspan="5"><div class="allaccess" style="float: right;"><a href="championnat_acces.php?ref_champ=215">Accès au championnat</a></div></td></tr>
+		</tfoot>
+		</table>
+
+	</div>
+</div>
+
+

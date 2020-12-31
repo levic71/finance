@@ -1,0 +1,83 @@
+<html>
+<head>
+<title>amCharts: Javascript only strategy</title>
+<script src="amstock.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+AmCharts.ready(function() {
+	loadJavascriptChart("chartdiv", "data.txt");
+});
+
+// this method creates a javascript chart ploting data from external file
+function loadJavascriptChart(elementId, file) {
+	var chart = new AmCharts.AmPieChart();
+	// first we load the external data file
+	var data = loadFile(file);
+	// then we set a data provider to the chart
+	chart.dataProvider = createDataProvider(data);
+
+	chart.titleField = "country";
+	chart.valueField = "litres";
+
+	chart.innerRadius = 30;
+	chart.sequencedAnimation = true;
+	chart.labelText = "[[title]]: [[value]]";
+	chart.write(elementId);
+}
+
+// method which parses csv data
+function createDataProvider(data){
+	var rows = data.split("\n");
+	// create array which will hold our data:
+	dataProvider = [];
+
+	// loop through all rows
+	for (var i = 0; i < rows.length; i++){
+		// this line helps to skip empty rows
+		if (rows[i]) {
+			// our columns are separated by a semicolon
+			var column = rows[i].split(";");
+
+			// column is array now
+			var country = column[0];
+			var litres = column[1];
+
+			// create object which contains all these items:
+			var dataObject = {"country":country, "litres":litres};
+			// add object to dataProvider array
+			dataProvider.push(dataObject);
+		}
+	}
+	return dataProvider;
+}
+
+// method which loads external data
+function loadFile(file) {
+	if (window.XMLHttpRequest) {
+		// IE7+, Firefox, Chrome, Opera, Safari
+		var request = new XMLHttpRequest();
+	}
+	else {
+		// code for IE6, IE5
+		var request = new ActiveXObject('Microsoft.XMLHTTP');
+	}
+	// load
+	request.open('GET', file, false);
+	request.send();
+
+	// now lets load data into a new flash chart
+	var data = request.responseText;
+	//replace UNIX new line
+	data = data.replace (/\r\n/g, "\n");
+	//replace MAC new lines
+	data = data.replace (/\r/g, "\n");
+
+	return data;
+}
+</script>
+</head>
+
+<body>
+	<div id="chartdiv" style="width:600px; height:400px; background-color:#FFFFFF"></div>
+</body>
+</html>

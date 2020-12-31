@@ -1,0 +1,15 @@
+/* ------------------------------------------ */
+/* CONTENT CSS */
+/* ------------------------------------------ */
+
+@font-face {
+    font-family: 'logo10';
+    src: url('../../fonts/manksans.eot');
+    src: url('../../fonts/manksans.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/manksans.woff') format('woff'),
+         url('../../fonts/manksans.ttf') format('truetype'),
+         url('../../fonts/manksans.svg#manksansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

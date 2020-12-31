@@ -1,0 +1,15 @@
+/* ------------------------------------------ */
+/* CONTENT CSS */
+/* ------------------------------------------ */
+
+@font-face {
+    font-family: 'logo5';
+    src: url('../../fonts/orbitron.eot');
+    src: url('../../fonts/orbitron.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/orbitron.woff') format('woff'),
+         url('../../fonts/orbitron.ttf') format('truetype'),
+         url('../../fonts/orbitron.svg#orbitronregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

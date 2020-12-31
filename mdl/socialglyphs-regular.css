@@ -1,0 +1,21 @@
+ @font-face {
+     font-family: 'Socialglyphs';
+     font-style: normal;
+     font-weight: 400;
+     src: url('socialglyphs-regular.eot'); /* For IE6-8 */
+     src: local('Socialglyphs'),
+     local('socialglyphs-regular'),
+     url('socialglyphs-regular.woff') format('woff'),
+     url('socialglyphs-regular.ttf') format('truetype');
+}
+
+.socialglyphs {
+    font-family: Socialglyphs, sans-serif;
+    font-size:24px;
+    line-height: 24px;
+    text-transform: none;
+    color: white;
+    margin: 5px;
+}
+  
+ 

@@ -1,0 +1,17 @@
+#clock {
+  position: relative;
+  height: 350px;
+  width: 350px;
+}
+
+#clock div {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  color: #ddd;
+  font: 10px sans-serif;
+}
+
+text {
+  font: bold 13px sans-serif;
+}

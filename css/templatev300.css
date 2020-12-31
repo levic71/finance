@@ -1,0 +1,720 @@
+html, body {height:100%;}
+
+.nospace, body {
+	width        : 100%;
+	margin       : 0px;
+	font-family  : sans-serif;
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : normal;
+	font-size    : 11px;
+	color        : #666666;
+	text-align: center;
+}
+
+form {
+	padding: 0px;
+	margin: 0px;
+}
+
+strong {
+	font-family  : sans-serif;
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	font-size    : 11px;
+}
+/* ------------------ Gestion des images ------------------ */
+img, #logo {
+	border: 0px solid black;
+}
+.shadowed { 
+	float:right;
+	background: url('../images/jorkers/images/drop-shadow.png') no-repeat bottom right !important;
+	background: url('../images/jorkers/images/drop-shadow.gif') no-repeat bottom right;
+	margin: 10px 0px 0px 10px !important;
+	margin: 10px 0px 0px 5px;
+}
+.shadowed img {
+	display: block;
+	position: relative;
+	background-color: #fff;
+	border: 1px solid #999;
+	margin: -6px 6px 6px -6px;
+	padding: 4px;
+}
+/* ------------------ Barre d'accessibilité --------------------- */
+#accessible {
+	width: 1000px;
+	margin: auto;
+	height: 15px;
+}
+#accessible ul {
+	margin: 20px 0px 0px 715px;
+	padding: 0px;
+}
+#accessible li {
+	background-color:transparent;
+	color: #696969;
+	margin:0px 1em 0px 0px;
+	float: left;
+	display:inline;
+}
+#accessible a {
+	background-color:transparent;
+	color: ivory;
+}
+#accessible a:hover {
+	text-decoration:none;
+}
+
+#header {
+	height: 110px;
+	background: url('../images/templates/defaut/fond_header.jpg') no-repeat top left;
+	background-color: black;
+	overflow: hidden;
+	margin: 0px;
+	padding: 0px;
+}
+
+#toolbar {
+	height: 20px;
+	background: url('../images/templates/defaut/fond_toolbar.jpg') repeat-y;
+	white-space: nowrap;
+}
+
+#conteneur-r {
+	position: relative;
+	width: 1000px;
+	margin: auto;
+	background: url('../images/templates/defaut/fond_center_page.jpg') repeat-y;
+}
+#conteneur {
+}
+
+#centre {
+	margin: 0px 135px 20px 135px;
+	padding: 5px 0px 10px 0px;
+    text-align: center;
+}
+html>body #centre {
+	height: auto;
+	min-height: 515px;
+} 
+
+#centre TABLE, #centre DIV {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#gauche {
+	float: left;
+	width: 135px;
+	height:auto;
+	overflow: hidden;
+}
+
+#droite {
+	float: right;
+	width: 133px;
+	height:auto;
+	overflow: hidden;
+}
+
+/* ------------------------ footer ------------- */
+#footer {
+	clear: both;
+	height: 40px;
+	margin: 5px 0px 0px 0px;
+	text-align: center;
+	background: url('../images/templates/defaut/fond_footer.jpg') repeat-y;
+	color: #696969;
+}
+#footer a {
+	color: #696969;
+}
+#footer strong {
+	color: #696969;
+}
+
+#footer #annuaire {
+	float: left;
+	margin: 5px 0px 0px 15px;
+}
+#footer #copyright {
+	margin: 0px 300px 0px 300px;
+}
+#footer #hautdepage {
+	float: right;
+	margin: 5px 15px 0px 0px;
+}
+#footer #hautdepage a:hover {
+	text-decoration: none;
+}
+#standardButtons {
+	width: 1000px;
+	margin: auto;
+}
+#standardButtons a {
+	text-decoration: none;
+	float: right;
+	margin: 0px 10px 0px 5px;
+}
+
+/* ------------------------ zone centrale ------------- */
+.zoom {
+	width: 700px;
+}
+
+/* ---------------------- Page intérieure ----------------------------- */
+
+/* Pages interieures */
+#pageint {
+	width: 90%;
+	color:#000;
+	background-color:#f5f8fc;
+	border:1px solid #69c;
+	line-height:150%;
+	margin:0 3% 2em 21%;
+	padding:0 2% 3em 2%;
+	text-align: left;
+	padding: 10px 20px 10px 20px;
+}
+html>body #pageint {
+	padding: 0px 20px 0px 20px;
+}
+#pageint a[hreflang]:after{
+	content:"\0000a0[" attr(hreflang) "]";
+}
+#pageint .abstract{
+	background-color:#fff;
+	background-image:none;
+	border:1px dotted #69c;
+	color:#333;
+	margin:0;
+	padding:0 1em;
+	display:block;
+}
+#pageint .abstract em{
+	font-weight:700;
+	font-style:normal;
+	color:#690;
+	background-color:transparent;
+}
+#pageint .abstract hr{
+	display:block;
+	clear:both;
+	visibility:hidden;
+}
+#pageint .auteur{
+	margin:1em 0 0 0;
+	float:right;
+	display:block;
+}
+#pageint .auteur ul{
+	color:#000;
+	background-color:transparent;
+	margin:0 0 0 0.5em;
+	padding:0 1em;
+	border-left:1px solid #69c;
+}
+#pageint .auteur li{
+	font-size:80%;
+	border-bottom:1px dotted #69c;
+	list-style:none;
+	color:#666666;
+	background-color:transparent;
+}
+#pageint .auteur li.dernier{
+	border-bottom:0;
+}
+#pageint .auteur strong{
+	background-color:transparent;
+	color:#666666;
+}
+/**********************************************************************/
+#pageint div.attention, #pageint div.important, #pageint div.note, #pageint div.astuce{
+	color:#000;
+	background-color:transparent;
+	border:1px dotted #69c;
+	padding:1em;
+}
+#pageint span.attention, #pageint span.important, #pageint span.note, #pageint span.astuce{
+	font-variant:small-caps;
+	font-size:1.1em;
+}
+/**********************************************************************/
+#pageint hr{
+	display:none;
+}
+#pageint li{
+	list-style:disc;
+}
+#pageint ul ul li{
+	list-style-type:circle;
+}
+#texte ol li{
+	list-style-type:decimal;
+}
+#pageint h2,#pageint h3,#pageint .resultat dt{
+}
+#pageint h2{
+	background-color:transparent;
+	color:#369;
+	font-size:130%;
+}
+#pageint h3 code{
+	color:inherit;
+	background-color:transparent;
+}
+#pageint h3,#pageint .resultat dt{
+	background-color:transparent;
+	color:#369;
+	font-size:small;
+	margin:2em 0 0 0;
+	line-height:110%;
+}
+#pageint h4{
+	background:transparent 0px 0px;
+	background-color:transparent;
+	color:#69c;
+	font-weight:700;
+	font-size:small;
+	border-bottom:1px dotted #a1c2e1;
+	padding: 0px;
+	margin: 0px;
+}
+#pageint h5{
+	color:#69c;
+	background-color:transparent;
+	font-weight:500;
+	font-size:small;
+}
+#pageint a{
+	color:#369;
+	background-color:transparent;
+}
+#pageint a:hover{
+	color:#369;
+	background-color:transparent;
+	text-decoration:none;
+}
+#pageint a:visited{
+	color:#369;
+	background-color:transparent;
+}
+/* Formulaire dans le texte */
+#pageint form{
+	margin:2.5em 0;
+}
+#pageint form label{
+	color:#369;
+	background-color:transparent;
+	margin:0.5em 0;
+}
+
+/* --------------------------------------------------- */
+/* STYLE DES BLOCS DANS COLONNE DE GAUCHE ET DE DROITE */
+/* --------------------------------------------------- */
+
+SELECT.header_select {
+    font-size: 10px;
+	font-weight: normal;
+    border-width: 0px;
+}
+TD.lib_info, TD.lib2_info {
+	font-weight: normal;
+    color: #777777;
+	padding: 0px 0px 0px 5px;
+	text-align: left;
+}
+TD.lib_info {
+	padding: 5px 0px 0px 5px;
+}
+TD.libg_info {
+	font-weight: bold;
+    color: #777777;
+	padding: 0px 0px 0px 5px;
+}
+
+DIV.menu_gauche {
+	margin: 5px 0px 0px 15px;
+}
+TABLE.menu_gauche, TABLE.menu_droit {
+	background-color: #F1F1F1;
+	border-collapse: collapse;
+	width: 120px;
+}
+TD.menu_gauche_title, TD.menu_droit_title {
+	font-weight: bold;
+    color: white;
+	padding: 0px 5px 0px 5px;
+	background: url('../images/jorkers/images/jorkers2_links_titre.gif') no-repeat top right;
+}
+DIV.menu_droit {
+	padding: 5px 13px 0px 0px;
+}
+BUTTON.calendar {
+	color: white;
+	font-size: 14px;
+}
+TD.calendar, TD.calendar_fill, TD.calendar_j, TD.calendar_red , TD.calendar_blue {
+	font-weight: normal;
+    font-size: 9px;
+	text-align: right;
+	padding: 1px 2px 0px 1px;
+	border: 1px solid #CCCCCC;
+}
+TD.calendar_fill {
+	background: #E0E0E0;
+    color: #777777;
+}
+TD.calendar_j {
+    text-align: center;
+    color: #000000;
+    background: #FBD88E;
+}
+TD.calendar_red {
+	background: #DB7F1D;
+}
+A.calendar_red:visited, A.calendar_red:hover, A.calendar_red:link, A.calendar_red:active {
+	color: white;
+	text-decoration: none;
+}
+TD.calendar_blue {
+	background: #6699CC;
+}
+A.calendar_blue:visited, A.calendar_blue:hover, A.calendar_blue:link, A.calendar_blue:active {
+    text-decoration: none;
+	color: white;
+}
+
+.forum_container {
+}
+.forum_container_link, a:visited.forum_container_link {
+    text-decoration: none;
+    color: #999999;
+}
+.forum_msg {
+	height: 45px;
+	width: 120px;
+	overflow: hidden;
+	margin: 0px 0px 2px 0px;
+	border-top: 1px dashed #AAAAAA;
+}
+.forum_msg_date, .forum_msg_auteur  {
+	font-weight: normal;
+    font-size: 9px;
+    padding: 0px 0px 0px 2px;
+}
+.forum_msg_date {
+   color: #666666;
+}
+.forum_msg_auteur {
+   color: black;
+}
+.forum_msg_titre {
+   color: #6699CC;
+}
+.forum_msg_titre, .forum_msg_texte  {
+	font-weight: normal;
+    font-size: 9px;
+    padding: 0px 0px 0px 2px;
+    text-align: left;
+}
+.forum_msg_date {
+    background: #DDDDDD;
+	width: 50px;
+	margin-right: 5px;
+	float: left;
+	white-space: nowrap;
+}
+.forum_msg_auteur {
+    background: #DDDDDD;
+	white-space: nowrap;
+	text-align: left;
+}
+.forum_msg_titre {
+	white-space: nowrap;
+}
+#smileys_choice {
+	padding: 10px 0px 10px 0px;
+}
+#smileys_area {
+	padding: 10px 0px 10px 0px;
+	display: table-cell;
+	border-collapse: collapse;
+	border-top: 1px dashed black;
+	width: 100%;
+}
+#smileys_radio {
+	border-top: 1px dashed black;
+	float: left;
+	width: 100%;
+}
+.s_item {
+	text-align: center;
+	display: table-cell;
+	float: left;
+	padding: 3px;
+	min-height: 30px;
+	min-width: 25px;
+	border: 1px dashed white;
+}
+BUTTON.calendar {
+	background  : #636563;
+	color: white;
+	border      : none;
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	font-family  : sans-serif;
+	font-size    : 14px;
+}
+BUTTON.light {
+	color: #636563;
+	border      : none;
+	font-size    : x-small;
+	font-variant : normal;
+	font-family  : sans-serif;
+	font-size    : 10px;
+	padding: 0px;
+	margin: 0px;
+}
+.header_toolbar {
+	display: inline;
+	height: 100%;
+}
+.header_toolbar ul {
+	padding: 0px;
+	margin: 0px;
+	display: inline;
+}
+.header_toolbar li {
+	margin: 3px 0px 0px 5px;
+	float: left;
+	list-style-type: none;
+}
+.header_toolbar .header_select2 {
+	margin: 0px 0px 0px 5px;
+}
+html>body .header_toolbar .header_select2 {
+	margin: 3px 0px 0px 5px;
+}
+.header_toolbar .header_left {
+	height: 100%;
+	padding-left: 20px;
+	float: left;
+}
+.header_toolbar a.header_link, .header_toolbar a:hover.header_link  {
+	text-decoration : none;
+	color: white;
+}
+.header_toolbar .header_right {
+	height: 100%;
+	padding: 0px 15px 0px 0px;
+	float: right;
+}
+.header_toolbar .header_select2 {
+	padding: 0px 0px 0px 15px;
+	background: url('../images/p_next_blanc.gif') no-repeat 3px;
+}
+.header_toolbar .header_links {
+	padding: 0px 0px 0px 20px;
+	background: url('../images/jorkers/images/icon_links.gif') no-repeat 3px;
+}
+.header_toolbar .header_person {
+	padding: 0px 0px 0px 20px;
+	background: url('../images/templates/defaut/icon_person.gif') no-repeat 3px;
+}
+.header_toolbar .header_timeline {
+	padding: 0px 0px 0px 20px;
+	background: url('../images/templates/defaut/quicktime.gif') no-repeat 3px;
+}
+.header_toolbar .header_create {
+	padding: 0px 0px 0px 20px;
+	background: url('../images/templates/defaut/tools.gif') no-repeat 3px;
+}
+.header_toolbar .header_contact {
+	padding: 0px 0px 0px 25px;
+	background: url('../images/out_email.gif') no-repeat 4px;
+}
+.header_toolbar .header_aide {
+	padding: 0px 0px 0px 20px;
+	background: url('../images/templates/defaut/phone.gif') no-repeat 3px;
+}
+.nls_flags div {
+	height: 12px;
+	width: 18px;
+	margin: 0px 3px 0px 0px;
+	float: left;
+}
+.header_toolbar .nls_flag1 {
+	background: url('../images/flags/FRAN0001_small.gif') no-repeat;
+}
+.header_toolbar .nls_flag2 {
+	background: url('../images/flags/UNKG0001_small.gif') no-repeat;
+}
+.header_toolbar .nls_flag3 {
+	background: url('../images/flags/GERM0001_small.gif') no-repeat;
+}
+.header_toolbar .nls_flag4 {
+	background: url('../images/flags/ITAL0001_small.gif') no-repeat;
+}
+.header_toolbar .nls_flag5 {
+	background: url('../images/flags/SPAN0002_small.gif') no-repeat;
+}
+.header_toolbar .nls_flag6 {
+	background: url('../images/flags/PORT0001_small.gif') no-repeat;
+}
+
+.fxl_title_box {
+	width:100%;
+	color: white;
+	font-size: 150%;
+}
+.fxl_title_box_left {
+	float: left;
+}
+.fxl_title_box_right {
+	float: right;
+}
+.pub468x60 {
+	width: 468px;
+	height: 60px;
+	margin: 10px 0px 0px 0px;
+	background: url('../images/jorkers/images/banniere468x60.gif') no-repeat center center;
+}
+.pub250x250 {
+	width: 250px;
+	height: 250px;
+	margin: 0px 0px 0px 0px;
+	overflow: hidden;
+	background: url('../images/jorkers/images/banniere250x250.gif');
+}
+
+
+#header .left {
+	float: left;
+}
+#header .right {
+	margin: 0px;
+	padding: 0px 20px 0px 0px;
+	text-align: right;
+}
+
+#gauche .menu {
+	width: 120px;
+}
+#gauche .menu DIV {
+	height:15px;
+	border-bottom: 1px solid #ADAAAA;
+}
+#gauche .menu .titre {
+	border-bottom: 0px;
+	font-weight: bold;
+    color: white;
+	padding: 0px 5px 0px 5px;
+	background: url('../images/jorkers/images/jorkers2_links_titre.gif') no-repeat top right;
+}
+#gauche .menu .item2 {
+	background-color: #CCCCCC;
+}
+
+.cmd {
+	font-weight: normal;
+	text-decoration : none;
+	background: url('../images/fleche.gif') no-repeat 3px 2px;
+	padding: 0px 0px 0px 20px;
+}
+.cmd:visited, .cmd:link, .cmd:active {
+	color: #777777;
+}
+.cmd:hover   {
+	color: #777777;
+	font-weight: bold;
+	padding: 0px 0px 0px 25px;
+}
+
+.cmdbox {
+	margin: 5px 0px 0px 0px;
+	padding: 5px;
+	border: 1px dotted #666666;
+	width: 680px;
+	text-align: left;
+}
+.cmdbox .cmd {
+	background: url('../images/fleche2.gif') no-repeat 3px 2px;
+}
+.cmdbox .cmd:hover   {
+	background-color: black;
+	color: white;
+}
+.cmdbox hr {
+	height: 1px;
+	margin: 3px 0px 0px 5px;
+	padding: 0px;
+	color: #AAAAAA;
+	background-color: #AAAAAA;
+	border: 0px;
+}
+
+.pave {
+	width: 118px;
+	border: 1px solid #ADAAAA;
+	background   : #F1F1F1;
+}
+.pave .titre {
+	font-weight: bold;
+    color: white;
+	padding: 0px 5px 0px 5px;
+	background: url('../images/jorkers/images/jorkers2_links_titre.gif') no-repeat top right;
+	text-align: left;
+}
+.pave .corps {
+	overflow: hidden;
+	margin: 0px;
+	padding:0px;
+}
+.pave .corps TABLE {
+	width: 100%;
+}
+.pave #menugauche div {
+	border-bottom: 0px solid #ADAAAA;
+	padding: 2px;
+	text-align: left;
+}
+.pave #menugauche ul {
+	list-style: none;
+	margin: 0px;
+	padding: 2px 0px 2px 3px;
+	text-align: left;
+}
+.pave #menugauche .alt1 {
+	background-color: #EEEEEE;
+}
+.pave #menugauche .alt2 {
+}
+.pave #menugauche .noborder {
+	border-bottom: 0px solid #ADAAAA;
+}
+
+.titre_forum  {
+	width: 300px;
+	overflow:hidden;
+}
+.auteur_forum  {
+	white-space:nowrap;
+	width: 110px;
+	overflow:hidden;
+}
+.last_post_forum  {
+	white-space:nowrap;
+	width: 110px;
+	overflow:hidden;
+}
+.smiley_forum  {
+	width: 20px;
+	height: 20px;
+	overflow:hidden;
+}

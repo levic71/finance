@@ -1,0 +1,17 @@
+@import "../css/stylesv300.css";
+@import "../css/templatev300.css";
+
+.menus {
+	display:none;
+}
+
+.central {
+	padding: 0px;
+	border:  0px;
+	margin:  0px;
+}
+	
+.notes {
+	display:none;
+
+}

@@ -1,0 +1,19 @@
+body { background: rgb(230, 230, 230) url('../img/body.png') repeat-x 0px -60px; }
+#head {
+	height: 40px;
+}
+.wrapper #inner {
+	height: 40px;
+	background: #000 !important;
+}
+.wrapper #shortcuts {
+	float: left !important;
+	margin: 15px 0px 0px 0px !important;
+}
+.wrapper .logo {
+	float: left; padding: 0px 0px 0px 30px; background: url('../img/globe_3.png') no-repeat 0px -1px !important; background-color: #000 !important; width: 440px; height: auto; color:#AFF53D; line-height: 12px; font-size: 14px; font-weight: bold; list-style-type: none;
+}
+div#head li, h2, .iPhoneCal .calheader { background-color: #000 !important; }
+.counter {
+	margin-top: -300px !important;
+}

@@ -1,0 +1,68 @@
+FONT.xlist_tdcol {
+	font-size   : x-small;
+	font-weight : bold;
+	font-variant: normal;
+	font-family : sans-serif;
+	font-size   : 11px;
+}
+FONT.xlist_tdpairrow {
+	font-size   : x-small;
+	font-variant: normal;
+	font-family : sans-serif;
+	color       : #996666;
+	font-size   : 11px;
+}
+FONT.big {
+	font-size   : x-small;
+	font-variant: normal;
+	font-family : sans-serif;
+	color       : white;
+	font-size   : 18px;
+}
+FONT.xlist_tdunpairrow {
+	font-size   : x-small;
+	font-variant: normal;
+	font-family : sans-serif;
+	color       : #666666;
+	font-size   : 11px;
+}
+BIG.xlist_title {
+	font-size   : x-small;
+	color       : white;
+	font-variant: normal;
+	font-weight : bold;
+	font-family : sans-serif;
+	font-size   : 14pt;
+	text-align : center;
+}
+TD.xlist_title {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : white;
+	font-family  : sans-serif;
+	font-size    : 20px;
+	text-align   : center;
+	border-collapse: collapse;
+}
+TABLE.xlist_table1 {
+	border: 0px solid #4863A0;
+	border-collapse: collapse;
+}
+TABLE.xlist_table2 {
+	border: #4863A0 1px solid;
+}
+TR.xlist_trCols2 {
+	background  : #D5D9EA;
+	height      : 30px;
+}
+TR.xlist_trCols {
+	background  : #BCC5EA;
+	height      : 30px;
+}
+TR.xlist_trPairCols {
+	background  : #FFFFEE;
+}
+TR.xlist_trUnpairCols {
+	background  : #EEEEEE;
+}

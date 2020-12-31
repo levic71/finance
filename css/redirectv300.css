@@ -1,0 +1,12 @@
+body { background: none; }
+#accessible { display: none; }
+#header { display: none; }
+#toolbar { display: none; }
+#gauche { display: none; }
+#droite { display: none; }
+#footer { display: none; }
+#standardButtons { display: none; }
+#conteneur-r { background: none; width: auto; }
+#centre { margin: 0px 0px 20px 0px; }
+.pub468x60 { display: none; }
+.cmdbox { display: none; }

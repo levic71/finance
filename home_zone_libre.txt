@@ -1,0 +1,48 @@
+<!--
+<map id="zonel" name="zonel">
+<area shape="rect" coords="0,0,250,60" accesskey="1" alt="Affiches"   href="../www/affiches.php" />
+<area shape="rect" coords="0,80,250,140" accesskey="1" alt="Affiches"   href="http://www.jorkers.com/www/forum_message.php?dual=5&amp;id_msg=7922#bottom" />
+</map>
+
+<img usemap="#zonel" src="../images/zonelibre.jpg" alt="" />
+
+<object width="260" height="160" title="mini-boitameu" style="BACKGROUND: black;">
+<param name="movie" value="http://boitam.eu/boitam.eu.petit.swf" />
+<embed src="http://boitam.eu/boitam.eu.petit.swf" type="application/x-shockwave-flash" width="260" height="160">
+</embed></object>
+
+-->  <!-- div style="overflow: auto;">
+<table border="0" cellspacing="3" cellpadding="0" bgcolor="#CCCCCC" style="font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.2; font-weight:bold;">
+<tr>
+	<td>
+		<a href="http://www.infotrafic.com/affiliation.php" target="_blank">Trafic routier</a> > <a href="http://www.infotrafic.com/affiliation.php?region=FRANC" target="_blank">France</a> > <a href="http://www.infotrafic.com/affiliation.php?region=IDF" target="_blank">Ile de France</a>
+	</td>
+</tr>
+<tr>
+	<td>
+		<script type="text/javascript" src="http://www.infotrafic.com/js/affiliate.js.php?Affi=90e4503188634bca53e7d997a5680042"> </script>
+	</td>
+</tr>
+<tr>
+	<td>Contenu proposé par <a href="http://www.infotrafic.com/affiliation.php" target="_blank"> Infotrafic© </a> Cliquez <a href="http://www.infotrafic.com/affiliation.php" target="_blank">ici</a> pour plus d\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'informations</td>
+</tr>
+</table>
+</div>
+
+<img src="../images/templates/defaut/homeA3A4.gif" alt="" />
+
+
+<div id="player"><a href="http://www.macromedia.com/go/getflashplayer">Get Flash</a> to see this player.</div>
+<script type="text/javascript" src="../flashrotator/ufo.js"></script>
+<script type="text/javascript">
+var FO = {
+	movie:"../flashrotator/imagerotator.swf",
+	width:"250",
+	height:"140",
+	majorversion:"7",
+	build:"0",
+	bgcolor:"#FFFFFF",
+	flashvars:"file=../flashrotator/jpglist.xml&autostart=true&shownavigation=false&showicons=false&shuffle=true&rotatetime=4&transition=random"
+	};
+UFO.create(FO,"player");
+</script -->    <a href="http://www.powerplate-chatillon.com" onclick="javascript:pageTracker._trackPageview('/outgoing/www.powerplate-chatillon.com');" target="_blank"><img alt="" src="../images/templates/defaut/homeA3A4_v5.gif" /></a>

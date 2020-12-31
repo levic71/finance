@@ -1,0 +1,15 @@
+/* ------------------------------------------ */
+/* CONTENT CSS */
+/* ------------------------------------------ */
+
+@font-face {
+    font-family: 'logo11';
+    src: url('../../fonts/silkscreen.eot');
+    src: url('../../fonts/silkscreen.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/silkscreen.woff') format('woff'),
+         url('../../fonts/silkscreen.ttf') format('truetype'),
+         url('../../fonts/silkscreen.svg#silkscreenbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

@@ -1,0 +1,21 @@
+#head {
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	top: 10px;
+}
+
+ul.sidebar li a { border-color: #C0DEED; background-color: #76A8BF !important; }
+ul.sidebar li a:hover { background-color: #567B8C !important; }
+
+#footer {
+	color: #567B8C;
+	border-radius: 0px 0px 15px 15px;
+	-moz-border-radius: 0px 0px 15px 15px;
+	-webkit-border-radius: 0px 0px 15px 15px;
+	background-image: url("../img/bkg-footer-twitter.png");
+}
+
+#footer a {
+	color: #567B8C;
+}

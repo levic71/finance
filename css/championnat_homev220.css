@@ -1,0 +1,217 @@
+.FXList_CAPTION {
+	background: url('../images/panneau.jpg') repeat-y top right;
+	background-color: #525152;
+	height: 20px;
+	color: white;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: left;
+	padding: 3px 0px 0px 10px;
+}
+html>body .FXList_CAPTION {
+	height: 20px;
+}
+/* -------------------- Big Box ------------------------- */
+.box {
+	width: 700px;
+	height: 430px;
+	padding: 0px;
+	margin: 0px;
+}
+html>body .box {
+	height: 440px;
+}
+/* -------------------- Edito + Forum ------------------------- */
+.box1 {
+	float: left;
+	width: 440px;
+	height: 440px;
+	margin: 0px 0px 0px 0px;
+}
+/* -------------------- Edito ------------------------- */
+.box1 #newsbox {
+	height: 250px;
+	margin: 0px;
+	overflow: hidden;
+}
+.box1 #newsint {
+	height: 215px;
+	padding: 5px 0px 5px 10px;
+	overflow: auto;
+}
+/* -------------------- Forum ------------------------- */
+.box1 #forum {
+	height: 190px;
+	padding: 0px;
+	margin: 0px;
+}
+.box1 #forumint {
+	height: 155px;
+	overflow: hidden;
+}
+#forum {
+	height: 140px;
+	margin: 5px 0px 5px 10px;
+}
+#forum .date {
+	float: left;
+	width: 60px;
+	color: #666666;
+}
+#forum .auteur {
+	text-align: left;
+	float: left;
+	overflow: hidden;
+	width: 80px;
+	white-space: nowrap;
+	margin-right: 5px;
+}
+#forum .title A {
+	text-align: left;
+	float: left;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 200px;
+	color: #DB7F1D;
+}
+#forum .title A:hover {
+	font-weight  : bold;
+}
+#forum .lecture {
+	text-align: right;
+	float: left;
+	width: 25px;
+}
+#forum .reponse {
+	text-align: right;
+	float: left;
+	width: 25px;
+}
+/* -------------------- Pub + Focus ------------------------- */
+.box2 {
+	float: right;
+	height: 440px;
+	width: 250px;
+}
+.box2 P {
+	margin: 0px;
+	padding: 0px;
+}
+.focus {
+	height: 180px;
+	width: 250px;
+	background: #CCCCCC;
+	margin: 5px 0px 0px 0px;
+}
+.focus .focusint {
+	padding: 5px;
+	height: 147px;
+	overflow: hidden;
+}
+.focus .opt1 {
+	padding: 5px;
+	width: 210px;
+}
+.focus .nom {
+	text-align: center;
+}
+.focus .photo {
+	height: 54px;
+	width: 54px;
+	border: 2px solid #AAAAAA;
+	margin: 0px;
+	padding: 0px;
+}
+.focus .photo img {
+	height: 50px;
+	width: 50px;
+	border: 2px solid white;
+	margin: 0px;
+	padding: 0px;
+}
+.focus .photo, .focus .opt1 {
+	float: left;
+}
+.focus .nom {
+	width: 150px;
+	float: right;
+	overflow: hidden;
+}
+.focus .photo, .focus .nom, .focus TD {
+	font-weight  : normal;
+}
+/* -------------------- Last + Next + Fannys ------------------------- */
+.box3cols {
+	width: 700px;
+	height: 110px;
+	margin: 5px 0px 0px 0px;
+}
+/* -------------------- Last/Next journees ------------------------- */
+.box3cols .col1 {
+	float: left;
+	width: 215px;
+	padding: 0px 10px 0px 0px;
+}
+.box3cols .col1 .lastj {
+	width: 190px;
+	height: 75px;
+	overflow: hidden;
+}
+.box3cols .col2 {
+	float: left;
+	width: 215px;
+}
+.box3cols .col2 .nextj {
+	width: 190px;
+	height: 75px;
+	overflow: hidden;
+}
+.lastj, .nextj {
+	height: 55px;
+	padding: 5px 0px 5px 5px;
+}
+.lastj .date, .nextj .date {
+	float: left;
+	font-weight  : normal;
+	color: #DB7F1D;
+	padding: 0px 5px 0px 0px;
+}
+.lastj .lib, .nextj .lib, .lastj .lib A, .nextj .lib A {
+	font-weight  : normal;
+	color: #6699CC;
+}
+.lastj .lib A:hover, .nextj .lib A:hover {
+	font-weight  : bold;
+}
+/* -------------------- Fannys ------------------------- */
+.box3cols .col3 {
+	float: right;
+	width: 250px;
+}
+.box3cols .col3 .fanny {
+	height: 75px;
+	overflow: hidden;
+	padding: 5px 0px 5px 0px;
+}
+.box3cols .col3 .fanny .fline {
+	width: 300px;
+	display: inline;
+	float: left;
+}
+.box3cols .col3 .fanny .allf {
+	width: 230px;
+}
+.box3cols .col3 .fanny .date, .box3cols .col3 .fanny .equipe1, .box3cols .col3 .fanny .equipe2, .box3cols .col3 .fanny .score {
+	float: left;
+	padding: 0px 5px 0px 0px;
+	font-weight  : normal;
+}
+.box3cols .col3 .fanny .date {
+	color: #6699CC;
+}
+.box3cols .col3 .fanny .score A {
+	color: #DB7F1D;
+}
+.box3cols .col3 .fanny .score A:hover {
+	font-weight  : bold;
+}

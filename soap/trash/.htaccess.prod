@@ -1,0 +1,7 @@
+AuthUserFile /homez.43/jorkers/www/soap/.htpasswd
+AuthGroupFile /dev/null
+AuthName "Accès Restreint"
+AuthType Basic
+<Limit GET POST>
+require valid-user
+</Limit>

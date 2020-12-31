@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Demo: CSS3 Choices Buttons</title>
+<link rel="stylesheet" type="text/css" media="screen" href="../css/components.css" />
+<script type="text/javascript" src="../js/components.js"></script>
+<style type="text/css">
+body {
+	background: #ededed;
+	width: 900px;
+	margin: 30px auto;
+	color: #999;
+}
+p {
+	margin: 0 0 2em;
+}
+h1 {
+	margin: 0;
+}
+a {
+	color: #339;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+<hr style="clear: both;" />
+Readonly List : <button href="#" onclick="alert(choices.getSelection('myoption0'));">Get Selection</button>
+<hr style="clear: both;" />
+<div id="myoption0"></div>
+
+<br /><br /><br /><br />
+
+<hr style="clear: both;" />
+List with picking : <button href="#" onclick="alert(choices.getSelection('myoption1'));">Get Selection</button> - <button href="#" onclick="choices.picker('myoption1');">Add more</button>
+<hr style="clear: both;" />
+<div id="myoption1"></div>
+
+<br /><br /><br /><br />
+
+<hr style="clear: both;" />
+Single choice List : <button href="#" onclick="alert(choices.getSelection('myoption2'));">Get Selection</button>
+<hr style="clear: both;" />
+<div id="myoption2"></div>
+
+<br /><br /><br /><br />
+
+<hr style="clear: both;" />
+Multiple choice List : <button href="#" onclick="alert(choices.getSelection('myoption3'));">Get Selection</button>
+<hr style="clear: both;" />
+<div id="myoption3"></div>
+
+<br /><br /><br /><br />
+
+<hr style="clear: both;" />
+Single choice with picking (mandatory) : <button href="#" onclick="alert(choices.getSelection('myoption4'));">Get Selection</button>
+<hr style="clear: both;" />
+<div id="myoption4"></div>
+
+<br /><br /><br /><br />
+
+<script>
+window.onload = function() {
+	choices.build({ name: 'myoption0', c1: 'red', readonly: true, values: [{ v: 10, l: 'Option 1' }, { v: 20, l: 'Option 2', s: true }, { v: 30, l: 'Option 3' }, { v: 40, l: 'Option 4', s: 40 }] });
+	choices.build({ name: 'myoption1', c1: 'orange', removable: true, multiple: true, values: [{ v: 10, l: 'Option 1' }, { v: 20, l: 'Option 2', s: true }, { v: 30, l: 'Option 3' }, { v: 40, l: 'Option 4', s: 40 }] });
+	choices.build({ name: 'myoption2', values: [{ v: 10, l: 'Option 1' }, { v: 20, l: 'Option 2', s: true }, { v: 30, l: 'Option 3' }, { v: 40, l: 'Option 4'}] });
+	choices.build({ name: 'myoption3', c1: 'pink', multiple: true, values: [{ v: 10, l: 'Option 1' }, { v: 20, l: 'Option 2', s: true }, { v: 30, l: 'Option 3' }, { v: 40, l: 'Option 4', s: 40 }] });
+	choices.build({ name: 'myoption4', c1: 'rosy', singlepicking: true, removable: true, values: [{ v: 10, l: 'Option 1' }, { v: 20, l: 'Option 2', s: true }, { v: 30, l: 'Option 3' }, { v: 40, l: 'Option 4' }] });
+}
+</script>
+
+<div class="mc">
+<div class="circle small red">
+	<span class="val">10</span>
+	<span class="lib">%</span>
+</div>
+<span class="mclib">Emprunts</span>
+</div>
+
+<div class="mc">
+<div class="circle medium orange">
+	<span class="val">35</span>
+	<span class="lib">%</span>
+</div>
+<span class="mclib">Emprunts</span>
+</div>
+
+<div class="mc">
+<div class="circle blue">
+	<span class="val">60</span>
+	<span class="lib">%</span>
+</div>
+<span class="mclib">Emprunts</span>
+</div>
+
+<div class="mc">
+<div class="circle green">
+	<span class="val">75</span>
+	<span class="lib">%</span>
+</div>
+<span class="mclib">Emprunts</span>
+</div>
+
+</body>
+</html>

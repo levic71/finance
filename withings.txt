@@ -1,0 +1,2 @@
+Votre clé OAuth est :c7c8cf7b28d6d46062d51f1379c2fdf1b0581d5485620bd7e7e274b33db70f
+Votre secret OAuth est :059ebb95831f82255f9cb2d3b04858bb39e49ce744c2b3d57b78303f070f 

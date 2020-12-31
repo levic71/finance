@@ -1,0 +1,15 @@
+/* ------------------------------------------ */
+/* CONTENT CSS */
+/* ------------------------------------------ */
+
+@font-face {
+    font-family: 'logo6';
+    src: url('../../fonts/UNDERCOV.eot');
+    src: url('../../fonts/UNDERCOV.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/UNDERCOV.woff') format('woff'),
+         url('../../fonts/UNDERCOV.ttf') format('truetype'),
+         url('../../fonts/UNDERCOV.svg#UNDERCOVregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

@@ -1,0 +1,588 @@
+@import "../css/actualitesv300.css";
+@import "../css/forumv300.css";
+
+#conteneur-r {
+	background: url('../images/templates/defaut/fond_center.jpg');
+}
+#centre {
+	margin-left: 300px;
+	margin-right: 300px;
+	padding: 0px;
+}
+#gauche, #droite {
+	width: 300px;
+}
+.gris {
+	text-align: left;
+	padding: 0px 5px 0px 20px;
+	background: url('../www/arrow.gif') no-repeat 5px 5px;
+}
+.home_left_div {
+	width: 290px;
+}
+#sondage, #suggest, #photo_sem, #chronique {
+	width: 275px;
+	overflow: hidden;
+	margin: 0px 0px 0px 5px;
+	border: 2px solid #CCCCCC;
+	background: #E7E7E7; 
+}
+#sondage {
+	background: url('../images/templates/defaut/home_fond_orange.jpg') bottom right;
+}
+.menu_droit #sondage {
+	height: 197px;
+	width: 280px;
+}
+.menu_droit #sondage .corps {
+	padding: 10px 0px 10px 0px;
+}
+.menu_droit #sondage span {
+	font-size: 14px;
+}
+.menu_droit #sondage ul {
+	margin-left: 10px;
+	padding-left: 10px;
+}
+.menu_droit #sondage li {
+	font-size: 11px; color: #000;
+}
+.menu_droit #sondage .allaccess {
+	margin: 10px 0px 0px 0px;
+}
+.home_center_div {
+	width: 380px; 
+	margin: 5px; 
+}
+#news {
+	width: 375px;
+	overflow: hidden;
+	margin: 0px 0px 0px 5px;
+	border: 2px solid #CCCCCC;
+	background: #EFEFEF; 
+}
+.home_right_div {
+	width: 290px;
+}
+#tdb, #actifs, #forum, #zonelibre {
+	width: 280px;
+	overflow: hidden;
+	margin: 0px 0px 0px 5px;
+	border: 2px solid #CCCCCC;
+	background: #E7E7E7; 
+}
+.home_left_div .fond {
+	width: 100%;
+}
+.home_center_div .fond {
+	width: 100%;
+}
+.home_right_div .fond {
+	width: 100%;
+}
+.home_left_div .titre, .home_center_div .titre, .home_right_div .titre {
+	height:25px;
+}
+#titre2 {
+	background: url('../images/templates/defaut/home_suggest_title.jpg') no-repeat;
+}
+#titre2 SPAN {
+	display: none;
+}
+#titre3 {
+	background: url('../images/templates/defaut/home_news_title.jpg') no-repeat;
+}
+#titre3 SPAN {
+	display: none;
+}
+#titre4 {
+	background: url('../images/templates/defaut/home_actifs_title.jpg') no-repeat;
+	float: left;
+	height: 25px;
+	width: 100%;
+}
+#titre4 SPAN {
+	display: none;
+}
+#titre5 {
+	background: url('../images/templates/defaut/home_photo_title.jpg') no-repeat;
+}
+#titre5 SPAN {
+	display: none;
+}
+#titre6 {
+	background: url('../images/templates/defaut/home_forum_title.jpg') no-repeat;
+}
+#titre6 SPAN {
+	display: none;
+}
+#titre7 {
+	display: none;
+}
+#titre7 SPAN {
+	display: none;
+}
+#titre8 {
+	background: url('../images/jorkers/images/home_direct_titre.gif') no-repeat;
+}
+#titre8 SPAN {
+	display: none;
+}
+#titre10 {
+	background: url('../images/jorkers/images/home_newsletter_titre.gif') no-repeat;
+}
+#titre11 {
+	background: url('../images/templates/defaut/home_sondage_title.jpg') no-repeat;
+}
+#titre11 SPAN {
+	display: none;
+}
+#titre12 {
+	background: url('../images/templates/defaut/home_tribune_title.jpg') no-repeat;
+}
+#titre12 SPAN {
+	display: none;
+}
+#chronique {
+	height: 198px;
+	background: url('../images/templates/defaut/thechronique.gif') no-repeat;
+}
+.hotc {
+	background: url('../images/templates/defaut/thechronique2.gif') no-repeat;
+}
+#chronique .titre {
+	display: none;
+}
+#chronique .titre SPAN {
+	display: none;
+}
+#chronique p {
+	margin: 0px;
+	padding: 0px;
+}
+
+.home_left_div .corps, .home_center_div .corps, .home_right_div .corps, .home_center_div .corps table td {
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : normal;
+	color        : #666666;
+	font-family  : sans-serif;
+	font-size    : 11px;
+	margin: 5px 5px 5px 5px;
+	text-align: justify;
+}
+#news .corps {
+	overflow: hidden;
+	margin: 5px 0px 5px 0px;
+}
+#actifs .corps {
+	width: 280px;
+	height: 220px;
+	overflow: auto;
+	margin: 5px 0px 5px 5px;
+}
+#forum {
+	height: 200px;
+}
+#forum .corps {
+	width: 275px;
+	height: 140px;
+	overflow: hidden;
+	margin: 5px 0px 5px 10px;
+}
+#forum #forum_2, forum_3 { display: none; }
+#forum p {
+	margin: 2px 0px 0px 0px;
+	padding: 0px;
+}
+#chronique .corps {
+	width: 255px;
+	height: 160px;
+	overflow: hidden;
+	margin: 45px 5px 5px 10px;
+}
+#chronique .texte {
+	height: 130px;
+	overflow: hidden;
+}
+#chronique .texte a {
+	text-decoration: none;
+}
+#chronique .texte .title {
+	font-weight: bold;
+	color: #DB7F1D;
+}
+#chronique .texte .nom, #chronique .texte .date {
+	color: #6699CC;
+}
+#chronique .texte .message {
+	padding: 2px 0px 0px 0px;
+	color: #dddddd;
+}
+#chronique .box {
+	display: inline;
+	padding: 5px;
+}
+#chronique .box a {
+	color: #dddddd;
+}
+#chronique .box #comment a {
+	background: url('../images/templates/defaut/comment.gif') no-repeat 0px -2px;
+	padding: 0px 0px 0px 20px; 
+}
+#spotlight {
+}
+#spotlight .fond {
+	display: none;
+}
+#spotlight * {
+	font-family: arial;
+	font-size: 11px;
+	color:#fff;
+	font-weight: normal;
+}
+#spotlight table {
+	background:#C00 url('../images/templates/defaut/full.png') repeat-x top left;
+	border:5px solid #900;
+	border-collapse:collapse;
+	width: 100%;
+}
+
+#spotlight thead th {
+	font-weight: bold;
+ 	border-bottom:1px dotted #FFF;
+	padding: 3px;
+	height: 30px;
+	color:#600;
+}
+#spotlight td, #spotlight th {
+	background:transparent;
+	padding: 3px 5px;
+}
+#spotlight tbody tr.odd td {
+	background:transparent url('../images/templates/defaut/tr_bg.png') repeat top left;
+}
+* html #spotlight tr.odd td {
+	background:none;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/templates/defaut/tr_bg.png', sizingMethod='scale');
+}
+#spotlight a {
+	color:#000;
+}
+#spotlight .caption {
+	height: 50px;
+	color: yellow;
+}
+#spotlight .caption th {
+	padding: 0px 0px 10px 0px;
+	text-align: center;
+	border: 0px solid #fff;
+	color: #fff;
+	background:#900 url('../images/templates/defaut/spotlight.gif') no-repeat;
+}
+#spotlight .caption {
+	background:#900;
+	height: 40px;
+	padding: 5px 0px 0px 0px;
+}
+#spotlight .caption span {
+	font-weight: bold;
+	font-size: 12px;
+	color: #ff8a52;
+}
+#zonelibre {
+	height: 160px;
+	background: url('../images/templates/defaut/home_fond_bleu.jpg') bottom right;
+}
+#zonelibre .fond {
+	margin-top: -20px;
+}
+#zonelibre .corps {
+	width: 260px;
+	height: 145px;
+	overflow: hidden;
+	margin: 5px 0px 5px 10px;
+}
+#edito {
+	background: url('../images/templates/defaut/home_edito.jpg') no-repeat;
+	width: 274px;
+	height: 264px;
+	overflow: hidden;
+}
+#edito .corps {
+	margin: 0px;
+	padding: 0px;
+}
+#edito .corps td {
+	padding: 8px;
+}
+#edito .partenaire {
+	background: #DDDDDD;
+}
+#edito .corps table {
+}
+#edito .main {
+	float:left;
+	font-size:14px;
+	line-height:18px;
+	color:black;
+	text-align: left;
+	margin: 10px 0px 0px 5px;
+	padding: 5px 15px 0px 15px;
+}
+#edito .main .niv1 {
+	font-size:14px;
+	font-weight: bold;
+	color: #FD8B0E;
+}
+#edito .main a {
+	font-size:22px;
+	color:black;
+	text-decoration: none;
+}
+#edito .main .niv2 {
+	line-height:16px;
+	font-size:12px;
+	color: grey;
+}
+html>body #edito .main .niv2 {
+	line-height:8px;
+}
+#actifs {
+	height: 260px;
+}
+#actifs #box1, #actifs #box2 {
+	overflow: hidden;
+}
+#actifs #box1 .points {
+	color: #DB7F1D;
+	font-variant : normal;
+	font-weight  : normal;
+	text-align   : right;
+	padding: 0px 15px 0px 0px;
+}
+#actifs #box1 .type {
+	width: 10px;
+	padding: 0px 3px 0px 0px;
+}
+#actifs #box1 .nom {
+	float: left;
+	width: 160px;
+	overflow: hidden;
+}
+#actifs #box1 .nom A {
+	float: left;
+	overflow: hidden;
+	white-space: nowrap;
+}
+#actifs #box1 .nom, #actifs #box1 .nom a, #actifs #box1 .nom a:visited, #actifs #box1 .nom a:active {
+	font-variant : normal;
+	font-weight  : normal;
+	color        : #666666;
+}
+#actifs #box1 .nom a:hover {
+	font-weight : bold;
+}
+#actifs #box2 {
+	display: none;
+}
+#actifs #box2 .date {
+	float: left;
+	color: #6699CC;
+	font-variant : normal;
+	font-weight  : normal;
+	text-align   : right;
+	padding: 0px 5px 0px 0px;
+}
+#actifs #box2 .nom {
+	float: left;
+	width: 135px;
+	overflow: hidden;
+	margin: 0px 3px 0px 0px;
+}
+#actifs #box2 .nom, #actifs #box2 .nom a, #actifs #box2 .nom a:visited, #actifs #box2 .nom a:active {
+	color: #666666;
+	font-variant : normal;
+	font-weight  : normal;
+	text-align   : left;
+}
+#actifs #box2 .nom a:hover {
+	font-weight : bold;
+}
+#actifs #box2 .points {
+	color: #DB7F1D;
+	font-variant : normal;
+	font-weight  : normal;
+	text-align   : right;
+	padding: 0px 5px 0px 0px;
+	overflow: hidden;
+	width: 55px;
+}
+#actifs #box2 .points span {
+	font-weight: bold;
+}
+#direct  {
+	background:url('../images/templates/defaut/direct_fond.jpg') no-repeat;
+	height: 201px;
+	width: 378px;
+	overflow: hidden;
+}
+#direct .corps {
+	margin: 0px;
+	padding: 50px 0px 10px 0px;
+	text-align: center;
+}
+#nouveaux .corps {
+	overflow: auto;
+	margin: 5px 0px 5px 10px;
+}
+#nouveaux .date {
+	color: #6699CC;
+	font-variant : normal;
+	font-weight  : normal;
+	text-align   : right;
+	padding: 0px 5px 0px 0px;
+}
+#nouveaux .type {
+	padding: 0px 5px 0px 0px;
+}
+#nouveaux .nom, #nouveaux .nom a, #nouveaux .nom a:visited, #nouveaux .nom a:active {
+	color: #666666;
+	font-variant : normal;
+	font-weight  : normal;
+	text-align   : left;
+}
+#nouveaux .nom a:hover {
+	font-weight : bold;
+}
+#photo_sem h1 {
+	font-size: 12px;
+	font-weight  : normal;
+	padding: 0px;
+	margin: 0px;
+}
+#photo_sem .corps {
+	height: 120px;
+	margin: 10px 5px 0px 0px;
+}
+.pub468x60 {
+	position: absolute;
+	right: 15px;
+	top: 41px;
+	margin: 0px;
+	padding: 0px;
+	text-align: right;
+	width: 468px;
+	height: 60px;
+	background: url('../images/jorkers/images/banniere468x60.gif');
+}
+#accessible ul {
+	margin: 20px 0px 0px 800px;
+	padding: 0px;
+}
+html>body .pub468x60 {
+	right: 15px;
+}
+.pub468x60 IMG {
+	margin-right: 12px;
+}
+#suggest {
+	height: 225px;
+}
+html>body #suggest {
+	height: 190px;
+}
+#suggest .corps A {
+	background: url('../images/jorkers/images/icon_fleche.gif') no-repeat 0px 3px;
+	padding: 0px 0px 0px 15px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+#suggest .corps A:hover {
+	font-weight: bold;
+	padding: 0px 0px 0px 20px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+#actifs hr, #suggest hr {
+	height: 1px;
+	margin: 3px 0px 0px 0px;
+	padding: 0px;
+	color: #CCCCCC;
+	background-color: #CCCCCC;
+	border: 0px;
+}
+html>body #suggest hr, html>body #actifs hr {
+	margin: 6px 0px 2px 0px;
+}
+
+/* STYLE LE PAVE ACCES DIRECT */
+.mysel {
+	color:#999999;
+	width: 210px;
+	border:0px;
+	margin:-2px;
+	padding:-1px;
+}
+html>body .mysel {
+	margin:0px;
+	padding:0px;
+}
+.accesbox {
+	height: 25px;
+	width: 365px;
+}
+.accesbox label {
+	padding: 4px 3px 0px 0px;
+	width: 85px;
+	color: #BBBBBB;
+	font-weight: bold;
+	float: left;
+	text-align: right;
+}
+.accesbox select {
+	float: left;
+}
+.accesbox input {
+	float: left;
+}
+.accesbox button {
+	padding: 0px;
+	margin: 0px;
+}
+.accesbox .ok {
+	float: left;
+}
+html>body .accesbox .ok {
+	padding: 0px;
+}
+.accesbox .demo2 {
+	color: red;
+}
+.accesbox input { border:1px solid black; background: #777777; color: ivory; }
+.accesbox input:focus { border:1px solid red; }
+.accesbox select { border:1px solid black; background: #777777; color: ivory; }
+.accesbox select:focus { border:1px solid red; }
+#newsletter .fond SPAN {
+	display: none;
+}
+#partenariat {
+	padding: 20px 0px 21px 0px;
+}
+html>body #partenariat {
+	padding: 20px 0px 18px 0px;
+}
+#partenariat .fond SPAN {
+	display: none;
+}
+
+#zonelibre {
+	padding: 20px 0px 21px 0px;
+}
+html>body #zonelibre {
+	padding: 20px 0px 18px 0px;
+}
+#zonelibre .fond SPAN {
+	display: none;
+}
+

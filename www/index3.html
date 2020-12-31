@@ -1,0 +1,386 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="author"        CONTENT="Jorkers">
+<META NAME="keywords"      CONTENT="Jorkers,gratuit,gestion,championnat,TOURNOI,Tournoi,Forum,jorkers,jorker,Jorkyball, jorkyball, JORKYBALL, JorkyBall,Jorky,online,en ligne,web,footris,Gratuit,Gestion,Championnat,Championship,classement,tournoi,statistique,joueur,équipe,journée,photo,forum,football,sport,divertissement,compétition,ami,pote,fun,futsal,Futsal Tournaments,management">
+<META NAME="description"   CONTENT="Gestion de Championnats/tournois de JorkyBall - Tout est gratuit - Saisissez vos joueurs/équipes/matchs et automatiquement les classements et les statistiques sont calculés. Affichage et personnalisation de ces informations sur votre site grâce à la syndication des classements.">
+<META NAME="robots"        CONTENT="index, follow">
+<META NAME="rating"        CONTENT="General">
+<META NAME="distribution"  CONTENT="Global">
+<META NAME="author"        CONTENT="contact@jorkers.com">
+<META NAME="reply-to"      CONTENT="contact@jorkers.com">
+<META NAME="owner"         CONTENT="contact@jorkers.com">
+<META NAME="copyright"     CONTENT="jorkers.com">
+<META http-equiv="Content-Language" CONTENT="fr-FX">
+<META http-equiv="Content-Type"     CONTENT="text/html; charset=iso-8859-1">
+
+<LINK REL="stylesheet" HREF="../css/HTMLTable.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="../css/submenu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="../css/jorkyballv40.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="../css/printv40.css" TYPE="text/css" MEDIA=print>
+
+<LINK REL="stylesheet" HREF="../css/templatev40.css" TYPE="text/css">
+<LINK HREF="../images/H.ico" REL="shortcut icon">
+<TITLE>Jorkers - Gestion de tournois/championnats de Jorkyball</TITLE>
+</HEAD>
+
+<BODY class="nospace" >
+
+<SCRIPT SRC="../js/jorkyballv40.js" type="text/javascript"></SCRIPT>
+<SCRIPT SRC="../js/submenu.js" type="text/javascript"></SCRIPT>
+<!-- FENETRE GLOBALE -->
+
+<div id=div_info CLASS=info></div>
+<DIV id="popmenu" class="menuskin" onMouseover="clearhidemenu();highlightmenu(event,'on')" onMouseout="highlightmenu(event,'off');dynamichide(event)"></DIV>
+
+
+<div id="conteneur-r">
+<div id="conteneur">
+
+
+
+	<div id="header">
+		<MAP NAME="menu">
+	<AREA SHAPE="rect" COORDS="115,10,170,70" ALT="Accès joueurs"    HREF="../www/joueurs.php">
+	<AREA SHAPE="rect" COORDS="175,10,230,70" ALT="Accès equipes"    HREF="../www/equipes.php">
+	<AREA SHAPE="rect" COORDS="235,10,285,70" ALT="Accès journées"   HREF="../www/journees.php">
+	<AREA SHAPE="rect" COORDS="295,10,345,70" ALT="Accès classement" HREF="../www/stats_equipes.php">
+	<AREA SHAPE="rect" COORDS="355,10,405,70" ALT="Accès albums"     HREF="../www/albums.php">
+	<AREA SHAPE="rect" COORDS="415,10,465,70" ALT="Accès forum"      HREF="../www/forum.php">
+</MAP>
+
+<DIV>
+
+	<DIV CLASS="left">
+		<IMG onmouseover="javascript:this.style.cursor='pointer';" onClick="javascript:gohome('../www/jorkyball.php');" SRC="../images/jorkers/images/jorkers2_entete_logo.gif" ALT="logo" BORDER=0>
+	</DIV>
+
+	<DIV CLASS="right">
+		<IMG USEMAP="#menu" SRC="../images/jorkers/images/jorkers2_entete_menumap.gif" ALT="menu" BORDER=0>
+	</DIV>
+
+</DIV>
+
+	</div>
+
+
+
+	<div id="toolbar">
+		<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH=100% SUMMARY="Toolbar">
+<TR>
+	<TD CLASS=header_left>
+					<A HREF="../www/championnat_home.php" CLASS="tb_nom">ALFORTVILLE MASTERS <FONT STYLE="font-weight:normal;">[Tournoi]</FONT></A>
+			</TD>
+	<td align=right><table border=0 cellpadding=0 cellspacing=0 SUMMARY="Sub menu">
+		<tr>
+			<td class=header_contact><A HREF="../www/contacter.php" CLASS=header_link> Contact </a></td>
+			<td width=15> </td>
+			<td class=header_aide><td><A CLASS=header_link HREF="#" onClick="javascript:window.open('../www/decouvrir.php', 'faq', 'resizable=yes, scrollbars=yes, width=750, height=500, screenX=100, screenY=100, pageXOffset=100, pageYOffset=100, alwaysRaised=yes, toolbar=no, location=no, personnalBar=yes, status=no, menuBar=no');"> Aide </a></td>
+		</tr>
+		</table></TD>
+	<td width=15> </td>
+	<td style="display:none; width:130px;" align=right CLASS=header_select2>
+		<div class=nls_flags>
+			<div onclick="javascript:clang('fr');" class=nls_flag1></div>
+			<div onclick="javascript:clang('fr');" class=nls_flag2></div>
+			<div onclick="javascript:clang('fr');" class=nls_flag3></div>
+			<div onclick="javascript:clang('fr');" class=nls_flag4></div>
+			<div onclick="javascript:clang('fr');" class=nls_flag5></div>
+			<div onclick="javascript:clang('fr');" class=nls_flag6></div>
+		</div>
+	</td>
+	<td width=15> </td>
+	<TD CLASS=header_select2><SELECT CLASS=header_select NAME=choix_amis onChange="javascript:cchamp(this.value);"><OPTION VALUE=0 SELECTED> Championnats amis</OPTION><OPTION VALUE=23>Alfortville Championnat</OPTION><OPTION VALUE=43>Alfortville Champions League</OPTION></SELECT></TD>
+	<td width=15> </td>
+	<TD CLASS=header_select2><SELECT CLASS=header_select NAME=choix_saisons onChange="javascript:csaison(this.value, '/jorkyball/www/joueurs.php');"><OPTION VALUE=17 >Saison 2003-2004</OPTION><OPTION VALUE=21 >Saison 2004-2005</OPTION><OPTION VALUE=44 >Petit Tournoi de reprise 27/08/2005</OPTION><OPTION VALUE=49 SELECTED>Saison 2005-2006</OPTION></SELECT></TD>
+	<TD CLASS=header_right></TD>
+</TR>
+</TABLE>
+	</div>
+
+
+
+
+
+
+
+	<div id="gauche">
+	<div class="menu_gauche"><DIV CLASS=pave>
+	<DIV CLASS=titre> Visuel </DIV>
+	<DIV CLASS=corps>
+		<img src=../images/visuel.jpg ALT="Visuel" height=70 width=118 border=0>
+	</DIV>
+</DIV>
+</div><div class="menu_gauche"><DIV CLASS=pave>
+	<DIV CLASS=titre> Menu </DIV>
+	<DIV CLASS=corps ID=menu>
+		<DIV><A CLASS=cmd HREF="../www/jorkyball.php"> Accueil </A></DIV>
+		<DIV><A CLASS=cmd HREF="../www/championnat_details.php?inscription=1"> Inscription </A></DIV>
+		<DIV CLASS=item2><A CLASS=cmd HREF="../www/partenaires.php"> Partenaires </A></DIV>
+		<DIV><A CLASS=cmd HREF="../www/forum.php?option=general"> Forum général </A></DIV>
+		<DIV><A CLASS=cmd HREF="../www/actualites_foot.php"> Actualité Foot </A></DIV>
+		<DIV CLASS=noborder><A CLASS=cmd HREF="../www/links.php"> Liens </A></DIV>
+	</DIV>
+</DIV>
+</div><div class="menu_gauche">
+<DIV CLASS=pave>
+	<DIV CLASS=titre> Informations </DIV>
+	<DIV CLASS=corps>
+
+<TABLE CELLSPACING=0 CELLPADDING=0 SUMMARY="Infos championnat">
+<TR><TD CLASS=lib_info>Lieu de pratique :</TD>
+<TR><TD CLASS=libg_info>Alfortville</TD>
+<TR><TD CLASS=lib_info>Gestionnaire :</TD>
+<TR><TD CLASS=libg_info>gilles <A HREF="../www/contacter.php?option=0" CLASS=menu><img src=../images/email.gif border=0 ALT="mail"></A></TD>
+<TR><TD CLASS=lib_info>Date de création :</TD>
+<TR><TD CLASS=libg_info>21/04/2004</TD>
+<tr><td CLASS=lib_info>Chiffres clés : </td></tr>
+<tr><td><table width=100% border=0 CELLPADDING=0 CELLSPACING=0 SUMMARY="Détails">
+	<TR><TD ALIGN=RIGHT CLASS=libg_info>4</td><td ALIGN=LEFT CLASS=lib2_info>saisons</TD>
+	<TR><TD ALIGN=RIGHT CLASS=libg_info>135</td><td ALIGN=LEFT CLASS=lib2_info>joueurs</TD>
+	<TR><TD ALIGN=RIGHT CLASS=libg_info>63</td><td ALIGN=LEFT CLASS=lib2_info>équipes</TD>
+	<TR><TD ALIGN=RIGHT CLASS=libg_info>27</td><td ALIGN=LEFT CLASS=lib2_info>journées</TD>
+	<TR><TD ALIGN=RIGHT CLASS=libg_info>1835</td><td ALIGN=LEFT CLASS=lib2_info>matchs</TD>
+	<TR><TD ALIGN=RIGHT CLASS=libg_info>4858</td><td ALIGN=LEFT CLASS=lib2_info>messages</TD>
+	<td width=15><A CLASS=menu HREF="../www/championnat_details.php"><img src=../images/plus.gif border=0 alt="Plus de détails"></A></td>
+</table></td></tr>
+
+</TABLE>
+
+	</DIV>
+</DIV>
+</div><div class="menu_gauche"><DIV CLASS=pave>
+	<DIV CLASS=titre> Administration </DIV>
+	<DIV CLASS=corps>
+
+<iframe STYLE="margin: 0px;" frameborder="0" SRC=../www/administration.php WIDTH=115 HEIGHT=60 scrolling=no>
+no frame
+</iframe>
+
+	</DIV>
+</DIV>
+</div>	</div>
+
+
+
+
+
+
+	<div id="droite">
+	<div CLASS="menu_droit"><DIV CLASS=pave>
+	<DIV CLASS=titre> Février </DIV>
+	<DIV CLASS=corps>
+
+	<table cellpadding=0 cellspacing=0 CLASS="menu_droit" SUMMARY="Calendar module">
+	<TR>
+		<td ALIGN=CENTER CLASS=calendar_j> D </td>
+		<td ALIGN=CENTER CLASS=calendar_j> L </td>
+		<td ALIGN=CENTER CLASS=calendar_j> M </td>
+		<td ALIGN=CENTER CLASS=calendar_j> M </td>
+		<td ALIGN=CENTER CLASS=calendar_j> J </td>
+		<td ALIGN=CENTER CLASS=calendar_j> V </td>
+		<td ALIGN=CENTER CLASS=calendar_j> S </td>
+
+	<TR>
+<td CLASS=calendar> </td><td CLASS=calendar> </td><td CLASS=calendar> </td><td CLASS=calendar>1</td><td CLASS=calendar>2</td><td CLASS=calendar>3</td><td CLASS=calendar>4</td><TR><td CLASS=calendar>5</td><td CLASS=calendar>6</td><td CLASS=calendar>7</td><td CLASS=calendar>8</td><td CLASS=calendar>9</td><td CLASS=calendar>10</td><td CLASS=calendar>11</td><TR><td CLASS=calendar>12</td><td CLASS=calendar>13</td><td CLASS=calendar>14</td><td CLASS=calendar>15</td><td CLASS=calendar>16</td><td CLASS=calendar>17</td><td CLASS=calendar>18</td><TR><td CLASS=calendar>19</td><td CLASS=calendar>20</td><td CLASS=calendar>21</td><td CLASS=calendar>22</td><td CLASS=calendar>23</td><td CLASS=calendar>24</td><td CLASS=calendar_red><A CLASS=calendar_red HREF="matchs.php?pkeys_where_jb_journees=+WHERE+id=345">25</A></td><TR><td CLASS=calendar_blue>26</td><td CLASS=calendar>27</td><td CLASS=calendar>28</td><td CLASS=calendar></td><td CLASS=calendar></td><td CLASS=calendar></td><td CLASS=calendar></td>	</table>
+
+	</DIV>
+</DIV>
+
+</div><div CLASS="menu_droit">
+<DIV CLASS=pave>
+	<DIV CLASS=titre> Forum </DIV>
+	<DIV CLASS=corps>
+
+	<table cellpadding=0 cellspacing=0 CLASS="menu_droit" SUMMARY="Last msgs">
+
+	<TR><TD><DIV CLASS=forum_container>
+<DIV CLASS="forum_container_link forum_msg" onmouseover="changeStyle3(this);" onmouseout="changeStyle4(this);" onclick="javascript:launch('forum_message.php?id_msg=6572#bottom');"><DIV CLASS=forum_msg_date>12/02 11:40</DIV><DIV CLASS=forum_msg_auteur>Gizou.com</DIV><DIV CLASS=forum_msg_titre>Les 7 chapeaux du tournoi de fevrier</DIV><DIV CLASS=forum_msg_texte>LES 7 Chapeaux du tournois de février sont révélés  : Notons les retours des &quot;petites cylindrées&quot; (Barcelone , Monaco, Tottenham et Parme ).<br /><br />Chap 1 = LIVERPOOL - MARSEILLE - BARCELONE - SEDAN<br><br /></br><br />Chap 2 = ARSENAL - VILLAREAL - DIJON - MONACO<br><br /></br><br />Chap 3 = TOTTENHAM - BLACKBURN - LA COROGNE - BASTIA<br /><br />Chap 4 = LAZIO ROME - PARIS SG - PARME - AJAX<br /><br />Chap 5 = MONTPELLIER - FULHAM - SUNDERLAND - SPARTA PRAGUE<br><br /></br><br />Chap 6 = MILAN AC - BRATISLAVA - AJACCIO - BETIS SEVILLE<br><br /></br><br />Chap 7 = FEYENOORD - MANCHESTER U. - ETOILE ROUGE - TOULOUSE<br /> <br><br /></br>
+</DIV></DIV><DIV CLASS="forum_container_link forum_msg" onmouseover="changeStyle3(this);" onmouseout="changeStyle4(this);" onclick="javascript:launch('forum_message.php?id_msg=6635#bottom');"><DIV CLASS=forum_msg_date>17/02 21:25</DIV><DIV CLASS=forum_msg_auteur>Lamouchi</DIV><DIV CLASS=forum_msg_titre>[re]les 7 chapeaux du tournoi de fevrier</DIV><DIV CLASS=forum_msg_texte>Ca fait du bien de ne pas voir de Monégasques sur le forum , je crois qu' ils ont compris...... Les melons , c' est FINI!</DIV></DIV><DIV CLASS="forum_container_link forum_msg" onmouseover="changeStyle3(this);" onmouseout="changeStyle4(this);" onclick="javascript:launch('forum_message.php?id_msg=6629#bottom');"><DIV CLASS=forum_msg_date>17/02 19:03</DIV><DIV CLASS=forum_msg_auteur>Le boulet</DIV><DIV CLASS=forum_msg_titre>[re]les 7 chapeaux du tournoi de fevrier</DIV><DIV CLASS=forum_msg_texte>Forfait surprise pour le 25/02 = DIJON<br />Equipe repéchée = NICE<br><br /></br><br />Les 7 nouveaux chapeaux =<br /><br /><font class="classic"> Chap 1 = LIVERPOOL - MARSEILLE - BARCELONE - SEDAN<br /><br /> <br /> Chap 2 = ARSENAL - VILLAREAL - MONACO - TOTTENHAM<br /><br /> <br /> Chap 3 = BLACKBURN - LA COROGNE - BASTIA - LAZIO ROME<br /> <br /> Chap 4 = PARIS SG - PARME - AJAX - MONTPELLIER<br /> <br /> Chap 5 = FULHAM - SUNDERLAND - SPARTA PRAGUE - MILAN AC<br /><br /> <br /> Chap 6 = BRATISLAVA - AJACCIO - NICE - BETIS SEVILLE<br /><br /> <br /> Chap 7 = FEYENOORD - MANCHESTER U. - ETOILE ROUGE - TOULOUSE</font><br /></DIV></DIV><DIV CLASS="forum_container_link forum_msg" onmouseover="changeStyle3(this);" onmouseout="changeStyle4(this);" onclick="javascript:launch('forum_message.php?id_msg=6612#bottom');"><DIV CLASS=forum_msg_date>16/02 17:53</DIV><DIV CLASS=forum_msg_auteur>Le boulet</DIV><DIV CLASS=forum_msg_titre>[re]les 7 chapeaux du tournoi de fevrier</DIV><DIV CLASS=forum_msg_texte>Mon cher Milanais, les chapeaux servent à essayer d'équilibrer les poules afin de nous promettre de beaux matchs en 1/8è de finales . Mais ça tu ne peux pas comprendre, tu n'y accède qu'une fois dans l'année. n'oublie pas ton ptit cousin le 25/02; cè lui ki fait tout à Milan.<br /><div style="text-align: right;">&nbsp;</div></DIV></DIV></DIV></TD>
+	</table>
+
+	</DIV>
+</DIV>
+
+<SCRIPT type="text/javascript">
+function launch(url)
+{
+ window.location=url;
+ }
+</SCRIPT>
+
+</div><div CLASS="menu_droit"><MAP NAME="jorkyball_map">
+	<AREA SHAPE="rect" COORDS="0,0,42,45"   ALT="Carte de france" HREF="../www/carte_france.php">
+	<AREA SHAPE="rect" COORDS="42,0,118,45" ALT="Carte du monde"  HREF="../www/carte_monde.php">
+</MAP>
+
+<DIV CLASS=pave>
+	<DIV CLASS=titre> Jorkyball Map </DIV>
+	<DIV CLASS=corps>
+
+		<a href="../www/carte_france.php">
+			<img USEMAP="#jorkyball_map" src=../images/map.gif border=0 ALT="Jorkyball map">
+		</a>
+
+	</DIV>
+</DIV>
+</div><div CLASS="menu_droit"><DIV CLASS=pave>
+	<DIV CLASS=titre> NewsLetter </DIV>
+	<DIV CLASS=corps>
+
+<iframe STYLE="margin: 0px;" frameborder="0" SRC=../www/newsletter.php WIDTH=118 HEIGHT=40 scrolling=no>
+no frame
+</iframe>
+
+	</DIV>
+</DIV>
+</div>	</div>
+
+
+
+
+
+	<div id="centre">
+	<center>
+
+<!-- FENETRE AU CENTRE-->
+
+<FORM ACTION=joueurs.php METHOD=POST ENCTYPE="multipart/form-data">
+<INPUT TYPE=HIDDEN NAME=type_action VALUE="">
+<INPUT TYPE=HIDDEN NAME=pkeys_where VALUE="">
+
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=700 SUMMARY="tab central">
+
+<TR><TD>
+<TABLE BORDER=0 CLASS=FXList_TABLE CELLPADDING=0 CELLSPACING=0  SUMMARY="Enveloppe tableau">
+
+<THEAD CLASS=FXList_HEAD>
+<TR><TD CLASS=FXList_TDHEAD ALIGN=CENTER COLSPAN=6> <TABLE BORDER=0><TR><TD HEIGHT=30><FONT CLASS=big SIZE=3 COLOR=white>Liste des joueurs</FONT></TD></TABLE> </TD></THEAD>
+
+<TBODY CLASS=FXList_BODY>
+<TR HEIGHT=25>	<TD BGCOLOR=#BBBBBB WIDTH=3% ALIGN=CENTER   CLASS=cb6> N° </TD>
+	<TD BGCOLOR=#BBBBBB  ALIGN=CENTER   CLASS=cb10> Photo </TD>
+	<TD BGCOLOR=#BBBBBB  ALIGN=CENTER   CLASS=cb10> Nom </TD>
+	<TD BGCOLOR=#BBBBBB  ALIGN=CENTER   CLASS=cb10> Pseudo </TD>
+	<TD BGCOLOR=#BBBBBB  ALIGN=CENTER   CLASS=cb10> Régulier </TD>
+	<TD BGCOLOR=#BBBBBB  ALIGN=CENTER   CLASS=cb10> Etat </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 1 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/linconnu.gif>', event);" onmouseout="close_info();"><IMG SRC=../uploads/linconnu.gif BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> AJACCIO J2 </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> J2 </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 2 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/21_Jean_ajaccio_def.jpg>', event);" onmouseout="close_info();"><IMG SRC=../uploads/21_Jean_ajaccio_def.jpg BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> AJACCIO Jean </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Jean </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 3 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/17_Van_basten_ajax1grd.jpg>', event);" onmouseout="close_info();"><IMG SRC=../uploads/17_Van_basten_ajax1grd.jpg BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> AJAX Julien </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Van basten </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 4 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/17_De_boer_ajax2grd.jpg>', event);" onmouseout="close_info();"><IMG SRC=../uploads/17_De_boer_ajax2grd.jpg BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> AJAX Nicolas </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Nicolas </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 5 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/linconnu.gif>', event);" onmouseout="close_info();"><IMG SRC=../uploads/linconnu.gif BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> AJAX Sebastien </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Seb </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 6 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/linconnu.gif>', event);" onmouseout="close_info();"><IMG SRC=../uploads/linconnu.gif BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> ARSENAL Cyril </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Cyril </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 7 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/21_Denis_dit_denis_def.jpg>', event);" onmouseout="close_info();"><IMG SRC=../uploads/21_Denis_dit_denis_def.jpg BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> ARSENAL Denis </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Denis </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 8 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/21_La_d_broussailleuse_arsenal_def.jpg>', event);" onmouseout="close_info();"><IMG SRC=../uploads/21_La_d_broussailleuse_arsenal_def.jpg BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> ARSENAL Jérome </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Jérome </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 9 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/linconnu.gif>', event);" onmouseout="close_info();"><IMG SRC=../uploads/linconnu.gif BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> BARCELONE Rudy </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Rudy </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<TR  onMouseOver="this.className='on';" onMouseOut ="this.className='off';">	<TD BGCOLOR=#DCDCDC  ALIGN=CENTER   CLASS=cb16> 10 </TD>
+	<TD  WIDTH=5% ALIGN=CENTER   CLASS=cb17> <a HREF="#" onmouseover="show_info_upright('<IMG SRC=../uploads/linconnu.gif>', event);" onmouseout="close_info();"><IMG SRC=../uploads/linconnu.gif BORDER=1 HEIGHT=20 WIDTH=20></A> </TD>
+	<TD  WIDTH=40% ALIGN=LEFT   CLASS=cb17> BARCELONE1 Jeremy </TD>
+	<TD   ALIGN=LEFT   CLASS=cb17> Jéremy </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb17> Oui </TD>
+	<TD  WIDTH=7% ALIGN=CENTER   CLASS=cb18> Actif </TD>
+<INPUT TYPE=HIDDEN NAME=FXDeltaChoice VALUE=10>
+<INPUT TYPE=HIDDEN NAME=FXSearch      VALUE="">
+<TR>	<TD BGCOLOR=#BBBBBB  ALIGN=CENTER COLSPAN=6  CLASS=cb6> <TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100%><TR><TD WIDTH=120 ALIGN=CENTER></TD><TD ALIGN=CENTER><TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0><TR><TD><A HREF="joueurs.php?FXStart=0"><IMG SRC=../images/arrow_ll.gif BORDER=0 ALT="Première page"></A></TD><TD><A HREF="joueurs.php?FXStart=0"><IMG SRC=../images/arrow_l.gif  BORDER=0 ALT="Page précédente"></A></TD><TD><A HREF="joueurs.php?FXStart=10"><IMG SRC=../images/arrow_r.gif  BORDER=0 ALT="Page suivante"></A></TD><TD><A HREF="joueurs.php?FXStart=90"><IMG SRC=../images/arrow_rr.gif BORDER=0 ALT="Dernière page"></A></TD></TABLE></TD><TD WIDTH=70 ALIGN=CENTER><A HREF"#" onMouseover="javascript:showmenuNoClickHideWithTitle(event, linkset_search, 400, 'Rechercher');" onMouseout=""><IMG SRC=../images/search.gif BORDER=0></A><A HREF"#" onMouseover="javascript:showmenuwithtitle(event, linkset_delta, 320, 'Nombre de ligne');" onMouseout="javascript:delayhidemenu();"><IMG SRC=../images/numligne.gif BORDER=0 ALT="Nombre de lignes dans la liste"></A><A HREF="#" onClick="javascript:window.open('joueurs.php?FXOption=-2', '', 'width=720, height=500, screenX=50, screenY=50, pageXOffset=50, pageYOffset=50, alwaysRaised=yes, toolbar=no, location=no, personnalBar=no, status=no, menuBar=yes, resizable=yes, scrollbars=yes');"><IMG SRC=../images/extlist.gif BORDER=0 ALT="Affichage complet de la liste"></A></TD><TD WIDTH=50 ALIGN=CENTER>1/10</TD></TABLE> </TD>
+<SCRIPT type="text/javascript">
+linkset_delta='<div class="menuitems"><TABLE BORDER=0><TR HEIGHT=30><TD><a href="#">Afficher : <\/A><\/TD><TD><INPUT TYPE=RADIO NAME=FXDeltaRadio VALUE=10 CHECKED onChange="javascript:callFXDeltaChange(10);"><\/TD><TD><a href="#" onClick="javascript:callFXDeltaChange(10);">10<\/A><\/TD><TD><INPUT TYPE=RADIO NAME=FXDeltaRadio VALUE=15  onChange="javascript:callFXDeltaChange(15);"><\/TD><TD><a href="#" onClick="javascript:callFXDeltaChange(15);">15<\/A><\/TD><TD><INPUT TYPE=RADIO NAME=FXDeltaRadio VALUE=15  onChange="javascript:callFXDeltaChange(20);"><\/TD><TD><a href="#" onClick="javascript:callFXDeltaChange(20);">20<\/A><\/TD><TD><a href="#"> lignes <\/A><\/TD><\/TABLE><\/div>';
+linkset_search='<div class="menuitems"><FORM NAME=x ACTION=joueurs.php?><TABLE BORDER=0 WIDTH=100% HEIGHT=100%><TR HEIGHT=30><TD><INPUT TYPE=TEXT NAME=FXSearch SIZE=32 VALUE=\"\"><\/INPUT><\/TD><TD><INPUT TYPE=SUBMIT VALUE=Rechercher><\/TD><TD><INPUT TYPE=SUBMIT VALUE=Clear onClick="javascript:callClearSearch();"><\/TD><\/TABLE><\/FORM><\/div>';
+function callClearSearch()
+{
+	document.forms['x'].FXSearch.value='';
+}
+function callFXDeltaChange(val)
+{
+	document.forms[0].FXDeltaChoice.value=val;
+	document.forms[0].action = 'joueurs.php?';
+	document.forms[0].submit();
+}
+</SCRIPT>
+</TBODY>
+
+</TABLE>
+</TD>
+</TABLE>
+
+
+<SCRIPT>
+function ajouter_joueur()
+{
+    document.forms[0].action = 'joueurs_ajouter.php';
+}
+function modifier_joueur(pkeys, action)
+{
+	document.forms[0].type_action.value=action;
+	document.forms[0].pkeys_where.value=pkeys;
+    document.forms[0].action = 'joueurs_ajouter.php';
+
+	document.forms[0].submit();
+}
+function supprimer_joueur(pkeys, action)
+{
+	if (!confirm('Cette suppression s\'applique sur toutes saisons, êtes-vous de vouloir supprimer ce joueur ?'))
+		return false;
+
+	document.forms[0].type_action.value=action;
+	document.forms[0].pkeys_where.value=pkeys;
+    document.forms[0].action = 'joueurs_supprimer_do.php';
+
+	document.forms[0].submit();
+}
+</SCRIPT>
+
+</FORM>
+
+<!-- FIN FENETRE AU CENTRE --><DIV CLASS=pub468x60><IMG SRC="../images/jorkers/images/banniere468x60.gif" ALT="Pub" BORDER=0></DIV></center></div><div id="footer">Il est interdit de reproduire entièrement ou partiellement ce site
+<br>
+Copyright <B>jorkers.com</B> © 2005
+</div></div></div>
+<!-- FIN FENETRE GLOBALE -->
+
+</BODY>
+</HTML>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JQuery</title>
+<link rel="stylesheet" type="text/css" href="../css/components.css" />
+<script type="text/javascript" src="../js/components.js"></script>
+</head>
+<body>
+
+<div class="singlepicking">
+
+<button class="button blue" onclick="clock.picker({name: 'date1'});" id="date1"><span>12:30</span></button>
+<button class="button blue" onclick="clock.picker({name: 'date2'});" id="date2"><span>12:30</span></button>
+
+<button class="button blue" onclick="numbers.picker({name: 'n1'});" id="n1"><span>12</span></button>
+<button class="button blue" onclick="numbers.picker({name: 'n2'});" id="n2"><span>30</span></button>
+
+<button class="button blue" onclick="calendar.picker({name: 'd1'});" id="d1"><span>12/04/2010</span></button>
+<button class="button blue" onclick="calendar.picker({name: 'd2'});" id="d2"><span>24/03/2012</span></button>
+
+</div>
+
+
+<ul id="bars"></ul>
+<br />
+<ul id="rounds"></ul>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div id="choices"></div>
+<br />
+<h2>liste1</h2>
+<div id="liste1"></div>
+<button class="button" onclick="choices.multipicker('choices', 'liste1');">Picker</button><button class="button" onclick="alert(choices.getSelection('liste1'));">Selection</button>
+<br />
+<h2>liste2</h2>
+<div id="liste2"></div>
+<button class="button" onclick="choices.multipicker('choices', 'liste2');">Picker</button><button class="button" onclick="alert(choices.getSelection('liste2'));">Selection</button>
+<br />
+<h2>liste3</h2>
+<div id="liste3"></div>
+<button class="button" onclick="choices.multipicker('choices', 'liste3');">Picker</button><button class="button" onclick="alert(choices.getSelection('liste3'));">Selection</button>
+
+<script>
+window.onload = function() {
+bars.build({ name: 'bars', values: [ {p: 60, l: 'PHP'}, {p: 49, l: '.Net'}, {p: 78, l: 'JAVA'}, {p: 5, l: 'Perl'} ] });
+rounds.build({ name: 'rounds', values: [ {p: 60, l: 'PHP'}, {p: 49, l: '.Net'}, {p: 78, l: 'JAVA'}, {p: 5, l: 'Perl'} ] });
+choices.build({ name: 'choices', multipicking: true, values: [ {v: 40, l: '.Net', s: true }, {v: 60, l: 'PHP', s: true }, {v: 100, l: 'Perl', s: true }, {v: 120, l: 'Java', s: true } ] });
+
+choices.init('choices', 'liste1', '100');
+choices.init('choices', 'liste3', '40, 60');
+
+}
+</script>
+
+</body>
+</html>

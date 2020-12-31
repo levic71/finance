@@ -1,0 +1,174 @@
+<html>
+<body>
+<style>
+.fc {
+	background-color:#252525;
+	height:200px;
+	width:200px;
+	position:relative;
+	overflow:hidden;
+	float:left;
+}
+
+.fc .rotate{
+	position:absolute;
+	width:200px;
+	height:200px;
+	top:0;
+	left:0;
+}
+
+.rotate.right{
+	display:none;
+	z-index:11;
+}
+
+.fc .bg, .fc .front{
+	width:100px;
+	height:200px;
+	background:#252525;
+	position:absolute;
+	top:0;
+	z-index: 999;
+}
+
+.fc .display{
+	position:absolute;
+	width:200px;
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	z-index:20;
+	color:#F5F5F5;
+	font-size:60px;
+	text-align:center;
+	top:65px;
+	left:0;
+	text-shadow:4px 4px 5px #333333;
+}
+
+
+.fc .bg.left{ left:0; }
+
+.fcorange .bg.left{ background:url(bg_orange.png) no-repeat left top; }
+.fcgreen .bg.left{ background:url(bg_green.png) no-repeat left top; }
+.fcblue .bg.left{	background:url(bg_blue.png) no-repeat left top; }
+
+.fc .bg.right{ left:100px; }
+
+.fcorange .bg.right{ background:url(bg_orange.png) no-repeat right top; }
+.fcgreen .bg.right{ background:url(bg_green.png) no-repeat right top; }
+.fcblue .bg.right{ background:url(bg_blue.png) no-repeat right top; }
+
+.fc .front.left{
+	left:0;
+	z-index:10;
+}
+
+</style>
+
+
+<script>
+window.onload = function() { fancyChart("newc", 35, 100); }
+
+fancyChart = function(id, current, total) {
+
+	container = document.getElementById(id);
+
+	var fc = document.createElement("div"); fc.className = "fcgreen fc";
+
+	var display = document.createElement("div"); display.className = "display";
+	fc.appendChild(display);
+
+	var tmp2 = document.createElement("div"); tmp2.className = "front left";
+	fc.appendChild(tmp2);
+
+	var rotateLeft = document.createElement("div"); rotateLeft.className = "rotate left";
+	fc.appendChild(rotateLeft);
+
+	var tmp4 = document.createElement("div"); tmp4.className = "bg left";
+	rotateLeft.appendChild(tmp4);
+
+	var rotateRight = document.createElement("div"); rotateRight.className = "rotate right";
+	fc.appendChild(rotateRight);
+
+	var tmp6 = document.createElement("div"); tmp6.className = "bg right";
+	rotateRight.appendChild(tmp6);
+
+	container.appendChild(fc);
+
+	display.innerHTML = current<10?'0'+current:current;
+
+	// Calculating the current angle:
+	var angle = (360/total)*current;
+
+	var element;
+
+	if(current==0)
+	{
+		// Hiding the right half of the background:
+		rotateRight.style.display = "none";
+
+		// Resetting the rotation of the left part:
+		rotateElement(rotateLeft,0);
+	}
+
+	if(angle<=180)
+	{
+		// The left part is rotated, and the right is currently hidden:
+		element = rotateLeft;
+	}
+	else
+	{
+		// The first part of the rotation has completed, so we start rotating the right part:
+		rotateRight.style.display = "block";
+		rotateLeft.style.display = "block";
+
+		rotateElement(rotateLeft,180);
+		element = rotateRight;
+
+		angle = angle-180;
+	}
+
+	rotateElement(element,angle);
+}
+
+
+rotateElement = function(element,angle)
+{
+	// Rotating the element, depending on the browser:
+	var rotate = 'rotate('+angle+'deg)';
+
+	if(element.style.MozTransform!=undefined)
+		element.style.MozTransform = rotate;
+
+	else if(element.style.WebkitTransform=undefined)
+		element.style.WebkitTransform = rotate;
+
+	// A version for internet explorer using filters, works but is a bit buggy (no surprise here):
+
+	else if(element.style.filter!=undefined)
+	{
+		var cos = Math.cos(Math.PI * 2 / 360 * angle);
+		var sin = Math.sin(Math.PI * 2 / 360 * angle);
+
+
+		element.style.filter = "progid:DXImageTransform.Microsoft.Matrix()";
+		element.style.filters.item("DXImageTransform.Microsoft.Matrix").SizingMethod = "auto expand";
+		element.style.filters.item("DXImageTransform.Microsoft.Matrix").FilterType = "bilinear";
+		element.style.filters.item("DXImageTransform.Microsoft.Matrix").M11 = cos;
+		element.style.filters.item("DXImageTransform.Microsoft.Matrix").M12 = -sin;
+		element.style.filters.item("DXImageTransform.Microsoft.Matrix").M21 = sin;
+		element.style.filters.item("DXImageTransform.Microsoft.Matrix").M22 = cos;
+
+		element.style.left = -Math.floor((element.style.width-200)/2);
+		element.style.top = -Math.floor((element.style.height-200)/2);
+	}
+}
+
+</script>
+
+
+
+<div id="newc"></div>
+
+</body>
+</html>

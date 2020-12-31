@@ -1,0 +1,41 @@
+.menuskin {
+    position:absolute;
+    background: url(../images/table_fond.jpg);
+	font-size    : x-small;
+	font-variant : normal;
+	font-weight  : bold;
+	color        : #4863A0;
+	font-family  : sans-serif;
+	font-size    : 11px;
+    line-height:18px;
+    z-index:100;
+    visibility:hidden;
+}
+
+.menuskin a {
+    text-decoration:none;
+    color:black;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+#mouseoverstyle {
+    background-color:highlight;
+}
+
+#mouseoverstyle a {
+    color:white;
+}
+
+DIV.menuitems {
+	text-align: left;
+}
+
+DIV.submenu_title {
+	text-align: center;
+    background: url(../images/panneau.jpg);
+    color: white;
+}
+DIV.submenu_body {
+	border: 1px black solid;
+}

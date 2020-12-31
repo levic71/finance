@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLEVIEWER_DATA
+					maxImageDimension="400"
+					textColor="0x000000"
+					frameColor="0xCCCCCC"
+					bgColor="0x000000"
+					frameWidth="10"
+					stagePadding="10"
+					thumbnailColumns="2"
+					thumbnailRows="5"
+					navPosition="right"
+					navDirection="LTR"
+					title=""
+					imagePath="../uploads/"
+					thumbPath="../thumbs/">
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010038.jpg</NAME>
+	<CAPTION><![CDATA[<B>L'entrainement</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010046.jpg</NAME>
+	<CAPTION><![CDATA[<B>Par ici la balle !!!</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010047.jpg</NAME>
+	<CAPTION><![CDATA[<B>Le vétéran en action </B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010055.jpg</NAME>
+	<CAPTION><![CDATA[<B>Corinne & Damien</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010056.jpg</NAME>
+	<CAPTION><![CDATA[<B>Vue des buts !</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010065.jpg</NAME>
+	<CAPTION><![CDATA[<B>Sophie & Patrice</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010066.jpg</NAME>
+	<CAPTION><![CDATA[<B>Toujours Sophie & Damien</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010068.jpg</NAME>
+	<CAPTION><![CDATA[<B>Engagement de Big So !</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010069.jpg</NAME>
+	<CAPTION><![CDATA[<B>Sylvie & Bao</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010070.jpg</NAME>
+	<CAPTION><![CDATA[<B>Belle frappe de Bao</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010071.jpg</NAME>
+	<CAPTION><![CDATA[<B>Calou</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010076.jpg</NAME>
+	<CAPTION><![CDATA[<B>Sylvie & Sergio</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010077.jpg</NAME>
+	<CAPTION><![CDATA[<B>La Winneuse !!!</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010079.jpg</NAME>
+	<CAPTION><![CDATA[<B>Repos !</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010089.jpg</NAME>
+	<CAPTION><![CDATA[<B>Choc ?!</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_15_P1010090.jpg</NAME>
+	<CAPTION><![CDATA[<B>Les vainqueurs...</B>]]></CAPTION>
+</IMAGE>
+</SIMPLEVIEWER_DATA>

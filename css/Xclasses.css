@@ -1,0 +1,32 @@
+.sarray_title {
+	font-size  : 18pt;
+	text-align : center;
+	background : #4863A0;
+	color      : white;
+	height     : 40px;
+}
+
+.sarray_ligne {
+	font-size   : x-small;
+	font-weight : bold;
+	font-variant: normal;
+	font-family : sans-serif;
+	font-size   : 11px;
+	color       : #4863A0;
+}
+
+TABLE.sarray_tab1 {
+	border : 1;
+	border-color: #4863A0 #4863A0 #4863A0 #4863A0;
+	border-width: 1px;
+	border-style: solid;
+}
+
+TABLE.sarray_tab2 {
+	border : 0px;
+}
+
+.sarray_separation {
+	height  : 1pt;
+	background : #4863A0;
+}

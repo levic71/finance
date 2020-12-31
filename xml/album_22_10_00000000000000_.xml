@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLEVIEWER_DATA
+					maxImageDimension="400"
+					textColor="0x000000"
+					frameColor="0xCCCCCC"
+					bgColor="0x000000"
+					frameWidth="10"
+					stagePadding="10"
+					thumbnailColumns="2"
+					thumbnailRows="5"
+					navPosition="right"
+					navDirection="LTR"
+					title=""
+					imagePath="../uploads/"
+					thumbPath="../thumbs/">
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0857.JPG</NAME>
+	<CAPTION><![CDATA[<B>Photo match 2</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0856.JPG</NAME>
+	<CAPTION><![CDATA[<B>Photo match 1</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0858.JPG</NAME>
+	<CAPTION><![CDATA[<B>Photo match 3</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0855.JPG</NAME>
+	<CAPTION><![CDATA[<B>Un bordelais fatigué</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0862.JPG</NAME>
+	<CAPTION><![CDATA[<B>L'autre bordelais...</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0864.JPG</NAME>
+	<CAPTION><![CDATA[<B>Le repos bien mérité</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0865.JPG</NAME>
+	<CAPTION><![CDATA[<B>Le repos bien mérité 2</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0867.JPG</NAME>
+	<CAPTION><![CDATA[<B>Le repos bien mérité 3</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0863.JPG</NAME>
+	<CAPTION><![CDATA[<B>La relève est là...</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0866.JPG</NAME>
+	<CAPTION><![CDATA[<B>Observation de l'adversaire</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0868.JPG</NAME>
+	<CAPTION><![CDATA[<B>La victoire est en lui</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0872.JPG</NAME>
+	<CAPTION><![CDATA[<B>Un vainqueur marseillais</B>]]></CAPTION>
+</IMAGE>
+<IMAGE>
+	<NAME>ALBUM_22_10_IMG_0869.JPG</NAME>
+	<CAPTION><![CDATA[<B>Le GO en pleine discussion</B>]]></CAPTION>
+</IMAGE>
+</SIMPLEVIEWER_DATA>

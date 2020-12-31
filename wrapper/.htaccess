@@ -1,0 +1,16 @@
+#php_flag register_globals on
+#php_flag display_errors on
+#php_flag register_globals 1
+
+
+#addDefaultCharset ISO-8859-15
+#DefaultLanguage fr-FR
+
+Options -Indexes
+
+Addtype font/opentype .otf
+Addtype font/truetype .ttf
+Addtype font/wofftype .woff
+Addtype font/eottype .eot
+ 
+#php_value default_charset iso-8859-1

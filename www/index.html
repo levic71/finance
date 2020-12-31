@@ -1,0 +1,297 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META NAME="author"        CONTENT="Victor FERREIRA">
+<META NAME="keywords"      CONTENT="jorkers,jorker,JorkyBall,Jorky,online,en ligne,web,footris,Gratuit,Gestion,Championnat,Championship,classement,tournoi,statistique,joueur,équipe,journée,photo">
+<META NAME="description"   CONTENT="Gestion de Championnats/tournois de JorkyBall - Tout est gratuit - Saisissez vos joueurs/équipes/matchs et automatiquement les classements et les statistiques sont calculés. De plus, vous pouvez afficher et personnaliser ces informations sur votre site grâce à la syndication des classements.">
+<META NAME="robots"        CONTENT="index, follow">
+<META NAME="rating"        CONTENT="General">
+<META NAME="distribution"  CONTENT="Global">
+<META NAME="revisit-after" CONTENT="1 month">
+<META NAME="author"        CONTENT="contact@jorkers.com">
+<META NAME="reply-to"      CONTENT="contact@jorkers.com">
+<META NAME="owner"         CONTENT="contact@jorkers.com">
+<META NAME="copyright"     CONTENT="jorkers.com">
+<META http-equiv="Content-Language" CONTENT="fr-FX">
+<META http-equiv="Content-Type"     CONTENT="text/html; charset=iso-8859-1">
+
+<LINK REL="stylesheet" HREF="../css/templatev3.css" TYPE="text/css">
+<LINK REL="stylesheet" MEDIA=print HREF="../css/print.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="../css/jorkyballv3.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="../css/HTMLTable.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="../css/submenu.css" TYPE="text/css">
+<LINK HREF="../images/H.ico" REL="shortcut icon">
+<TITLE>Jorkers</TITLE>
+</HEAD>
+
+<BODY class="nospace"   >
+
+<SCRIPT SRC="../js/jorkyball.js" type="text/javascript"></SCRIPT>
+<SCRIPT SRC="../js/submenu.js" type="text/javascript"></SCRIPT>
+<!-- FENETRE GLOBALE -->
+
+<div id=div_info CLASS=info></div>
+<DIV id="popmenu" class="menuskin" onMouseover="clearhidemenu();highlightmenu(event,'on')" onMouseout="highlightmenu(event,'off');dynamichide(event)"></DIV>
+
+<div style="position: absolute; left: 0px; top: 0px; height: 668px; width: 1024px; border: 1px dashed black; display: none;"></div>
+
+	<div class="header">
+		<div style="text-align: center;">
+							<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0>
+			<TR VALIGN=TOP>
+				<TD WIDTH=400><A HREF=../www/jorkyball.php><IMG SRC="../images/jorkers/images/jorkers2_entete_logo.gif" BORDER=0></A></TD>
+				<TD WIDTH=100% ALIGN=RIGHT> </TD>
+						<TD><IMG SRC="../images/jorkers/images/jorkers2_entete_menu_home.gif" ALT="" BORDER=0></TD>
+				<TD><IMG SRC="../images/jorkers/images/jorkers2_entete_fin.gif" ALT="" BORDER=0></TD>
+			</TR>
+			<TR CLASS=header_fond>
+				<TD COLSPAN=4><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH=100%>
+					<TR>
+						<TD CLASS=header_left><FONT CLASS=championnat_nom2>ALFORTVILLE MASTERS - JOURNÉE DU 18/06/2005 -  <FONT STYLE="font-weight:normal;">[Tournoi]</FONT></FONT></TD>
+						<td class=slide_bouton><a href="javascript:location.reload();"><img src=../images/slide_refresh.gif ALT="Refresh" TITLE="Refresh" border=0></a></td>
+						<td class=slide_bouton><a href="javascript:stop_slide();"><img src=../images/slide_stop.gif ALT="Stop" TITLE="Stop" border=0></a></td>
+						<td class=slide_bouton><a href="javascript:start_slide();"><img src=../images/slide_start.gif ALT="Start" TITLE="Start" border=0></a></td>
+						<td class=slide_bouton><a href="javascript:change_slide(-1);"><img src=../images/slide_prev.gif ALT="Précédent" TITLE="Précédent" border=0></a></td>
+						<td class=slide_bouton><a href="javascript:change_slide(1);"><img src=../images/slide_next.gif ALT="Suivant" TITLE="Suivant" border=0></a></td>
+						<td><font color=white>Temporisation : </font>
+							<select name=slide_delai onChange="javascript:change_delai(this.value);" CLASS=header_select>
+								<option value=1000>1 sec
+								<option value=5000 selected>5 Sec
+								<option value=10000>10 sec
+								<option value=20000>20 sec
+							</select>
+						</td>
+						<td align=right><font color=white>[Slide View Mode]</font></TD>
+						<td style="display: none;" align=right>
+							<table border=0 cellpadding=0 cellspacing=0 width=160><tr>
+								<td CLASS=header_select2><a href=# onclick="javascript:launchChangeLangue('fr');"><img src=../images/flags/FRAN0001_small.gif border=0></a></td>
+								<td width=5> </td>
+								<td><a href=# onclick="javascript:launchChangeLangue('fr');"><img src=../images/flags/UNKG0001_small.gif border=0></a></td>
+								<td width=5> </td>
+								<td><a href=# onclick="javascript:launchChangeLangue('fr');"><img src=../images/flags/GERM0001_small.gif border=0></a></td>
+								<td width=5> </td>
+								<td><a href=# onclick="javascript:launchChangeLangue('fr');"><img src=../images/flags/ITAL0001_small.gif border=0></a></td>
+								<td width=5> </td>
+								<td><a href=# onclick="javascript:launchChangeLangue('fr');"><img src=../images/flags/SPAN0002_small.gif border=0></a></td>
+								<td width=5> </td>
+								<td><a href=# onclick="javascript:launchChangeLangue('fr');"><img src=../images/flags/PORT0001_small.gif border=0></a></td>
+							</tr>
+						</table></TD>
+						<TD CLASS=header_right></TD>
+					</TR>
+				</TABLE></TD>
+			</TR>
+			</TABLE>
+		</div>
+	</div>
+
+
+
+
+	<div class="main">
+
+
+
+		<div class="central">
+			<div class="corps">
+				<div class="div-min-height"></div>
+				<div style="border:1px dashed red; z-index:1000; width:100%;">
+					<CENTER>
+<!-- FENETRE AU CENTRE-->
+<STYLE>
+.menus, .notes {
+	width:10px;
+	z-index: -10;
+}
+.notes {
+	padding: 0px 0px 0px 0px;
+	background: url('../images/jorkers/images/jorkers2_links_fondg.gif') repeat-y 0px -1px;
+}
+.menu_gauche, .menu_droit {
+	display: none;
+}
+.central {
+	margin: 0px 10px 0px 10px;
+}
+.slide {
+   position : absolute;
+   visibility : hidden;
+   width: 700px;
+   padding: 15px 0px 15px 0px;
+}
+.corps {
+	border-right: 0px;
+	border-left: 0px;
+	min-height:420px;
+}
+#slide2 {
+   visibility : visible;
+}
+.slide_bouton {
+	padding-right: 5px;
+	width: 15px;
+}
+* html body .corps {
+	height:420px;
+}
+</STYLE>
+
+<SCRIPT>
+function delAllMatchs()
+{
+	if (confirm("Etes-vous sur de vouloir supprimer tout les matchs enregistrés ?"))
+	{
+	    document.forms[0].action = 'matchs_suppression.php';
+		document.forms[0].submit();
+
+		return true;
+	}
+
+	return false;
+}
+function delJournee()
+{
+	if (confirm("Etes-vous sûr de vouloir supprimer cette journée ?"))
+	{
+	    document.forms[0].action = 'journees_supprimer_do2.php';
+		document.forms[0].submit();
+
+		return true;
+	}
+
+	return false;
+}
+function ajouter_match()
+{
+    document.forms[0].action = 'matchs_ajouter.php';
+}
+function gotoPoule(poule)
+{
+	document.forms[0].options_type_matchs.value=poule;
+    document.forms[0].action = 'matchs_tournoi.php';
+	document.forms[0].submit();
+}
+function ajouter_match2(poule)
+{
+	document.forms[0].niveau.value='SP|'+poule;
+    document.forms[0].action = 'matchs_ajouter.php';
+}
+function modifier_match(pkeys, action, niveau)
+{
+	document.forms[0].type_action.value=action;
+	document.forms[0].pkeys_where.value=pkeys;
+    document.forms[0].action = 'matchs_ajouter.php';
+    document.forms[0].niveau.value=niveau;
+
+	document.forms[0].submit();
+}
+function supprimer_match(pkeys, action)
+{
+	if (!confirm('Etes-vous de vouloir supprimer ce match ?'))
+		return false;
+
+	document.forms[0].type_action.value=action;
+	document.forms[0].pkeys_where.value=pkeys;
+    document.forms[0].action = 'matchs_supprimer_do.php';
+
+	document.forms[0].submit();
+}
+function launch_slide()
+{
+    window.open('matchs_tournoi.php?options_type_matchs=SLIDE', 'slide_show', 'width=800, height=600, resizable=yes, alwaysRaised=yes, toolbar=no, location=no, personnalBar=no, status=no, menuBar=no');
+}
+</SCRIPT>
+
+
+
+<SCRIPT SRC="../js/ticker.js" type="text/javascript"></SCRIPT>
+<STYLE>
+.hticker {
+	position: relative;
+	top: 0px;
+	left:0px;
+	width: 100%;
+	z-index: 100;
+	background: #CCCCCC;
+	border-bottom: 1px dashed black;
+	font-size: 18px;
+	padding: 5px 0px 5px 0px;
+	margin: -20px 0px 0px 0px;
+}
+</STYLE>
+
+<DIV CLASS=hticker>
+<script type="text/javascript" language="JavaScript">
+Article = new Array;
+i=0;
+Article[i++] = new Array ("<B>Welcome to PlanMagic</B>", "http://planmagic.com", "_blank");
+Article[i++] = new Array ("<B>We offer a wide range of business planning software:</B>", "none", "");
+buildScroller(Article);
+setTimeout("runScroller()", 5000);
+</script>
+</DIV>
+
+<SCRIPT SRC="../js/slide_show.js" type="text/javascript"></SCRIPT>
+<SCRIPT>
+var slide_delai = 5000;
+function boucle()
+{
+	changeSlide(1);
+}
+function change_delai(val)
+{
+	clearInterval(slide_interval);
+	slide_delai = val;
+	slide_interval = setInterval("boucle()", slide_delai);
+}
+function change_slide(sens)
+{
+	clearInterval(slide_interval);
+	changeSlide(sens);
+	slide_interval = setInterval("boucle()", slide_delai);
+}
+function stop_slide(sens)
+{
+	clearInterval(slide_interval);
+}
+function start_slide(sens)
+{
+	clearInterval(slide_interval);
+	changeSlide(1);
+	slide_interval = setInterval("boucle()", slide_delai);
+}
+var mes_slides = new Array('slide2', 'slide3','slide4','slide5','slide6', 'slide0');
+//init_layers(mes_slides);
+//slide_interval = setInterval("boucle()", slide_delai);
+</SCRIPT>
+
+
+<META HTTP-EQUIV="refresh" CONTENT="180; URL=matchs_tournoi.php?options_type_matchs=SLIDE">
+
+<!-- FIN FENETRE AU CENTRE -->
+					</CENTER>
+				</div>
+				<div class="div-min-height-bottom"></div>
+			</div>
+
+			<div class="pied">
+					<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100%>
+	<TR>
+   		<TD WIDTH=100> </TD>
+       	<TD ALIGN=CENTER><FONT COLOR=#777777 STYLE="font-style:normal; font-weight:normal;"> jorkers.com © 2005 </FONT></TD>
+	</TABLE>
+			</div>
+		</div>
+
+ 		<div class="menus">
+		</div>
+
+		<div class="notes">
+		</div>
+
+	</div>
+
+<!-- FIN FENETRE GLOBALE -->
+
+</BODY>
+</HTML>

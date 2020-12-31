@@ -1,0 +1,424 @@
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url('MaterialIcons-Regular.eot'); /* For IE6-8 */
+    src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url('MaterialIcons-Regular.woff2') format('woff2'),
+    url('MaterialIcons-Regular.woff') format('woff'),
+    url('MaterialIcons-Regular.ttf') format('truetype');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;  /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+html, body {
+  font-family: 'Roboto', 'Helvetica', sans-serif;
+}
+.demo-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+}
+.demo-layout .demo-header .mdl-textfield {
+  padding: 0px;
+  margin-top: 41px;
+}
+.demo-layout .demo-header .mdl-textfield .mdl-textfield__expandable-holder {
+  bottom: 19px;
+}
+.demo-layout .mdl-layout__header .mdl-layout__drawer-button {
+    background: none;
+  color: rgba(0, 0, 0, 0.54);
+}
+.mdl-layout__drawer .avatar {
+  margin-bottom: 16px;
+}
+.demo-drawer {
+  border: none;
+}
+/* iOS Safari specific workaround */
+.demo-drawer .mdl-menu__container {
+  z-index: -1;
+}
+.demo-drawer .demo-navigation {
+  z-index: -2;
+}
+/* END iOS Safari specific workaround */
+.demo-drawer .mdl-menu .mdl-menu__item {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.demo-drawer-header {
+  box-sizing: border-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  padding: 16px;
+  height: 151px;
+}
+.demo-avatar-dropdown {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+}
+
+.demo-navigation {
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+.demo-layout .demo-navigation .mdl-navigation__link {
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: rgba(255, 255, 255, 0.56);
+  font-weight: 500;
+}
+.demo-layout .demo-navigation .mdl-navigation__link:hover {
+  background-color: #00BCD4;
+  color: #37474F;
+    text-decoration: none;
+}
+.demo-navigation .mdl-navigation__link .material-icons {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.56);
+  margin-right: 32px;
+}
+
+.demo-content {
+  max-width: 1080px;
+}
+
+.demo-charts {
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+              -ms-grid-row-align: center;
+          align-items: center;
+}
+.demo-chart:nth-child(1) {
+  color: #ACEC00;
+}
+.demo-chart:nth-child(2) {
+  color: #00BBD6;
+}
+.demo-chart:nth-child(3) {
+  color: #BA65C9;
+}
+.demo-chart:nth-child(4) {
+  color: #EF3C79;
+}
+.demo-graphs {
+  padding: 16px 32px;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+}
+/* TODO: Find a proper solution to have the graphs
+ * not float around outside their container in IE10/11.
+ * Using a browserhacks.com solution for now.
+ */
+_:-ms-input-placeholder, :root .demo-graphs {
+  min-height: 664px;
+}
+_:-ms-input-placeholder, :root .demo-graph {
+  max-height: 300px;
+}
+/* TODO end */
+.demo-graph:nth-child(1) {
+  color: #00b9d8;
+}
+.demo-graph:nth-child(2) {
+  color: #d9006e;
+}
+
+.demo-cards {
+  -webkit-align-items: flex-start;
+      -ms-flex-align: start;
+              -ms-grid-row-align: flex-start;
+          align-items: flex-start;
+  -webkit-align-content: flex-start;
+      -ms-flex-line-pack: start;
+          align-content: flex-start;
+}
+.demo-cards .demo-separator {
+  height: 32px;
+}
+.demo-cards .mdl-card__title.mdl-card__title {
+  color: white;
+  font-size: 24px;
+  font-weight: 400;
+}
+.demo-cards ul {
+  padding: 0;
+}
+.demo-cards h3 {
+  font-size: 1em;
+}
+.demo-updates .mdl-card__title {
+  min-height: 200px;
+  background-image: url('../wrapper/img/cog.png');
+  background-position: 90% 100%;
+  background-repeat: no-repeat;
+}
+.demo-cards .mdl-card__actions a {
+  color: #00BCD4;
+  text-decoration: none;
+}
+
+.demo-options h3 {
+  margin: 0;
+}
+.demo-options .mdl-checkbox__box-outline {
+  border-color: rgba(255, 255, 255, 0.89);
+}
+.demo-options ul {
+  margin: 0;
+  list-style-type: none;
+}
+.demo-options li {
+  margin: 4px 0;
+}
+.demo-options .material-icons {
+  color: rgba(255, 255, 255, 0.89);
+}
+.demo-options .mdl-card__actions {
+  height: 64px;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  box-sizing: border-box;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#myheader div:first-child i {
+    line-height: 50px;
+}
+
+.mdl-textfield__icon {
+    width: 32px;
+    text-align: center;
+    position: absolute;
+    line-height: 1.5;
+}
+
+.mdl-textfield.is-disabled .mdl-textfield__icon {
+    color: rgba(0, 0, 0, 0.26) !important;
+}
+
+.mdl-textfield__icon ~ * {
+	margin-left: 48px;
+}
+.mdl-textfield__icon ~ *:not(button):not(.slide-to-unlock) {
+	 width: calc(100% - 48px);
+}
+.mdl-textfield__icon ~ button, .mdl-textfield__icon ~ .choices {
+	margin-top: 3px;
+}
+.mdl-textfield.is-invalid .mdl-textfield__icon {
+    color: #de3226 !important;
+}
+
+.mdl-textfield--required .mdl-textfield__input:after {
+	content: " * ";
+	color: #e32;
+	float: right;
+}
+
+#myheader .mdl-layout__drawer-button { display: block; }
+#myheader { background-color: rgba(255,255,255,.75) !important; }
+@media only screen and (min-width:1025px) {
+    #slidebar { background-color: rgba(0,0,0,.75) !important; }
+    #myheader .mdl-layout__drawer-button { display: none; }
+    .demo-drawer-header {background-color: rgba(0,0,0,.15) !important; }
+}
+
+.mdl-button--icon + div {
+    z-index: 99999 !important;
+}
+.mdl-button--icon + div ul li i {
+    margin-right: 10px;
+    margin-top: -5px;
+}
+.mdl-card { background: rgba(255, 255, 255, .65); }
+
+
+.slide-to-unlock {
+	position: absolute;
+	left: 40%;
+	top: 60%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+
+	width: 400px;
+	width: 80%;
+	height: 40px;
+}
+
+.slide-to-unlock .dragdealer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border-radius: 0;
+	background: none;
+	height: auto;
+}
+
+.slide-to-unlock .handle {
+	height: 30px;
+	border-radius: 0;
+}
+
+.slide-to-unlock .disabled {
+	background: none;
+}
+
+.slide-to-unlock .slide-text {
+	position: absolute;
+	top: 5px;
+	height: 40px;
+	font-size: 24px;
+	line-height: 40px;
+	text-align: center;
+}
+
+.old-slider {
+	border-radius: 20px;
+	background: #222;
+	background-image: -webkit-linear-gradient(top, #111 0%, #333 100%);
+	background-image: -moz-linear-gradient(top, #111 0%, #333 100%);
+	background-image: -o-linear-gradient(top, #111 0%, #333 100%);
+	background-image: linear-gradient(to bottom, #111 0%, #333 100%);
+}
+
+.old-slider .dragdealer {
+	top: 5px;
+	bottom: 5px;
+	left: 5px;
+	right: 5px;
+}
+
+.old-slider .slide-text {
+	right: 0;
+	width: 290px;
+	width: 80%;
+	color: #999;
+	height: 20px;
+	line-height: 20px;
+	cursor: default;
+}
+
+.old-slider .handle {
+	width: 100px;
+	width: 20%;
+	border-radius: 15px;
+	background: #ccc;
+	background-image: -webkit-linear-gradient(top, #f1f1f1 0%, #aaa 100%);
+	background-image: -moz-linear-gradient(top, #f1f1f1 0%, #aaa 100%);
+	background-image: -o-linear-gradient(top, #f1f1f1 0%, #aaa 100%);
+	background-image: linear-gradient(to bottom, #f1f1f1 0%, #aaa 100%);
+}
+
+.valide .slide-text { display: none; }
+.valide .handle {
+	background: rgb(205,235,142); /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(205,235,142,1) 0%, rgba(165,201,86,1) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+.mdl-textfield--required input, .mdl-textfield--required textarea {
+	background: url('../wrapper/img/asterisk-48.png') right top no-repeat;
+	background-size: 16px 16px;
+}
+.mdl-textfield--required input:valid, .mdl-textfield--required textarea:valid  {
+	background: none;
+}
+.is-captcha {
+	min-height: 80px;
+}
+
+.mdl-card__title-text {
+	background: none !important;
+}
+
+.mdl-card__menu {
+	color: #fff;
+}
+
+.mdl-card__list {
+	min-height: auto !important;
+}
+

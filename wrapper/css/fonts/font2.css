@@ -1,0 +1,15 @@
+/* ------------------------------------------ */
+/* CONTENT CSS */
+/* ------------------------------------------ */
+
+@font-face {
+    font-family: 'logo2';
+    src: url('../../fonts/lobster_1.4.eot');
+    src: url('../../fonts/lobster_1.4.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/lobster_1.4.woff') format('woff'),
+         url('../../fonts/lobster_1.4.ttf') format('truetype'),
+         url('../../fonts/lobster_1.4.svg#lobster_1.4regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

@@ -1,0 +1,15 @@
+/* ------------------------------------------ */
+/* CONTENT CSS */
+/* ------------------------------------------ */
+
+@font-face {
+    font-family: 'logo14';
+    src: url('../../fonts/blackout-midnight.eot');
+    src: url('../../fonts/blackout-midnight.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/blackout-midnight.woff') format('woff'),
+         url('../../fonts/blackout-midnight.ttf') format('truetype'),
+         url('../../fonts/blackout-midnight.svg#blackoutmidnight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

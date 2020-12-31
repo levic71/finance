@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Ftj</title>
+<script type="text/javascript" src="js/ftj.js"></script>
+<script>
+profile_body = function() {
+	var h = document.getElementById('body_height').value;
+	var w = document.getElementById('body_weight').value;
+	var a = document.getElementById('body_age').value;
+	var s = document.getElementById('body_sexe').options[document.getElementById('body_sexe').selectedIndex].value;
+	var act = document.getElementById('body_activite').options[document.getElementById('body_activite').selectedIndex].value;
+	var cp = document.getElementById('body_poignet').value;
+	var morph = document.getElementById('body_morphologie').options[document.getElementById('body_morphologie').selectedIndex].value;
+
+	var me = ftj.getProfile({ h: h, w: w, a: a, s: s, act: act, cp: cp, morph: morph });
+
+	document.getElementById('body_imc').value = me.imc;
+	document.getElementById('body_best_weight').value = me.pfl;
+	document.getElementById('body_over_weight').value = me.gimc;
+	document.getElementById('body_img').value = me.img;
+	document.getElementById('body_imc_comment').value = me.imc_comment;
+	document.getElementById('body_img_comment').value = me.img_comment;
+	document.getElementById('body_dcq').value = me.dcq;
+	document.getElementById('body_best_weight2').value = me.pfm;
+	document.getElementById('body_best_weight3').value = me.pfm_max;
+	document.getElementById('body_best_weight4').value = me.pfc;
+	document.getElementById('body_best_weight5').value = me.pfc_max;
+	document.getElementById('body_tabcal').value = me.tabcal;
+	document.getElementById('body_tabcal_max').value = me.tabcal_max;
+}
+ActivityBurn = function() {
+	profile_body();
+
+	var w = document.getElementById('body_weight').value;
+	var duration = document.getElementById('mduration').value;
+	var coef = document.getElementById('mactivity').options[document.getElementById('mactivity').selectedIndex].value;
+
+	document.getElementById('activity_burn1').value = ftj.getCaloriesBurn(coef, duration);
+}
+</script>
+<style type="text/css">
+label { display:block; font-weight: bold; width: 100%; }
+</style>
+</head>
+
+<body>
+
+<input type="button" name="bouton" value="Calculer" onclick="profile_body();" />
+<div style="width: 720px;">
+
+<h3>Poids de Forme, aussi appelé poids de santé, sert à déterminer votre poids idéal en fonction de votre taille et votre sexe. Calcul de votre poids de forme ou poids idéal.</h3>
+
+<fieldset>
+
+<legend>Saisissez votre profil</legend>
+
+<br />
+<label for="body_sexe">Sexe</label>
+<select id="body_sexe"><option value="1" selected>Masculin</option><option value="2">Féminin</option></select>
+
+<br />
+<label for="body_age">Age</label>
+<input type="text" id="body_age" size="6" value="41" /> ans
+
+<label for="body_height">Taille</label>
+<input type="text" id="body_height" size="6" value="181" /> cm
+
+<br />
+<label for="body_weight">Poids</label>
+<input type="text" id="body_weight" size="6" value="75" /> kg
+
+<br />
+<label for="body_morphologie">Morphologie</label>
+<select id="body_morphologie"><option value="10" selected>Mince</option><option value="1">Normale</option><option value="2">Large</option></select>
+
+<br />
+<label for="body_weight">Circonférence du poignet</label>
+<input type="text" id="body_poignet" size="6" value="16" /> cm
+
+<br />
+<label for="body_activite">Niveau d'activité physique</label>
+<select id="body_activite"><option value="1.25">S&eacute;dentaire</option><option value="1.3">L&eacute;g&egrave;re</option><option value="1.5" selected>Moyen</option><option value="1.7">Intense</option><option value="2.0">Tr&egrave;s intense</option></select>
+
+<br />
+<br />
+<input type="button" name="bouton" value="Calculer" onclick="profile_body();" />
+
+</fieldset>
+
+<br />
+
+<fieldset>
+
+<legend>Résultats</legend>
+
+<label>Votre IMC est de</label>
+<input type="text" id="body_imc" size="6"><input type="text" id="body_imc_comment" size="50" />
+
+<br />
+<label>Votre poids idéal selon la formule de Lorentz est de</label>
+<input type="text" id="body_best_weight" size="6" /> kg
+
+<br />
+<label>Votre poids idéal selon la formule de MONNEROT est de</label>
+<input type="text" id="body_best_weight2" size="6" /> kg => Poids excessif à partir de <input type="text" id="body_best_weight3" size="6" />
+
+<br />
+<label>Votre poids idéal selon la formule de CREFF est de</label>
+<input type="text" id="body_best_weight4" size="6" /> kg => Poids excessif à partir de <input type="text" id="body_best_weight5" size="6" />
+
+<br />
+<label>Votre poids est excessif à partir de</label>
+<input type="text" id="body_over_weight" size="6" /> kg
+
+<br />
+<label>Indice de Masse Graisseuse théorique</label>
+<input type="text" id="body_img" size="6" /><input type="text" id="body_img_comment" size="50" />
+
+<br />
+<label>Dépenses Calorique Quotidienne (Personnal trainer)</label>
+<input type="text" id="body_dcq" size="6" /> calories par jour
+
+<br />
+<label>Dépenses Calorique Quotidienne (tablecalories)</label>
+<input type="text" id="body_tabcal" size="6" /> calories par jour => En prenant en compte activité <input type="text" id="body_tabcal_max" size="6" /> calories par jour
+
+</fieldset>
+
+<br />
+
+<fieldset>
+
+<legend>Calories burn</legend>
+
+<label>Activité Sportive</label>
+<select size="1" id="mactivity">
+	<option value="5" selected>A&eacute;robic</option>
+	<option value="7">A&eacute;robic Soutenu</option>
+	<option value="10">A&eacute;robic Intensive</option>
+	<option value="4">Aqua Gym</option>
+	<option value="6">Abdominaux</option>
+	<option value="8">Athl&eacute;tisme 8km/h</option>
+	<option value="12.5">Athl&eacute;tisme 12km/h </option>
+	<option value="16">Athl&eacute;tisme 16 km/h</option>
+	<option value="3.5">Aviron</option>
+	<option value="7">Aviron Intensif </option>
+	<option value="8.5">Aviron Tr&egrave;s Intensif </option>
+	<option value="8">Basketball</option>
+	<option value="8">Beach Volley-ball</option>
+	<option value="3">Bowling</option>
+	<option value="9">Boxe</option>
+	<option value="4.5">Bricolage</option>
+	<option value="5.5">Bricolage Intensif</option>
+	<option value="6">Callisth&eacute;nie Intensive </option>
+	<option value="3.5">Charpenterie</option>
+	<option value="5">Chasse</option>
+	<option value="8">Circuit Training</option>
+	<option value="6">Construction</option>
+	<option value="6">Cross-Country </option>
+	<option value="9">Cross-Country Intensive</option>
+	<option value="4">Cuisiner</option>
+	<option value="4">&Eacute;quitation</option>
+	<option value="8">Escalade</option>
+	<option value="8">Football</option>
+	<option value="9">Football Comp&eacute;tition</option>
+	<option value="3">Frisbee </option>
+	<option value="5">Golf</option>
+	<option value="4">Gym</option>
+	<option value="12">Handball</option>
+	<option value="5">Jardinage</option>
+	<option value="5">Kayaking </option>
+	<option value="3.5">M&eacute;nage</option>
+	<option value="3.5">Marche Lente</option>
+	<option value="4">Marche Moyenne</option>
+	<option value="4.5">Marche Intensive</option>
+	<option value="3.5">Motoneige </option>
+	<option value="3">Musculation</option>
+	<option value="6">Musculation Intensive</option>
+	<option value="6">Natation</option>
+	<option value="10.0">Natation Intensive</option>
+	<option value="7">Patinage</option>
+	<option value="4">P&ecirc;che </option>
+	<option value="5">Rafting</option>
+	<option value="7">Racquetball</option>
+	<option value="10">Racquetball Comp&eacute;tition</option>
+	<option value="8">Raquette &agrave; Neige</option>
+	<option value="7">Rollerblade, Skating</option>
+	<option value=".5">Sexe Passif</option>
+	<option value="1.3">Sexe Intensif</option>
+	<option value="2.5">Sexe Tr&egrave;s Intensif</option>
+	<option value="5">Skateboarding </option>
+	<option value="6">Ski</option>
+	<option value="8">Ski de Fond Mod&eacute;r&eacute;</option>
+	<option value="6">Ski Nautique</option>
+	<option value="5">Softball</option>
+	<option value="7">Stepper</option>
+	<option value="4">Stretching</option>
+	<option value="10">Taekwondo</option>
+	<option value="7">Tennis</option>
+	<option value="1.5">Travail de Bureau</option>
+	<option value="3.5">Trampoline </option>
+	<option value="4">Yoga </option>
+	<option value="8">V&eacute;lo 20km/h</option>
+	<option value="10">V&eacute;lo 23km/h</option>
+	<option value="12.0">V&eacute;lo 27km/h</option>
+	<option value="16.0">V&eacute;lo 32km/h</option>
+	<option value="7">V&eacute;lo d'Appartement</option>
+	<option value="10.5">V&eacute;lo d'Appartement Intensif</option>
+	<option value="12.5">V&eacute;lo d'Appartement Tr&egrave;s Intensif</option>
+	<option value="3">Volley-ball</option>
+	<option value="4">Volley-ball Comp&eacute;tition</option>
+	<option value="8.5">VTT </option>
+	<option value="6">Wakeboarding </option>
+	<option value="10">Water Polo </option>
+</select>
+
+
+<br />
+<label>Temps d'exercice</label>
+<input type="text" id="mduration" size="15" value="60" /> min
+
+<br />
+<input name="BUTTON" type=BUTTON onclick="ActivityBurn()" value="Calculer" />
+
+<br />
+<label>Dépenses Calorique</label>
+<input type="text" id="activity_burn1" size="6" /> calories
+
+</fieldset>
+
+
+
+</div>
+
+</body>
+
+</html>
+
