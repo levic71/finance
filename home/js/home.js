@@ -4,8 +4,8 @@
     $("#sendmail").click(function(){ return sendmail(); });
     $(".btndemo").click(function(){ $('#demoModal').modal('show'); });
     $(".brand").click(function(){ showHome(); });
-    $('#twitter').load('../wrapper/twitter.php');
-    $('#footrss').load('../wrapper/rss_parseur.php');
+//    $('#twitter').load('../wrapper/twitter.php');
+//    $('#footrss').load('../wrapper/rss_parseur.php');
   })
 }(window.jQuery)
 

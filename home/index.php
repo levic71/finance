@@ -12,7 +12,7 @@ unset($_SESSION['antispam']);
 $_SESSION['antispam'] = ToolBox::getRand(5);
 
 $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : null;
-$ver = 2.20;
+$ver = 2.21;
 
 ?>
 
@@ -79,7 +79,6 @@ $ver = 2.20;
             <div class="nav-collapse collapse">
               <ul class="nav">
                 <li><a href="#marketing">Fonctionnalités</a></li>
-                <li><a href="#videos">Vidéos</a></li>
                 <li><a href="#" class="btndemo">Démos</a></li>
                 <li><a href="#contact">Contact</a></li>
               </ul>
@@ -103,13 +102,13 @@ $ver = 2.20;
           <img src="img/slide-01.jpg" alt="">
           <div class="container">
             <div class="carousel-caption">
-              <h1>Avec le JORKERS.COM</h1>
+              <h1>JORKERS</h1>
               <p class="lead">
-              gére gratuitement en ligne tous tes championnats et tournois de sports individuels et collectifs.
+              Solution gratuite en ligne de gestion de championnats et tournois sportifs individuels et collectifs.
               <br />
-              Gràçe à  ses fonctionnalités simples, créez vos championnats et réalisez des stats de PRO.
+              Espace idéal pour partager entre amis sa passion avec fair play !
               <br />
-              Espace idéal pour se chambrer entre amis avec fair play ..
+              Réalisez des stats de PRO.
               </p>
               <a class="btn btn-large btn-primary" href="../wrapper/jk.php?idc=<?= sess_context::INVALID_CHAMP_ID_LOGIN ?>">Créer ton championnat</a>
             </div>
@@ -121,9 +120,9 @@ $ver = 2.20;
             <div class="carousel-caption">
               <h1>Application complète et multicanal</h1>
               <p class="lead">
-                Avec toutes ces fonctionnalités, le Jorkers.com est application complète, simple et rapide.
+                Le Jorkers.com est application complète, simple et rapide.
                 <br />
-                Elle s'adapte à  tous les appareils (PC, Smartphone, Tablette) pour vous offrir le meilleur service possible.
+                Fonctionne sur tous les appareils (PC, Smartphone, Tablette) pour vous offrir des services toujours plus innovants.
               </p>
               <a class="btn btn-large btn-primary" href="../wrapper/jk.php?idc=<?= sess_context::INVALID_CHAMP_ID_LOGIN ?>">Créer ton championnat</a>
             </div>
@@ -276,7 +275,7 @@ $ver = 2.20;
           <tr><td><img alt="" src="img/demo.png"></td><td>&nbsp;</td>
               <td><div class="caption">
                 <h5>Championnat classique</h5>
-                <p>Vous àªtes organisés comme un véritable championnat avec un nombre d'équipes fini qui se rencontrent les unes contre les autres tout au long d'une saison sur plusieurs journées.</p>
+                <p>Vous êtes organisés comme un véritable championnat avec un nombre d'équipes fini qui se rencontrent les unes contre les autres tout au long d'une saison sur plusieurs journées.</p>
               </div>
           </td><td><p><a href="http://demo-championnat.jorkers.com" class="btn btn-primary">Démo</a></p></td></tr>
           <tr><td><img alt="" src="img/demo.png"></td><td>&nbsp;</td>
@@ -298,7 +297,7 @@ $ver = 2.20;
 <!-- FOOTER -->
     <footer>
       <p class="pull-right"><a href="#">Top</a></p>
-      <p>&copy; 2018 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+      <p>&copy; 2021 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
     </footer>
 
 
@@ -308,6 +307,6 @@ $ver = 2.20;
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/holder.js"></script>
-    <script src="js/home.js?20180122"></script>
+    <script src="js/home.js?20210119"></script>
   </body>
 </html>
