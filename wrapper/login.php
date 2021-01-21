@@ -30,7 +30,9 @@ $pwd   = $sess_context->isSuperUser() ? "vicmju" : "";
 
 <div class="mdl-layout-spacer"></div>
 <div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--6-col mdl-cell--middle">
-	<div class="mdl-grid mdl-card__title mdl-color--primary mdl-color-text--white">
+	<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Authentification <button id="btforget" class="mdl-button mdl-js-button mdl-button--icon" style="position:absolute; right: 10px;" onclick="mm({action: 'inscription'});"><i class="material-icons">settings</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oublié ?</div></h2>
+<!-- 
 		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Authentifiez-vous avec<button id="btforget" class="mdl-button mdl-js-button mdl-button--icon" style="position:absolute; right: 10px;" onclick="mm({action: 'inscription'});"><i class="material-icons">settings</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oublié ?</div></h2>
 		<p class="mdl-cell mdl-cell--12-col mdl-typography--text-center text-divider">
 			<button id="btfb" class="mdl-button mdl-js-button mdl-button--icon socialglyphs" onclick="alert('Comming soon ...'); return false;">f</button>
@@ -43,6 +45,7 @@ $pwd   = $sess_context->isSuperUser() ? "vicmju" : "";
 			<div class="mdl-tooltip" for="bttt">Twitter</div>
 		</p>
 		<p class="mdl-cell mdl-cell--12-col mdl-color--primary">ou plus classiquement</p>
+ -->
 	</div>
 	<div class="mdl-card__supporting-text form-group mdl-grid">
 			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">

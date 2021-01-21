@@ -1,6 +1,6 @@
 <?
 
-$ver     = 2.25;
+$ver     = "2.25.1";
 $wrapper = isset($wrapper) ? $wrapper : false;
 $id_msg  = isset($id_msg)  ? $id_msg  : 0;
 $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? rand(1, count($libelle_theme)) : $chp['theme'];

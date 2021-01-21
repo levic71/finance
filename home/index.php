@@ -12,7 +12,7 @@ unset($_SESSION['antispam']);
 $_SESSION['antispam'] = ToolBox::getRand(5);
 
 $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : null;
-$ver = 2.21;
+$ver = "2.21.1";
 
 ?>
 
