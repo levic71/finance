@@ -104,7 +104,6 @@ html, body {
       -ms-flex-pack: end;
           justify-content: flex-end;
   padding: 16px;
-  height: 151px;
 }
 .demo-avatar-dropdown {
   display: -webkit-flex;
@@ -135,18 +134,18 @@ html, body {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  color: rgba(255, 255, 255, 0.56);
+  color: rgba(255, 255, 255, 0.75);
   font-weight: 500;
 }
 .demo-layout .demo-navigation .mdl-navigation__link:hover {
-  background-color: #00BCD4;
-  color: #37474F;
-    text-decoration: none;
+	background-color: rgba(0, 0, 0, .5) !important;
+	color: rgba(255, 255, 255, 1.0);
+	text-decoration: none;
 }
 .demo-navigation .mdl-navigation__link .material-icons {
   font-size: 24px;
   color: rgba(255, 255, 255, 0.56);
-  margin-right: 32px;
+  margin-right: 10px;
 }
 
 .demo-content {
@@ -299,9 +298,9 @@ _:-ms-input-placeholder, :root .demo-graph {
 #myheader .mdl-layout__drawer-button { display: block; }
 #myheader { background-color: rgba(255,255,255,.75) !important; }
 @media only screen and (min-width:1025px) {
-    #slidebar { background-color: rgba(0,0,0,.75) !important; }
+    #slidebar { background-color: rgba(0,0,0,.5) !important; }
     #myheader .mdl-layout__drawer-button { display: none; }
-    .demo-drawer-header {background-color: rgba(0,0,0,.15) !important; }
+	.mdl-layout__header-row { height: 96px; }
 }
 
 .mdl-button--icon + div {
@@ -420,5 +419,45 @@ _:-ms-input-placeholder, :root .demo-graph {
 
 .mdl-card__list {
 	min-height: auto !important;
+}
+
+.center_content {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#slidebar .mdl-mega-footer {
+	background: none !important; 
+	border-top: 1px dashed rgba(255,255,255,.25) !important; 
+}
+
+#slidebar .mdl-layout__header {
+	background: rgba(0, 0, 0, .15) !important; 
+	height: 96px;
+}
+
+
+.mdl-chip {
+	height: 32px;
+	line-height: 32px;
+	padding: 0 5px 0 15px;
+	border: 0;
+	border-radius: 16px;
+	background-color: rgba(255, 255, 255, .5);
+	display: inline-block;
+	color: rgba(0,0,0,.87);
+	margin: 2px 0;
+	white-space: nowrap;
+}
+
+.mdl-chip__text {
+	vertical-align: middle;
+	display: inline-block;
+	color: #999;
+}
+
+#accbtn .connected {
+	color: #FB8C00;
 }
 

@@ -73,14 +73,14 @@ google_tracking = function(page) {
 
 /* fermeture menu */
 close_menu = function() {
-    try {
-        // On ferme le slidebar left
-        if (el('nav-trigger')) el('nav-trigger').checked = false;
-        // On ferme le fabmenu
-        if (el('menu-open')) el('menu-open').checked = false;
-        if (document.querySelector('.mdl-layout__obfuscator.is-visible')) document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer();
-    }
-    catch(e) { myconsole('close_menu: '+ e.text); }
+	try {
+		// On ferme le slidebar left
+		if (el('nav-trigger')) el('nav-trigger').checked = false;
+		// On ferme le fabmenu
+		if (el('menu-open')) el('menu-open').checked = false;
+		if (document.querySelector('.mdl-layout__obfuscator.is-visible')) document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer();
+	}
+	catch(e) { myconsole('close_menu: '+ e.text); }
 }
 
 /* action */
@@ -90,60 +90,61 @@ go = function(args) {
 	var confirmdel=opt.confirmdel||0;
 	var confirminvit=opt.confirminvit||0;
 
-    myconsole('go: ' + action + ' url: ' + opt.url);
+	myconsole('go: ' + action + ' url: ' + opt.url);
 
-    letsgo = true;
+	letsgo = true;
 	if (opt.confirmdel == 1) letsgo = confirm('Confirmez vous cette suppression ?');
-	if (opt.confirminvit == 1) letsgo = confirm('Confirmez vous l\'envoi de cette invitation aux participants de cette journée ?');
+	if (opt.confirminvit == 1) letsgo = confirm('Confirmez vous l\'envoi de cette invitation aux participants de cette journÃ©e ?');
 
-    close_menu();
+	close_menu();
 
 	if (letsgo) {
 		if (opt.confirmdel == 1) opt.url += '&del=1';
 		jx.load(
 			opt.url,
 			function(data) {
-                myconsole('go: jx in');
-                addCN('main-content', action+'_page');
+				myconsole('go: jx in');
+				addCN('main-content', action+'_page');
 				cc(opt.id, data);
-                if (action == 'slidebar') componentHandler.upgradeDom('MaterialMenu');
+				if (action == 'slidebar') componentHandler.upgradeDom('MaterialMenu');
 				updateContext(action);
 				google_tracking(opt.url);
-                myconsole('go: jx out');
-            },
+				myconsole('go: jx out');
+			},
 			'text', 'post'
 		);
 	}
 
-    myconsole('go: end');
+	myconsole('go: end');
 
 }
 
 /* menu */
 xx = function(args) {
 	var opt = args||{};
-    var mobile=opt.mobile||'';
+	var mobile=opt.mobile||'';
+	var idc=opt.idc||'';
 
-    myconsole('xx: ' + opt.url);
+	myconsole('xx: ' + opt.url);
 
 	jx.load(
 		opt.url,
 		function(data) {
-            myconsole('xx: jx in');
+			myconsole('xx: jx in');
 			addCN('main-content', opt.action+'_page');
 			var tmp = data.split('||');
 			if (tmp.length > 1)
 			{
 				if (tmp[0] > 0)
 				{
-                    if (opt.action == 'valid') {
+					if (opt.action == 'valid') {
 						mm({action: 'myprofile', mobile: mobile});
-                        go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
+						go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
 					}
 
 					if (opt.action == 'login') {
 						cc('main', '')
-                        go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
+						go({ action: 'slidebar', id:'slidebar', url:'navslidebar.php' });
 						$aMsg({ msg: tmp[1] });
 					}
 					else
@@ -170,20 +171,23 @@ xx = function(args) {
 					{ hide('box2'); hide('swap1'); }
 			}
 
+			if (opt.action == 'myprofile')
+				go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
+
 			if (opt.action == 'dashboard')  {
 				go({ action: 'dashboard', id: 'dashjournee', url: 'dashboard_journee.php' });
-				// go({ action: 'dashboard', id: 'twitter_box', url:'twitter.php'});
 			}
 
 			updateContext(opt.action);
-			if (opt.url == 'login.php' && tmp[0] > 0) opt.url = 'logout.php';
-			if (opt.action == 'valid') { var t = opt.url.split('|'); opt.url = t[0].replace('params', 'idc'); }
+			// la page logout n'existe plus
+			// if (opt.url == 'login.php' && tmp[0] > 0) opt.url = 'logout.php';
+			if (opt.action == 'valid') {  var t = opt.url.split('|'); opt.url = t[0].replace('params', 'idc'); }
 			google_tracking(opt.url);
-            myconsole('xx: jx out');
-        },
+			myconsole('xx: jx out');
+		},
 		'text', 'post'
 	);
-    myconsole('xx: end');
+	myconsole('xx: end');
 }
 
 mm = function(args) {
@@ -202,8 +206,8 @@ mm = function(args) {
 	var idc=opt.idc||85;
 	var idg=opt.idg||0;
 	var search=opt.search||0;
-    var sort=opt.sort||'';
-    var mobile=opt.mobile||'';
+	var sort=opt.sort||'';
+	var mobile=opt.mobile||'';
 	var tournoi=opt.tournoi||0;
 	var favoris=opt.favoris||0;
 	var sport_sort=opt.sport_sort||99;
@@ -212,9 +216,9 @@ mm = function(args) {
 	var mktime = Math.floor((new Date()).getTime() / 1000);
 	var search_value = (search == 1 && valof('search') != '') ? valof('search') : '';
 
-    myconsole('mm: ' + action);
+	myconsole('mm: ' + action);
 
-    close_menu();
+	close_menu();
 
 	if (mem != null && next == 0 && prev == 0 && page == 0 && search == 0 && sort == '') {
 		if ((mktime - mem.mktime) < 3600)
@@ -229,7 +233,7 @@ mm = function(args) {
 	else
 		store.set(action, { mktime: mktime, page: page, search_value: search_value, sort: sort });
 
-	if (action == 'home_old')
+	if (action == 'reload')
 		{ window.location = 'jk.php?idc='+idc; addCN('main-content', action+'_page'); }
 	else if (action == 'home')
 		{ window.location = '../home/index.php'; addCN('main-content', action+'_page'); }
@@ -239,6 +243,8 @@ mm = function(args) {
 		xx({action: action, id:'main', url:'myprofile.php?mobile='+mobile, mobile: mobile});
 	else if (action == 'login')
 		xx({action: action, id:'main', url:'login.php?mobile='+mobile, mobile: mobile});
+	else if (action == 'logout')
+		window.location = 'logout.php';
 	else if (action == 'inscription')
 		xx({action: action, id:'main', url:'inscription.php'});
 	else if (action == 'updprofile')
@@ -266,11 +272,11 @@ mm = function(args) {
 	else
 		xx({action: action, id:'main', tournoi: tournoi, url:'grid.php?action='+action+'&page='+page+'&sort='+sort+(search == 1 ? '&search='+search_value : '')+(filtre_type_champ != 9 ? '&filtre_type_champ='+filtre_type_champ : '')+(favoris != 0 ? '&favoris='+favoris : '')+'&sport_sort='+sport_sort});
 
-    myconsole('mm: end');
+	myconsole('mm: end');
 }
 
 updateContext = function(action) {
-    // componentHandler.upgradeElement(elt);
+	// componentHandler.upgradeElement(elt);
 	componentHandler.upgradeAllRegistered();
 }
 
@@ -315,11 +321,11 @@ cal_setjournees = function(month, year, admin, tournoi) {
 	}
 }
 swap_cal = function() {
-    close_menu();
-    toogle('box'); toogle('box2');
-    rmCN('swap1', isHidden('box2') ? 'swap1' : 'swap2');
-    addCN('swap1', isHidden('box2') ? 'swap2' : 'swap1');
-    el('swap1').firstChild.innerText = isHidden('box2') ? 'Afficher en mode calendrier' : 'Afficher en mode liste';
+	close_menu();
+	toogle('box'); toogle('box2');
+	rmCN('swap1', isHidden('box2') ? 'swap1' : 'swap2');
+	addCN('swap1', isHidden('box2') ? 'swap2' : 'swap1');
+	el('swap1').firstChild.innerText = isHidden('box2') ? 'Afficher en mode calendrier' : 'Afficher en mode liste';
 }
 
 /* other */
@@ -336,22 +342,22 @@ check_email = function(str)
 
 check_JJMMAAAA = function(str, label)
 {
-	if (str.length == 0) { alert('Le champ <'+label+'> ne doit pas être vide'); return false; }
-	if (!(str.length == 10)) { alert('Le champ <'+label+'> doit être de la forme JJ/MM/AAAA'); return false; }
+	if (str.length == 0) { alert('Le champ <'+label+'> ne doit pas ï¿½tre vide'); return false; }
+	if (!(str.length == 10)) { alert('Le champ <'+label+'> doit ï¿½tre de la forme JJ/MM/AAAA'); return false; }
 	var jour=str.substring(0, 2); var mois=str.substring(3, 5); var year=str.substring(6, 10);
-	if (jour > 31 || jour < 1 || mois < 1 || mois > 12) { alert('Le champ <'+label+'> doit être de la forme JJ/MM/AAAA'); return false; }
+	if (jour > 31 || jour < 1 || mois < 1 || mois > 12) { alert('Le champ <'+label+'> doit ï¿½tre de la forme JJ/MM/AAAA'); return false; }
 	return true;
 }
 
 check_num = function(num, label, min, max)
 {
-	if (num.length == 0) { alert('Le champ <'+label+'> ne doit pas être vide'); return false; }
+	if (num.length == 0) { alert('Le champ <'+label+'> ne doit pas ï¿½tre vide'); return false; }
 	for(var i=0; i < num.length; i++)
 	{
 		var car=num.substring(i, i+1);
-		if (!(car >= "0" && car <= "9")) { alert('Le champ <'+label+'> doit être numérique'); return false; }
+		if (!(car >= "0" && car <= "9")) { alert('Le champ <'+label+'> doit ï¿½tre numï¿½rique'); return false; }
 	}
-	if (num > max || num < min) { alert('Le champ <'+label+'> doit être compris entre '+min+' et '+max); return false; }
+	if (num > max || num < min) { alert('Le champ <'+label+'> doit ï¿½tre compris entre '+min+' et '+max); return false; }
 	return true;
 }
 isacar = function(car) { if ((car >= "0" && car <= "9") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z")) return true; return false; }
@@ -369,15 +375,15 @@ isaextcar = function(car)
 }
 check_alphanum_gen = function(str, label, size, type)
 {
-	if (str.length == 0) { alert('Le champ <'+label+'> ne doit pas être vide'); return false; }
-	if (size != -1 && str.length < size) { alert('Le champ <'+label+'> doit être composé d\'au moins '+size+' caractères alphanumériques'); return false; }
+	if (str.length == 0) { alert('Le champ <'+label+'> ne doit pas ï¿½tre vide'); return false; }
+	if (size != -1 && str.length < size) { alert('Le champ <'+label+'> doit ï¿½tre composï¿½ d\'au moins '+size+' caractï¿½res alphanumï¿½riques'); return false; }
 	for(var i=0; i < str.length; i++)
 	{
 		var car=str.substring(i, i+1);
 		if (type == 0)
-			if (!isacar(car)) { alert('Le champ <'+label+'> doit être alphanumérique'); return false; }
+			if (!isacar(car)) { alert('Le champ <'+label+'> doit ï¿½tre alphanumï¿½rique'); return false; }
 		else
-			if (!isacarext(car)) { alert('Le champ <'+label+'> doit être alphanumérique'); return false; }
+			if (!isacarext(car)) { alert('Le champ <'+label+'> doit ï¿½tre alphanumï¿½rique'); return false; }
 	}
 	return true;
 }

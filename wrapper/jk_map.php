@@ -142,7 +142,7 @@ function initialize() {
 				'<div class="sport">'+libelle_genre[item.sport]+'</div>'+
 				'<div class="owner">'+item.manager+'</div>'+
 				'<div class="addr">'+item.address+'</div>'+
-				'<div class="access">» <a href="#" onclick="parent.window.location.href=\'<?= $sess_context->isSuperUser() ? "http://localhost:8088/jorkyball/" : "http://'+item.dns+'.jorkers.com/wrapper/" ?>jk.php?idc='+item.id+'\';">Accès</a></div>'+
+				'<div class="access">ï¿½ <a href="#" onclick="parent.window.location.href=\'<?= $sess_context->isSuperUser() ? "http://localhost:8088/jorkyball/" : "http://'+item.dns+'.jorkers.com/wrapper/" ?>jk.php?idc='+item.id+'\';">Accï¿½s</a></div>'+
 			'</div>', latLng);
 		google.maps.event.addListener(marker, 'click', fn);
 

@@ -15,14 +15,6 @@ $db = dbc::connect();
 
 $mobile  = Wrapper::getRequest('mobile',    0);
 
-if ($sess_context->isUserConnected()) {
-
-	$sess_context->resetUserConnection();
-	$sess_context->resetAdmin();
-	echo ($sess_context->getRealChampionnatId() != sess_context::INVALID_CHAMP_ID_HOME ? "2" : "3")."||Vous êtes déconnecté";
-
-} else {
-
 $login = $sess_context->isSuperUser() ? "levic" : (isset($login_user) ? $login_user : "");
 $pwd   = $sess_context->isSuperUser() ? "vicmju" : "";
 
@@ -31,9 +23,9 @@ $pwd   = $sess_context->isSuperUser() ? "vicmju" : "";
 <div class="mdl-layout-spacer"></div>
 <div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--6-col mdl-cell--middle">
 	<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Authentification <button id="btforget" class="mdl-button mdl-js-button mdl-button--icon" style="position:absolute; right: 10px;" onclick="mm({action: 'inscription'});"><i class="material-icons">settings</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oublié ?</div></h2>
+		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Authentification <button id="btforget" class="mdl-button mdl-js-button mdl-button--icon" style="position:absolute; right: 10px;" onclick="mm({action: 'inscription'});"><i class="material-icons">settings</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oubliï¿½ ?</div></h2>
 <!-- 
-		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Authentifiez-vous avec<button id="btforget" class="mdl-button mdl-js-button mdl-button--icon" style="position:absolute; right: 10px;" onclick="mm({action: 'inscription'});"><i class="material-icons">settings</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oublié ?</div></h2>
+		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Authentifiez-vous avec<button id="btforget" class="mdl-button mdl-js-button mdl-button--icon" style="position:absolute; right: 10px;" onclick="mm({action: 'inscription'});"><i class="material-icons">settings</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oubliï¿½ ?</div></h2>
 		<p class="mdl-cell mdl-cell--12-col mdl-typography--text-center text-divider">
 			<button id="btfb" class="mdl-button mdl-js-button mdl-button--icon socialglyphs" onclick="alert('Comming soon ...'); return false;">f</button>
 			<button id="btgg" class="mdl-button mdl-js-button mdl-button--icon socialglyphs" onclick="alert('Comming soon ...'); return false;">h</button>
@@ -100,5 +92,3 @@ submit_enter = function(elt, e)
 	return true;
 }
 </script>
-
-<? } ?>

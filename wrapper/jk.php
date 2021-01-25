@@ -67,7 +67,7 @@ if ($idc > 0) {
   if (!$req || $row['total'] == 0) $idc = sess_context::INVALID_CHAMP_ID_HOME;
 }
 
-$chp = $idc < 0 ? array("logo_photo" => "", "theme" => 1, "championnat_id" => sess_context::INVALID_CHAMP_ID_HOME, "twitter" => "Jorkers",  "logo_font" => "1", "championnat_nom" => "Jorkers.com", "type" => "", "entity" => "", "friends" => "") : Wrapper::getChampionnat($idc);
+$chp = $idc < 0 ? array("logo_photo" => "", "theme" => 1, "championnat_id" => sess_context::INVALID_CHAMP_ID_HOME, "twitter" => "Jorkers",  "logo_font" => "1", "championnat_nom" => "Welcome", "type" => "", "entity" => "", "friends" => "") : Wrapper::getChampionnat($idc);
 $chp['login'] = "";
 $chp['pwd']   = "";
 //$chp['home_list_headcount'] = 2;
@@ -114,25 +114,9 @@ else
       <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600" id="myheader">
         <div class="mdl-layout__header-row">
           <span class="mdl-layout-title logo<?= $chp['logo_font'] ?>" id="logo"><?= $chp['championnat_nom'] ?></span>
-          <div class="mdl-layout-spacer"></div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-            <label class="mdl-button mdl-js-button mdl-button--icon" for="mtdsearch">
-              <i class="material-icons">search</i>
-            </label>
-            <div class="mdl-textfield__expandable-holder">
-              <input class="mdl-textfield__input" type="text" id="mtdsearch">
-              <label class="mdl-textfield__label" for="mtdsearch">Enter your query...</label>
-            </div>
-          </div>
-          <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
-            <i class="material-icons">more_vert</i>
-          </button>
-          <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
-            <li class="mdl-menu__item" onclick="go({action: 'leagues', id:'main', url:'help.php'});">Fonctionnement</li>
-            <li class="mdl-menu__item" onclick="mm({action: 'leagues'});">Annuaire</li>
-			<li class="mdl-menu__item" onclick="go({action: 'leagues', id:'main', url:'edit_leagues.php'});">Nouveau championnat</li>
-            <li class="mdl-menu__item" onclick="go({action: 'leagues', id:'main', url:'contacter.php'});">Nous contacter</li>
-          </ul>
+
+           <div class="mdl-layout-spacer"></div><div id="login_panel" class="mdl-grid"></div>
+
         </div>
       </header>
 

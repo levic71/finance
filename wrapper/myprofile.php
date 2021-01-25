@@ -12,7 +12,7 @@ header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 $db = dbc::connect();
 
 if (!$sess_context->isUserConnected()) {
-	echo "Pb session utilisateur ...";
+	?><script>mm({action: 'leagues'}); $aMsg({ msg: 'Déconnexion' });</script><?
 	exit(0);
 }
 

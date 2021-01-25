@@ -63,7 +63,7 @@ $db = dbc::connect();
 
 </style>
 
-<div class="mdl-grid mdl-card__title mdl-color--primary mdl-color-text--white">
+<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
 	<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">A LA DECOUVERTE DU JORKERS.COM</h2>
 </div>
 <div class="mdl-tabs vertical-mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
