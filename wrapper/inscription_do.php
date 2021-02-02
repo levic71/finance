@@ -12,13 +12,15 @@ header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 
 $db = dbc::connect();
 
+$modifier = $sess_context->isUserConnected() && $upd == 1 ? true : false;
+
 $confidentialite = Wrapper::getRequest('confidentialite', '');
 $sexe      = Wrapper::getRequest('sexe',      '');
 $activite  = Wrapper::getRequest('activite',  3);
 $morpho    = Wrapper::getRequest('morpho',    1);
 $nom       = Wrapper::getRequest('nom',       '');
 $prenom    = Wrapper::getRequest('prenom',    '');
-$pseudo    = Wrapper::getRequest('pseudo',    '');
+$pseudo    = Wrapper::getRequest($modifier ? 'pseudo' : 'login', ''); // pseudo = login à la création 
 $taille    = Wrapper::getRequest('taille',    '');
 $poids     = Wrapper::getRequest('poids',     '');
 $poignet   = Wrapper::getRequest('poignet',   16);
@@ -33,8 +35,6 @@ $pwd       = Wrapper::getRequest('pwd',       '');
 $controle  = Wrapper::getRequest('controle',  '');
 $del       = Wrapper::getRequest('del',       0);
 $upd       = Wrapper::getRequest('upd',       0);
-
-$modifier = $sess_context->isUserConnected() && $upd == 1 ? true : false;
 
 // Attention pas de login ni de pseudo en double
 
@@ -54,7 +54,7 @@ if ($modifier)
 
 		if ($row['photo'] != "" && $row['photo'] != $photo && file_exists($row['photo'])) unlink($row['photo']);
 
-		$update = "UPDATE jb_users SET tel='".$tel."', mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".$email."', date_nais='".$date_nais."', login='".$login."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
+		$update = "UPDATE jb_users mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".$email."', date_nais='".$date_nais."', login='".$login."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
 		$res = dbc::execSQL($update);
 
 		$select = "SELECT * FROM jb_users WHERE id=".$sess_context->user['id'];
@@ -76,7 +76,7 @@ else
 	$row = mysqli_fetch_array($res);
 	if ($row['total'] > 0) { echo "-1||Login déjà existant"; exit(0); }
 
-	$insert = "INSERT INTO jb_users (confidentialite, activite, morpho, sexe, taille, poignet, poids, photo, pseudo, nom, prenom, email, tel, mobile, ville, date_nais, login, pwd, status, date_inscription) VALUES (".$confidentialite.", ".$activite.", ".$morpho.", ".$sexe.", ".$taille.", ".$poignet.", ".$poids.", '".$photo."', '".$pseudo."', '".$nom."', '".$prenom."', '".$email."', '".$tel."', '".$mobile."', '".$ville."', '".$date_nais."', '".$login."', '".$pwd."', 1, '".date("Y")."-".date("m")."-".date("d")."');";
+	$insert = "INSERT INTO jb_users (pseudo, email, login, pwd, status, date_inscription) VALUES ('".$pseudo."', '".$email."', '".$login."', '".$pwd."', 1, '".date("Y")."-".date("m")."-".date("d")."');";
 	$res = dbc::execSQL($insert);
 
 	$select = "SELECT * FROM jb_users WHERE pseudo='".$pseudo."' AND login='".$login."'";
@@ -88,5 +88,6 @@ else
 ?><span class="hack_ie">_HACK_IE_</span>
 <script>
 mm({action:'myprofile'});
-$cMsg({ msg: 'Inscription <?= $modifier ? "modifiée" : "validée" ?>' });
+go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
+$cMsg({ msg: '<?= $modifier ? "Compte modifié" : "Inscription validée" ?>' });
 </script>
