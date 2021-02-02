@@ -1,6 +1,5 @@
 <?
 
-
 function _sc_register_globals($order = 'egpcs')
 {
     // define a subroutine
@@ -55,8 +54,8 @@ class sess_context
 	const mail_charset = "ISO-8859-1";
 	const xml_charset = "ISO-8859-1";
 
-	function __construct()
-	{
+	function __construct() {
+
 		$this->valide    = -1;				// 0: Championnat non valide, 1: Championnat valide, -1: non défini
 		$this->connected = 0;				// 0: Utilisateur non connecté 1: Utilisateur connecté
 		$this->user      = "";
@@ -69,8 +68,7 @@ class sess_context
 		$this->options_generales = JKCache::getCache("../cache/flux_options.txt", -1, "_FLUX_OPTIONS_JORKERS_");
 	}
 
-	function setChampionnat($championnat)
-	{
+	function setChampionnat($championnat) {
 		$this->championnat = $championnat;
 		unset($this->championnat['news']);
 		unset($this->championnat['description']);
@@ -88,7 +86,7 @@ class sess_context
 		$this->championnat['option_display_all_matchs'] = isset($opt[8]) ? $opt[8] : 0;
 		$this->championnat['option_gavgp'] = isset($opt[11]) ? $opt[11] : 0;
 
-		$this->valide = ($this->championnat['championnat_id'] > 0) ? 1 : 0;	// Ne pas appeler la méthode !!!!
+		$this->valide = ($this->championnat['championnat_id'] == 0) ? 0 : 1;	// Ne pas appeler la méthode !!!!
 
 		if ($this->championnat['championnat_id'] != 0)
 		{
@@ -97,8 +95,7 @@ class sess_context
 		}
 	}
 
-	function setFriends()
-	{
+	function setFriends() {
 		unset($this->friends);
 		$this->friends = array();
 
@@ -111,8 +108,7 @@ class sess_context
 		}
    	}
 
-	function setSaisons()
-	{
+	function setSaisons() {
 		$this->nb_saisons = 0;
 		unset($this->saisons);
 		$this->saisons = array();
@@ -127,8 +123,7 @@ class sess_context
 	}
 
 	// Changement logique de la saison en cours d'affichage
-	function changeSaison($new_id_saison)
-	{
+	function changeSaison($new_id_saison) {
 		$this->championnat['saison_id'] = $new_id_saison;
 		$tab = array();
 		reset($this->saisons);
@@ -143,8 +138,7 @@ class sess_context
 		$this->saisons = $tab;
 	}
 
-	function isOptionGeneraleSet($option)
-	{
+	function isOptionGeneraleSet($option) {
 		global $sess_context;
 		if (isset($sess_context->options_generales))
 		{
@@ -217,93 +211,78 @@ class sess_context
 			$this->setChampionnatNonDefini();
 	}
 
-	public static function _getChampionnatId()
-	{
+	public static function getJorkersVersion() {
+		return "2.21.2".(sess_context::isLocalHost() ? ".".time() : ""); // Ne pas mettre dans le construct sinon pas dynamique, il faut vider le cache browser
+	}
+	public static function _getChampionnatId() {
 		global $sess_context;
 		return ($sess_context->championnat['saison_id']);
 	}
-	public static function _getRealChampionnatId()
-	{
+	public static function _getRealChampionnatId() {
 		global $sess_context;
 		return ($sess_context->championnat['championnat_id']);
 	}
-	public static function _getChampionnatNom()
-	{
+	public static function _getChampionnatNom() {
 		global $sess_context;
 		return ($sess_context->championnat['championnat_nom']);
 	}
-	public static function _isTournoi()
-	{
+	public static function _isTournoi() {
 		global $sess_context;
 		return ($sess_context->championnat['type'] == _TYPE_TOURNOI_);
 	}
-	public static function _isChampionnat()
-	{
+	public static function _isChampionnat() {
 		global $sess_context;
 		return ($sess_context->championnat['type'] == _TYPE_CHAMPIONNAT_);
 	}
-	public static function _isFreeChampionnat()
-	{
+	public static function _isFreeChampionnat() {
 		global $sess_context;
 		return ($sess_context->championnat['type'] == _TYPE_LIBRE_);
 	}
-	public static function isGoalAverageParticulier()
-	{
+	public static function isGoalAverageParticulier() {
 		global $sess_context;
 		return ($sess_context->championnat['option_gavgp'] == 1);
 	}
-	public static function getValeurVictoireMatch()
-	{
+	public static function getValeurVictoireMatch() {
 		global $sess_context;
 		return isset($sess_context->championnat['valeur_victoire']) ? $sess_context->championnat['valeur_victoire'] : 3;
 	}
-	public static function getValeurNulMatch()
-	{
+	public static function getValeurNulMatch() {
 		global $sess_context;
 		return isset($sess_context->championnat['valeur_nul']) ? $sess_context->championnat['valeur_nul'] : 1;
 	}
-	public static function getForfaitPenaliteBonus()
-	{
+	public static function getForfaitPenaliteBonus() {
 		global $sess_context;
 		return isset($sess_context->championnat['forfait_penalite_bonus']) ? $sess_context->championnat['forfait_penalite_bonus'] : 0;
 	}
-	public static function getForfaitPenaliteMalus()
-	{
+	public static function getForfaitPenaliteMalus() {
 		global $sess_context;
 		return isset($sess_context->championnat['forfait_penalite_malus']) ? $sess_context->championnat['forfait_penalite_malus'] : 0;
 	}
-	public static function getValeurDefaiteMatch()
-	{
+	public static function getValeurDefaiteMatch() {
 		global $sess_context;
 		return isset($sess_context->championnat['valeur_defaite']) ? $sess_context->championnat['valeur_defaite'] : 1;
 	}
-	public static function getGestionMatchsNul()
-	{
+	public static function getGestionMatchsNul() {
 		global $sess_context;
 		return isset($sess_context->championnat['gestion_nul']) ? $sess_context->championnat['gestion_nul'] : 0;
 	}
-	public static function getGestionFanny()
-	{
+	public static function getGestionFanny() {
 		global $sess_context;
 		return isset($sess_context->championnat['gestion_fanny']) ? $sess_context->championnat['gestion_fanny'] : 1;
 	}
-	public static function getGestionSets()
-	{
+	public static function getGestionSets() {
 		global $sess_context;
 		return isset($sess_context->championnat['gestion_sets']) ? $sess_context->championnat['gestion_sets'] : 1;
 	}
-	public static function getTriClassementGeneral()
-	{
+	public static function getTriClassementGeneral() {
 		global $sess_context;
 		return isset($sess_context->championnat['tri_classement_general']) ? $sess_context->championnat['tri_classement_general'] : 1;
 	}
-	public static function getTypeSport()
-	{
+	public static function getTypeSport() {
 		global $sess_context;
 		return isset($sess_context->championnat['type_sport']) ? $sess_context->championnat['type_sport'] : 1;
 	}
-	public static function getLibelleTypeSport()
-	{
+	public static function getLibelleTypeSport() {
 		global $sess_context;
 
 		$type = isset($sess_context->championnat['type_sport']) ? $sess_context->championnat['type_sport'] : 1;
@@ -312,8 +291,7 @@ class sess_context
 		if ($type == 2) return "Futsal";
 		if ($type == 3) return "Football";
 	}
-	public static function getHomeListHeadcount()
-	{
+	public static function getHomeListHeadcount() {
 		global $sess_context;
 		return isset($sess_context->championnat['home_list_headcount']) ? $sess_context->championnat['home_list_headcount'] : 7;
 	}

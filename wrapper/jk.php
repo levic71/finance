@@ -24,6 +24,7 @@ require_once "../include/constantes.php";
 require_once "../include/toolbox.php";
 require_once "../include/cache_manager.php";
 require_once "../include/inc_db.php";
+require_once "../include/templatebox.php";
 require_once "wrapper_fcts.php";
 
 $_REQUEST['idc'] = isset($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_CHAMP_ID_HOME;
@@ -75,7 +76,7 @@ $sess_context->setChampionnat($chp);
 
 $sess_context->resetAdmin();
 
-// Si on vient d'une creation de championnat
+// Si on vient d'une création de championnat
 if (isset($_SESSION['autologonadmin']) && $_SESSION['autologonadmin'] == 1)
 {
   unset($_SESSION['autologonadmin']);
@@ -98,9 +99,6 @@ else
   else
     $sess_context->resetAdmin();
 }
-
-// Faire un systeme qui va chercher les datas google analytics plutot que de le faire moi meme
-// Toolbox::trackUser($idc, _TRACK_ACCES_HOME_);
 
 ?>
 
@@ -130,6 +128,22 @@ else
     <div id="msgboxes"></div>
 
     <script src="../mdl/material.min.js"></script>
+
+
+<? if (!$sess_context->isSuperUser()) { ?>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-1509984-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+<? } ?>
+
 
   </body>
 </html>

@@ -5,6 +5,8 @@ class TemplateBox
 
 var $home;
 
+// ENCORE UTILISER DANS LES APPELS WRAPPER ???
+
 function htmlBegin($onkeypressed = false, $no_cache = false, $code_page = "-1", $onload = "")
 {
 	global $championnat_home, $adminstration_page, $actualite_page, $refresh_page_forum;
@@ -117,11 +119,6 @@ function htmlEnd($stats = true)
 {
 	global $sess_context;
 
-	if (false)
-	{
-		require("../webanalyse/include/stats_main.inc");
-		$stats = new init(true, '../webanalyse/');
-	}
 ?>
 
 <!-- FIN FENETRE GLOBALE -->
