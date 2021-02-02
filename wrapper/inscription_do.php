@@ -19,7 +19,11 @@ $activite  = Wrapper::getRequest('activite',  3);
 $morpho    = Wrapper::getRequest('morpho',    1);
 $nom       = Wrapper::getRequest('nom',       '');
 $prenom    = Wrapper::getRequest('prenom',    '');
+<<<<<<< HEAD
 $pseudo    = Wrapper::getRequest($modifier ? 'pseudo' : 'login',    ''); // A l'inscrition pseudo=login, modifiable ensuite ...
+=======
+$pseudo    = Wrapper::getRequest($modifier ? 'pseudo' : 'login', ''); // pseudo = login à la création 
+>>>>>>> develop
 $taille    = Wrapper::getRequest('taille',    '');
 $poids     = Wrapper::getRequest('poids',     '');
 $poignet   = Wrapper::getRequest('poignet',   16);
@@ -52,7 +56,11 @@ if ($modifier)
 
 		if ($row['photo'] != "" && $row['photo'] != $photo && file_exists($row['photo'])) unlink($row['photo']);
 
+<<<<<<< HEAD
 		$update = "UPDATE jb_users SET mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".$email."', date_nais='".$date_nais."', login='".$login."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
+=======
+		$update = "UPDATE jb_users mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".$email."', date_nais='".$date_nais."', login='".$login."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
+>>>>>>> develop
 		$res = dbc::execSQL($update);
 
 		$select = "SELECT * FROM jb_users WHERE id=".$sess_context->user['id'];
@@ -85,6 +93,10 @@ else
 
 ?><span class="hack_ie">_HACK_IE_</span>
 <script>
+<<<<<<< HEAD
+=======
+mm({action:'myprofile'});
+>>>>>>> develop
 go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
 $cMsg({ msg: '<?= $modifier ? "Compte modifié" : "Inscription validée" ?>' });
 </script>

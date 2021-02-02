@@ -86,8 +86,12 @@ $items = array();
 if ($modifier)
 	array_push($items, array("func" => "textfield_form", "id" => "pseudo", "value" => $pseudo, "icon" => "account_circle", "libelle" => "Pseudo", "nb_col" => 6, "required" => 1, "autofocus" => 1));
 else
+<<<<<<< HEAD
 	array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "fingerprint", "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
 
+=======
+	array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "fingerprint",    "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
+>>>>>>> develop
 array_push($items, array("func" => "textfield_form",          "id" => "email",       "value" => $email,     "icon" => "email",          "libelle" => "Email", "nb_col" => 6, "required" => 1));
 
 if ($modifier) {
@@ -106,9 +110,13 @@ if ($modifier) {
 	array_push($items, array("func" => "number_component_form",   "id" => "poids-zip",   "value" => $poids,     "icon" => "fitness_center", "libelle" => "Poids - kg", "nb_col" => 4, "start" => 0, "end" => 250));
 	array_push($items, array("func" => "number_component_form",   "id" => "poignet-zip", "value" => $poignet,   "icon" => "replay",         "libelle" => "Circonférence poignet - cm", "nb_col" => 4, "start" => 0, "end" => 250));
 }
+<<<<<<< HEAD
 
 array_push($items, array("func" => "divider_form",  "id" => "div3", "nb_col" => 12));
 
+=======
+array_push($items, array("func" => "divider_form", "id" => "div3", "nb_col" => 12));
+>>>>>>> develop
 if ($modifier)
 	array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "fingerprint", "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
 if ($modifier) {
@@ -143,9 +151,14 @@ choices.build({ name: 'sexe', c1: 'blue', c2: 'white', values: [{ v: 1, l: 'Homm
 choices.build({ name: 'confidentialite', c1: 'blue', c2: 'white', values: [{ v: 0, l: 'Publique', s: <?= $confidentialite == 0 ? 'true' : 'false' ?> }, { v: 1, l: 'Limitée', s: <?= $confidentialite == 1 ? 'true' : 'false' ?> }, { v: 2, l: 'Privée', s: <?= $confidentialite == 2 ? 'true' : 'false' ?> }] });
 choices.build({ name: 'morpho', c1: 'blue', c2: 'white', values: [{ v: 1, l: 'Normale', s: <?= $morpho == 1 ? 'true' : 'false' ?> }, { v: 2, l: 'Large', s: <?= $morpho == 2 ? 'true' : 'false' ?> }, { v: 3, l: 'Mince', s: <?= $morpho == 3 ? 'true' : 'false' ?> }] });
 choices.build({ name: 'activite', c1: 'blue', c2: 'white', singlepicking: true, removable: true, values: [ { v: 1, l: 'Sédentaire', s: <?= $activite == 1 ? 'true' : 'false' ?> }, { v: 2, l: 'Léger', s: <?= $activite == 2 ? 'true' : 'false' ?> }, { v: 3, l: 'Moyen', s: <?= $activite == 3 ? 'true' : 'false' ?> }, { v: 4, l: 'Intense', s: <?= $activite == 4 ? 'true' : 'false' ?> }, { v: 5, l: 'Très intense', s: <?= $activite == 5 ? 'true' : 'false' ?> }] });
+<<<<<<< HEAD
 <? } else { ?>
 choices.build({ name: 'conditions', c1: 'blue', c2: 'white', values: [{ v: 0, l: 'Non', s: true }, { v: 1, l: 'Oui', s: false }] });
 <? } ?>
+=======
+<? } ?>
+choices.build({ name: 'conditions', c1: 'blue', c2: 'white', values: [{ v: 0, l: 'Non', s: true }, { v: 1, l: 'Oui', s: false }] });
+>>>>>>> develop
 
 valid_form = function() {
 
