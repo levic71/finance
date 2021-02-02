@@ -21,7 +21,7 @@ $items = array();
 array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "person", "libelle" => "Identifiant",  "nb_col" => 12, "required" => 1, "autofocus" => 1));
 array_push($items, array("func" => "textfield_form", "id" => "pwd",   "value" => $pwd,   "icon" => "lock",   "libelle" => "Mot de passe", "nb_col" => 12, "required" => 1, "password" => 1));
 array_push($items, array("func" => "checkbox_form",  "id" => "remind", "icon" => "", "libelle" => "Se souvenir de moi ?", "nb_col" => 11, "checked" => 1));
-$actions = array(0 => array("onclick" => "mm({action: 'inscription'});", "libelle" => "S'inscrire", "color" => ""), 1 => array("onclick" => "return valid_form();", "libelle" => "Se connecter"));
+$actions = array(0 => array("onclick" => "mm({action: 'inscription'});", "libelle" => "S'inscrire", "color" => ""), 1 => array("onclick" => "return valid_form();", "libelle" => "Se connehhhhhhhhcter"));
 Wrapper::build_form(array("nb_col" => 6, "title" => "Authentification", "menu" => $menu, "items" => $items, "actions" => $actions));
 
 ?>
