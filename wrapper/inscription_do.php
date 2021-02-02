@@ -44,7 +44,6 @@ if ($modifier)
 	$res = dbc::execSQL($select);
 	if ($row = mysqli_fetch_array($res))
 	{
-
 		// Vérification pseudo user unique
 		if ($pseudo != $row['pseudo']) {
 			$select = "SELECT count(*) total FROM jb_users WHERE pseudo='".$pseudo."'";

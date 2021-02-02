@@ -114,9 +114,8 @@ else
       <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600" id="myheader">
         <div class="mdl-layout__header-row">
           <span class="mdl-layout-title logo<?= $chp['logo_font'] ?>" id="logo"><?= $chp['championnat_nom'] ?></span>
-
-           <div class="mdl-layout-spacer"></div><div id="login_panel" class="mdl-grid"></div>
-
+          <div class="mdl-layout-spacer"></div>
+          <div id="login_panel" class="mdl-grid"></div>
         </div>
       </header>
 

@@ -86,11 +86,12 @@ close_menu = function() {
 /* action */
 go = function(args) {
 	var opt = args||{};
+	var id=opt.id||'main';
 	var action=opt.action||'';
 	var confirmdel=opt.confirmdel||0;
 	var confirminvit=opt.confirminvit||0;
 
-	myconsole('go: ' + action + ' url: ' + opt.url);
+	myconsole('go begin : action=' + action + ' url=' + opt.url);
 
 	letsgo = true;
 	if (opt.confirmdel == 1) letsgo = confirm('Confirmez vous cette suppression ?');
@@ -103,19 +104,19 @@ go = function(args) {
 		jx.load(
 			opt.url,
 			function(data) {
-				myconsole('go: jx in');
+				myconsole('go       : jx in');
 				addCN('main-content', action+'_page');
-				cc(opt.id, data);
+				cc(id, data);
 				if (action == 'slidebar') componentHandler.upgradeDom('MaterialMenu');
 				updateContext(action);
 				google_tracking(opt.url);
-				myconsole('go: jx out');
+				myconsole('go       : jx out');
 			},
 			'text', 'post'
 		);
 	}
 
-	myconsole('go: end');
+	myconsole('go end   : action=' + action + ' url=' + opt.url);
 
 }
 
@@ -125,12 +126,12 @@ xx = function(args) {
 	var mobile=opt.mobile||'';
 	var idc=opt.idc||'';
 
-	myconsole('xx: ' + opt.url);
+	myconsole('xx begin : action='+ opt.action + ' url=' + opt.url);
 
 	jx.load(
 		opt.url,
 		function(data) {
-			myconsole('xx: jx in');
+			myconsole('xx       : jx in');
 			addCN('main-content', opt.action+'_page');
 			var tmp = data.split('||');
 			if (tmp.length > 1)
@@ -140,6 +141,7 @@ xx = function(args) {
 					if (opt.action == 'valid') {
 						mm({action: 'myprofile', mobile: mobile});
 						go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
+						go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
 					}
 
 					if (opt.action == 'login') {
@@ -171,9 +173,6 @@ xx = function(args) {
 					{ hide('box2'); hide('swap1'); }
 			}
 
-			if (opt.action == 'myprofile')
-				go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
-
 			if (opt.action == 'dashboard')  {
 				go({ action: 'dashboard', id: 'dashjournee', url: 'dashboard_journee.php' });
 			}
@@ -183,11 +182,11 @@ xx = function(args) {
 			// if (opt.url == 'login.php' && tmp[0] > 0) opt.url = 'logout.php';
 			if (opt.action == 'valid') {  var t = opt.url.split('|'); opt.url = t[0].replace('params', 'idc'); }
 			google_tracking(opt.url);
-			myconsole('xx: jx out');
+			myconsole('xx       : jx out');
 		},
 		'text', 'post'
 	);
-	myconsole('xx: end');
+	myconsole('xx end   : action='+ opt.action + ' url='+ opt.url);
 }
 
 mm = function(args) {
@@ -203,7 +202,7 @@ mm = function(args) {
 	var idt=opt.idt||0;
 	var name=encodeURIComponent(opt.name)||'';
 	var date=opt.date||'';
-	var idc=opt.idc||85;
+	var idc=opt.idc||-999;
 	var idg=opt.idg||0;
 	var search=opt.search||0;
 	var sort=opt.sort||'';
@@ -216,7 +215,7 @@ mm = function(args) {
 	var mktime = Math.floor((new Date()).getTime() / 1000);
 	var search_value = (search == 1 && valof('search') != '') ? valof('search') : '';
 
-	myconsole('mm: ' + action);
+	myconsole('mm begin : action=' + action);
 
 	close_menu();
 
@@ -240,13 +239,15 @@ mm = function(args) {
 	else if (action == 'dashboard')
 		xx({action: action, id:'main', url:'dashboard.php'});
 	else if (action == 'myprofile')
-		xx({action: action, id:'main', url:'myprofile.php?mobile='+mobile, mobile: mobile});
+		xx({action: action, id:'main', url:'myprofile.php', mobile: mobile});
 	else if (action == 'login')
-		xx({action: action, id:'main', url:'login.php?mobile='+mobile, mobile: mobile});
+		xx({action: action, id:'main', url:'login.php', mobile: mobile});
 	else if (action == 'logout')
 		window.location = 'logout.php';
 	else if (action == 'inscription')
 		xx({action: action, id:'main', url:'inscription.php'});
+	else if (action == 'chpwd')
+		xx({action: action, id:'main', url:'login_chpwd.php?chpwd='+params});
 	else if (action == 'updprofile')
 		xx({action: action, id:'main', url:'inscription.php?upd=1'});
 	else if (action == 'photos')
@@ -272,7 +273,7 @@ mm = function(args) {
 	else
 		xx({action: action, id:'main', tournoi: tournoi, url:'grid.php?action='+action+'&page='+page+'&sort='+sort+(search == 1 ? '&search='+search_value : '')+(filtre_type_champ != 9 ? '&filtre_type_champ='+filtre_type_champ : '')+(favoris != 0 ? '&favoris='+favoris : '')+'&sport_sort='+sport_sort});
 
-	myconsole('mm: end');
+	myconsole('mm end   : action=' + action);
 }
 
 updateContext = function(action) {
@@ -334,7 +335,7 @@ check_email = function(str)
 	var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
 	if (!filter.test(str))
 	{
-		alert("Le format du champ Email est incorrect !");
+		$dMsg({msg : 'Le format du champ Email est incorrect !'});
 		return false;
 	}
 	return true;
@@ -342,22 +343,22 @@ check_email = function(str)
 
 check_JJMMAAAA = function(str, label)
 {
-	if (str.length == 0) { alert('Le champ <'+label+'> ne doit pas ï¿½tre vide'); return false; }
-	if (!(str.length == 10)) { alert('Le champ <'+label+'> doit ï¿½tre de la forme JJ/MM/AAAA'); return false; }
+	if (str.length == 0) { $dMsg({msg : 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
+	if (!(str.length == 10)) { $dMsg({msg : 'Le champ "'+label+'" doit être de la forme JJ/MM/AAAA' }); return false; }
 	var jour=str.substring(0, 2); var mois=str.substring(3, 5); var year=str.substring(6, 10);
-	if (jour > 31 || jour < 1 || mois < 1 || mois > 12) { alert('Le champ <'+label+'> doit ï¿½tre de la forme JJ/MM/AAAA'); return false; }
+	if (jour > 31 || jour < 1 || mois < 1 || mois > 12) { $dMsg({msg : 'Le champ "'+label+'" doit être de la forme JJ/MM/AAAA'});  return false; }
 	return true;
 }
 
 check_num = function(num, label, min, max)
 {
-	if (num.length == 0) { alert('Le champ <'+label+'> ne doit pas ï¿½tre vide'); return false; }
+	if (num.length == 0) { $dMsg({msg : 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
 	for(var i=0; i < num.length; i++)
 	{
 		var car=num.substring(i, i+1);
-		if (!(car >= "0" && car <= "9")) { alert('Le champ <'+label+'> doit ï¿½tre numï¿½rique'); return false; }
+		if (!(car >= "0" && car <= "9")) { $dMsg({msg : 'Le champ "'+label+'" doit être numérique' }); return false; }
 	}
-	if (num > max || num < min) { alert('Le champ <'+label+'> doit ï¿½tre compris entre '+min+' et '+max); return false; }
+	if (num > max || num < min) { $dMsg({msg : 'Le champ "'+label+'" doit être compris entre '+min+' et '+max }); return false; }
 	return true;
 }
 isacar = function(car) { if ((car >= "0" && car <= "9") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z")) return true; return false; }
@@ -375,15 +376,15 @@ isaextcar = function(car)
 }
 check_alphanum_gen = function(str, label, size, type)
 {
-	if (str.length == 0) { alert('Le champ <'+label+'> ne doit pas ï¿½tre vide'); return false; }
-	if (size != -1 && str.length < size) { alert('Le champ <'+label+'> doit ï¿½tre composï¿½ d\'au moins '+size+' caractï¿½res alphanumï¿½riques'); return false; }
+	if (str.length == 0) { $dMsg({msg : 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
+	if (size != -1 && str.length < size) { $dMsg({msg : 'Le champ "'+label+'" doit être composé d\'au moins '+size+' caractères alphanumériques'}); return false; }
 	for(var i=0; i < str.length; i++)
 	{
 		var car=str.substring(i, i+1);
 		if (type == 0)
-			if (!isacar(car)) { alert('Le champ <'+label+'> doit ï¿½tre alphanumï¿½rique'); return false; }
+			if (!isacar(car)) { $dMsg({msg : 'Le champ "'+label+'" doit être alphanumérique'}); return false; }
 		else
-			if (!isacarext(car)) { alert('Le champ <'+label+'> doit ï¿½tre alphanumï¿½rique'); return false; }
+			if (!isacarext(car)) { $dMsg({msg : 'Le champ "'+label+'" doit être alphanumérique'}); return false; }
 	}
 	return true;
 }
@@ -392,7 +393,7 @@ check_alphanumext = function(str, label, size) { return check_alphanum_gen(str, 
 
 check_slide_value = function (id) {
 	if (id.getValue() != "1,0") {
-		alert('Etes-vous un robot ?');
+		$dMsg({msg : 'Etes-vous un robot ?'});
 		return false;
 	}
 	return true;

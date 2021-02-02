@@ -185,14 +185,14 @@ public static function displayMatchesStats($idj, $complete) {
 
 	global $sess_context;
 
-	// On r?cup?re les infos de la journ?e
+	// On recupere les infos de la journée
 	$sql = "SELECT * FROM jb_journees WHERE id=".(isset($idj) && $idj != "" ? $idj : $sess_context->getJourneeId());
 	$res = dbc::execSQL($sql);
 	$row = mysqli_fetch_array($res);
 //	if (!$row) return;
 
 	$classement_joueurs = "";
-	// Si le champ 'joueurs' est renseignï¿½ alors on affiche les stats des joueurs (en principe, jamais vide)
+	// Si le champ 'joueurs' est renseignié alors on affiche les stats des joueurs (en principe, jamais vide)
 	if ($row['joueurs'] != "")
 	{
 		// On r?cup?res les infos des joueurs (avec init classement vierge si besoin)
@@ -209,10 +209,10 @@ public static function displayMatchesStats($idj, $complete) {
 	}
 
 	$classement_equipes = "";
-	// Si le champ 'equipes' est renseignï¿½ alors on affiche les stats des ï¿½quipes
+	// Si le champ 'equipes' est renseignié alors on affiche les stats des équipes
 	if ($row['equipes'] != "")
 	{
-		// On r?cup?res les infos des joueurs (avec init classement vierge si besoin)
+		// On récupéres les infos des joueurs (avec init classement vierge si besoin)
 		$req = "SELECT * FROM jb_equipes WHERE id_champ=".$sess_context->getRealChampionnatId()." AND id IN (".SQLServices::cleanIN($row['equipes']).") ORDER BY nom ASC";
 		$res = dbc::execSql($req);
 		while($eq = mysqli_fetch_array($res))
@@ -406,11 +406,46 @@ public static function isUserDataSemiPrivate($user) {
 	if (isset($user['id']) && $sess_context->isUserConnected() && $user['id'] == $sess_context->user['id']) $ret = false;
 	return $ret;
 }
-public static function isUserDataPublic($user)      {
+public static function isUserDataPublic($user) {
 	global $sess_context;
 	$ret = false;
 	if (isset($user['confidentialite']) && $user['confidentialite'] == 0) $ret = true;
 	if (isset($user['id']) && $sess_context->isUserConnected() && $user['id'] == $sess_context->user['id']) $ret = true;
+	return $ret;
+}
+
+public static function resetChPwdToken($token) {
+	$udt = "UPDATE jb_users SET reset_time=0, reset_count=0, reset_token='' WHERE reset_token='".$token."'";
+	$res = dbc::execSQL($udt);
+}
+
+public static function increaseCountChPwdToken($token) {
+	$udt = "UPDATE jb_users SET reset_count=reset_count+1 WHERE reset_token='".$token."'";
+	$res = dbc::execSQL($udt);
+}
+
+public static function isChPwdValid($token) {
+	$ret = false;
+
+	$sql = "SELECT count(*) total FROM jb_users WHERE reset_token='".$token."'";
+    $res = dbc::execSQL($sql);
+
+	if ($res) {
+		$row = mysqli_fetch_array($res);
+		if ($row['total'] == 1) {
+			$sql2 = "SELECT reset_time, reset_count FROM jb_users WHERE reset_token='".$token."'";
+			$res2 = dbc::execSQL($sql2);
+			$row2 = mysqli_fetch_array($res2);
+			if ($row2['reset_count'] <= 10 && (time() - $row2['reset_time']) < 600)
+			{
+				Wrapper::increaseCountChPwdToken($token);
+				$ret = true;
+			}
+			else
+				Wrapper::resetChPwdToken($token);
+		}
+	}
+
 	return $ret;
 }
 
@@ -451,9 +486,9 @@ public static function fab_button_menu($items) {
 }
 
 public static function annuler_valider_buttons($items) {
-	$items[0]['color'] = "mdl-color-text--grey";
-	$items[0]['libelle'] = "Annuler";
-	$items[1]['libelle'] = "Valider";
+	$items[0]['color'] = isset($items[0]['color']) ? $items[0]['color'] : "mdl-color-text--grey";
+	$items[0]['libelle'] = isset($items[0]['libelle']) ? $items[0]['libelle'] : "Annuler";
+	$items[1]['libelle'] = isset($items[1]['libelle']) ? $items[1]['libelle'] : "Valider";
 	Wrapper::two_action_buttons($items);
 }
 
@@ -471,16 +506,26 @@ public static function two_action_buttons($items) {
 
 public static function freezone_form($item) { echo $item['freezone']; }
 
+public static function divider_form($item) { ?>
+	<hr />
+<? }
+
 public static function textfield_form($item) { ?>
 	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><input class="mdl-textfield__input" type="<?= isset($item['password']) ? "password" : "text" ?>" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : ""?> <?= isset($item['autofocus']) ? "autofocus" : "" ?> />
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
+<? }
+
+public static function checkbox_form($item) { ?>
+	<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="<?= $item['id'] ?>">
+		<input type="checkbox" id="<?= $item['id'] ?>" <?= $item['checked'] == 1 ? "checked" : ""?> <?= isset($item['autofocus']) ? "autofocus" : "" ?> class="mdl-checkbox__input">
+		<span class="mdl-checkbox__label"><?= $item['libelle'] ?></span>
+	</label>
 <? }
 
 public static function textarea_form($item) { ?>
 	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><textarea class="mdl-textfield__input" rows="3" type="text" id="<?= $item['id'] ?>" <?= isset($item['required']) ? "required" : "" ?>><?= $item['value'] ?></textarea>
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
 <? }
-
 
 public static function textfield_place_form($item) { ?>
 	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><input class="mdl-textfield__input" type="text" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : "" ?> />
@@ -543,20 +588,24 @@ public static function calendar_component_form($item) { ?>
 
 public static function item_form($item) {
 
-	$classes  = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--".$item['nb_col']."-col";
+	$classes  = "";
+	$classes .= "mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell ".($item['func'] == "divider_form" ? "mdl-divider " : "");
+	$classes .= "mdl-cell--".$item['nb_col']."-col";
 	$classes .= ($item['func'] == "calendar_component_form" || $item['func'] == "choice_component_form" || $item['func'] == "number_component_form" || $item['func'] == "captcha_form" || $item['func'] == "upload_image_form") ? " is-dirty " : "";
 	$classes .= ($item['func'] == "captcha_form") ? " is-captcha " : "";
 	$classes .= isset($item['required']) ? " mdl-textfield--required " : "";
-	?>
-	<div id="<?= $item['id']."-box" ?>" class="<?= $classes ?>">
+
+	if (!isset($item['value'])) $item['value'] = "";
+?>
+	<div id="<?= $item['id']."-box" ?>" class="<?= $classes ?>"  <?= ($item['func'] == "checkbox_form") ? 'style="padding-left: 50px;"' : '' ?> >
 		<? call_user_func("Wrapper::".$item['func'], $item); ?>
 	</div>
 <? }
 
 public static function build_form($options) {
 
-	Wrapper::template_box_start();
-	Wrapper::template_box_title(isset($options['title']) ? $options['title'] : "");
+	Wrapper::template_box_start(isset($options['nb_col']) ? $options['nb_col'] : 12);
+	Wrapper::template_box_title(isset($options['title'])  ? $options['title']  : "");
 
 	if (isset($options['menu'])) { ?>
 	<div class="mdl-card__menu">
@@ -571,9 +620,9 @@ public static function build_form($options) {
 	Wrapper::template_box_end();
 }
 
-public static function template_box_start() { ?>
+public static function template_box_start($nb_col) { ?>
 	<div class="mdl-layout-spacer"></div>
-	<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--10-col mdl-cell--12-tablet mdl-cell--4-col-phone mdl-cell--middle">
+	<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--<?= $nb_col ?>-col mdl-cell--12-tablet mdl-cell--4-col-phone mdl-cell--middle">
 <? }
 
 public static function template_box_end() { ?>
@@ -587,9 +636,7 @@ public static function template_box_title($title) { ?>
 	</div>
 <? }
 
-public static function javascript_form($otions) {
-
-}
+public static function javascript_form($otions) { }
 
 }
 

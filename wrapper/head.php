@@ -1,8 +1,11 @@
 <?
 
 $ver     = "2.25.1".(sess_context::isLocalHost() ? ".".time() : "");
+
 $wrapper = isset($wrapper) ? $wrapper : false;
+$chpwd   = isset($chpwd)   ? $chpwd   : false;
 $id_msg  = isset($id_msg)  ? $id_msg  : 0;
+
 $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? rand(1, count($libelle_theme)) : $chp['theme'];
 
 ?>
@@ -43,7 +46,7 @@ $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? ra
 <link rel="stylesheet" type="text/css" media="screen" href="../mdl/styles.css<?= "?ver=".$ver ?>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/theme<?= $theme ?>.css<?= "?ver=".$ver ?>" />
 
-<? if (!$wrapper) { /* Premi�re ligne jamais prise en compte car viewport=900 */ /* -webkit-min-device-pixel-ratio: 2 pour ipad2 */ ?>
+<? if (!$wrapper) { /* Premiere ligne jamais prise en compte car viewport=900 */ /* -webkit-min-device-pixel-ratio: 2 pour ipad2 */ ?>
 <link rel="stylesheet" media="all and (max-device-width: 480px)" href="css/iphone.css<?= "?ver=".$ver ?>" />
 <link rel="stylesheet" media="all and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)" href="css/ipad-portrait.css<?= "?ver=".$ver ?>" />
 <link rel="stylesheet" media="all and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)" href="css/ipad-landscape.css<?= "?ver=".$ver ?>" />
@@ -91,6 +94,12 @@ window.onload = function() {
 	go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
 	<? if ($wrapper) { ?>
 	mm({action: 'days'});
+	<? } else if ($chpwd) { 
+		if (wrapper::isChPwdValid($chpwd)) { ?>
+			mm({action: 'chpwd', params: '<?= $chpwd ?>'});
+		<? } else { ?> 
+			mm({action: 'leagues'}); $aMsg({msg : 'La demande invalide' });
+		<? } ?> 
 	<? } else if ($id_msg > 0) { ?>
 	go({action: 'tchat', id:'main', url:'edit_tchat.php?idp=<?= $id_msg ?>'});
 	<? } else if (isset($idp) && is_numeric($idp) && $idp > 0) { ?>

@@ -12,59 +12,28 @@ include "../www/StatsBuilder.php";
 header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 
 $db = dbc::connect();
-
 $mobile  = Wrapper::getRequest('mobile',    0);
-
 $login = $sess_context->isSuperUser() ? "levic" : (isset($login_user) ? $login_user : "");
 $pwd   = $sess_context->isSuperUser() ? "vicmju" : "";
 
+$menu = '<button id="btforget" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="go({url: \'login_reset.php\'});"><i class="mdl-textfield__icon material-icons">lock_outline</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oublié ?</div>';
+$items = array();
+array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "person", "libelle" => "Identifiant",  "nb_col" => 12, "required" => 1, "autofocus" => 1));
+array_push($items, array("func" => "textfield_form", "id" => "pwd",   "value" => $pwd,   "icon" => "lock",   "libelle" => "Mot de passe", "nb_col" => 12, "required" => 1, "password" => 1));
+array_push($items, array("func" => "checkbox_form",  "id" => "remind", "icon" => "", "libelle" => "Se souvenir de moi ?", "nb_col" => 11, "checked" => 1));
+$actions = array(0 => array("onclick" => "mm({action: 'inscription'});", "libelle" => "S'inscrire", "color" => ""), 1 => array("onclick" => "return valid_form();", "libelle" => "Se connecter"));
+Wrapper::build_form(array("nb_col" => 6, "title" => "Authentification", "menu" => $menu, "items" => $items, "actions" => $actions));
+
 ?>
-
-<div class="mdl-layout-spacer"></div>
-<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--6-col mdl-cell--middle">
-	<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Authentification <button id="btforget" class="mdl-button mdl-js-button mdl-button--icon" style="position:absolute; right: 10px;" onclick="mm({action: 'inscription'});"><i class="material-icons">settings</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oubliï¿½ ?</div></h2>
-<!-- 
-		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Authentifiez-vous avec<button id="btforget" class="mdl-button mdl-js-button mdl-button--icon" style="position:absolute; right: 10px;" onclick="mm({action: 'inscription'});"><i class="material-icons">settings</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btforget">Mot de passe oubliï¿½ ?</div></h2>
-		<p class="mdl-cell mdl-cell--12-col mdl-typography--text-center text-divider">
-			<button id="btfb" class="mdl-button mdl-js-button mdl-button--icon socialglyphs" onclick="alert('Comming soon ...'); return false;">f</button>
-			<button id="btgg" class="mdl-button mdl-js-button mdl-button--icon socialglyphs" onclick="alert('Comming soon ...'); return false;">h</button>
-			<button id="btin" class="mdl-button mdl-js-button mdl-button--icon socialglyphs" onclick="alert('Comming soon ...'); return false;">i</button>
-			<button id="bttt" class="mdl-button mdl-js-button mdl-button--icon socialglyphs" onclick="alert('Comming soon ...'); return false;">t</button>
-			<div class="mdl-tooltip" for="btfb">Facebook</div>
-			<div class="mdl-tooltip" for="btgg">Google+</div>
-			<div class="mdl-tooltip" for="btin">LinkedIn</div>
-			<div class="mdl-tooltip" for="bttt">Twitter</div>
-		</p>
-		<p class="mdl-cell mdl-cell--12-col mdl-color--primary">ou plus classiquement</p>
- -->
-	</div>
-	<div class="mdl-card__supporting-text form-group mdl-grid">
-			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-				<i class="mdl-textfield__icon material-icons">person</i><input class="mdl-textfield__input" type="text" id="login" onKeyPress="return submit_login(this, event);" value="<?= $login ?>"  />
-				<label class="mdl-textfield__label" for="login">Identifiant</label>
-			</div>
-			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-				<i class="mdl-textfield__icon material-icons">lock</i><input class="mdl-textfield__input" type="password" id="pwd" onKeyPress="return submit_enter(this, event);" value="<?= $pwd ?>" />
-				<label class="mdl-textfield__label" for="pwd">Mot de passe</label>
-			</div>
-			<div class="mdl-cell mdl-cell--12-col" style="padding-left: 50px;">
-				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="remind">
-					<input type="checkbox" id="remind" class="mdl-checkbox__input" checked>
-					<span class="mdl-checkbox__label">Se souvenir de moi ?</span>
-				</label>
-			</div>
-	</div>
-
-	<? Wrapper::two_action_buttons(array(0 => array("libelle" => "Se conntecter", "onclick" => "return valid_form();"), 1 => array("libelle" => "S'inscrire", "onclick" => "mm({action: 'inscription'});"))); ?>
-
-</div>
-<div class="mdl-layout-spacer"></div>
 
 <script>
 mandatory(['login', 'pwd']); fs('login');
 
 valid_form = function() {
+
+	if (!check_alphanumext(valof('login'), 'Identifiant', -1)) return false;
+    if (!check_alphanumext(valof('pwd'), 'Mot de passe', -1)) return false;
+
 	mm({action: 'valid', params: '<?= $sess_context->getRealChampionnatId() ?>|'+el('login').value+'|'+el('pwd').value, mobile: '<?= $mobile ?>'});
 	return false;
 }

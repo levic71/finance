@@ -11,16 +11,29 @@ if ($sess_context->isUserConnected()) { ?>
 <!--
 	<img src="<?= Wrapper::formatPhotoJoueur(file_exists($sess_context->user['photo']) ? $sess_context->user['photo'] : "img/user-icon.png") ?>" class="demo-avatar">
 -->
-	<span class="mdl-chip">
-	<span class="mdl-chip__text"><?= $sess_context->user['pseudo'] ?></span>
+	<span class="mdl-chip">	
+		<span class="mdl-chip__text"><?= $sess_context->user['pseudo'] ?></span>
 		<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
 			<i class="material-icons connected">account_circle</i>
 			<span class="visuallyhidden">Accounts</span>
 		</button>
 	</span>
 	<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-		<li class="mdl-menu__item" id="id2" onclick="mm({action: 'myprofile', mobile: 0});"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">account_circle</i>Mon profil</li>
-		<li class="mdl-menu__item" id="id3" onclick="mm({action: 'logout', mobile: 0});"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">lock_open</i>Se déconnecter</li>
+
+		<li class="mdl-menu__item" onclick="mm({action: 'myprofile', mobile: 0});">
+			<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+				<i class="material-icons mdl-list__item-icon mdl-color-text--blue-grey-400">account_circle</i>
+			</button>
+			<span class="mdl-list__item-primary-content">Mon profil</span>
+		</li>
+
+		<li class="mdl-menu__item" onclick="mm({action: 'logout', mobile: 0});">
+			<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+				<i class="material-icons mdl-list__item-icon mdl-color-text--blue-grey-400">lock_open</i>
+			</button>
+			<span class="mdl-list__item-primary-content">Se déconnecter</span>
+		</li>
+
 	</ul>
 
 <? } else { ?>

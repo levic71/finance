@@ -82,7 +82,7 @@ array_push($items, array("func" => "captcha_form",   "id" => "controle", "icon" 
 
 $actions = array(0 => array("onclick" => "return annuler();"), 1 => array("onclick" => "return validate_and_submit();"));
 
-Wrapper::build_form(array("title" => $lib, "menu" => $menu, "items" => $items, "actions" => $actions));
+Wrapper::build_form(array("title" => $lib, "menu" => $menu, "nb_col" => 8, "items" => $items, "actions" => $actions));
 
 ?>
 

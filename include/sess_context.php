@@ -47,9 +47,9 @@ class sess_context
 	var $id_journee_encours;
 	var $langue;
 	var $options_generales;
-	const INVALID_CHAMP_ID_HOME   = -999; // si idc = INVALID_CHAMP_ID_HOME   accÃ¨s limiter Ã  la liste championnats + connexion
-	const INVALID_CHAMP_ID_LOGIN  = -998; // si idc = INVALID_CHAMP_ID_LOGIN  accÃ¨s page login/inscription
-	const INVALID_CHAMP_ID_PROFIL = -997; // si idc = INVALID_CHAMP_ID_PROFIL accÃ¨s page mon profil
+	const INVALID_CHAMP_ID_HOME   = -999; // si idc = INVALID_CHAMP_ID_HOME   accès limiter à  la liste championnats + connexion
+	const INVALID_CHAMP_ID_LOGIN  = -998; // si idc = INVALID_CHAMP_ID_LOGIN  accès page login/inscription
+	const INVALID_CHAMP_ID_PROFIL = -997; // si idc = INVALID_CHAMP_ID_PROFIL accès page mon profil
 	const charset = "ISO-8859-1";
 	const xhr_charset = "ISO-8859-1";
 	const mail_charset = "ISO-8859-1";
@@ -57,15 +57,15 @@ class sess_context
 
 	function __construct()
 	{
-		$this->valide    = -1;				// 0: Championnat non valide, 1: Championnat valide, -1: non dÃ©fini
-		$this->connected = 0;				// 0: Utilisateur non connectÃ©, 1: Utilisateur connectÃ©
+		$this->valide    = -1;				// 0: Championnat non valide, 1: Championnat valide, -1: non défini
+		$this->connected = 0;				// 0: Utilisateur non connecté 1: Utilisateur connecté
 		$this->user      = "";
 		$this->admin     = 0;				// 0: Mode normal, 1: Mode administration championnat
 		$this->role      = _ROLE_ANONYMOUS_;
-		$this->xdisplay  = _XDISPLAY_FREE_;	// ModalitÃ© d'affichage (par dÃ©faut, affichage en mode gestion libre)
-		$this->id_journee_encours = 0;		// Id de la journÃ©e sur laquelle on travaille
+		$this->xdisplay  = _XDISPLAY_FREE_;	// Modalité d'affichage (par défaut, affichage en mode gestion libre)
+		$this->id_journee_encours = 0;		// Id de la journée sur laquelle on travaille
 
-		// RÃ©cupÃ©ration des options gÃ©nÃ©rÃ©les du Jorkers
+		// Récupération des options généréles du Jorkers
 		$this->options_generales = JKCache::getCache("../cache/flux_options.txt", -1, "_FLUX_OPTIONS_JORKERS_");
 	}
 
@@ -88,7 +88,7 @@ class sess_context
 		$this->championnat['option_display_all_matchs'] = isset($opt[8]) ? $opt[8] : 0;
 		$this->championnat['option_gavgp'] = isset($opt[11]) ? $opt[11] : 0;
 
-		$this->valide = ($this->championnat['championnat_id'] == 0) ? 0 : 1;	// Ne pas appeler la mÃ©thode !!!!
+		$this->valide = ($this->championnat['championnat_id'] == 0) ? 0 : 1;	// Ne pas appeler la méthode !!!!
 
 		if ($this->championnat['championnat_id'] != 0)
 		{
@@ -152,7 +152,7 @@ class sess_context
 		}
 		else
 		{
-			// RÃ©cupÃ©ration des options gÃ©nÃ©rÃ©les du Jorkers
+			// Récupération des options généréles du Jorkers
 			$options_generales = JKCache::getCache("../cache/flux_options.txt", -1, "_FLUX_OPTIONS_JORKERS_");
 			$ret = $options_generales[$option] == 1 ? true : false;
 		}

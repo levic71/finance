@@ -316,13 +316,13 @@ _:-ms-input-placeholder, :root .demo-graph {
 .slide-to-unlock {
 	position: absolute;
 	left: 40%;
-	top: 60%;
+	top: 46%;
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 
 	width: 400px;
 	width: 80%;
-	height: 40px;
+	height: 30px;
 }
 
 .slide-to-unlock .dragdealer {
@@ -337,7 +337,7 @@ _:-ms-input-placeholder, :root .demo-graph {
 }
 
 .slide-to-unlock .handle {
-	height: 30px;
+	height: 20px;
 	border-radius: 0;
 }
 
@@ -347,20 +347,16 @@ _:-ms-input-placeholder, :root .demo-graph {
 
 .slide-to-unlock .slide-text {
 	position: absolute;
-	top: 5px;
-	height: 40px;
-	font-size: 24px;
-	line-height: 40px;
+	/* top: 5px; */
+	height: 20px;
+	font-size: 14px;
+	line-height: 20px;
 	text-align: center;
 }
 
 .old-slider {
 	border-radius: 20px;
 	background: #222;
-	background-image: -webkit-linear-gradient(top, #111 0%, #333 100%);
-	background-image: -moz-linear-gradient(top, #111 0%, #333 100%);
-	background-image: -o-linear-gradient(top, #111 0%, #333 100%);
-	background-image: linear-gradient(to bottom, #111 0%, #333 100%);
 }
 
 .old-slider .dragdealer {
@@ -385,18 +381,11 @@ _:-ms-input-placeholder, :root .demo-graph {
 	width: 20%;
 	border-radius: 15px;
 	background: #ccc;
-	background-image: -webkit-linear-gradient(top, #f1f1f1 0%, #aaa 100%);
-	background-image: -moz-linear-gradient(top, #f1f1f1 0%, #aaa 100%);
-	background-image: -o-linear-gradient(top, #f1f1f1 0%, #aaa 100%);
-	background-image: linear-gradient(to bottom, #f1f1f1 0%, #aaa 100%);
 }
 
 .valide .slide-text { display: none; }
 .valide .handle {
-	background: rgb(205,235,142); /* Old browsers */
-	background: -moz-linear-gradient(top, rgba(205,235,142,1) 0%, rgba(165,201,86,1) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  background: rgb(156,39,176);
 }
 .mdl-textfield--required input, .mdl-textfield--required textarea {
 	background: url('../wrapper/img/asterisk-48.png') right top no-repeat;
@@ -461,3 +450,14 @@ _:-ms-input-placeholder, :root .demo-graph {
 	color: #FB8C00;
 }
 
+.mdl-textfield__input {
+  background: rgba(0, 0, 0, .05) !important;
+}
+
+.mdl-divider {
+  padding: 0px !important;
+}
+.mdl-divider hr {
+  margin: 0px !important;
+  border-top: 1px solid rgba(0,0,0,.1) !important;
+}

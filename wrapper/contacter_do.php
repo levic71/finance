@@ -47,7 +47,6 @@ else
 	$mail_header.= "Return-Path: <".$email.">\n";
 	$mail_header.= "Content-Type: text/html; charset=".sess_context::mail_charset."\n";
 	$mail_sujet  = "[Jorkers.com] - ".$sujet;
-	$mail_corps  = "Nom : ".$nom."\nEmail : ".$email."\nSujet : ".$sujet."\nMessage :\n".$message;
 
 	if ($type_mail == 0)
 	{
