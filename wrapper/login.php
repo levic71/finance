@@ -27,7 +27,7 @@ Wrapper::build_form(array("nb_col" => 6, "title" => "Authentification", "menu" =
 ?>
 
 <script>
-mandatory(['login', 'pwd']); fs('login');
+fs('login');
 
 valid_form = function() {
 

@@ -84,18 +84,19 @@ $title = $modifier ? "Modifier mon profil" : "Inscription";
 
 $items = array();
 if ($modifier)
-	array_push($items, array("func" => "textfield_form",          "id" => "pseudo",      "value" => $pseudo,    "icon" => "account_circle", "libelle" => "Pseudo", "nb_col" => 6, "required" => 1, "autofocus" => 1));
+	array_push($items, array("func" => "textfield_form", "id" => "pseudo", "value" => $pseudo, "icon" => "account_circle", "libelle" => "Pseudo", "nb_col" => 6, "required" => 1, "autofocus" => 1));
 else
-	array_push($items, array("func" => "textfield_form",          "id" => "login",       "value" => $login,     "icon" => "fingerprint",    "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
+	array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "fingerprint", "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
+
 array_push($items, array("func" => "textfield_form",          "id" => "email",       "value" => $email,     "icon" => "email",          "libelle" => "Email", "nb_col" => 6, "required" => 1));
+
 if ($modifier) {
 	array_push($items, array("func" => "textfield_form",          "id" => "nom",         "value" => $nom,       "icon" => "person",         "libelle" => "Nom", "nb_col" => 6));
 	array_push($items, array("func" => "textfield_form",          "id" => "prenom",      "value" => $prenom,    "icon" => "",               "libelle" => "Prénom", "nb_col" => 6));
-	array_push($items, array("func" => "divider_form",            "nb_col" => 12));
+	array_push($items, array("func" => "divider_form",            "id" => "div1",        "nb_col" => 12));
 	array_push($items, array("func" => "upload_image_form",       "id" => "photo",       "value" => $photo,     "icon" => "photo_camera",   "libelle" => "Photo", "nb_col" => 12));
-	array_push($items, array("func" => "divider_form",            "nb_col" => 12));
+	array_push($items, array("func" => "divider_form",            "id" => "div2",        "nb_col" => 12));
 	array_push($items, array("func" => "textfield_form",          "id" => "ville",       "value" => $ville,     "icon" => "home",           "libelle" => "Ville", "nb_col" => 6));
-	// array_push($items, array("func" => "textfield_form",          "id" => "tel",         "value" => $tel,       "icon" => "phone",          "libelle" => "Téléphone", "nb_col" => 4));
 	array_push($items, array("func" => "textfield_form",          "id" => "mobile",      "value" => $mobile,    "icon" => "smartphone",     "libelle" => "Mobile", "nb_col" => 6));
 	array_push($items, array("func" => "choice_component_form",   "id" => "sexe",                               "icon" => "wc",             "libelle" => "Sexe", "nb_col" => 6, "grouped" => 1));
 	array_push($items, array("func" => "calendar_component_form", "id" => "date_nais",   "value" => $date_nais, "icon" => "today",          "libelle" => "Date de naissance", "nb_col" => 4, "grouped" => 1));
@@ -105,14 +106,18 @@ if ($modifier) {
 	array_push($items, array("func" => "number_component_form",   "id" => "poids-zip",   "value" => $poids,     "icon" => "fitness_center", "libelle" => "Poids - kg", "nb_col" => 4, "start" => 0, "end" => 250));
 	array_push($items, array("func" => "number_component_form",   "id" => "poignet-zip", "value" => $poignet,   "icon" => "replay",         "libelle" => "Circonférence poignet - cm", "nb_col" => 4, "start" => 0, "end" => 250));
 }
-array_push($items, array("func" => "divider_form",            "nb_col" => 12));
+
+array_push($items, array("func" => "divider_form",  "id" => "div3", "nb_col" => 12));
+
 if ($modifier)
-	array_push($items, array("func" => "textfield_form",          "id" => "login",       "value" => $login,     "icon" => "fingerprint",    "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
+	array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "fingerprint", "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
 if ($modifier) {
-	array_push($items, array("func" => "choice_component_form",   "id" => "confidentialite",                    "icon" => "security",       "libelle" => "Confidentialité profil", "nb_col" => 6, "grouped" => 1));
+	array_push($items, array("func" => "choice_component_form", "id" => "confidentialite", "icon" => "security", "libelle" => "Confidentialité profil", "nb_col" => 6, "grouped" => 1));
 }
-array_push($items, array("func" => "textfield_form",          "id" => "pwd",         "value" => $pwd,       "icon" => "lock",           "libelle" => "Mot de passe", "nb_col" => 6, "required" => 1, "password" => 1));
-array_push($items, array("func" => "textfield_form",          "id" => "pwd2",        "value" => $pwd2,      "icon" => "",               "libelle" => "Confirmation", "nb_col" => 6, "required" => 1, "password" => 1));
+
+array_push($items, array("func" => "textfield_form", "id" => "pwd",  "value" => $pwd,  "icon" => "lock", "libelle" => "Mot de passe", "nb_col" => 6, "required" => 1, "password" => 1));
+array_push($items, array("func" => "textfield_form", "id" => "pwd2", "value" => $pwd2, "icon" => "",     "libelle" => "Confirmation", "nb_col" => 6, "required" => 1, "password" => 1));
+
 $menu = "";
 if (!$modifier) {
 	array_push($items, array("func" => "captcha_form",          "id" => "controle",   "icon" => "text_fields",  "libelle" => "Je ne suis pas un robot", "nb_col" => 6));
@@ -133,14 +138,20 @@ Wrapper::build_form(array('title' => $title, 'menu' => $menu, 'items' => $items,
 
 <script>
 
+<? if ($modifier) { ?>
 choices.build({ name: 'sexe', c1: 'blue', c2: 'white', values: [{ v: 1, l: 'Homme', s: <?= $sexe == 1 ? 'true' : 'false' ?> }, { v: 2, l: 'Femme', s: <?= $sexe == 2 ? 'true' : 'false' ?> }] });
 choices.build({ name: 'confidentialite', c1: 'blue', c2: 'white', values: [{ v: 0, l: 'Publique', s: <?= $confidentialite == 0 ? 'true' : 'false' ?> }, { v: 1, l: 'Limitée', s: <?= $confidentialite == 1 ? 'true' : 'false' ?> }, { v: 2, l: 'Privée', s: <?= $confidentialite == 2 ? 'true' : 'false' ?> }] });
 choices.build({ name: 'morpho', c1: 'blue', c2: 'white', values: [{ v: 1, l: 'Normale', s: <?= $morpho == 1 ? 'true' : 'false' ?> }, { v: 2, l: 'Large', s: <?= $morpho == 2 ? 'true' : 'false' ?> }, { v: 3, l: 'Mince', s: <?= $morpho == 3 ? 'true' : 'false' ?> }] });
 choices.build({ name: 'activite', c1: 'blue', c2: 'white', singlepicking: true, removable: true, values: [ { v: 1, l: 'Sédentaire', s: <?= $activite == 1 ? 'true' : 'false' ?> }, { v: 2, l: 'Léger', s: <?= $activite == 2 ? 'true' : 'false' ?> }, { v: 3, l: 'Moyen', s: <?= $activite == 3 ? 'true' : 'false' ?> }, { v: 4, l: 'Intense', s: <?= $activite == 4 ? 'true' : 'false' ?> }, { v: 5, l: 'Très intense', s: <?= $activite == 5 ? 'true' : 'false' ?> }] });
+<? } else { ?>
 choices.build({ name: 'conditions', c1: 'blue', c2: 'white', values: [{ v: 0, l: 'Non', s: true }, { v: 1, l: 'Oui', s: false }] });
+<? } ?>
+
 valid_form = function() {
 
+<? if ($modifier) { ?>
     if (!check_alphanumext(valof('pseudo'), 'Pseudo', -1))      return false;
+<? } ?>
     if (!check_alphanumext(valof('email'),  'Email', -1))       return false;
 	if (!check_email(valof('email')))                           return false;
     if (!check_alphanumext(valof('login'),  'Identifiant', <?= $sess_context->isSuperAdmin() ? "5" : "6" ?>)) return false;
@@ -156,6 +167,7 @@ valid_form = function() {
 		return false;
 	}
 
+<? if ($modifier) { ?>
 	if (valof('photo') != '')
 	{
 		items = valof('photo').split('.');
@@ -165,6 +177,7 @@ valid_form = function() {
 			return false;
 		}
 	}
+<? } ?>
 
 <? if (!$modifier) { ?>
 	var conditions = choices.getSelection('conditions');
@@ -175,12 +188,15 @@ valid_form = function() {
 	}
 <? } ?>
 
+<? if ($modifier) { ?>
 	var taille    = numbers.getValue('taille-zip');
 	var poids     = numbers.getValue('poids-zip');
 	var poignet   = numbers.getValue('poignet-zip');
 	var date_nais = calendar.getValue('date_nais');
-
-	var params = '?confidentialite='+choices.getSelection('confidentialite')+'&activite='+choices.getSelection('activite')+'&morpho='+choices.getSelection('morpho')+'&sexe='+choices.getSelection('sexe')+'&date_nais='+date_nais+'&taille='+taille+'&poignet='+poignet+'&poids='+poids+attrs(['pseudo', 'nom', 'prenom', 'photo', 'email', 'tel', 'mobile', 'ville', 'login', 'pwd', 'controle']);
+	var params = '?confidentialite='+choices.getSelection('confidentialite')+'&activite='+choices.getSelection('activite')+'&morpho='+choices.getSelection('morpho')+'&sexe='+choices.getSelection('sexe')+'&date_nais='+date_nais+'&taille='+taille+'&poignet='+poignet+'&poids='+poids+attrs(['pseudo', 'nom', 'prenom', 'photo', 'email', 'mobile', 'ville', 'login', 'pwd', 'controle']);
+<? } else { ?>
+	var params = '?'+attrs(['login', 'email', 'pwd', 'controle']);
+<? } ?>
 
 	xx({id:'main', url:'inscription_do.php'+params+'&upd=<?= $modifier ? 1 : 0 ?>'});
 	return true;
