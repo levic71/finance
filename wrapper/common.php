@@ -1,7 +1,5 @@
 <?
 
-ini_set('display_errors', 1);
-
 session_cache_expire(60*60);
 
 require_once "../include/lock.php";
