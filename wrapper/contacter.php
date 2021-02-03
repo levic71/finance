@@ -113,7 +113,7 @@ annuler = function()
 	<? } else if ($type_mail == 3) { ?>
 	mm({action: 'players'});
 	<? } else { ?>
-	mm({action: 'dashboard'});
+	mm({action: '<?= $sess_context->isChampionnatValide() ? "dashboard" : "leagues" ?>' });
 	<? } ?>
 	return true;
 }

@@ -1,7 +1,5 @@
 <?
 
-$toto = 1;
-
 include "../include/sess_context.php";
 
 session_start();

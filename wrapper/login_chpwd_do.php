@@ -14,7 +14,7 @@ $token = Wrapper::getRequest('token', '');
 
 $db = dbc::connect();
 
-$select = "SELECT * FROM jb_users WHERE reset_token='".$token."';";
+$select = "SELECT * FROM jb_users WHERE removed=0 AND reset_token='".$token."';";
 $res = dbc::execSQL($select);
 
 $msg = "Modification failed !";

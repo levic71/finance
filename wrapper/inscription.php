@@ -17,7 +17,7 @@ $db = dbc::connect();
 unset($_SESSION['antispam']);
 $_SESSION['antispam'] = ToolBox::getRand(5);
 
-$modifier = 0 > 0 ? true : false;
+$modifier = $sess_context->isUserConnected() ? true : false;
 
 $confidentialite = Wrapper::getRequest('confidentialite', 0);
 $sexe      = Wrapper::getRequest('sexe',      1);
@@ -45,7 +45,7 @@ $modifier = $upd == 1 && $sess_context->isUserConnected() ? true : false;
 
 if ($modifier) {
 
-	$select = "SELECT * FROM jb_users WHERE id=".$sess_context->user['id'];
+	$select = "SELECT * FROM jb_users WHERE removed=0 AND id=".$sess_context->user['id'];
 	$res = dbc::execSQL($select);
 	if ($row = mysqli_fetch_array($res))
 	{
@@ -82,6 +82,8 @@ if ($modifier) {
 	}
 }
 
+if (!file_exists($photo)) $photo = sess_context::default_photo;
+
 $title = $modifier ? "Modifier mon profil" : "Inscription";
 
 $items = array();
@@ -94,7 +96,7 @@ if ($modifier) {
 	array_push($items, array("func" => "textfield_form",          "id" => "nom",         "value" => $nom,       "icon" => "person",         "libelle" => "Nom", "nb_col" => 6));
 	array_push($items, array("func" => "textfield_form",          "id" => "prenom",      "value" => $prenom,    "icon" => "",               "libelle" => "Prénom", "nb_col" => 6));
 	array_push($items, array("func" => "divider_form",            "id" => "div1",        "nb_col" => 12));
-	array_push($items, array("func" => "upload_image_form",       "id" => "photo",       "value" => $photo,     "icon" => "photo_camera",   "libelle" => "Photo", "nb_col" => 12));
+	array_push($items, array("func" => "upload_image_form",       "id" => "photo",       "value" => $photo,     "icon" => "photo_camera",   "libelle" => "Photo", "extra" => "users", "nb_col" => 12));
 	array_push($items, array("func" => "divider_form",            "id" => "div2",        "nb_col" => 12));
 	array_push($items, array("func" => "textfield_form",          "id" => "ville",       "value" => $ville,     "icon" => "home",           "libelle" => "Ville", "nb_col" => 6));
 	array_push($items, array("func" => "textfield_form",          "id" => "mobile",      "value" => $mobile,    "icon" => "smartphone",     "libelle" => "Mobile", "nb_col" => 6));
@@ -120,7 +122,7 @@ if (!$modifier) {
 	array_push($items, array("func" => "choice_component_form", "id" => "conditions", "icon" => "info_outline", "libelle" => "J'accepte les conditions d'utilisation du Jorkers", "nb_col" => 6, "grouped" => 1));
 }
 else
-	$menu .= '<button id="btdel" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white mdl-button" onclick="alert(\'comming soon\');"><i class="mdl-textfield__icon material-icons">delete_forever</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btdel">Supprimer le compte</div>';
+	$menu .= '<button id="btdel" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white mdl-button" onclick="return confirmDel();"><i class="mdl-textfield__icon material-icons">delete_forever</i></button><div class="mdl-tooltip mdl-tooltip--left" for="btdel">Supprimer le compte</div>';
 
 $actions = array(0 => array("onclick" => "return annuler();"), 1 => array("onclick" => "return valid_form();"));
 
@@ -165,9 +167,9 @@ valid_form = function() {
 	if (valof('photo') != '')
 	{
 		items = valof('photo').split('.');
-		if (items[(items.length-1)] != 'gif' && items[(items.length-1)] != 'GIF' && items[(items.length-1)] != 'jpg' && items[(items.length-1)] != 'JPG' && items[(items.length-1)] != 'JPEG' && items[(items.length-1)] != 'jpeg')
+		if (items[(items.length-1)].toUpperCase() != 'GIF' && items[(items.length-1)].toUpperCase() != 'PNG' && items[(items.length-1)].toUpperCase() != 'JPG' && items[(items.length-1)].toUpperCase() != 'JPEG')
 		{
-			$dMsg({msg : 'Le format de l\'image doit être \'gif\' ou \'jpg\'' });
+			$dMsg({msg : 'Le format de l\'image doit être \'gif\', \'png\' ou \'jpg\'' });
 			return false;
 		}
 	}
@@ -209,13 +211,16 @@ submit_enter = function(elt, e)
 
 confirmDel = function(elt, e)
 {
-	alert('not implemented yet !');
+	if (confirm('Etes vous sur de vouloir supprimer votre compte ?')) {
+		go({action: 'login_remove', id:'main', url:'login_remove_do.php'});
+	} 
+
 	return true;
 }
 
 annuler = function()
 {
-	mm({ action:'<?= $sess_context->isChampionnatNonDefini() ? "reload" : ($modifier ? "myprofile" : "tables") ?>' });
+	mm({ action:'<?= $modifier ? "myprofile" : ($sess_context->isChampionnatNonDefini() ? "reload" : "tables") ?>' });
 	return true;
 }
 
