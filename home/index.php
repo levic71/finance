@@ -12,7 +12,6 @@ unset($_SESSION['antispam']);
 $_SESSION['antispam'] = ToolBox::getRand(5);
 
 $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : null;
-$ver = "2.21.1".(sess_context::isLocalHost() ? ".".time() : "");
 
 ?>
 
@@ -35,7 +34,7 @@ $ver = "2.21.1".(sess_context::isLocalHost() ? ".".time() : "");
     <meta name="location"       content="Région parisienne" />
     <meta name="revisit-after"  content="7 days" />
     <meta http-equiv="Content-Language" content="fr-FX" />
-    <meta http-equiv="Content-Type"     content="text/html; charset=<?= sess_context::charset ?>" />
+    <meta http-equiv="Content-Type"     content="text/html; charset=ISO-8859-1" />
     <meta http-equiv="pragma"           content="no-cache" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
