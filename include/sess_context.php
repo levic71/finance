@@ -86,7 +86,7 @@ class sess_context
 		$this->championnat['option_display_all_matchs'] = isset($opt[8]) ? $opt[8] : 0;
 		$this->championnat['option_gavgp'] = isset($opt[11]) ? $opt[11] : 0;
 
-		$this->valide = ($this->championnat['championnat_id'] > 0) ? 1 : 0;	// Ne pas appeler la méthode !!!!
+		$this->valide = ($this->championnat['championnat_id'] == 0) ? 0 : 1;	// Ne pas appeler la méthode !!!!
 
 		if ($this->championnat['championnat_id'] != 0)
 		{
