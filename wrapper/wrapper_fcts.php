@@ -415,19 +415,19 @@ public static function isUserDataPublic($user) {
 }
 
 public static function resetChPwdToken($token) {
-	$udt = "UPDATE jb_users SET reset_time=0, reset_count=0, reset_token='' WHERE reset_token='".$token."'";
+	$udt = "UPDATE jb_users SET reset_time=0, reset_count=0, reset_token='' WHERE removed=0 AND reset_token='".$token."'";
 	$res = dbc::execSQL($udt);
 }
 
 public static function increaseCountChPwdToken($token) {
-	$udt = "UPDATE jb_users SET reset_count=reset_count+1 WHERE reset_token='".$token."'";
+	$udt = "UPDATE jb_users SET reset_count=reset_count+1 WHERE removed=0 AND reset_token='".$token."'";
 	$res = dbc::execSQL($udt);
 }
 
 public static function isChPwdValid($token) {
 	$ret = false;
 
-	$sql = "SELECT count(*) total FROM jb_users WHERE reset_token='".$token."'";
+	$sql = "SELECT count(*) total FROM jb_users WHERE removed=0 AND reset_token='".$token."'";
     $res = dbc::execSQL($sql);
 
 	if ($res) {
@@ -535,11 +535,11 @@ public static function textfield_place_form($item) { ?>
 
 public static function upload_image_form($item) { ?>
 	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i>
-	<ul class="upload_target"><li><img style="width: 32px; height: 32px;" id="img_target" src="<?= $item['value'] ?>" /></li><li id="f1_upload_process"><img src="img/loader.gif" /></li><li id="f1_upload_ok"><img src="img/tick_32.png" /></li><li id="f1_upload_err"><img src="img/block_32.png" /></li></ul>
+	<ul class="upload_target"><li><img style="width: 64px; height: 64px;" id="img_target" src="<?= $item['value'] ?>" /></li><li id="f1_upload_process"><img src="img/loader.gif" /></li><li id="f1_upload_ok"><img src="img/tick_32.png" /></li><li id="f1_upload_err"><img src="img/block_32.png" /></li></ul>
 	<input type="hidden" name="<?= $item['id'] ?>" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : "" ?> />
 
-	<form name="uploadform" action="upload.php?target_image=img_target&target_upload=photo&logo=1" style="clear: both;" method="post" enctype="multipart/form-data" target="upload_target" onsubmit="startUpload();" >
-		<span id="f1_upload_form" align="center">
+	<form name="uploadform" action="upload.php?target_image=img_target&target_upload=photo&<?= isset($item['extra']) ? $item['extra'] : "image" ?>=1" style="clear: both;" method="post" enctype="multipart/form-data" target="upload_target" onsubmit="startUpload();" >
+		<span id="f1_upload_form">
 			<label for="myfile">&nbsp;</label><input name="myfile" id="myfile" type="file" size="30" /><button onclick="startUpload();" class="button blue">Upload</button>
 		</span>
 		<iframe id="upload_target" name="upload_target" src="vide.html" style="width:0;height:0;border:0px solid #fff;"></iframe>

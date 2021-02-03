@@ -13,7 +13,7 @@ $email = Wrapper::getRequest('email', 'victor.ferreira@laposte.net');
 
 $db = dbc::connect();
 
-$select = "SELECT * FROM jb_users WHERE email='".$email."';";
+$select = "SELECT * FROM jb_users WHERE removed=0 AND  email='".$email."';";
 $res = dbc::execSQL($select);
 if ($row = mysqli_fetch_array($res))
 {

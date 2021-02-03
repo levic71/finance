@@ -23,7 +23,7 @@ $db = dbc::connect();
 $sess_context->resetUserConnection();
 $sess_context->resetAdmin();
 
-$select = "SELECT * FROM jb_users WHERE login='".$login."' AND pwd='".$pwd."';";
+$select = "SELECT * FROM jb_users WHERE removed =0 AND login='".$login."' AND pwd='".$pwd."';";
 $res = dbc::execSQL($select);
 if ($row = mysqli_fetch_array($res))
 {

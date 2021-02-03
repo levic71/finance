@@ -6,7 +6,6 @@ session_start();
 
 include "common.php";
 include "../include/inc_db.php";
-include "../www/journeebuilder.php";
 
 header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 
@@ -40,7 +39,7 @@ $upd       = Wrapper::getRequest('upd',       0);
 
 if ($modifier)
 {
-	$select = "SELECT * FROM jb_users WHERE id=".$sess_context->user['id'];
+	$select = "SELECT * FROM jb_users WHERE removed=0 AND id=".$sess_context->user['id'];
 	$res = dbc::execSQL($select);
 	if ($row = mysqli_fetch_array($res))
 	{
@@ -54,7 +53,7 @@ if ($modifier)
 
 		if ($row['photo'] != "" && $row['photo'] != $photo && file_exists($row['photo'])) unlink($row['photo']);
 
-		$update = "UPDATE jb_users mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".$email."', date_nais='".$date_nais."', login='".$login."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
+		$update = "UPDATE jb_users SET mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".$email."', date_nais='".$date_nais."', login='".$login."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
 		$res = dbc::execSQL($update);
 
 		$select = "SELECT * FROM jb_users WHERE id=".$sess_context->user['id'];
@@ -76,7 +75,7 @@ else
 	$row = mysqli_fetch_array($res);
 	if ($row['total'] > 0) { echo "-1||Login déjà existant"; exit(0); }
 
-	$insert = "INSERT INTO jb_users (pseudo, email, login, pwd, status, date_inscription) VALUES ('".$pseudo."', '".$email."', '".$login."', '".$pwd."', 1, '".date("Y")."-".date("m")."-".date("d")."');";
+	$insert = "INSERT INTO jb_users (pseudo, email, login, pwd, status, date_nais, date_inscription) VALUES ('".$pseudo."', '".$email."', '".$login."', '".$pwd."', 1, '".date("Y")."-".date("m")."-".date("d")."', '".date("Y")."-".date("m")."-".date("d")."');";
 	$res = dbc::execSQL($insert);
 
 	$select = "SELECT * FROM jb_users WHERE pseudo='".$pseudo."' AND login='".$login."'";

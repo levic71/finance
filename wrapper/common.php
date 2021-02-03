@@ -16,7 +16,8 @@ $projet_version = "Jorky 3.0";
 $sess_context = $_SESSION["sess_context"];
 
 // Si on est jamais passé par jk.php, on redirige vers cette page
-if (!isset($sess_context) || ($sess_context->isChampionnatNonDefini() && basename($SCRIPT_NAME) != "login.php" && basename($SCRIPT_NAME) != "logout.php" && basename($SCRIPT_NAME) != "inscription.php" && basename($SCRIPT_NAME) != "inscription_do.php" && basename($SCRIPT_NAME) != "login_panel.php" && basename($SCRIPT_NAME) != "myprofile.php"))
+// if (!isset($sess_context) || ($sess_context->isChampionnatNonDefini() && basename($SCRIPT_NAME) != "login.php" && basename($SCRIPT_NAME) != "upload.php" && basename($SCRIPT_NAME) != "logout.php" && basename($SCRIPT_NAME) != "inscription.php" && basename($SCRIPT_NAME) != "inscription_do.php" && basename($SCRIPT_NAME) != "login_panel.php" && basename($SCRIPT_NAME) != "myprofile.php"))
+if (!isset($sess_context))
 {
 	$dns = explode('.', $_SERVER['SERVER_NAME']);
 
