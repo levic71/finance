@@ -24,6 +24,7 @@ require_once "../include/constantes.php";
 require_once "../include/toolbox.php";
 require_once "../include/cache_manager.php";
 require_once "../include/inc_db.php";
+require_once "../include/templatebox.php";
 require_once "wrapper_fcts.php";
 
 $_REQUEST['idc'] = isset($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_CHAMP_ID_HOME;
@@ -98,9 +99,6 @@ else
   else
     $sess_context->resetAdmin();
 }
-
-// Faire un systeme qui va chercher les datas google analytics plutot que de le faire moi meme
-// Toolbox::trackUser($idc, _TRACK_ACCES_HOME_);
 
 ?>
 

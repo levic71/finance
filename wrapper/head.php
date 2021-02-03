@@ -1,7 +1,6 @@
 <?
 
-$ver     = "2.25.1".(sess_context::isLocalHost() ? ".".time() : "");
-
+$ver     = sess_context::getJorkersVersion();
 $wrapper = isset($wrapper) ? $wrapper : false;
 $chpwd   = isset($chpwd)   ? $chpwd   : false;
 $id_msg  = isset($id_msg)  ? $id_msg  : 0;
@@ -65,10 +64,6 @@ $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? ra
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="apple-mobile-web-app-title" content="Jorker's" />
 <link rel="apple-touch-icon-precomposed" href="/images/ios-desktop.png" />
-
-<!-- Tile icon for Win8 (144x144 + tile color) -->
-<meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png" />
-<meta name="msapplication-TileColor" content="#3372DF" />
 
 <link rel="icon" type="image/png" href="favicon.ico" />
 <link rel="apple-touch-icon" href="img/webclip.png" />

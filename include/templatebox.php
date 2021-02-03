@@ -117,11 +117,6 @@ function htmlEnd($stats = true)
 {
 	global $sess_context;
 
-	if (false)
-	{
-		require("../webanalyse/include/stats_main.inc");
-		$stats = new init(true, '../webanalyse/');
-	}
 ?>
 
 <!-- FIN FENETRE GLOBALE -->
