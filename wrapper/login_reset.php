@@ -5,6 +5,9 @@ session_start();
 include "common.php";
 header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 
+
+toot();
+
 $mobile  = Wrapper::getRequest('mobile', 0);
 $email = $sess_context->isSuperUser() ? "victor.ferreira@laposte.net" : "";
 

@@ -1,5 +1,13 @@
 <?
 
+// Debug r7/prod si nécessaire
+if (true) {
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+	ini_set('error_log', "./php_errors.log");
+}
+
 session_cache_expire(60*60);
 
 require_once "../include/lock.php";
