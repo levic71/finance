@@ -34,7 +34,7 @@ if ($row = mysqli_fetch_array($res))
 	$mail_header.= "Return-Path: <no-reply@jorkers.com>\n";
 	$mail_header.= "Content-Type: text/html; charset=".sess_context::mail_charset."\n";
 	$mail_sujet  = "[Jorkers.com] - Mot de passe oublié";
-	$mail_corps  = "Bonjour,\n\nPour modifier votre mot de passe, cliquez sur ce <a href=\"https://www.jorkers.com/wrapper/jk.php?chpwd=".$token."\">lien</a>.\n\nBonne réception.";
+	$mail_corps  = "Bonjour,\n\nPour modifier votre mot de passe, cliquez sur ce <a href=\"https://www.jorkers.com/wrapper/jk.php?chpwd=".$token."\">lien</a>.\n\nBonne réception.\nJorkers.com";
 
 	$res = @mail($email, stripslashes($mail_sujet), nl2br(stripslashes($mail_corps)), $mail_header);
 
