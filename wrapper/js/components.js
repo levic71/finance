@@ -327,7 +327,7 @@ var numbers = function() {
 
 		numbers.setEnv(args);
 		if (name == '') return;
-		if (name.indexOf('_') != -1) { alert("'_' non tolï¿½rï¿½ !"); return; }
+		if (name.indexOf('_') != -1) { alert("'_' non toléré !"); return; }
 
 		var elt = document.getElementById(name);
 		if (!elt) return;
@@ -352,7 +352,7 @@ var calendar = function() {
 		initd = args.initd||'';
 		c1    = args.c1||'orange';
 		c2    = args.c2||'blue';
-		mn    = ['Janvier','Fï¿½vrier','Mars','Avril','Mai','Juin','Juillet','Aoï¿½t','Septembre','Octobre','Novembre','Dï¿½cembre'];
+		mn    = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aoutt','Septembre','Octobre','Novembre','Décembre'];
 		dim   = [31,0,31,30,31,30,31,31,30,31,30,31];
 	},
 
@@ -638,7 +638,7 @@ var choices = function() {
 			{
 				elt.className = elt.className.search(c1) > 0 ? "button "+c2 : "button "+c1;
 
-				if (callback != '') {	// A faire dans les autres cas en fonction comportement souhaitï¿½ (peut etre ... pas sur !)
+				if (callback != '') {	// A faire dans les autres cas en fonction comportement souhaité (peut etre ... pas sur !)
 					eval(callback)(name, elt);
 				}
 			}
@@ -647,7 +647,7 @@ var choices = function() {
 				for(var i=0; i < elt.parentNode.getElementsByTagName('button').length; i++) elt.parentNode.getElementsByTagName('button')[i].className = "button "+c2;
 				elt.className = "button "+c1;
 
-				if (callback != '') {	// A faire dans les autres cas en fonction comportement souhaitï¿½ (peut etre ... pas sur !)
+				if (callback != '') {	// A faire dans les autres cas en fonction comportement souhaité (peut etre ... pas sur !)
 					eval(callback)(name, elt);
 				}
 			}
@@ -749,7 +749,7 @@ var choices = function() {
 					if (multipicking) document.getElementById(id2).style.display = "none";
 					choices.closeIfEmptyPicker(document.getElementById(id).parentNode.id);
 
-					if (callback != '') {	// A faire dans les autres cas en fonction comportement souhaitï¿½ (peut etre ... pas sur !)
+					if (callback != '') {	// A faire dans les autres cas en fonction comportement souhaité (peut etre ... pas sur !)
 						eval(callback)(document.getElementById(id).parentNode.id.replace('_picker', ''), elt);
 					}
 
@@ -982,7 +982,7 @@ var counter = function() {
 
 	insertCommentElt:function(time, type, comment) {
 		var tr = document.createElement("tr");
-		var udt = '<td class="edit"><a onclick="alert(\'Pas encore implï¿½mentï¿½\');"><img src="img/pencil_16.png" /></a></td><td class="del"><a onclick="counter.delComment(event);"><img src="img/delete_16.png" /></a></td>';
+		var udt = '<td class="edit"><a onclick="alert(\'Pas encore implémenté\');"><img src="img/pencil_16.png" /></a></td><td class="del"><a onclick="counter.delComment(event);"><img src="img/delete_16.png" /></a></td>';
 		tr.innerHTML = '<td class="time">'+time+'</td><td class="icon '+type+'"></td><td class="text">'+comment+'</td>'+(view == 2 ? udt : '');
 		var tbody = el(name+'_tabcomm').getElementsByTagName('TBODY').item(0);
 		tbody.insertBefore(tr, tbody.firstChild);
@@ -1052,7 +1052,7 @@ var counter = function() {
 			el(name+'_num_right_'+i).parentNode.style.display = i == id ? 'inline-block' : 'none';
 			el(name+'_mini_'+i).className = (i == id) ? 'button orange' : 'button '+c1;
 		}
-		el(name+'_labelset').innerHTML = id == 0 ? "1er set" : (id+1)+"iï¿½me set";
+		el(name+'_labelset').innerHTML = id == 0 ? "1er set" : (id+1)+"iéme set";
 	},
 
 	buildMiniBox:function(id, n1, n2) {
@@ -1551,7 +1551,7 @@ drawAnalytics = function (args) {
         txt = {font: '12px Helvetica, Arial', fill: "#fff"},
         txt1 = {font: '10px Helvetica, Arial', fill: color},
         txt2 = {font: '12px Helvetica, Arial', fill: "#333"},
-        lblext = args.lblext||"% matchs gagnï¿½s",
+        lblext = args.lblext||"% matchs gagnés",
         tips_labels = args.tips_labels||new Array(),
         X = (width - leftgutter - rightgutter) / (labels.length-1),
         max = Math.max(Math.max.apply(Math, data), overmax),
