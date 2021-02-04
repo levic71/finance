@@ -20,9 +20,9 @@ $res = dbc::execSQL($select);
 $msg = "Modification failed !";
 if ($row = mysqli_fetch_array($res))
 {
-	$update = "UPDATE jb_users SET password='".$pwd."', reset_time=0, reset_token='', reset_count=0 WHERE reset_token='".$token."'";
+	$update = "UPDATE jb_users SET pwd='".$pwd."', reset_time=0, reset_token='', reset_count=0 WHERE reset_token='".$token."'";
 	$res = dbc::execSQL($update);
-	$msg = "Modification prise en compte";
+	$msg = $res ? "Modification prise en compte" : "Erreur";
 }
 
 mysqli_close ($db);

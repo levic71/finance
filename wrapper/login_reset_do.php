@@ -13,12 +13,12 @@ $email = Wrapper::getRequest('email', 'victor.ferreira@laposte.net');
 
 $db = dbc::connect();
 
-$select = "SELECT * FROM jb_users WHERE removed=0 AND  email='".$email."';";
+$select = "SELECT * FROM jb_users WHERE removed=0 AND lower(email)='".strtolower($email)."';";
 $res = dbc::execSQL($select);
 if ($row = mysqli_fetch_array($res))
 {
 	$token = bin2hex(random_bytes(50));
-	$update = "UPDATE jb_users SET reset_time=".time().", reset_token='".$token."', reset_count=0 WHERE email='".$row['email']."'";
+	$update = "UPDATE jb_users SET reset_time=".time().", reset_token='".$token."', reset_count=0 WHERE removed=0 AND lower(email)='".strtolower($row['email'])."'";
 	$res = dbc::execSQL($update);
 
 	unset($_SESSION['antispam']);

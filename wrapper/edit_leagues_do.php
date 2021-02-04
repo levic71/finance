@@ -28,9 +28,6 @@ $valeur_nul        = Wrapper::getRequest('valeur_nul_zip',      1);
 $type              = Wrapper::getRequest('type',                _TYPE_CHAMPIONNAT_);
 $news              = Wrapper::getRequest('news',                '');
 $options           = Wrapper::getRequest('options',             '1|1|1|1|1|1|1|0|0|0|0|0');
-//$ch_login          = Wrapper::getRequest('ch_login',            '');
-//$ch_pwd            = Wrapper::getRequest('ch_pwd',              '');
-//$ch_email          = Wrapper::getRequest('ch_email',            '');
 $ch_description    = Wrapper::getRequest('ch_description',      '');
 $type_lieu         = Wrapper::getRequest('type_lieu',           _LIEU_VILLE_);
 $lieu_pratique     = Wrapper::getRequest('lieu_pratique',       '');
@@ -85,11 +82,7 @@ if ($modifier)
 	if (isset($lieu_pratique)) $vars_update .= ", lieu='".$lieu_pratique."'";
 	if (isset($options)) $vars_update .= ", options='".$options."'";
 	if (isset($ch_description)) $vars_update .= ", description='".$ch_description."'";
-//	if (isset($ch_email)) $vars_update .= ", email='".$ch_email."'";
-//	if (isset($ch_gestionnaire)) $vars_update .= ", gestionnaire='".$ch_gestionnaire."'";
 	if (isset($ta)) $vars_update .= ", news='".$news."'";
-//	if (isset($ch_login)) $vars_update .= ", login='".$ch_login."'";
-//	if (isset($ch_pwd)) $vars_update .= ", pwd='".$ch_pwd."'";
 	if (isset($type_gestionnaire)) $vars_update .= ", type_gestionnaire='".$type_gestionnaire."'";
 	if (isset($zoom)) $vars_update .= ", zoom=".$zoom;
 	if (isset($lat)) $vars_update .= ", lat='".$lat."'";
@@ -135,7 +128,6 @@ else
 		unset($_SESSION['antispam']);
 
 		// Insertion du championnat
-//		$insert = "INSERT INTO jb_championnat (twitter, forfait_penalite_bonus, forfait_penalite_malus, home_list_headcount, theme, logo_font, logo_photo, zoom, lat, lng, type_gestionnaire, friends, gestion_fanny, gestion_sets, gestion_buteurs, tri_classement_general, type_sport, gestion_nul, visu_journee, valeur_victoire, valeur_nul, valeur_defaite, news, options, genre, gestionnaire, login, pwd, email, dt_creation, nom, description, type, type_lieu, lieu, cookie) VALUES ('".$twitter."', ".$forfait_penalite_malus.", ".$headcount.", ".$theme.", '".$logo_font."', '".$logo_photo."', ".$zoom.", '".$lat."', '".$lng."', ".$type_gestionnaire.", '".$selected_friends."', ".$gestion_fanny.", ".$gestion_sets.", ".$gestion_buteurs.", ".$tri_classement_general.", ".$type_sport.", ".$gestion_nul.", ".$visu_journee.", ".$valeur_victoire.", ".$valeur_nul.", ".$valeur_defaite.", '".$news."', '".$options."', '', '".$ch_gestionnaire."', '".$ch_login."', '".$ch_pwd."', '".$ch_email."', '".date("Y")."-".date("m")."-".date("d")."', '".$ch_nom."', '".$ch_description."', ".$type.", ".$type_lieu.", '".$lieu_pratique."', '".$cookie_admin."');";
 		$insert = "INSERT INTO jb_championnat (twitter, forfait_penalite_bonus, forfait_penalite_malus, home_list_headcount, theme, logo_font, logo_photo, zoom, lat, lng, type_gestionnaire, friends, gestion_fanny, gestion_sets, gestion_buteurs, tri_classement_general, type_sport, gestion_nul, visu_journee, valeur_victoire, valeur_nul, valeur_defaite, news, options, genre, dt_creation, nom, description, type, type_lieu, lieu, cookie) VALUES ('".$twitter."', ".$forfait_penalite_bonus.", ".$forfait_penalite_malus.", ".$headcount.", ".$theme.", '".$logo_font."', '".$logo_photo."', ".$zoom.", '".$lat."', '".$lng."', ".$type_gestionnaire.", '".$selected_friends."', ".$gestion_fanny.", ".$gestion_sets.", ".$gestion_buteurs.", ".$tri_classement_general.", ".$type_sport.", ".$gestion_nul.", ".$visu_journee.", ".$valeur_victoire.", ".$valeur_nul.", ".$valeur_defaite.", '".$news."', '".$options."', '', '".date("Y")."-".date("m")."-".date("d")."', '".$ch_nom."', '".$ch_description."', ".$type.", ".$type_lieu.", '".$lieu_pratique."', '".$cookie_admin."');";
 		$res = dbc::execSQL($insert);
 

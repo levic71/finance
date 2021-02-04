@@ -35,7 +35,6 @@ $tel       = Wrapper::getRequest('tel',       '');
 $mobile    = Wrapper::getRequest('mobile',    '');
 $ville     = Wrapper::getRequest('ville',     '');
 $date_nais = Wrapper::getRequest('date_nais', date("d/m/Y"));
-$login     = Wrapper::getRequest('login',     '');
 $pwd       = Wrapper::getRequest('pwd',       '');
 $pwd2      = '';
 $controle  = Wrapper::getRequest('controle', '');
@@ -66,7 +65,6 @@ if ($modifier) {
 		$tel       = $row['tel'];
 		$mobile    = $row['mobile'];
 		$ville     = $row['ville'];
-		$login     = $row['login'];
 		$pwd       = $row['pwd'];
 		$pwd2      = $row['pwd'];
 	}
@@ -74,8 +72,7 @@ if ($modifier) {
 
 	if ($sess_context->isSuperUser()) {
 		$pseudo   = "Victor_".$_SESSION['antispam'];
-		$email    = "toto@toto.com";
-		$login    = $pseudo;
+		$email    = $pseudo."@laposte.net";
 		$pwd      = "vicmju";
 		$pwd2     = "vicmju";
 		$controle = $_SESSION['antispam'];
@@ -85,13 +82,11 @@ if ($modifier) {
 if (!file_exists($photo)) $photo = sess_context::default_photo;
 
 $title = $modifier ? "Modifier mon profil" : "Inscription";
-
 $items = array();
-if ($modifier)
-	array_push($items, array("func" => "textfield_form", "id" => "pseudo", "value" => $pseudo, "icon" => "account_circle", "libelle" => "Pseudo", "nb_col" => 6, "required" => 1, "autofocus" => 1));
-else
-	array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "fingerprint",    "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
-array_push($items, array("func" => "textfield_form",          "id" => "email",       "value" => $email,     "icon" => "email",          "libelle" => "Email", "nb_col" => 6, "required" => 1));
+
+array_push($items, array("func" => "textfield_form", "id" => "email",  "value" => $email,  "icon" => "email",          "libelle" => "Email/Identifiant", "nb_col" => 6, "required" => 1, "autofocus" => 1));
+array_push($items, array("func" => "textfield_form", "id" => "pseudo", "value" => $pseudo, "icon" => "account_circle", "libelle" => "Pseudo",            "nb_col" => 6, "required" => 1));
+
 if ($modifier) {
 	array_push($items, array("func" => "textfield_form",          "id" => "nom",         "value" => $nom,       "icon" => "person",         "libelle" => "Nom", "nb_col" => 6));
 	array_push($items, array("func" => "textfield_form",          "id" => "prenom",      "value" => $prenom,    "icon" => "",               "libelle" => "Prénom", "nb_col" => 6));
@@ -102,20 +97,18 @@ if ($modifier) {
 	array_push($items, array("func" => "textfield_form",          "id" => "mobile",      "value" => $mobile,    "icon" => "smartphone",     "libelle" => "Mobile", "nb_col" => 6));
 	array_push($items, array("func" => "choice_component_form",   "id" => "sexe",                               "icon" => "wc",             "libelle" => "Sexe", "nb_col" => 6, "grouped" => 1));
 	array_push($items, array("func" => "calendar_component_form", "id" => "date_nais",   "value" => $date_nais, "icon" => "today",          "libelle" => "Date de naissance", "nb_col" => 4, "grouped" => 1));
+	array_push($items, array("func" => "choice_component_form",   "id" => "confidentialite", "icon" => "security", "libelle" => "Confidentialité profil", "nb_col" => 12, "grouped" => 1));
 	array_push($items, array("func" => "choice_component_form",   "id" => "morpho",                             "icon" => "format_size",    "libelle" => "Morphologie", "nb_col" => 6, "grouped" => 1));
 	array_push($items, array("func" => "choice_component_form",   "id" => "activite",                           "icon" => "poll",           "libelle" => "Niveau d'activité physique", "nb_col" => 6));
 	array_push($items, array("func" => "number_component_form",   "id" => "taille-zip",  "value" => $taille,    "icon" => "publish",        "libelle" => "Taille - cm", "nb_col" => 4, "start" => 0, "end" => 250));
 	array_push($items, array("func" => "number_component_form",   "id" => "poids-zip",   "value" => $poids,     "icon" => "fitness_center", "libelle" => "Poids - kg", "nb_col" => 4, "start" => 0, "end" => 250));
 	array_push($items, array("func" => "number_component_form",   "id" => "poignet-zip", "value" => $poignet,   "icon" => "replay",         "libelle" => "Circonférence poignet - cm", "nb_col" => 4, "start" => 0, "end" => 250));
+	array_push($items, array("func" => "divider_form", "id" => "div3", "nb_col" => 12));
 }
-array_push($items, array("func" => "divider_form", "id" => "div3", "nb_col" => 12));
-if ($modifier)
-	array_push($items, array("func" => "textfield_form", "id" => "login", "value" => $login, "icon" => "fingerprint", "libelle" => "Identifiant", "nb_col" => 6, "required" => 1));
-if ($modifier) {
-	array_push($items, array("func" => "choice_component_form", "id" => "confidentialite", "icon" => "security", "libelle" => "Confidentialité profil", "nb_col" => 6, "grouped" => 1));
-}
+
 array_push($items, array("func" => "textfield_form",          "id" => "pwd",         "value" => $pwd,       "icon" => "lock",           "libelle" => "Mot de passe", "nb_col" => 6, "required" => 1, "password" => 1));
 array_push($items, array("func" => "textfield_form",          "id" => "pwd2",        "value" => $pwd2,      "icon" => "",               "libelle" => "Confirmation", "nb_col" => 6, "required" => 1, "password" => 1));
+
 $menu = "";
 if (!$modifier) {
 	array_push($items, array("func" => "captcha_form",          "id" => "controle",   "icon" => "text_fields",  "libelle" => "Je ne suis pas un robot", "nb_col" => 6));
@@ -146,12 +139,9 @@ choices.build({ name: 'conditions', c1: 'blue', c2: 'white', values: [{ v: 0, l:
 
 valid_form = function() {
 
-<? if ($modifier) { ?>
     if (!check_alphanumext(valof('pseudo'), 'Pseudo', -1))      return false;
-<? } ?>
     if (!check_alphanumext(valof('email'),  'Email', -1))       return false;
 	if (!check_email(valof('email')))                           return false;
-    if (!check_alphanumext(valof('login'),  'Identifiant', <?= $sess_context->isSuperAdmin() ? "5" : "6" ?>)) return false;
     if (!check_alphanumext(valof('pwd'),    'Mot de passe', 6)) return false;
     if (!check_alphanumext(valof('pwd2'),   'Confirmation', 6)) return false;
 <? if (!$modifier) { ?>
@@ -188,9 +178,9 @@ valid_form = function() {
 	var poids     = numbers.getValue('poids-zip');
 	var poignet   = numbers.getValue('poignet-zip');
 	var date_nais = calendar.getValue('date_nais');
-	var params = '?confidentialite='+choices.getSelection('confidentialite')+'&activite='+choices.getSelection('activite')+'&morpho='+choices.getSelection('morpho')+'&sexe='+choices.getSelection('sexe')+'&date_nais='+date_nais+'&taille='+taille+'&poignet='+poignet+'&poids='+poids+attrs(['pseudo', 'nom', 'prenom', 'photo', 'email', 'mobile', 'ville', 'login', 'pwd', 'controle']);
+	var params = '?confidentialite='+choices.getSelection('confidentialite')+'&activite='+choices.getSelection('activite')+'&morpho='+choices.getSelection('morpho')+'&sexe='+choices.getSelection('sexe')+'&date_nais='+date_nais+'&taille='+taille+'&poignet='+poignet+'&poids='+poids+attrs(['pseudo', 'nom', 'prenom', 'photo', 'email', 'mobile', 'ville', 'pwd', 'controle']);
 <? } else { ?>
-	var params = '?'+attrs(['login', 'email', 'pwd', 'controle']);
+	var params = '?'+attrs(['pseudo', 'email', 'pwd', 'controle']);
 <? } ?>
 
 	xx({id:'main', url:'inscription_do.php'+params+'&upd=<?= $modifier ? 1 : 0 ?>'});

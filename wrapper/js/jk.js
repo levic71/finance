@@ -178,8 +178,6 @@ xx = function(args) {
 			}
 
 			updateContext(opt.action);
-			// la page logout n'existe plus
-			// if (opt.url == 'login.php' && tmp[0] > 0) opt.url = 'logout.php';
 			if (opt.action == 'valid') {  var t = opt.url.split('|'); opt.url = t[0].replace('params', 'idc'); }
 			google_tracking(opt.url);
 			myconsole('xx       : jx out');
