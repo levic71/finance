@@ -432,7 +432,7 @@ public static function isChPwdValid($token) {
 
 	if ($res) {
 		$row = mysqli_fetch_array($res);
-		if ($row['total'] == 1) {
+		if ($row['total'] >= 1) { // Au cas ou il y a d'ancien compte avec le meme mail
 			$sql2 = "SELECT reset_time, reset_count FROM jb_users WHERE reset_token='".$token."'";
 			$res2 = dbc::execSQL($sql2);
 			$row2 = mysqli_fetch_array($res2);
