@@ -2,11 +2,6 @@
 
 require_once "../include/sess_context.php";
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-ini_set('error_log', "./php_errors.log");
-
 session_start();
 
 include "common.php";
@@ -24,7 +19,8 @@ $select = "SELECT * FROM jb_users WHERE removed=0 AND lower(email)='".strtolower
 $res = dbc::execSQL($select);
 if ($row = mysqli_fetch_array($res))
 {
-	$token = bin2hex(random_bytes(50));
+	// $token = bin2hex(random_bytes(50)); // Marche pas avec php 7.1.8
+	$token = uniqid()."".uniqid()."".uniqid();
 	$update = "UPDATE jb_users SET reset_time=".time().", reset_token='".$token."', reset_count=0 WHERE removed=0 AND lower(email)='".strtolower($row['email'])."'";
 	$res = dbc::execSQL($update);
 
@@ -40,7 +36,7 @@ if ($row = mysqli_fetch_array($res))
 	$mail_sujet  = "[Jorkers.com] - Mot de passe oublié";
 	$mail_corps  = "Bonjour,\n\nPour modifier votre mot de passe, cliquez sur ce <a href=\"https://www.jorkers.com/wrapper/jk.php?chpwd=".$token."\">lien</a>.\n\nBonne réception.";
 
-	$res = mail($email, stripslashes($mail_sujet), nl2br(stripslashes($mail_corps)), $mail_header);
+	$res = @mail($email, stripslashes($mail_sujet), nl2br(stripslashes($mail_corps)), $mail_header);
 
 	$msg = $res ? "La demande a été prise en compte" : "ERREUR";
 }
