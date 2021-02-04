@@ -13,29 +13,26 @@ $db = dbc::connect();
 
 $modifier = $sess_context->isUserConnected() && $upd == 1 ? true : false;
 
-$confidentialite = Wrapper::getRequest('confidentialite', '');
+$confidentialite = Wrapper::getRequest('confidentialite', 0);
 $sexe      = Wrapper::getRequest('sexe',      '');
 $activite  = Wrapper::getRequest('activite',  3);
 $morpho    = Wrapper::getRequest('morpho',    1);
 $nom       = Wrapper::getRequest('nom',       '');
 $prenom    = Wrapper::getRequest('prenom',    '');
-$pseudo    = Wrapper::getRequest($modifier ? 'pseudo' : 'login', ''); // pseudo = login à la création 
+$pseudo    = Wrapper::getRequest('pseudo',    '');
 $taille    = Wrapper::getRequest('taille',    '');
 $poids     = Wrapper::getRequest('poids',     '');
 $poignet   = Wrapper::getRequest('poignet',   16);
 $email     = Wrapper::getRequest('email',     '');
-$tel       = Wrapper::getRequest('tel',     '');
-$mobile    = Wrapper::getRequest('mobile',     '');
+$tel       = Wrapper::getRequest('tel',       '');
+$mobile    = Wrapper::getRequest('mobile',    '');
 $ville     = Wrapper::getRequest('ville',     '');
 $date_nais = ToolBox::date2mysqldate(Wrapper::getRequest('date_nais', date('d/m/Y')));
 $photo     = Wrapper::getRequest('photo',     '');
-$login     = Wrapper::getRequest('login',     '');
 $pwd       = Wrapper::getRequest('pwd',       '');
 $controle  = Wrapper::getRequest('controle',  '');
 $del       = Wrapper::getRequest('del',       0);
 $upd       = Wrapper::getRequest('upd',       0);
-
-// Attention pas de login ni de pseudo en double
 
 if ($modifier)
 {
@@ -43,17 +40,17 @@ if ($modifier)
 	$res = dbc::execSQL($select);
 	if ($row = mysqli_fetch_array($res))
 	{
-		// Vérification pseudo user unique
-		if ($pseudo != $row['pseudo']) {
-			$select = "SELECT count(*) total FROM jb_users WHERE pseudo='".$pseudo."'";
-			$res = dbc::execSQL($select);
-			$row = mysqli_fetch_array($res);
-			if ($row['total'] > 0) { echo "-1||Pseudo déjà existant"; exit(0); }
+		// Vérification email unique
+		if (strtolower($email) != strtolower($row['email'])) {
+			$select = "SELECT count(*) total FROM jb_users WHERE lower(email)='".strtolower($email)."'";
+			$res2 = dbc::execSQL($select);
+			$row2 = mysqli_fetch_array($res);
+			if ($row2['total'] > 0) { echo "-1||Email déjà utilisé"; exit(0); }
 		}
 
 		if ($row['photo'] != "" && $row['photo'] != $photo && file_exists($row['photo'])) unlink($row['photo']);
 
-		$update = "UPDATE jb_users SET mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".$email."', date_nais='".$date_nais."', login='".$login."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
+		$update = "UPDATE jb_users SET mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".strtolower($email)."', date_nais='".$date_nais."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
 		$res = dbc::execSQL($update);
 
 		$select = "SELECT * FROM jb_users WHERE id=".$sess_context->user['id'];
@@ -64,21 +61,16 @@ if ($modifier)
 }
 else
 {
-	// Vérification pseudo et login user unique
-	$select = "SELECT count(*) total FROM jb_users WHERE pseudo='".$pseudo."'";
+	// Vérification email user unique
+	$select = "SELECT count(*) total FROM jb_users WHERE lower(email)='".strtolower($email)."'";
 	$res = dbc::execSQL($select);
 	$row = mysqli_fetch_array($res);
-	if ($row['total'] > 0) { echo "-1||Pseudo déjà existant"; exit(0); }
+	if ($row['total'] > 0) { echo "-1||Email déjà utilisé"; exit(0); }
 
-	$select = "SELECT count(*) total FROM jb_users WHERE login='".$login."'";
-	$res = dbc::execSQL($select);
-	$row = mysqli_fetch_array($res);
-	if ($row['total'] > 0) { echo "-1||Login déjà existant"; exit(0); }
-
-	$insert = "INSERT INTO jb_users (pseudo, email, login, pwd, status, date_nais, date_inscription) VALUES ('".$pseudo."', '".$email."', '".$login."', '".$pwd."', 1, '".date("Y")."-".date("m")."-".date("d")."', '".date("Y")."-".date("m")."-".date("d")."');";
+	$insert = "INSERT INTO jb_users (pseudo, email, pwd, status, date_nais, date_inscription) VALUES ('".$pseudo."', '".strtolower($email)."', '".$pwd."', 1, '".date("Y")."-".date("m")."-".date("d")."', '".date("Y")."-".date("m")."-".date("d")."');";
 	$res = dbc::execSQL($insert);
 
-	$select = "SELECT * FROM jb_users WHERE pseudo='".$pseudo."' AND login='".$login."'";
+	$select = "SELECT * FROM jb_users WHERE lower(email)='".strtolower($email)."' AND pwd='".$pwd."'";
 	$res = dbc::execSQL($select);
 	$row = mysqli_fetch_array($res);
 	$sess_context->setUserConnection($row);
