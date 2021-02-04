@@ -13,6 +13,8 @@ $email = Wrapper::getRequest('email', 'victor.ferreira@laposte.net');
 
 $db = dbc::connect();
 
+$msg = "Demande rejetée";
+
 $select = "SELECT * FROM jb_users WHERE removed=0 AND lower(email)='".strtolower($email)."';";
 $res = dbc::execSQL($select);
 if ($row = mysqli_fetch_array($res))
@@ -38,4 +40,4 @@ if ($row = mysqli_fetch_array($res))
 	$msg = $res ? "La demande a été prise en compte" : "ERREUR";
 }
 
-?><span class="hack_ie">_HACK_IE_</span><script>mm({action: 'login', mobile: 0}); $cMsg({msg : '<?= $msg ?>' });</script>
+?><span class="hack_ie">_HACK_IE_</span><script>mm({action: 'login', mobile: 0}); $aMsg({msg : '<?= $msg ?>' });</script>
