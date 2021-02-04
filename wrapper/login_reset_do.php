@@ -38,6 +38,4 @@ if ($row = mysqli_fetch_array($res))
 	$msg = $res ? "La demande a été prise en compte" : "ERREUR";
 }
 
-mysqli_close ($db);
-
 ?><span class="hack_ie">_HACK_IE_</span><script>mm({action: 'login', mobile: 0}); $cMsg({msg : '<?= $msg ?>' });</script>
