@@ -31,12 +31,13 @@ if ($row = mysqli_fetch_array($res))
 	$mail_header.= "Return-Path: <no-reply@jorkers.com>\n";
 	$mail_header.= "Content-Type: text/html; charset=".sess_context::mail_charset."\n";
 	$mail_sujet  = "[Jorkers.com] - Mot de passe oublié";
-	$mail_corps  = "Bonjour";
+	$mail_corps  = "Bonjour,\n\nPour modifier votre mot de passe, cliquez sur ce <a href=\"https://www.jorkers.com/wrapper/jk.php?chpwd=".$token."\">lien</a>.\n\nBonne réception.";
 
-//	if (!$sess_context->isSuperUser())
-		$res = @mail($email, stripslashes($mail_sujet), nl2br(stripslashes($mail_corps)), $mail_header);
+	$res = @mail($email, stripslashes($mail_sujet), nl2br(stripslashes($mail_corps)), $mail_header);
+
+	$msg = $res ? "La demande a été prise en compte" : "ERREUR";
 }
 
 mysqli_close ($db);
 
-?><span class="hack_ie">_HACK_IE_</span><script>mm({action: 'login', mobile: 0}); $cMsg({msg : 'La demande a été prise en compte' });</script>
+?><span class="hack_ie">_HACK_IE_</span><script>mm({action: 'login', mobile: 0}); $cMsg({msg : '<?= $msg ?>' });</script>
