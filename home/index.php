@@ -84,7 +84,7 @@ $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : n
                 <? if (isset($sess_context) && $sess_context->isUserConnected()) { ?>
                     <a href="../wrapper/jk.php?idc=<?= sess_context::INVALID_CHAMP_ID_PROFIL ?> " class="btn btn-primary pull-right" style="margin: 10px 0px 0px;">Bienvenue <?= $sess_context->user['pseudo'] ?></a>
                 <? } else { ?>
-                    <a href="../wrapper/jk.php?idc=<?= sess_context::INVALID_CHAMP_ID_LOGIN ?>" class="btn btn-primary pull-right" style="margin: 10px 0px 0px;">S'incrire | Se connecter</a>
+                    <a href="../wrapper/jk.php?auth" class="btn btn-primary pull-right" style="margin: 10px 0px 0px;">S'incrire | Se connecter</a>
                 <? } ?>
             </div><!--/.nav-collapse -->
           </div><!-- /.navbar-inner -->

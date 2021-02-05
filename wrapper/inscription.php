@@ -113,7 +113,6 @@ else
 {
 	array_push($items, array("func" => "textfield_form", "id" => "email_new",  "value" => $email,  "icon" => "email",          "libelle" => "Email/Identifiant", "nb_col" => 6, "required" => 1, "autofocus" => 1));
 	array_push($items, array("func" => "textfield_form", "id" => "pseudo_new", "value" => $pseudo, "icon" => "account_circle", "libelle" => "Pseudo",            "nb_col" => 6, "required" => 1));
-	$pwd = ""; $pwd2 = "";
 	array_push($items, array("func" => "textfield_form", "id" => "pwd_new",  "value" => $pwd,  "icon" => "lock", "libelle" => "Mot de passe", "subtext" => "Laisser vide si inchangé", "nb_col" => 6, "password" => 1));
 	array_push($items, array("func" => "textfield_form", "id" => "pwd2_new", "value" => $pwd2, "icon" => "",     "libelle" => "Confirmation", "nb_col" => 6, "password" => 1));
 
