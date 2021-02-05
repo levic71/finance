@@ -29,7 +29,7 @@ $idp       = Wrapper::getRequest('idp',       0);
 $name      = Wrapper::getRequest('name',      0);
 $date      = Wrapper::getRequest('date',      0);
 $mail_to   = array();
-$action    = "dashboard";
+$action    = "leagues";
 
 if (false && $controle != $_SESSION['antispam'])
 {

@@ -23,26 +23,32 @@ $db = dbc::connect();
 $sess_context->resetUserConnection();
 $sess_context->resetAdmin();
 
-$select = "SELECT * FROM jb_users WHERE removed =0 AND lower(email)='".strtolower($email)."' AND pwd='".$pwd."';";
+// $select = "SELECT * FROM jb_users WHERE removed =0 AND lower(email)='".strtolower($email)."' AND pwd='".$pwd."';";
+$select = "SELECT * FROM jb_users WHERE removed =0 AND lower(email)='".strtolower($email)."';";
 $res = dbc::execSQL($select);
 if ($row = mysqli_fetch_array($res))
 {
-	$sess_context->setUserConnection($row);
-	setcookie("cookie_email_user", str_replace('\\\'', '\'', $email), time()+(3600*24*30*6));
+	if (password_verify($pwd, $row['pwd'])) {
 
-	$status = 1;
+		$sess_context->setUserConnection($row);
+		setcookie("cookie_email_user", str_replace('\\\'', '\'', $email), time()+(3600*24*30*6));
 
-	if ($sess_context->isSuperAdmin()) { $status = 2; $sess_context->setAdmin(); }
+		$status = 1;
 
-	$select = "SELECT * FROM jb_roles WHERE id_champ=".$sess_context->getRealChampionnatId()." AND id_user=".$sess_context->user['id'].";";
-	$res = dbc::execSQL($select);
-	if ($row2 = mysqli_fetch_array($res))
-	{
-		if ($row2['role'] == _ROLE_ADMIN_) { $status = 2; $sess_context->setAdmin(); }
-	//	Toolbox::trackUser($sess_context->getRealChampionnatId(), _TRACK_ADMIN_);
+		if ($sess_context->isSuperAdmin()) { $status = 2; $sess_context->setAdmin(); }
+
+		$select = "SELECT * FROM jb_roles WHERE id_champ=".$sess_context->getRealChampionnatId()." AND id_user=".$sess_context->user['id'].";";
+		$res = dbc::execSQL($select);
+		if ($row2 = mysqli_fetch_array($res))
+		{
+			if ($row2['role'] == _ROLE_ADMIN_) { $status = 2; $sess_context->setAdmin(); }
+		//	Toolbox::trackUser($sess_context->getRealChampionnatId(), _TRACK_ADMIN_);
+		}
+
+		echo 	$status."||Bienvenue ".$row['pseudo'];
 	}
-
-	echo 	$status."||Bienvenue ".$row['pseudo'];
+	else
+		echo "-1||Paramètres de connexion non valide";
 }
 else
 	echo "-1||Paramètres de connexion non valide";

@@ -461,3 +461,7 @@ _:-ms-input-placeholder, :root .demo-graph {
   margin: 0px !important;
   border-top: 1px solid rgba(0,0,0,.1) !important;
 }
+.mdl-textfield__subtext {
+  font-size: 10px;
+  color: #999;
+}

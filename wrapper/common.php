@@ -15,8 +15,8 @@ require_once "../include/constantes.php";
 require_once "../include/cache_manager.php";
 require_once "../include/toolbox.php";
 require_once "../www/SQLServices.php";
-require_once "nimagebox.php";
-require_once "wrapper_fcts.php";
+require_once "../wrapper/nimagebox.php";
+require_once "../wrapper/wrapper_fcts.php";
 
 // VERSION DU PROJET
 $projet_version = "Jorky 3.0";
