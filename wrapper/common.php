@@ -64,11 +64,11 @@ function register_globals($order = 'egpcs')
 	{
 		switch(strtolower($k))
 		{
-			case 'e':    register_global_array($_ENV);        break;
-			case 'g':    register_global_array($_GET);        break;
-			case 'p':    register_global_array($_POST);        break;
-			case 'c':    register_global_array($_COOKIE);    break;
-			case 's':    register_global_array($_SERVER);    break;
+			case 'e': register_global_array($_ENV);    break;
+			case 'g': register_global_array($_GET);    break;
+			case 'p': register_global_array($_POST);   break;
+			case 'c': register_global_array($_COOKIE); break;
+			case 's': register_global_array($_SERVER); break;
 		}
 	}
 }

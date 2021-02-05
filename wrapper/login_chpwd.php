@@ -3,12 +3,19 @@
 require_once "../include/sess_context.php";
 session_start();
 include "common.php";
+include "../include/inc_db.php";
 header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 
-$token  = Wrapper::getRequest('chpwd', 0);
+$db = dbc::connect();
+$token  = Wrapper::getRequest('chpwd', 1234567890);
 
-if ($token == 0) {
-	ToolBox::do_redirect("jk.php");
+if (!Wrapper::isChPwdValid($token)) {
+?>
+<script>
+mm({action: 'login', mobile: 0});
+$aMsg({msg : 'Demande invalide !' });</script>
+<?
+	exit(0);
 }
 
 $menu = '';

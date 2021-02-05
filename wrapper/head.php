@@ -57,13 +57,13 @@ $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? ra
 
 <!-- Add to homescreen for Chrome on Android -->
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="icon" type="image/png" sizes="225x225" href="/images/android-desktop.png" />
+<link rel="icon" type="image/png" sizes="225x225" href="../images/android-desktop.png" />
 
 <!-- Add to homescreen for Safari on iOS -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="apple-mobile-web-app-title" content="Jorker's" />
-<link rel="apple-touch-icon-precomposed" href="/images/ios-desktop.png" />
+<link rel="apple-touch-icon-precomposed" href="../images/ios-desktop.png" />
 
 <link rel="icon" type="image/png" href="favicon.ico" />
 <link rel="apple-touch-icon" href="img/webclip.png" />
@@ -82,37 +82,40 @@ $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? ra
 <script type="text/javascript" src="js/components.js<?= "?ver=".$ver ?>"></script>
 <script type="text/javascript" src="js/calendar.js<?= "?ver=".$ver ?>"></script>
 <script type="text/javascript" src="js/ftj.js<?= "?ver=".$ver ?>"></script>
+
 <script>
+
 window.onload = function() {
+
 	window.scrollTo(0,0);
+
 	go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
 	go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
+
 	<? if ($wrapper) { ?>
-	mm({action: 'days'});
-	<? } else if ($chpwd) { 
-		if (wrapper::isChPwdValid($chpwd)) { ?>
+		mm({action: 'days'});
+	<? } else if ($chpwd) { ?>
 			mm({action: 'chpwd', params: '<?= $chpwd ?>'});
-		<? } else { ?> 
-			mm({action: 'leagues'}); $aMsg({msg : 'La demande invalide' });
-		<? } ?> 
 	<? } else if ($id_msg > 0) { ?>
-	go({action: 'tchat', id:'main', url:'edit_tchat.php?idp=<?= $id_msg ?>'});
+		go({action: 'tchat', id:'main', url:'edit_tchat.php?idp=<?= $id_msg ?>'});
 	<? } else if (isset($idp) && is_numeric($idp) && $idp > 0) { ?>
-	mm({action: 'stats', idp: '<?= $idp ?>'});
+		mm({action: 'stats', idp: '<?= $idp ?>'});
 	<? } else if (isset($idt) && is_numeric($idt) && $idt > 0) { ?>
-	mm({action: 'stats', idt: '<?= $idt ?>'});
+		mm({action: 'stats', idt: '<?= $idt ?>'});
 	<? } else if (isset($idj) && is_numeric($idj) && $idj > 0) { ?>
-	mm({action: 'matches', idj: '<?= $idj ?>', date: '<?= $date ?>', name: '<?= $name ?>'});
+		mm({action: 'matches', idj: '<?= $idj ?>', date: '<?= $date ?>', name: '<?= $name ?>'});
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_PROFIL) { ?>
-	mm({action: 'myprofile'});
+		mm({action: 'myprofile'});
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_LOGIN) { ?>
-	mm({action: 'login'});
+		mm({action: 'login'});
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_HOME) { ?>
-	mm({action: 'leagues'});
+		mm({action: 'leagues'});
 	<? } else { ?>
-	mm({action: 'dashboard'});
+		mm({action: 'dashboard'});
 	<? } ?>
+
 	var pattern = Trianglify({ width: window.innerWidth, height: window.innerHeight });
 	document.body.appendChild(pattern.canvas());
+
 }
 </script>
