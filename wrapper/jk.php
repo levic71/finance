@@ -129,6 +129,7 @@ else
 
     <script src="../mdl/material.min.js"></script>
 
+    <script>alert('<?= getenv('SERVER_NAME') ?>');</script>
 
 <? if (!$sess_context->isSuperUser()) { ?>
 
