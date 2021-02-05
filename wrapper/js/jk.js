@@ -65,6 +65,7 @@ rmIcon = function(id) {
 
 /* tracking */
 google_tracking = function(page) {
+	if (window.location.href.toLowerCase().indexOf('r7.') > -1) return;
 	if (window.location.href.indexOf('localhost') > -1) return;
 	var tmp = page.split(page.indexOf('edit_') > -1 ? '?' : '&');
 	var pageTracker = _gat._getTracker("UA-1509984-1");
