@@ -18,6 +18,10 @@ $db = dbc::connect();
 
 <?
 
+// Avant de lancer ce script se connecter sur wrappeer/jk.php
+
+exit(0);
+
 $req = "ALTER TABLE `jb_users` ADD `crypt` INT NOT NULL DEFAULT '0' AFTER `removed`;";
 $res = dbc::execSQL($req);
 
