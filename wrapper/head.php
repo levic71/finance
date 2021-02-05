@@ -94,8 +94,14 @@ window.onload = function() {
 
 	<? if ($wrapper) { ?>
 		mm({action: 'days'});
+	<? } else if (isset($auth)) { ?>
+		hn=window.location.hostname;
+		if (window.location.hostname == 'localhost') hn='localhost:443/jorkyball';
+		window.location = 'https://'+hn+'/wrapper/jk.php?login';
+	<? } else if (isset($login)) { ?>
+		mm({action: 'login'});
 	<? } else if ($chpwd) { ?>
-			mm({action: 'chpwd', params: '<?= $chpwd ?>'});
+		mm({action: 'chpwd', params: '<?= $chpwd ?>'});
 	<? } else if ($id_msg > 0) { ?>
 		go({action: 'tchat', id:'main', url:'edit_tchat.php?idp=<?= $id_msg ?>'});
 	<? } else if (isset($idp) && is_numeric($idp) && $idp > 0) { ?>
@@ -107,7 +113,7 @@ window.onload = function() {
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_PROFIL) { ?>
 		mm({action: 'myprofile'});
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_LOGIN) { ?>
-		mm({action: 'login'});
+		mm({action: 'leagues'});
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_HOME) { ?>
 		mm({action: 'leagues'});
 	<? } else { ?>

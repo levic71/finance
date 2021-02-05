@@ -84,10 +84,9 @@ if (!file_exists($photo)) $photo = sess_context::default_photo;
 $title = $modifier ? "Modifier mon profil" : "Inscription";
 $items = array();
 
-array_push($items, array("func" => "textfield_form", "id" => "email",  "value" => $email,  "icon" => "email",          "libelle" => "Email/Identifiant", "nb_col" => 6, "required" => 1, "autofocus" => 1));
-array_push($items, array("func" => "textfield_form", "id" => "pseudo", "value" => $pseudo, "icon" => "account_circle", "libelle" => "Pseudo",            "nb_col" => 6, "required" => 1));
-
 if ($modifier) {
+	array_push($items, array("func" => "textfield_form",          "id" => "email",       "value" => $email,     "icon" => "email",          "libelle" => "Email/Identifiant", "nb_col" => 6, "required" => 1, "autofocus" => 1));
+	array_push($items, array("func" => "textfield_form",          "id" => "pseudo",      "value" => $pseudo,    "icon" => "account_circle", "libelle" => "Pseudo",            "nb_col" => 6, "required" => 1));
 	array_push($items, array("func" => "textfield_form",          "id" => "nom",         "value" => $nom,       "icon" => "person",         "libelle" => "Nom", "nb_col" => 6));
 	array_push($items, array("func" => "textfield_form",          "id" => "prenom",      "value" => $prenom,    "icon" => "",               "libelle" => "Prénom", "nb_col" => 6));
 	array_push($items, array("func" => "divider_form",            "id" => "div1",        "nb_col" => 12));
@@ -104,12 +103,20 @@ if ($modifier) {
 	array_push($items, array("func" => "number_component_form",   "id" => "poids-zip",   "value" => $poids,     "icon" => "fitness_center", "libelle" => "Poids - kg", "nb_col" => 4, "start" => 0, "end" => 250));
 	array_push($items, array("func" => "number_component_form",   "id" => "poignet-zip", "value" => $poignet,   "icon" => "replay",         "libelle" => "Circonférence poignet - cm", "nb_col" => 4, "start" => 0, "end" => 250));
 	array_push($items, array("func" => "divider_form", "id" => "div3", "nb_col" => 12));
-}
 
-// Mot de passe vide et si on remplit les 2, cela signifie qu'on veut le changer (de toute façon ils sont cryptés !)
-$pwd = ""; $pwd2 = "";
-array_push($items, array("func" => "textfield_form", "id" => "pwd",  "value" => $pwd,  "icon" => "lock", "libelle" => "Mot de passe", "subtext" => "Laisser vide si inchangé", "nb_col" => 6, "password" => 1));
-array_push($items, array("func" => "textfield_form", "id" => "pwd2", "value" => $pwd2, "icon" => "",     "libelle" => "Confirmation", "nb_col" => 6, "password" => 1));
+	// Mot de passe vide et si on remplit les 2, cela signifie qu'on veut le changer (de toute façon ils sont cryptés !)
+	$pwd = ""; $pwd2 = "";
+	array_push($items, array("func" => "textfield_form", "id" => "pwd",  "value" => $pwd,  "icon" => "lock", "libelle" => "Mot de passe", "subtext" => "Laisser vide si inchangé", "nb_col" => 6, "password" => 1));
+	array_push($items, array("func" => "textfield_form", "id" => "pwd2", "value" => $pwd2, "icon" => "",     "libelle" => "Confirmation", "nb_col" => 6, "password" => 1));
+}
+else
+{
+	array_push($items, array("func" => "textfield_form", "id" => "email_new",  "value" => $email,  "icon" => "email",          "libelle" => "Email/Identifiant", "nb_col" => 6, "required" => 1, "autofocus" => 1));
+	array_push($items, array("func" => "textfield_form", "id" => "pseudo_new", "value" => $pseudo, "icon" => "account_circle", "libelle" => "Pseudo",            "nb_col" => 6, "required" => 1));
+	array_push($items, array("func" => "textfield_form", "id" => "pwd_new",  "value" => $pwd,  "icon" => "lock", "libelle" => "Mot de passe", "subtext" => "Laisser vide si inchangé", "nb_col" => 6, "password" => 1));
+	array_push($items, array("func" => "textfield_form", "id" => "pwd2_new", "value" => $pwd2, "icon" => "",     "libelle" => "Confirmation", "nb_col" => 6, "password" => 1));
+
+}
 
 $menu = "";
 if (!$modifier) {
@@ -141,20 +148,33 @@ choices.build({ name: 'conditions', c1: 'blue', c2: 'white', values: [{ v: 0, l:
 
 valid_form = function() {
 
+<? if ($modifier) { ?>
     if (!check_alphanumext(valof('pseudo'), 'Pseudo', -1))      return false;
     if (!check_alphanumext(valof('email'),  'Email', -1))       return false;
 	if (!check_email(valof('email')))                           return false;
-    if (valof('pwd').length > 0 && !check_alphanumext(valof('pwd'),  'Mot de passe', 6)) return false;
+	if (valof('pwd').length > 0 && !check_alphanumext(valof('pwd'),  'Mot de passe', 6)) return false;
     if (valof('pwd').length > 0 && !check_alphanumext(valof('pwd2'), 'Confirmation', 6)) return false;
-<? if (!$modifier) { ?>
-	if (!check_slide_value(slider)) return false;
-<? } ?>
-
 	if (valof('pwd2') != valof('pwd'))
 	{
 		$dMsg({msg : 'La confirmation du mot de passe est incorrecte' });
 		return false;
 	}
+<? } else { ?>
+    if (!check_alphanumext(valof('pseudo_new'), 'Pseudo', -1))      return false;
+    if (!check_alphanumext(valof('email_new'),  'Email', -1))       return false;
+	if (!check_email(valof('email_new')))                               return false;
+	if (!check_alphanumext(valof('pwd_new'),  'Mot de passe', 6))   return false;
+    if (!check_alphanumext(valof('pwd2_new'), 'Confirmation', 6))   return false;
+	if (valof('pwd2_new') != valof('pwd_new'))
+	{
+		$dMsg({msg : 'La confirmation du mot de passe est incorrecte' });
+		return false;
+	}
+<? } ?>
+
+<? if (!$modifier) { ?>
+	if (!check_slide_value(slider)) return false;
+<? } ?>
 
 	if (valof('photo') != '')
 	{
@@ -182,7 +202,7 @@ valid_form = function() {
 	var date_nais = calendar.getValue('date_nais');
 	var params = '?confidentialite='+choices.getSelection('confidentialite')+'&activite='+choices.getSelection('activite')+'&morpho='+choices.getSelection('morpho')+'&sexe='+choices.getSelection('sexe')+'&date_nais='+date_nais+'&taille='+taille+'&poignet='+poignet+'&poids='+poids+attrs(['pseudo', 'nom', 'prenom', 'photo', 'email', 'mobile', 'ville', 'pwd', 'controle']);
 <? } else { ?>
-	var params = '?'+attrs(['pseudo', 'email', 'pwd', 'controle']);
+	var params = '?'+attrs(['pseudo_new', 'email_new', 'pwd_new', 'controle']);
 <? } ?>
 
 	xx({id:'main', url:'inscription_do.php'+params+'&upd=<?= $modifier ? 1 : 0 ?>'});
