@@ -146,6 +146,7 @@ xx = function(args) {
 
 					if (opt.action == 'valid') {
 						window.location.protocol = "https";
+						alert(window.location.protocol);
 						window.location = 'jk.php';
 					}
 
