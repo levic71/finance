@@ -1,11 +1,12 @@
 /* globals var */
 var journees = "";
+var js_debug = true;
 
 /* detect */
 isTouch = function() { return ( (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i))  || (navigator.userAgent.match(/Android/i))); }
 isIE8 = function() { return (document.all && document.querySelector && !document.addEventListener); }
 
-myconsole = function(text) { if (typeof console.log !== 'undefined') console.log(text); else alert(text); }
+myconsole = function(text) { if (js_debug) { if (typeof console.log !== 'undefined') console.log(text); else alert(text); } }
 
 /* dom */
 el = function(id) { return document.getElementById(id); }
@@ -91,7 +92,7 @@ go = function(args) {
 	var confirmdel=opt.confirmdel||0;
 	var confirminvit=opt.confirminvit||0;
 
-	myconsole('go begin : action=' + action + ' url=' + opt.url);
+	myconsole('----> go begin : action=' + action + ' -- url=' + opt.url);
 
 	letsgo = true;
 	if (opt.confirmdel == 1) letsgo = confirm('Confirmez vous cette suppression ?');
@@ -104,20 +105,19 @@ go = function(args) {
 		jx.load(
 			opt.url,
 			function(data) {
-				myconsole('go       : jx in');
+				myconsole('----> go jx in  : action='+action+' -- url='+opt.url);
 				addCN('main-content', action+'_page');
 				cc(id, data);
 				if (action == 'slidebar') componentHandler.upgradeDom('MaterialMenu');
 				updateContext(action);
 				google_tracking(opt.url);
-				myconsole('go       : jx out');
+				myconsole('----> go jx out : action='+action+' -- url='+opt.url);
 			},
 			'text', 'post'
 		);
 	}
 
-	myconsole('go end   : action=' + action + ' url=' + opt.url);
-
+	myconsole('----> go end   : action=' + action + ' -- url=' + opt.url);
 }
 
 /* menu */
@@ -126,33 +126,27 @@ xx = function(args) {
 	var mobile=opt.mobile||'';
 	var idc=opt.idc||'';
 
-	myconsole('xx begin : action='+ opt.action + ' url=' + opt.url);
+	myconsole('--> xx begin : action='+ opt.action + ' -- url=' + opt.url);
 
 	jx.load(
 		opt.url,
 		function(data) {
-			myconsole('xx       : jx in');
+			myconsole('--> xx jx in  : action='+ opt.action + ' -- url='+ opt.url);
 			addCN('main-content', opt.action+'_page');
 			var tmp = data.split('||');
 			if (tmp.length > 1)
 			{
 				if (tmp[0] > 0)
 				{
-					if (opt.action == 'valid.old') {
-						mm({action: 'myprofile', mobile: mobile});
-						go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
-						go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
-					}
-
 					if (opt.action == 'valid') {
-						window.location.protocol = "https";
-						alert(window.location.protocol);
-						window.location = 'jk.php';
+						hn=window.location.hostname;
+						if (window.location.hostname == 'localhost') hn='localhost:443/jorkyball/';
+						window.location = 'https://'+hn+'/wrapper/jk.php';
 					}
 
 					if (opt.action == 'login') {
 						cc('main', '')
-						go({ action: 'slidebar', id:'slidebar', url:'navslidebar.php' });
+						// go({ action: 'slidebar', id:'slidebar', url:'navslidebar.php' });
 						$aMsg({ msg: tmp[1] });
 					}
 					else
@@ -186,11 +180,11 @@ xx = function(args) {
 			updateContext(opt.action);
 			if (opt.action == 'valid') {  var t = opt.url.split('|'); opt.url = t[0].replace('params', 'idc'); }
 			google_tracking(opt.url);
-			myconsole('xx       : jx out');
+			myconsole('--> xx jx out : action='+ opt.action + ' -- url='+ opt.url);
 		},
 		'text', 'post'
 	);
-	myconsole('xx end   : action='+ opt.action + ' url='+ opt.url);
+	myconsole('--> xx end   : action='+ opt.action + ' -- url='+ opt.url);
 }
 
 mm = function(args) {
@@ -859,7 +853,6 @@ function checkTextfieldInput(input) {
                 // Else if focus or value
                 else {
                     icons[i].classList.add("mdl-color-text--primary");
-                    console.log(hasValue, input.isActive())
                 }
             }
         }
