@@ -375,14 +375,14 @@ isaextcar = function(car)
 check_alphanum_gen = function(str, label, size, type)
 {
 	if (str.length == 0) { $dMsg({msg : 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
-	if (size != -1 && str.length < size) { $dMsg({msg : 'Le champ "'+label+'" doit être composé d\'au moins '+size+' caractères alphanumériques'}); return false; }
+	if (size != -1 && str.length < size) { $dMsg({msg : 'Minimum '+size+' caractères pour "'+label+'"'}); return false; }
 	for(var i=0; i < str.length; i++)
 	{
 		var car=str.substring(i, i+1);
 		if (type == 0)
-			if (!isacar(car)) { $dMsg({msg : 'Le champ "'+label+'" doit être alphanumérique'}); return false; }
+			if (!isacar(car)) { $dMsg({msg : '"'+label+'" doit être alphanumérique'}); return false; }
 		else
-			if (!isacarext(car)) { $dMsg({msg : 'Le champ "'+label+'" doit être alphanumérique'}); return false; }
+			if (!isacarext(car)) { $dMsg({msg : '"'+label+'" doit être alphanumérique'}); return false; }
 	}
 	return true;
 }

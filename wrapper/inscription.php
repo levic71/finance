@@ -106,8 +106,10 @@ if ($modifier) {
 	array_push($items, array("func" => "divider_form", "id" => "div3", "nb_col" => 12));
 }
 
-array_push($items, array("func" => "textfield_form",          "id" => "pwd",         "value" => $pwd,       "icon" => "lock",           "libelle" => "Mot de passe", "nb_col" => 6, "required" => 1, "password" => 1));
-array_push($items, array("func" => "textfield_form",          "id" => "pwd2",        "value" => $pwd2,      "icon" => "",               "libelle" => "Confirmation", "nb_col" => 6, "required" => 1, "password" => 1));
+// Mot de passe vide et si on remplit les 2, cela signifie qu'on veut le changer (de toute façon ils sont cryptés !)
+$pwd = ""; $pwd2 = "";
+array_push($items, array("func" => "textfield_form", "id" => "pwd",  "value" => $pwd,  "icon" => "lock", "libelle" => "Mot de passe", "subtext" => "Laisser vide si inchangé", "nb_col" => 6, "password" => 1));
+array_push($items, array("func" => "textfield_form", "id" => "pwd2", "value" => $pwd2, "icon" => "",     "libelle" => "Confirmation", "nb_col" => 6, "password" => 1));
 
 $menu = "";
 if (!$modifier) {
@@ -142,8 +144,8 @@ valid_form = function() {
     if (!check_alphanumext(valof('pseudo'), 'Pseudo', -1))      return false;
     if (!check_alphanumext(valof('email'),  'Email', -1))       return false;
 	if (!check_email(valof('email')))                           return false;
-    if (!check_alphanumext(valof('pwd'),    'Mot de passe', 6)) return false;
-    if (!check_alphanumext(valof('pwd2'),   'Confirmation', 6)) return false;
+    if (valof('pwd').length > 0 && !check_alphanumext(valof('pwd'),  'Mot de passe', 6)) return false;
+    if (valof('pwd').length > 0 && !check_alphanumext(valof('pwd2'), 'Confirmation', 6)) return false;
 <? if (!$modifier) { ?>
 	if (!check_slide_value(slider)) return false;
 <? } ?>

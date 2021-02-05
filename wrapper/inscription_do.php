@@ -50,7 +50,11 @@ if ($modifier)
 
 		if ($row['photo'] != "" && $row['photo'] != $photo && file_exists($row['photo'])) unlink($row['photo']);
 
-		$update = "UPDATE jb_users SET mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".strtolower($email)."', date_nais='".$date_nais."', pwd='".$pwd."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
+		// Si pwd vide alors pas de changement de mot de passe demandé, sinon on le crypte avant insertion
+		$h = password_hash($pwd, PASSWORD_DEFAULT);
+		$pwd_change = $pwd != "" ? "pwd='".$h."'," : "";
+
+		$update = "UPDATE jb_users SET ".$pwd_change." mobile='".$mobile."', ville='".$ville."', sexe=".$sexe.", confidentialite=".$confidentialite.", activite=".$activite.", morpho=".$morpho.", taille='".$taille."', poignet=".$poignet.", poids=".$poids.", email='".strtolower($email)."', date_nais='".$date_nais."', nom='".$nom."', prenom='".$prenom."', photo='".$photo."', pseudo='".$pseudo."' WHERE id=".$sess_context->user['id'];
 		$res = dbc::execSQL($update);
 
 		$select = "SELECT * FROM jb_users WHERE id=".$sess_context->user['id'];
@@ -67,10 +71,13 @@ else
 	$row = mysqli_fetch_array($res);
 	if ($row['total'] > 0) { echo "-1||Email déjà utilisé"; exit(0); }
 
-	$insert = "INSERT INTO jb_users (pseudo, email, pwd, status, date_nais, date_inscription) VALUES ('".$pseudo."', '".strtolower($email)."', '".$pwd."', 1, '".date("Y")."-".date("m")."-".date("d")."', '".date("Y")."-".date("m")."-".date("d")."');";
+	// On crypte le pwd avant insertion
+	$h = password_hash($pwd, PASSWORD_DEFAULT);
+
+	$insert = "INSERT INTO jb_users (pseudo, email, pwd, status, date_nais, date_inscription) VALUES ('".$pseudo."', '".strtolower($email)."', '".$h."', 1, '".date("Y")."-".date("m")."-".date("d")."', '".date("Y")."-".date("m")."-".date("d")."');";
 	$res = dbc::execSQL($insert);
 
-	$select = "SELECT * FROM jb_users WHERE lower(email)='".strtolower($email)."' AND pwd='".$pwd."'";
+	$select = "SELECT * FROM jb_users WHERE lower(email)='".strtolower($email)."' AND pwd='".$h."'";
 	$res = dbc::execSQL($select);
 	$row = mysqli_fetch_array($res);
 	$sess_context->setUserConnection($row);

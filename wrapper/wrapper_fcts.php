@@ -513,6 +513,7 @@ public static function divider_form($item) { ?>
 public static function textfield_form($item) { ?>
 	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><input class="mdl-textfield__input" type="<?= isset($item['password']) ? "password" : "text" ?>" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : ""?> <?= isset($item['autofocus']) ? "autofocus" : "" ?> />
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
+	<? if (isset($item['subtext'])) { ?><span class="mdl-textfield__subtext"><?= $item['subtext'] ?></span><? } ?>
 <? }
 
 public static function checkbox_form($item) { ?>
