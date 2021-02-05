@@ -76,7 +76,7 @@ $sess_context->setChampionnat($chp);
 
 $sess_context->resetAdmin();
 
-// Si on vient d'une crÃ©ation de championnat
+// Si on vient d'une création de championnat
 if (isset($_SESSION['autologonadmin']) && $_SESSION['autologonadmin'] == 1)
 {
   unset($_SESSION['autologonadmin']);

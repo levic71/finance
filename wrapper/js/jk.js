@@ -138,10 +138,15 @@ xx = function(args) {
 			{
 				if (tmp[0] > 0)
 				{
-					if (opt.action == 'valid') {
+					if (opt.action == 'valid.old') {
 						mm({action: 'myprofile', mobile: mobile});
 						go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
 						go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
+					}
+
+					if (opt.action == 'valid') {
+						window.location.protocol = "https";
+						window.location = 'jk.php';
 					}
 
 					if (opt.action == 'login') {
