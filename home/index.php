@@ -295,7 +295,6 @@ $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : n
       <p>&copy; 2021 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
     </footer>
 
-
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
