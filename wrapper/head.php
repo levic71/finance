@@ -100,6 +100,8 @@ window.onload = function() {
 		window.location = 'https://'+hn+'/wrapper/jk.php?login';
 	<? } else if (isset($login)) { ?>
 		mm({action: 'login'});
+	<? } else if (isset($myprofile)) { ?>
+		mm({action: 'myprofile'});
 	<? } else if ($chpwd) { ?>
 		mm({action: 'chpwd', params: '<?= $chpwd ?>'});
 	<? } else if ($id_msg > 0) { ?>
@@ -111,7 +113,7 @@ window.onload = function() {
 	<? } else if (isset($idj) && is_numeric($idj) && $idj > 0) { ?>
 		mm({action: 'matches', idj: '<?= $idj ?>', date: '<?= $date ?>', name: '<?= $name ?>'});
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_PROFIL) { ?>
-		mm({action: 'myprofile'});
+		mm({action: 'leagues'});
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_LOGIN) { ?>
 		mm({action: 'leagues'});
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_HOME) { ?>
