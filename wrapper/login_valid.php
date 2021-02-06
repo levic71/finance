@@ -23,7 +23,6 @@ $db = dbc::connect();
 $sess_context->resetUserConnection();
 $sess_context->resetAdmin();
 
-// $select = "SELECT * FROM jb_users WHERE removed =0 AND lower(email)='".strtolower($email)."' AND pwd='".$pwd."';";
 $select = "SELECT * FROM jb_users WHERE removed =0 AND lower(email)='".strtolower($email)."';";
 $res = dbc::execSQL($select);
 if ($row = mysqli_fetch_array($res))
@@ -42,7 +41,6 @@ if ($row = mysqli_fetch_array($res))
 		if ($row2 = mysqli_fetch_array($res))
 		{
 			if ($row2['role'] == _ROLE_ADMIN_) { $status = 2; $sess_context->setAdmin(); }
-		//	Toolbox::trackUser($sess_context->getRealChampionnatId(), _TRACK_ADMIN_);
 		}
 
 		echo 	$status."||Bienvenue ".$row['pseudo'];

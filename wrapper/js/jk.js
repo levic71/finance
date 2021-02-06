@@ -142,7 +142,7 @@ xx = function(args) {
 					if (opt.action == 'valid') {
 						hn=window.location.hostname;
 						if (window.location.hostname == 'localhost') hn='localhost:443/jorkyball';
-						window.location = 'https://'+hn+'/wrapper/jk.php';
+						window.location = 'https://'+hn+'/wrapper/jk.php?myprofile';
 					}
 
 					if (opt.action == 'login') {
