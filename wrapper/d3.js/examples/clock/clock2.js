@@ -94,7 +94,7 @@ vis.append("svg:circle")
 
 var img_size = 160;
 vis.append("image")
-    .attr("xlink:href", "user-icon.png")
+    .attr("xlink:href", "user-img.png")
     .attr("x", Math.round(img_size/2) * -1)
     .attr("y", Math.round(img_size/2) * -1)
     .attr("class", "img-icon")
@@ -125,7 +125,7 @@ var imageObj = new Image();
 imageObj.onload = function() {
 	context.drawImage(imageObj, Math.round(width/2), Math.round(height/2), 200, 200);
 };
-imageObj.src = 'user-icon.png';
+imageObj.src = 'user-img.png';
 
 
 

@@ -45,7 +45,7 @@ public static function formatNumber($n) {
 	return (round($n/1000, 1))."k";
 }
 
-public static function formatPhotoJoueur($photo1, $photo2 = "") { return ( $photo2 == "" ? ($photo1 == "" ? "img/user-icon.png" : $photo1) : $photo2); }
+public static function formatPhotoJoueur($photo1, $photo2 = "") { return ( $photo2 == "" ? ($photo1 == "" ? "img/user-img.png" : $photo1) : $photo2); }
 public static function formatPhotoEquipe($photo1, $photo2 = "") { return ( $photo2 == "" ? ($photo1 == "" ? "img/team-icon.png" : $photo1) : $photo2); }
 
 public static function getPrevNextJournees($idj)
