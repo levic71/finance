@@ -46,7 +46,7 @@ class sess_context
 	var $id_journee_encours;
 	var $langue;
 	var $options_generales;
-	const default_photo = "img/user-icon.png";
+	const default_photo = "img/user-img.png";
 	const INVALID_CHAMP_ID_HOME   = -999; // si idc = INVALID_CHAMP_ID_HOME   accès limiter à  la liste championnats + connexion
 	const INVALID_CHAMP_ID_LOGIN  = -998; // si idc = INVALID_CHAMP_ID_LOGIN  accès page login/inscription
 	const INVALID_CHAMP_ID_PROFIL = -997; // si idc = INVALID_CHAMP_ID_PROFIL accès page mon profil
@@ -196,7 +196,7 @@ class sess_context
 	function isChampionnatNonDefini()	{ return ($this->valide == -1); }
 
 	function getUser()	 				{ return $this->user; }
-	function setUserConnection($user) 	{ $this->connected = 1; $user['pwd'] = ""; 	if ($user['photo'] == "") $user['photo'] = "img/user-icon.png"; $this->user = $user; }
+	function setUserConnection($user) 	{ $this->connected = 1; $user['pwd'] = ""; 	if ($user['photo'] == "") $user['photo'] = "img/user-img.png"; $this->user = $user; }
 	function resetUserConnection() 		{ $this->connected = 0; $this->user = ""; }
 	function isUserConnected()			{ return ($this->connected == 1); }
 	function isSuperAdmin()				{ return ($this->isUserConnected() && $this->user['super_admin'] == 1); }
