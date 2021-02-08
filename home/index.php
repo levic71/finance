@@ -25,6 +25,7 @@ if (isset($dns[0]) && strtolower($dns[0]) != "www") {
 	if ($row = mysqli_fetch_array($res)) {
     $protocole = stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://';
   	ToolBox::do_redirect($protocole + "www.jorkers.com/wrapper/jk.php?idc=".$row['id']);
+  }
 }
 
 unset($_SESSION['antispam']);
