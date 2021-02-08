@@ -22,17 +22,13 @@ if (isset($dns[0]) && strtolower($dns[0]) != "www" && strtolower($dns[0]) != "ww
 
 	$sql = "SELECT id, nom FROM jb_championnat WHERE entity='_NATIF_' AND actif = 1 AND nom != '' AND lower(nom)='".strtolower($r7 ? $r7_dns['1'] : $dns['0'])."' ORDER BY dt_creation DESC";
   echo $sql;
-  echo "\n<BR>"; 
 	$res = dbc::execSQL($sql);
 	if ($row = mysqli_fetch_array($res)) {
     $protocole = stripos($_SERVER['SERVER_PROTOCOL'],'https') == 0 ? 'https://' : 'http://';
-//  	ToolBox::do_redirect($protocole + "www.jorkers.com/wrapper/jk.php?idc=".$row['id']);
-    echo $protocole + "www.jorkers.com/wrapper/jk.php?idc=".$row['id'];
+  	ToolBox::do_redirect($protocole."www.jorkers.com/wrapper/jk.php?idc=".$row['id']);
     exit(0);
   }
 }
-
-exit(0);
 
 unset($_SESSION['antispam']);
 $_SESSION['antispam'] = ToolBox::getRand(5);
