@@ -26,7 +26,7 @@ echo $sql;
 	if ($row = mysqli_fetch_array($res)) {
 echo "toto";
     $protocole = stripos($_SERVER['SERVER_PROTOCOL'],'https') == 0 ? 'https://' : 'http://';
-  	ToolBox::do_redirect($protocole + "www.jorkers.com/wrapper/jk.php?idc=".$row['id']);
+  	echo $protocole + "www.jorkers.com/wrapper/jk.php?idc=".$row['id'];
     exit(0);
   }
 }
