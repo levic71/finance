@@ -21,7 +21,7 @@ header('Content-Type: text/html; charset='.sess_context::xhr_charset);
       <a class="mdl-navigation__link" href="#" onclick="mm({action: 'tchat'});"><i class="material-icons" role="presentation">sms</i>Tchat</a>
       <a class="mdl-navigation__link" href="#" onclick="mm({action: 'photos'});"><i class="material-icons" role="presentation">photo</i>Photos</a>
   <? } ?>
-  <a id="home" class="mdl-navigation__link" onclick="mm({action: 'leagues'});"><i class="material-icons" role="presentation">list</i>Annuaire</a>
+      <a id="home" class="mdl-navigation__link" href="#" onclick="mm({action: 'leagues'});"><i class="material-icons" role="presentation">list</i>Annuaire</a>
 </nav>
   
 <footer class="mdl-mega-footer">
