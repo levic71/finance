@@ -24,18 +24,10 @@ if (isset($dns[0]) && strtolower($dns[0]) != "www" && strtolower($dns[0]) != "ww
   echo $sql;
 	$res = dbc::execSQL($sql);
 	if ($row = mysqli_fetch_array($res)) {
-    $protocole = stripos($_SERVER['SERVER_PROTOCOL'],'https') == 0 ? 'https://' : 'http://';
- echo $protocole.($r7 ? "r7" : "www").".jorkers.com/wrapper/jk.php?idc=".$row['id'];
- // 	ToolBox::do_redirect($protocole.($r7 ? "r7" : "www").".jorkers.com/wrapper/jk.php?idc=".$row['id']);
- exit(0);
+    $protocole = stripos($_SERVER['SCRIPT_URI'],'https') == 0 ? 'https://' : 'http://';
+  	ToolBox::do_redirect($protocole.($r7 ? "r7" : "www").".jorkers.com/wrapper/jk.php?idc=".$row['id']);
   }
 }
-
-while (list($var,$value) = each ($_SERVER)) {
-  echo "$var => $value <br />";
-}
-
-exit(0);
 
 unset($_SESSION['antispam']);
 $_SESSION['antispam'] = ToolBox::getRand(5);
