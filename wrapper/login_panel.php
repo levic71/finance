@@ -8,9 +8,6 @@ header('Content-Type: text/html; charset='.sess_context::charset);
 
 
 if ($sess_context->isUserConnected()) { ?>
-<!--
-	<img src="<?= Wrapper::formatPhotoJoueur(file_exists($sess_context->user['photo']) ? $sess_context->user['photo'] : "img/user-icon.png") ?>" class="demo-avatar">
--->
 	<span class="mdl-chip">	
 		<span class="mdl-chip__text"><?= $sess_context->user['pseudo'] ?></span>
 		<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
