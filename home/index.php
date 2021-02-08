@@ -31,6 +31,10 @@ if (isset($dns[0]) && strtolower($dns[0]) != "www" && strtolower($dns[0]) != "ww
   }
 }
 
+while (list($var,$value) = each ($_SERVER)) {
+  echo "$var => $value <br />";
+}
+
 exit(0);
 
 unset($_SESSION['antispam']);
