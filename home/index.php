@@ -6,7 +6,25 @@ require_once "../include/sess_context.php";
 
 session_start();
 
-include("../include/toolbox.php");
+include "../include/toolbox.php";
+include "../include/inc_db.php";
+include "wrapper_fcts.php";
+
+$db = dbc::connect();
+
+$dns = explode('.', $_SERVER['SERVER_NAME']);
+
+// Accès direct au championnat via sous domaine
+if (isset($dns[0]) && $dns[0] != "www") {
+
+	$r7_dns = explode('-', $dns);
+	$r7 = isset($r7_dns[0]) && $r7_dns == "r7" ? true : false;
+
+	$sql = "SELECT id, nom FROM jb_championnat WHERE entity='_NATIF_' AND actif = 1 AND nom != '' AND nom='".($r7 ? $r7_dns : $dns)."' ORDER BY dt_creation DESC";
+	$res = dbc::execSQL($sql);
+	if ($row = mysqli_fetch_array($res))
+  	ToolBox::do_redirect("../wrapper/jk.php?idc=".$row['id']);
+}
 
 unset($_SESSION['antispam']);
 $_SESSION['antispam'] = ToolBox::getRand(5);
