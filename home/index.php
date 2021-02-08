@@ -23,8 +23,9 @@ if (isset($dns[0]) && strtolower($dns[0]) != "www") {
 	$sql = "SELECT id, nom FROM jb_championnat WHERE entity='_NATIF_' AND actif = 1 AND nom != '' AND lower(nom)='".strtolower($r7 ? $r7_dns['0'] : $dns['0'])."' ORDER BY dt_creation DESC";
 	$res = dbc::execSQL($sql);
 	if ($row = mysqli_fetch_array($res)) {
-    $protocole = stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://';
+    $protocole = stripos($_SERVER['SERVER_PROTOCOL'],'https') == 0 ? 'https://' : 'http://';
   	ToolBox::do_redirect($protocole + "www.jorkers.com/wrapper/jk.php?idc=".$row['id']);
+    exit(0);
   }
 }
 
