@@ -8,7 +8,7 @@ session_start();
 
 include "../include/toolbox.php";
 include "../include/inc_db.php";
-include "wrapper_fcts.php";
+include "../wrapper/wrapper_fcts.php";
 
 $db = dbc::connect();
 
@@ -17,10 +17,10 @@ $dns = explode('.', $_SERVER['SERVER_NAME']);
 // Accès direct au championnat via sous domaine
 if (isset($dns[0]) && strtolower($dns[0]) != "www") {
 
-	$r7_dns = explode('-', $dns);
-	$r7 = isset($r7_dns[0]) && strtolower($r7_dns) == "r7" ? true : false;
+	$r7_dns = explode('-', $dns[0]);
+	$r7 = isset($r7_dns[0]) && strtolower($r7_dns[0]) == "r7" ? true : false;
 
-	$sql = "SELECT id, nom FROM jb_championnat WHERE entity='_NATIF_' AND actif = 1 AND nom != '' AND lower(nom)='".strtolower($r7 ? $r7_dns : $dns)."' ORDER BY dt_creation DESC";
+	$sql = "SELECT id, nom FROM jb_championnat WHERE entity='_NATIF_' AND actif = 1 AND nom != '' AND lower(nom)='".strtolower($r7 ? $r7_dns['0'] : $dns['0'])."' ORDER BY dt_creation DESC";
 	$res = dbc::execSQL($sql);
 	if ($row = mysqli_fetch_array($res))
   	ToolBox::do_redirect("../wrapper/jk.php?idc=".$row['id']);
