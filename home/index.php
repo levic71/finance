@@ -23,7 +23,7 @@ if (isset($dns[0]) && strtolower($dns[0]) != "www" && strtolower($dns[0]) != "ww
 	$sql = "SELECT id, nom FROM jb_championnat WHERE entity='_NATIF_' AND actif = 1 AND nom != '' AND lower(nom)='".strtolower($r7 ? $r7_dns['1'] : $dns['0'])."' ORDER BY dt_creation DESC";
 	$res = dbc::execSQL($sql);
 	if ($row = mysqli_fetch_array($res)) {
-    $protocole = stripos($_SERVER['SCRIPT_URI'], 'https') ? 'https://' : 'http://';
+    $protocole = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https://' : 'http://';
 //  	ToolBox::do_redirect($protocole.($r7 ? "r7" : "www").".jorkers.com/wrapper/jk.php?idc=".$row['id']);
   	echo $protocole.($r7 ? "r7" : "www").".jorkers.com/wrapper/jk.php?idc=".$row['id'];
   }
