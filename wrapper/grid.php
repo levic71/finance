@@ -300,7 +300,7 @@ if ($total > 0) {
 			if ($_action_ == "roles" && $cle == "go" && $sess_context->isOnlyDeputy() && $data['role'] == _ROLE_ADMIN_) $class="hideme";
 			if ($_action_ == "players" && $cle == "name" && isset($up[$data['id']])) $data[$cle] = $up[$data['id']]['name'];
 			if ($_action_ == "players" && $cle == "portrait" && isset($up[$data['id']])) $data[$cle] = $up[$data['id']]['photo'] == "" ? $data[$cle] : "<img src=\"".$up[$data['id']]['photo']."\" />";
-			if (!$sess_context->isSuperUser() && $_action_ == "leagues" && $cle == "go") $data[$cle] = '<a href="http://'.Wrapper::string2DNS($data['nom2']).'.jorkers.com/wrapper/jk.php?idc='.$data['id'].'" class="full-circle"><span class="bullet"></span></a>';
+//			if (!$sess_context->isSuperUser() && $_action_ == "leagues" && $cle == "go") $data[$cle] = '<a href="http://'.Wrapper::string2DNS($data['nom2']).'.jorkers.com/wrapper/jk.php?idc='.$data['id'].'" class="full-circle"><span class="bullet"></span></a>';
 			if ($_action_ == "leagues" && $cle == "nom") $data[$cle] = '<span>'.($data[$cle]).'</span><small>'.$libelle_type[$data['type']].'</small>';
 			if ($_action_ == "leagues" && $cle == "type_sport") $data[$cle] = '<img src="img/sports/'.($icon_genre[$data[$cle]]).'" height="24" width="32" />';
 			if ($_action_ == "leagues" && $cle == "points") $data[$cle] = '<button class="button '.($data[$cle] > 1000 ? "blue" : ( $data[$cle] > 500 ? "green" : ($data[$cle] > 250 ? "yellow" : ($data[$cle] > 100 ? "orange" : ($data[$cle] > 0 ? "red" : "black"))))).'">'.($data[$cle]).'</button>';
