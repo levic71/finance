@@ -294,8 +294,8 @@ if ($total > 0) {
 		$vainqueur = ($_action_ == "matches" || $_action_ == "fannys") ? StatsJourneeBuilder::kikiGagne($data) : 0;
 
 		reset($cols); $j = 2;
-		while (list($cle, $val) = each($cols))
-		{
+		foreach($cols as $cle => $val) {
+		
 			$class = "";
 			if ($_action_ == "roles" && $cle == "go" && $sess_context->isOnlyDeputy() && $data['role'] == _ROLE_ADMIN_) $class="hideme";
 			if ($_action_ == "players" && $cle == "name" && isset($up[$data['id']])) $data[$cle] = $up[$data['id']]['name'];

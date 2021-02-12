@@ -15,7 +15,7 @@ public static function getRand($length)
 	$letters = 'aAbBCDeEFgGhHJKLmMnNpPqQRsStTuVwWXYZz2345679';
 	$number = strlen($letters);
 	for($i = 0; $i < $length; $i++)
-		$string .= $letters{mt_rand(0, $number - 1)};
+		$string .= $letters[mt_rand(0, $number - 1)];
 
 	return $string;
 }
@@ -162,9 +162,9 @@ public static function hexLighter($hex, $factor = 30)
 
 	$new_hex = '';
 
-	$base['R'] = hexdec($hex{0}.$hex{1});
-	$base['G'] = hexdec($hex{2}.$hex{3});
-	$base['B'] = hexdec($hex{4}.$hex{5});
+	$base['R'] = hexdec($hex[0].$hex[1]);
+	$base['G'] = hexdec($hex[2].$hex[3]);
+	$base['B'] = hexdec($hex[4].$hex[5]);
 
 	foreach($base as $k => $v)
 	{

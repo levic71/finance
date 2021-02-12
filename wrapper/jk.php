@@ -12,11 +12,10 @@ ini_set('session.use_only_cookies',1);
 ini_set("url_rewriter.tags","input=src");
 ini_set('arg_separator.output', '&amp;');
 
+session_cache_expire(60*60);
 session_start();
 
 header('Content-Type: text/html; charset='.sess_context::charset);
-
-session_cache_expire(60*60);
 
 $debug = false;
 
