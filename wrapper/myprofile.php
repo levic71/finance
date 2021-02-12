@@ -40,11 +40,12 @@ if ($pos_curseur > $largeur) $pos_curseur = $largeur-15;
 <div id="myprofile" class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone mdl-grid">
 
 	<div class="mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-phone mdl-card mdl-shadow--2dp" style="min-height: 300px;">
-		<div class="mdl-card__title mdl-card--expand" style="background: url('<?= file_exists($sess_context->user['photo']) ? $sess_context->user['photo'] : sess_context::default_photo ?>') center center no-repeat;"></div>
+		<div class="mdl-card__title mdl-card--expand" style="background: url('<?= file_exists($sess_context->user['photo']) ? $sess_context->user['photo'] : sess_context::default_photo ?>') center center no-repeat;">
+		</div>
 
-		<div class="mdl-card__menu">
+		<div class="mdl-card__menu" style="top: 260px;">
 			<button id="bteditprofil" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--blue-grey-400" onclick="mm({action: 'updprofile'});">
-				<i class="mdl-textfield__icon material-icons">add_circle</i>
+				<i class="mdl-textfield__icon material-icons">3d_rotation</i>
 			</button>
 			<div class="mdl-tooltip mdl-tooltip--left" for="bteditprofil">Editer mon profil</div>
 		</div>
@@ -52,6 +53,7 @@ if ($pos_curseur > $largeur) $pos_curseur = $largeur-15;
 		<div class="mdl-card__supporting-text mdl-typography--text-center">
 			<span class="demo-card-image__filename"><?= $sess_context->user['pseudo'] ?></span>
 		</div>
+
 	</div>
 
 	<div class="mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-phone mdl-card mdl-shadow--2dp">

@@ -214,7 +214,7 @@ class sess_context
 	}
 
 	public static function getJorkersVersion() {
-		return "2.21.3".(sess_context::isLocalHost() ? ".".time() : ""); // Ne pas mettre dans le construct sinon pas dynamique, il faut vider le cache browser
+		return "3.0.2".(sess_context::isLocalHost() ? ".".time() : ""); // Ne pas mettre dans le construct sinon pas dynamique, il faut vider le cache browser
 	}
 	public static function _getChampionnatId() {
 		global $sess_context;

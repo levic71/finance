@@ -8,7 +8,7 @@ if (false) {
 	ini_set('error_log', "./php_errors.log");
 }
 
-session_cache_expire(60*60);
+if (session_status() != PHP_SESSION_ACTIVE) session_cache_expire(60*60);
 
 require_once "../include/lock.php";
 require_once "../include/constantes.php";
