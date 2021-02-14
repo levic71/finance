@@ -31,15 +31,16 @@
 .jkgrid a:hover { text-decoration: underline; }
 .jkgrid td.hideme div { visibility: hidden; }
 
-.jkgrid tbody tr td { border-bottom: 1px solid rgba(0, 0, 0, 0.2); border-top: 1px solid #fff; }
+.jkgrid tbody tr td { border-bottom: 1px solid rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.5); }
 .jkgrid thead tr th { border-bottom: 1px solid rgba(0, 0, 0, 0.2); }
-.jkgrid tbody tr:last-child td { border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
+
+.jkgrid tbody tr:first-child td { padding-top: 10px; }
+.jkgrid tbody tr:last-child td { border-bottom: 1px solid rgba(0, 0, 0, 0.25); padding-bottom: 10px; }
 
 
 .jkgrid th div a.desc { padding-right: 20px; background: url('../img/dir.png') no-repeat right -97px; }
 .jkgrid th div a.asc { padding-right: 20px; background: url('../img/dir.png') no-repeat right -34px; }
 
-.jkgrid td.c1 { }
 .jkgrid .c1 div { width: 30px; text-align: center !important; }
 .jkgrid .c2 div, .jkgrid .c3 div, .jkgrid .c4 div, .jkgrid .c5 div, .jkgrid .c6 div, .jkgrid .c7 div, .jkgrid .c8 div, .jkgrid .c9 div { width: 100px; }
 .jkgrid .edit { padding-left: 0px; padding-right: 0px; }
