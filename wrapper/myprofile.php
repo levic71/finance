@@ -45,7 +45,7 @@ if ($pos_curseur > $largeur) $pos_curseur = $largeur-15;
 
 		<div class="mdl-card__menu" style="top: 260px;">
 			<button id="bteditprofil" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--blue-grey-400" onclick="mm({action: 'updprofile'});">
-				<i class="mdl-textfield__icon material-icons">3d_rotation</i>
+				<i class="mdl-textfield__icon material-icons">more_horiz</i>
 			</button>
 			<div class="mdl-tooltip mdl-tooltip--left" for="bteditprofil">Editer mon profil</div>
 		</div>

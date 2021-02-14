@@ -755,14 +755,14 @@ var choices = function() {
 
 			} })(buttons[i].id, buttons[i].id.replace('_picker', ''), c1, c2);
 		}
-
-		var hr = document.createElement("hr");
-		dst.appendChild(hr);
-		var close = document.createElement("button");
-		close.className='button '+c3;
-		close.innerHTML='Fermer';
-		close.onclick = function() { choices.closePicker(source+'_picker'); };
-		dst.appendChild(close);
+		var card_menu = document.createElement("div");
+		card_menu.className = "mdl-card__actions mdl-card--border";
+		var card_close = document.createElement("a");
+		card_close.className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect";
+		card_close.innerHTML = closelibelle;
+		card_close.onclick = function() { choices.closePicker(source+'_picker'); };
+		card_menu.appendChild(card_close);
+		dst.appendChild(card_menu);
 	},
 
 	init:function(source, target, selected) {

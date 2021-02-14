@@ -8,7 +8,7 @@ body     { background: black; padding: 0px; margin: 0px; font: 12px/18px "Lucida
 .hack_ie { color: #fff; }
 iframe   { border: 0px solid #fff; }
 img      { border: 0px solid #fff; }
-h2.grid  { color: white; font: 14px/100% Arial, Helvetica, sans-serif; font-weight:bold; height: 40px; line-height: 40px; background: black; margin: 0px; padding: 0px 0px 0px 30px; }
+h2.grid  { height: 40px; line-height: 40px; background: black; margin: 0px; padding: 0px 0px 0px 30px; }
 a        { color: #666; text-decoration: none; }
 a:hover  { color: #f78d1d; text-decoration: none; }
 legend   { color: #666; font-weight: bold; }

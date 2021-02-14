@@ -15,9 +15,9 @@
 	text-decoration: none;
 	font: 14px/100% Arial, Helvetica, sans-serif;
 	padding: 5px 10px !important;
-	-webkit-border-radius: .5em;
-	-moz-border-radius: .5em;
-	border-radius: .5em;
+	-webkit-border-radius: 32px;
+	-moz-border-radius: 32px;
+	border-radius: 32px;
 	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
 	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
 	box-shadow: 0 1px 2px rgba(0,0,0,.2);
@@ -411,20 +411,25 @@ ul#leftsidebar .ToolTextHover span {
 	margin-left: -340px;
 	left: 50%;
 	margin-top: 100px;
-	padding: 10px 20px;
+	padding: 20px 20px 10px;
 	border: 20px solid #ccc;
 	background: #fff;
 	max-height: 600px;
 	overflow-y: scroll;
+	text-align: center;
 }
 
 .choices .button {
-	float: left;
 	margin: 0px 10px 5px 0px;
 }
+.choices_picker .button {
+	width: 120px;
+}
 
-.choices hr {
+.choices hr, .choices .mdl-card__actions {
 	clear: both;
+	text-align: right;
+	margin-top: 20px;
 }
 
 .choices span {
@@ -1187,3 +1192,18 @@ html>body .singlepicking .button span { min-height: 14px; line-height: 14px; }
 	border-radius:35px;
 	margin: 5px;
 }
+
+.purple-title-card {
+	color: #f4d3f5;
+	border: solid 1px rgba(172, 79, 201, 0.86);
+	background: #7f008b;
+}
+
+.purple-title-card:hover {
+	background: rgba(172, 79, 201, 0.86);
+}
+
+.purple-title-card:active {
+	color: #f4d3f5;
+}
+

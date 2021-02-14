@@ -35,6 +35,7 @@ $delta    = $_action_ == "matches" ? 999 : 10;
 $opt_edit = "?page=".$page;
 $sqlc     = "";
 $trclick = "";
+$right_menu = "";
 
 $idj = Wrapper::getRequest('idj', 0);
 $idp = Wrapper::getRequest('idp', 0);
@@ -54,17 +55,18 @@ if ($_action_ == "leagues")
 {
 	$sort1   = "<div id=\"champ_sort\"></div>";
 	$sort2   = "<div id=\"sport_sort\"></div>";
-	$label   = "Annuaire ".$sort2." ".$sort1;
+	$label   = "Annuaire";
+	$right_menu = "".$sort2." ".$sort1;
 	$filtre_type_sport = $sport_sort == 99 ? "" : " AND type_sport=".$sport_sort;
 	$filtre  = " WHERE entity='_NATIF_' AND actif = 1 AND nom != '' ".($search != "" ? " AND (nom LIKE '%".$search."%' OR lieu LIKE '%".$search."%')" : "").($filtre_type_champ != 9 && $filtre_type_champ != 6 ? " AND type = ".$filtre_type_champ : "").($filtre_type_champ == 6 ? " AND id IN (".SQLServices::cleanIN($favoris).")" : "").$filtre_type_sport;
 	$new_tip = "Nouvelle comp&eacute;tition"; $upd_tip = "Modifier comp&eacute;tition"; $del_tip = "Supprimer comp&eacute;tition";
 	$sort    = $sort == '' ? '0points' : $sort;
 	$nosort  = array("fav" => 1);
 	$order   = 'ORDER BY '.(substr($sort, 1) == "new_date" ? "dt_creation" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC').', nom';
-	$sql     = 'SELECT *, nom nom2, CONCAT("<img id=\"fav_", id, "\" src=\"img/star1_gray_32.png\" onclick=\"setfav(", id, ");\" />") fav, CONCAT("<button class=\"button orange\">", DATE_FORMAT(dt_creation, \'%d/%m/%y\'), "</button>") new_date, CONCAT("<a href=\"jk.php?idc=", id,"\" class=\"full-circle\"><span class=\"bullet\"></span></a>") go, ELT(type+1, "<div class=\"libre\" />", "<div class=\"champ\" />", "<div class=\"tournoi\" />") icon FROM jb_championnat '.$filtre.' '.$order;
+	$sql     = 'SELECT *, nom nom2, CONCAT("<button id=\"fav_", id, "\" class=\"mdl-button mdl-js-button mdl-button--icon\" onclick=\"setfav(", id, ");\"><i class=\"material-icons\">star</i></button>") fav, CONCAT("<button class=\"button orange\">", DATE_FORMAT(dt_creation, \'%d/%m/%y\'), "</button>") new_date, CONCAT("<button id=\"fav_", id, "\" class=\"mdl-button mdl-js-button mdl-button--icon\" onclick=\"mm({action: \'reload\', idc: ", id, "});\"><i class=\"material-icons\">play_circle_outline</i></button>") go, ELT(type+1, "<div class=\"libre\" />", "<div class=\"champ\" />", "<div class=\"tournoi\" />") icon FROM jb_championnat '.$filtre.' '.$order;
 	$th      = array("points" => "Points", "type_sport" => "", "nom" => "Nom", "lieu" => "Lieu", "fav" => "", "new_date" => "Cr&eacute;&eacute; le", "go" => "&nbsp;");
 	$cols    = array("points" => 1, "type_sport" => 1, "nom" => 1, "lieu" => 1, "fav" => 1, "new_date" => 1, "go" => 1);
-	$trclick = "window.location = '".($sess_context->isSuperUser() ? "" : "_dns_")."jk.php?idc=_id_';";
+	$trclick = "mm({ action: 'reload', idc: _id_ })";
 }
 else if ($_action_ == "seasons")
 {
@@ -270,7 +272,7 @@ if ($total > 0) {
 	// Title of table
 	$begin = $page+1;
 	$end   = ceil($total/$delta);
-	$label .= ($total == 0 || ($begin == 1 && $end == 1 ) ? "" : " (".($total == 0 ? "0" : ($page+1)."/".ceil($total/$delta)).")");
+	$badge = ($total == 0 || ($begin == 1 && $end == 1 ) ? "" : ($total == 0 ? "0" : ($page+1)." sur ".ceil($total/$delta)));
 
 	foreach($lines as $data)
 	{
@@ -422,6 +424,26 @@ Wrapper::fab_button_menu($t);
     <h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary grid <?= $_action_ ?> <?= $_action_ == "fannys" ? "matches" : $_action_ ?>"><?= $label ?></h2>
 </div>
 
+<div class="mdl-card__menu">
+
+<? if ($_action_ != "matches") { ?>
+
+<div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" id="search_area">
+  <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
+	  <i class="material-icons">search</i>
+	</label>
+	<div class="mdl-textfield__expandable-holder">
+	  <input class="mdl-textfield__input" type="search" id="search"  value="<?= $search ?>" placeholder="Recherche ..."  />
+	  <label class="mdl-textfield__label" for="search">Search</label>
+	</div>
+  </div>
+
+<? } ?>
+
+<?= $right_menu ?>
+
+</div>
+
 <table cellspacing="0" cellpadding="0" class="jkgrid <?= $_action_ == "fannys" ? "fannys" : "" ?>" id="<?= $_action_ == "fannys" ? "matches" : $_action_ ?>">
 <thead><?= $thead ?></thead>
 <tbody><?= $tbody ?></tbody>
@@ -435,21 +457,21 @@ if ($_action_ == "leagues") $moreopt .= ", filtre_type_champ: '".$filtre_type_ch
 
 ?>
 
-<? if ($_action_ != "matches") { ?>
-
-<div class="form-wrapper cf">
-	<input type="text" id="search" value="<?= $search ?>" placeholder="Recherche ..." required>
-	<button <?= "onclick=\"mm({action:'".$_action_."', page:'".$page."', sport_sort: ".$sport_sort.", favoris: getfav(), sort: '".$sort."', search:'1' ".$moreopt." ".($_action_ == "leagues" ? ", filtre_type_champ: '".$filtre_type_champ."'" : "")." })\"" ?>><img src="img/zoom.png" style="height: 14px; width: 14px;" /></button>
-</div>
-
-<? } ?>
-
 <? if ($total > 0 && !($begin == 1 && $end == 1)) { ?>
-<div class="actions controls grouped">
-<button id="ctrl1" <?= $page > 0 ? "onclick=\"mm({action:'".$_action_."', page: '0', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', prev:'1' ".$moreopt." })\"" : "" ?> class="button <?= $page > 0 ? "disable" : "disable" ?>"><div class="ico"></div></button>
-<button id="ctrl2" <?= $page > 0 ? "onclick=\"mm({action:'".$_action_."', page: '".($page-1)."', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', prev:'1' ".$moreopt." })\"" : "" ?> class="button <?= $page > 0 ? "disable" : "disable" ?>"><div class="ico"></div></button>
-<button id="ctrl3" <?= ($page+1)*$delta < $total ? "onclick=\"mm({action:'".$_action_."', page:'".($page+1)."', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', next:'1' ".$moreopt." })\"" : "" ?> class="button <?= ($page+1)*$delta < $total ? "disable" : "disable" ?>"><div class="ico"></div></button>
-<button id="ctrl4" <?= ($page+1)*$delta < $total ? "onclick=\"mm({action:'".$_action_."', page:'".floor($total / $delta)."', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', next:'1' ".$moreopt." })\"" : "" ?> class="button <?= ($page+1)*$delta < $total ? "disable" : "disable" ?>"><div class="ico"></div></button>
+<div class="mdl-dialog__actions pagination mdl-color-text--grey-600">
+	<button id="ctrl4" class="mdl-button mdl-js-button mdl-button--icon <?= ($page+1)*$delta < $total ? "disable" : "disable" ?>" <?= ($page+1)*$delta < $total ? "onclick=\"mm({action:'".$_action_."', page:'".(floor($total / $delta) - (($total % $delta) == 0 ? 1 : 0))."', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', next:'1' ".$moreopt." })\"" : "" ?> >
+	  <i class="material-icons">skip_next</i>
+	</button>
+	<button id="ctrl3" class="mdl-button mdl-js-button mdl-button--icon <?= ($page+1)*$delta < $total ? "disable" : "disable" ?>" <?= ($page+1)*$delta < $total ? "onclick=\"mm({action:'".$_action_."', page:'".($page+1)."', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', next:'1' ".$moreopt." })\"" : "" ?> >
+	  <i class="material-icons">navigate_next</i>
+	</button>
+	<button id="ctrl2" class="mdl-button mdl-js-button mdl-button--icon <?= $page > 0 ? "disable" : "disable" ?>" <?= $page > 0 ? "onclick=\"mm({action:'".$_action_."', page: '".($page-1)."', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', prev:'1' ".$moreopt." })\"" : "" ?> >
+	  <i class="material-icons">navigate_before</i>
+	</button>
+	<button id="ctrl1" class="mdl-button mdl-js-button mdl-button--icon <?= $page > 0 ? "disable" : "disable" ?>" <?= $page > 0 ? "onclick=\"mm({action:'".$_action_."', page: '0', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', prev:'1' ".$moreopt." })\"" : "" ?> >
+	  <i class="material-icons">skip_previous</i>
+	</button>
+	<span><?= $badge ?></span>
 </div>
 <? } ?>
 
@@ -465,6 +487,13 @@ if ($_action_ == "leagues") $moreopt .= ", filtre_type_champ: '".$filtre_type_ch
 
 
 <script>
+document.getElementById('search').addEventListener('keypress', function(event) {
+    if (event.keyCode == 13) {
+		event.preventDefault();
+		mm({action:'<?= $_action_ ?>', page:'<?= $page ?>', sport_sort: <?= $sport_sort ?>, favoris: getfav(), sort: '<?= $sort ?>', search:'1' <?= $moreopt ?> <?= $_action_ == "leagues" ? ", filtre_type_champ: '".$filtre_type_champ."'" : "" ?>});
+	}
+});
+
 sort_col = function(col) {
 	mm({action:'<?= $_action_ ?>', page: '<?= $page ?>', sport_sort: <?= $sport_sort ?>, favoris: getfav(), search: <?= $search == "" ? "0" : "1" ?>, sort: col <?= $moreopt ?> });
 }
@@ -480,9 +509,9 @@ sport_sort = function(name) {
 }
 
 <? if ($_action_ == "leagues") { ?>
-choices.build({ name: 'champ_sort',  c1: 'blue', c2: 'white', singlepicking: true, removable: true, callback: 'champ_sort', values: [ { v: 0, l: 'Libres', s: <?= $filtre_type_champ == 0 ? "true" : "false" ?> }, { v: 1, l: 'Championnats', s: <?= $filtre_type_champ == 1 ? "true" : "false" ?> }, { v: 2, l: 'Tournois', s: <?= $filtre_type_champ == 2 ? "true" : "false" ?> }, { v: 6, l: 'Favoris', s: <?= $filtre_type_champ == 6 ? "true" : "false" ?> }, { v: 9, l: 'Toutes comp&eacute;titions !', s: <?= $filtre_type_champ == 9 ? "true" : "false" ?> } ] });
-<? $sports = "{ v: 99, l: 'Tous sports !', s: ".($sport_sort == 99 ? "true" : "false")."}"; reset($libelle_genre); while (list($cle, $val) = each($libelle_genre)) { $sports .= ($sports == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $sport_sort ? "true" : "false")." }"; } ?>
-choices.build({ name: 'sport_sort',  c1: 'blue', c2: 'white', singlepicking: true, removable: true, callback: 'sport_sort', values: [ <?= $sports ?> ] });
+choices.build({ name: 'champ_sort',  c1: 'blue purple-title-card', c2: 'white', singlepicking: true, removable: true, callback: 'champ_sort', values: [ { v: 0, l: 'Libres', s: <?= $filtre_type_champ == 0 ? "true" : "false" ?> }, { v: 1, l: 'Championnats', s: <?= $filtre_type_champ == 1 ? "true" : "false" ?> }, { v: 2, l: 'Tournois', s: <?= $filtre_type_champ == 2 ? "true" : "false" ?> }, { v: 6, l: 'Favoris', s: <?= $filtre_type_champ == 6 ? "true" : "false" ?> }, { v: 9, l: 'Toutes comp&eacute;titions ', s: <?= $filtre_type_champ == 9 ? "true" : "false" ?> } ] });
+<? $sports = "{ v: 99, l: 'Tous sports ', s: ".($sport_sort == 99 ? "true" : "false")."}"; reset($libelle_genre); while (list($cle, $val) = each($libelle_genre)) { $sports .= ($sports == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $sport_sort ? "true" : "false")." }"; } ?>
+choices.build({ name: 'sport_sort',  c1: 'blue purple-title-card', c2: 'white', singlepicking: true, removable: true, callback: 'sport_sort', values: [ <?= $sports ?> ] });
 <? } ?>
 </script>
 

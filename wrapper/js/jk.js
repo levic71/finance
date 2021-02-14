@@ -216,6 +216,9 @@ mm = function(args) {
 
 	myconsole('mm begin : action=' + action);
 
+	// On réinit de temps en temps la classe de MAIN-CONTENT
+	setCN('main-content', 'mdl-layout__content');
+
 	close_menu();
 
 	if (mem != null && next == 0 && prev == 0 && page == 0 && search == 0 && sort == '') {
@@ -232,9 +235,9 @@ mm = function(args) {
 		store.set(action, { mktime: mktime, page: page, search_value: search_value, sort: sort });
 
 	if (action == 'reload')
-		{ window.location = 'jk.php?idc='+idc; addCN('main-content', action+'_page'); }
+		{ window.location = 'jk.php?idc='+idc; }
 	else if (action == 'home')
-		{ window.location = '../home/index.php'; addCN('main-content', action+'_page'); }
+		{ window.location = '../home/index.php'; }
 	else if (action == 'dashboard')
 		xx({action: action, id:'main', url:'dashboard.php'});
 	else if (action == 'myprofile')
@@ -609,11 +612,11 @@ setfav = function(id) {
 	var isInList = 0;
 	if (favs != '') {
 		for(var i = 0; i < tmpfavs.length; i++) {
-			if (tmpfavs[i] == id) { isInList = 1; el('fav_'+id).src = 'img/star1_gray_32.png'; }
+			if (tmpfavs[i] == id) { isInList = 1; addCN('fav_'+id, "mdl-color-text--orange"); }
 			if (tmpfavs[i] != id) ret += (ret == '' ? '' : ',')+tmpfavs[i];
 		}
 	}
-	if (isInList == 0) { ret = (favs == '' ? '' : favs+',')+id; el('fav_'+id).src = 'img/star1_32.png'; }
+	if (isInList == 0) { ret = (favs == '' ? '' : favs+',')+id; addCN('fav_'+id, "mdl-color-text--gray"); }
 
 	store.set('fav_champs', ret);
 }
@@ -627,7 +630,8 @@ showfavs = function() {
 	if (favs != '') {
 		for(var i = 0; i < tmpfavs.length; i++) {
 			try {
-				el('fav_'+tmpfavs[i]).src = 'img/star1_32.png';
+				addCN('fav_'+tmpfavs[i], "mdl-color-text--orange");
+				el('fav_'+tmpfavs[i]).innerHTML = "<i class=\"material-icons\">stars</i>";
 			} catch(e) {}
 		}
 	}

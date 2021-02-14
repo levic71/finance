@@ -410,6 +410,32 @@ _:-ms-input-placeholder, :root .demo-graph {
 	min-height: auto !important;
 }
 
+#search_area {
+  padding: 0px;
+}
+
+#search_area label {
+  bottom: 0px; 
+}
+
+#search_area .mdl-textfield__input {
+  background: rgba(0, 0, 0, .2) !important;
+  border-bottom-color: rgb(252, 161, 255) !important;
+  font-size: 12px;
+}
+
+.mdl-grid .pagination {
+  justify-content: center;
+  align-items: center;
+}
+
+.mdl-grid .pagination span {
+  margin-right: 30px;
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
+}
+
 .center_content {
   align-items: center;
   justify-content: center;
@@ -464,5 +490,19 @@ _:-ms-input-placeholder, :root .demo-graph {
 .mdl-textfield__subtext {
   font-size: 10px;
   color: #999;
+}
+
+.mdl-badge.mdl-badge--overlap:after {
+  right: 0px;
+}
+.mdl-badge[data-badge]:after {
+  top: 0px;
+  right: -45px;
+  font-size: 10px;
+  width: 40px;
+  height: 22px;
+  border-radius: 32px;
+  background: rgb(252, 161, 255);
+  color: rgb(156,39,176);
 }
 

@@ -1520,7 +1520,7 @@ class StatsGlobalBuilder
 	function computeMoreStatsPlayers()
 	{
 		// Si pas de joueurs ...
-		if (count($this->stats_joueurs) == 0) return;
+		if (count(array($this->stats_joueurs)) == 0) return;
 
         reset($this->stats_joueurs);
         while(list($id, $val) = each($this->stats_joueurs))

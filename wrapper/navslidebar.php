@@ -28,8 +28,8 @@ header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 <div class="mdl-mega-footer__top-section">
   <div class="mdl-mega-footer__left-section">
       <button class="mdl-button mdl-button--icon"><i class="material-icons" onclick="mm({action: 'home'});">home_outline</i></button>
-      <button class="mdl-button mdl-button--icon"><i class="material-icons" onclick="go({action: 'leagues', id:'main', url:'help.php'});">help_outline</i></button>
-      <button class="mdl-button mdl-button--icon"><i class="material-icons" onclick="go({action: 'leagues', id:'main', url:'contacter.php'});">mail_outline</i></button>		    
+      <button class="mdl-button mdl-button--icon"><i class="material-icons" onclick="go({action: 'help', id:'main', url:'help.php'});">help_outline</i></button>
+      <button class="mdl-button mdl-button--icon"><i class="material-icons" onclick="go({action: 'contact', id:'main', url:'contacter.php'});">mail_outline</i></button>		    
   </div>
 </footer>
 
