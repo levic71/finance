@@ -98,7 +98,7 @@ class FXBodyArray extends FXBody
 			{
 				$row = is_object($elt) ? get_object_vars($elt) : $elt;
 				$this->tab[] = $row;
-				$this->nb_cols = count($row);
+				$this->nb_cols = count(array($row));
 			}
 
 			$this->size = count($ref_tableau);

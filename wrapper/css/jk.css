@@ -8,7 +8,7 @@ body     { background: black; padding: 0px; margin: 0px; font: 12px/18px "Lucida
 .hack_ie { color: #fff; }
 iframe   { border: 0px solid #fff; }
 img      { border: 0px solid #fff; }
-h2.grid  { color: white; font: 14px/100% Arial, Helvetica, sans-serif; font-weight:bold; height: 40px; line-height: 40px; background: black; margin: 0px; padding: 0px 0px 0px 30px; }
+h2.grid  { height: 40px; line-height: 40px; background: black; margin: 0px; padding: 0px 0px 0px 30px; }
 a        { color: #666; text-decoration: none; }
 a:hover  { color: #f78d1d; text-decoration: none; }
 legend   { color: #666; font-weight: bold; }
@@ -87,8 +87,6 @@ h2.links			{ background: url('../img/user.png') 8px 10px no-repeat; }
 #shortcuts li#home { background: url('../img/globe_3.png') no-repeat; }
 #shortcuts li#xclose { background: url('../img/out-button.png') no-repeat; border-top: 0px solid black; background-position: right 15px !important;  }
 
-
-}
 
 .sidebar li:hover {	opacity:1 !important; }
 h2, .iPhoneCal .calheader { background-color: #222 !important; }
@@ -308,7 +306,6 @@ ul.upload_target li { float: left; margin: 0px 20px 10px 0px; }
 .mycalendar .vide2, .mycalendar .vide3 { background: #CCFFFF; }
 .mycalendar .pleine { background: #E0E0E0; padding: 0px 2px; }
 .mycalendar .pleine2, .mycalendar .pleine3 { background: #CCFFFF; padding: 0px 2px; }
-.mycalendar .pleine3, .mycalendar .vide3 {  }
 .mycalendar td { height: 20px; line-height: 16px; }
 .mycalendar td span { font-weight: normal; font-size: 10px; line-height: 10px; }
 .mycalendar .mois { font-weight: bold; font-size: 10px; background: #bbb; text-align: center; }
@@ -444,7 +441,7 @@ div#box { clear: both; }
 #albums button, #albums .txt, #albums .box { width: auto !important; color: #fff; }
 #albums .txt { line-height: 14px !important; padding: 0px; font-weight: normal; }
 
-.bt { height: 32px; width: 32px; background: #bbb; border-radius: 16px; -webkit-border-radius: 16px; moz-border-radius: 16px; }
+.bt { height: 32px; width: 32px; background: #bbb; border-radius: 16px; -webkit-border-radius: 16px; }
 .bt:hover { background-color: #666; cursor: pointer; }
 
 .title .bt { height: 32px; width: 32px; margin: 0px 0px 0px 5px; float: right; }
@@ -472,7 +469,7 @@ div#box { clear: both; }
 
 h2.dashboard .button span { padding: 0px 24px 0px 12px !important; font-weight: normal !important; line-height: 20px !important; }
 
-.bullet { float: left; border: 4px solid #ccc; height: 22px; width: 22px; -webkit-border-radius: 18px; moz-border-radius: 18px; border-radius: 18px; background: #999 url('../img/icons-18-white.png') -107px 2px no-repeat; }
+.bullet { float: left; border: 4px solid #ccc; height: 22px; width: 22px; -webkit-border-radius: 18px; border-radius: 18px; background: #999 url('../img/icons-18-white.png') -107px 2px no-repeat; }
 .bullet:hover { background-color: #666; }
 
 .jkgrid td.go div .bullet { display: none; }
@@ -629,8 +626,6 @@ ul.trombinoscope li:hover {
 	height: 33px;
 	margin: 5px;
 	overflow: hidden;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
 	padding: 3px;
 	position: relative;
 }

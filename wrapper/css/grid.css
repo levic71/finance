@@ -31,15 +31,16 @@
 .jkgrid a:hover { text-decoration: underline; }
 .jkgrid td.hideme div { visibility: hidden; }
 
-.jkgrid tbody tr td { border-bottom: 1px solid rgba(0, 0, 0, 0.2); border-top: 1px solid #fff; }
+.jkgrid tbody tr td { border-bottom: 1px solid rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.5); }
 .jkgrid thead tr th { border-bottom: 1px solid rgba(0, 0, 0, 0.2); }
-.jkgrid tbody tr:last-child td { border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
+
+.jkgrid tbody tr:first-child td { padding-top: 10px; }
+.jkgrid tbody tr:last-child td { border-bottom: 1px solid rgba(0, 0, 0, 0.25); padding-bottom: 10px; }
 
 
 .jkgrid th div a.desc { padding-right: 20px; background: url('../img/dir.png') no-repeat right -97px; }
 .jkgrid th div a.asc { padding-right: 20px; background: url('../img/dir.png') no-repeat right -34px; }
 
-.jkgrid td.c1 { }
 .jkgrid .c1 div { width: 30px; text-align: center !important; }
 .jkgrid .c2 div, .jkgrid .c3 div, .jkgrid .c4 div, .jkgrid .c5 div, .jkgrid .c6 div, .jkgrid .c7 div, .jkgrid .c8 div, .jkgrid .c9 div { width: 100px; }
 .jkgrid .edit { padding-left: 0px; padding-right: 0px; }
@@ -76,9 +77,9 @@
 #links .c5 div { text-align: center; }
 
 #leagues .c1 { display: none; }
-#leagues .c2 div { width: 80px; text-align: center; }
-#leagues .c2 div .button { width: 70px; }
-#leagues .c3 div { width: 30px; }
+#leagues .c2 div { width: 100px; text-align: center; }
+#leagues .c2 div .button { width: 80px; }
+#leagues .c3 div { width: 50px; }
 #leagues .c4 div { width: 210px; }
 #leagues .c4 div span { clear: both; float: left; line-height: 14px; }
 #leagues .c4 div small { clear: both; float: left; line-height: 12px; font-weight: normal; }
@@ -216,7 +217,8 @@ tr.points .button { padding: 5px 0px !important; width: 70px; }
 
 .jkgrid .c3 { width: 100%; }
 .jkgrid .c3 div { width: auto !important; }
-
+#leagues .c3 { width: 50px !important; }
+#leagues .c4 { width: 100% !important; }
 
 #table_players .gold .c1:before {
 	content:url('../img/award_star_gold_3.png');
@@ -354,7 +356,7 @@ td.c4 .fanny { background: url('../img/14anidot4ab.gif') no-repeat right 8px; }
 
 .best .plus div { float: right; width: 95px; text-align: right; color: #aaa; font-size: 16px; }
 
-#champ_sort, #sport_sort { float: right; margin: 5px 5px 0px; }
+#champ_sort, #sport_sort { float: right; }
 
 #nbsetsbuttons .button, #champ_sort .button { padding-left: 10px; padding-right: 10px; }
 
