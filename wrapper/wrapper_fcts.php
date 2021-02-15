@@ -679,8 +679,8 @@ public static function card_box($options) {
 <?
 }
 
-public static function card_box_4c($options)  { $options['nb_col_web']=4;  $options['nb_col_tablet']=6; Wrapper::card_box($options); }
-public static function card_box_6c($options)  { $options['nb_col_web']=6;  $options['nb_col_tablet']=6; Wrapper::card_box($options); }
+public static function card_box_4c($options)  { $options['nb_col_web']=4;  $options['nb_col_tablet']=4; Wrapper::card_box($options); }
+public static function card_box_6c($options)  { $options['nb_col_web']=6;  $options['nb_col_tablet']=4; Wrapper::card_box($options); }
 public static function card_box_8c($options)  { $options['nb_col_web']=8;  Wrapper::card_box($options); }
 public static function card_box_10c($options) { $options['nb_col_web']=10; Wrapper::card_box($options); }
 
