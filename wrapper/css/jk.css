@@ -806,25 +806,19 @@ ul.trombinoscope li:hover {
 }
 
 
-
 @media screen and (min-width:0px) and (max-width:1024px)
 {
-	#main-content { padding: 10px; }
+
 }
 
 @media screen and (min-width:0px) and (max-width:768px)
 {
 	body { -webkit-font-smoothing: antialiased; }
 	.mdl-grid { padding: 0px !important; }
-	#main-content { padding: 0px; }
+	#main-content { padding: 10px 0px 20px !important; }
 	#main .mdl-card__title { padding: 8px !important; }
 	#main .mdl-card__menu { top: 5px !important; }
 	.leagues_page #main .mdl-card__menu { top: 15px !important; }
-}
-
-
-
-@media only screen and (max-width:480px) {
     body {
         /* Without this, the body has excess horizontal scroll when the menu is open */
         overflow-x: hidden;
@@ -1047,7 +1041,13 @@ ul.trombinoscope li:hover {
     .iPhoneCal .calcontrol { width: 50px !important; }
     .mobileonly { display: block; }
 
+	h2.grid { padding: 0px 0px 0px 10px; }
+}
+
+@media only screen and (max-width:480px) {
+
 	#head { left: 0px !important; margin-left: 0px !important; width: 100% !important; }
-	#main-content { padding: 20px 40px; }
 
 }
+
+#main-content { padding: 20px 40px; }
