@@ -420,8 +420,8 @@ Wrapper::fab_button_menu($t);
 
 <div class="<?= $sess_context->isAdmin() && $editable ? "" : "classic" ?>" id="box">
 
-<div class="mdl-grid mdl-card__title mdl-color--primary mdl-color-text--white">
-    <h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary grid <?= $_action_ ?> <?= $_action_ == "fannys" ? "matches" : $_action_ ?>"><?= $label ?></h2>
+<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+    <h2 class="mdl-card__title-text mdl-color--primary grid <?= $_action_ ?> <?= $_action_ == "fannys" ? "matches" : $_action_ ?>"><?= $label ?></h2>
 </div>
 
 <div class="mdl-card__menu">

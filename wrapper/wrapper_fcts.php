@@ -637,8 +637,54 @@ public static function template_box_title($title) { ?>
 	</div>
 <? }
 
-public static function javascript_form($otions) { }
+public static function javascript_form($options) { }
+
+public static function card_box($options) {
+	$nb_col_web    = isset($options['nb_col_web'])    ? $options['nb_col_web']    : 12;
+	$nb_col_tablet = isset($options['nb_col_tablet']) ? $options['nb_col_tablet'] : 12;
+	$nb_col_phone  = isset($options['nb_col_phone'])  ? $options['nb_col_phone']  : 12;
+	$card_class    = "mdl-cell mdl-cell--".$nb_col_web."-col mdl-cell--".$nb_col_tablet."-col-tablet mdl-cell--".$nb_col_phone."-col-phone mdl-card mdl-shadow--2dp";
+
+	if (isset($options['table'])) $card_class .= " mdl-card__list";
+?>
+
+<div <?= isset($options['id']) ? "id=".$options['id'] : "" ?> class="<?= $card_class ?>">
+<? if (isset($options['title']) && $options['title'] != "") { ?>
+	<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+		<?= $options['title'] ?>
+	</div>
+<? } ?>
+<? if (isset($options['menu']) && $options['menu'] != "") { ?>
+	<div class="mdl-card__menu">
+		<?= $options['menu'] ?>
+	</div>
+<? } ?>
+<? if (isset($options['content']) || isset($options['image'])) { ?>
+	<div class="mdl-card__supporting-text mdl-typography--text-center <?= isset($options['image']) ? "mdl-card--expand" : "" ?> " <?= isset($options['image']) ? "style=\"background: url('".$options['image']."') center center no-repeat;\"" : "" ?> >
+		<?= $options['content'] ?>
+	</div>
+<? } ?>
+<? if (isset($options['table'])) { ?>
+	<div class="mdl-card__list-table">
+		<?= $options['table'] ?>
+	</div>
+<? } ?>
+<? if (isset($options['bottom_text'])) { ?>
+	<div class="mdl-card__supporting-text mdl-typography--text-center">
+		<?= $options['bottom_text'] ?>
+	</div>
+<? } ?>
+</div>
+
+<?
+}
+
+public static function card_box_4c($options)  { $options['nb_col_web']=4;  $options['nb_col_tablet']=6; Wrapper::card_box($options); }
+public static function card_box_6c($options)  { $options['nb_col_web']=6;  $options['nb_col_tablet']=6; Wrapper::card_box($options); }
+public static function card_box_8c($options)  { $options['nb_col_web']=8;  Wrapper::card_box($options); }
+public static function card_box_10c($options) { $options['nb_col_web']=10; Wrapper::card_box($options); }
 
 }
+
 
 ?>

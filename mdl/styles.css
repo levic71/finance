@@ -506,3 +506,15 @@ _:-ms-input-placeholder, :root .demo-graph {
   color: rgb(156,39,176);
 }
 
+.mdl-card {
+  border-radius: 5px;
+  background: white;
+  background: linear-gradient(0deg, rgba(195,195,195,0.7) 0%, rgba(255,255,255,0.7) 50%);
+}
+
+#card_photo {
+  min-height: 300px;
+}
+#card_photo .mdl-chip {
+  padding: 0px;
+}
