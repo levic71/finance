@@ -126,11 +126,5 @@ window.onload = function() {
 	var opts = { x_colors: ['#00525D', '#474554', '#FAF8FF', '#8F8D9E'], variance: 0, cell_size: 50, width: window.innerWidth, height: window.innerHeight };
 	var pattern = Trianglify(opts);
 	document.body.appendChild(pattern.canvas());
-
-	window.addEventListener("orientationchange", function() {
-		var opts = { x_colors: ['#00525D', '#474554', '#FAF8FF', '#8F8D9E'], variance: 0, cell_size: 50, width: window.innerWidth, height: window.innerHeight };
-		var pattern = Trianglify(opts);
-		document.body.appendChild(pattern.canvas());
-	});
 }
 </script>
