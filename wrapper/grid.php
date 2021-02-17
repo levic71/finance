@@ -421,13 +421,11 @@ Wrapper::fab_button_menu($t);
 <div class="<?= $sess_context->isAdmin() && $editable ? "" : "classic" ?>" id="box">
 
 <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-    <h2 class="mdl-card__title-text mdl-color--primary grid <?= $_action_ ?> <?= $_action_ == "fannys" ? "matches" : $_action_ ?>"><?= $label ?></h2>
+    <h2 class="mdl-card__title-text mdl-color--primary grid <?= $_action_ == "fannys" ? "matches" : $_action_ ?>"><?= $label ?></h2>
 </div>
 
 <div class="mdl-card__menu">
-
 <? if ($_action_ != "matches") { ?>
-
 <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" id="search_area">
   <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
 	  <i class="material-icons">search</i>
@@ -437,11 +435,8 @@ Wrapper::fab_button_menu($t);
 	  <label class="mdl-textfield__label" for="search">Search</label>
 	</div>
   </div>
-
 <? } ?>
-
 <?= $right_menu ?>
-
 </div>
 
 <table cellspacing="0" cellpadding="0" class="jkgrid <?= $_action_ == "fannys" ? "fannys" : "" ?>" id="<?= $_action_ == "fannys" ? "matches" : $_action_ ?>">

@@ -86,13 +86,13 @@ Wrapper::card_box_6c(array("id" => "dashcounter", "title" => $title, "menu" => $
 
 Wrapper::card_box_6c(array("id" => "dash", "content" => "<div id=\"dashjournee\"></div>", "nb_col_tablet" => 12, "nb_col_phone" => 12));
 
-$title = '<h2 class="mdl-card__title-text">Classement général</h2>';
+$title = Wrapper::card_box_getH2Title(array("title" => "Classement général"));
 if ($sess_context->isFreeXDisplay()) {
 	$menu   = Wrapper::card_box_getIconButton(array("id" => "more5", "icon" => "unfold_more", "label" => "Etendre", "onclick" => "toggle_all5(999);" ));
 	$menu  .= Wrapper::card_box_getIconButton(array("id" => "less5", "icon" => "unfold_less", "label" => "Réduire", "onclick" => "toggle_all5(".sess_context::getHomeListHeadcount().");" ));
 } else {
-	$menu   = Wrapper::card_box_getIconButton(array("id" => "more1", "icon" => "unfold_more", "label" => "Etendre", "onclick" => "show_elts(\'table_teams\', 999, ".sess_context::getHomeListHeadcount().", \'more1\', \'less1\');" ));
-	$menu  .= Wrapper::card_box_getIconButton(array("id" => "less1", "icon" => "unfold_less", "label" => "Réduire", "onclick" => "show_elts(\'table_teams\', ".sess_context::getHomeListHeadcount().", ".sess_context::getHomeListHeadcount().", \'more1\', \'less1\');" ));
+	$menu   = Wrapper::card_box_getIconButton(array("id" => "more1", "icon" => "unfold_more", "label" => "Etendre", "onclick" => "show_elts('table_teams', 999, ".sess_context::getHomeListHeadcount().", 'more1', 'less1');" ));
+	$menu  .= Wrapper::card_box_getIconButton(array("id" => "less1", "icon" => "unfold_less", "label" => "Réduire", "onclick" => "show_elts('table_teams', ".sess_context::getHomeListHeadcount().", ".sess_context::getHomeListHeadcount().", 'more1', 'less1');" ));
 }
 $content = '';
 $tbody = ""; $thead = "";

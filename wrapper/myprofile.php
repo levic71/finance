@@ -40,17 +40,11 @@ if ($pos_curseur > $largeur) $pos_curseur = $largeur-15;
 <div id="myprofile" class="mdl-grid">
 
 	<?
-		$title = '';
-		$menu  = '
-			<span class="mdl-chip mdl-chip--deletable">
-				<button id="bteditprofil" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="mm({action: \'updprofile\'});">
-					<i class="mdl-textfield__icon material-icons">edit</i>
-				</button>
-				<div class="mdl-tooltip mdl-tooltip--left" for="bteditprofil">Editer mon profil</div>
-			</span>
-		';
-		$content = '
-		';
+		$title       = '';
+		$menu        = '<span class="mdl-chip mdl-chip--deletable">';
+		$menu       .= Wrapper::card_box_getIconButton(array("id" => "bteditprofil", "icon" => "edit", "label" => "Editer mon profil", "onclick" => "mm({action: 'updprofile'});" ));
+		$menu       .= '</span>';
+		$content     = '';
 		$bottom_text = '
 			<span class="demo-card-image__filename">'.$sess_context->user['pseudo'].'</span>
 		';
@@ -58,13 +52,8 @@ if ($pos_curseur > $largeur) $pos_curseur = $largeur-15;
 	?>
 
 	<?
-		$title = '<h2 class="mdl-card__title-text">Santé</h2>';
-		$menu  = '
-			<button id="btsante" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="alert(\'Coming soon\');">
-				<i class="mdl-textfield__icon material-icons">loyalty</i>
-			</button>
-			<div class="mdl-tooltip mdl-tooltip--left" for="btsante">Gérer sa santé</div>
-		';
+		$title   = Wrapper::card_box_getH2Title(array("title" => "Santé"));
+		$menu    = Wrapper::card_box_getIconButton(array("id" => "btsante", "icon" => "loyalty", "label" => "Gérer sa santé", "onclick" => "alert('Coming soon');" ));
 		$content = '
 			<button id="b6" class="button '.($sess_context->user['sexe'] == 1 ? "blue" : "rosy").'"><div class="box"><div class="cnt">'.$a.'</div><div class="txt">Ans</div></div></button>
 			<button id="b7" class="button blue"><div class="box"><div class="cnt">'.Wrapper::formatNumber($sess_context->user['taille']).'</div><div class="txt">Cm</div></div></button>
@@ -76,18 +65,13 @@ if ($pos_curseur > $largeur) $pos_curseur = $largeur-15;
 	?>
 
 	<?
-		$title = '<h2 class="mdl-card__title-text">Activité</h2>';
-		$menu  = '
-			<button id="btactivites" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="alert(\'Coming soon\');">
-				<i class="mdl-textfield__icon material-icons">timeline</i>
-			</button>
-			<div class="mdl-tooltip mdl-tooltip--left" for="btactivites">Gérer ses activités</div>
-		';
+		$title = Wrapper::card_box_getH2Title(array("title" => "Activité"));
+		$menu  = Wrapper::card_box_getIconButton(array("id" => "btactivites", "icon" => "timeline", "label" => "Gérer ses activités", "onclick" => "alert('Coming soon');" ));
 		Wrapper::card_box_4c(array("id" => "card_activite", "title" => $title, "menu" => $menu, "nb_col_tablet" => 6));
 	?>
 
 	<?
-		$title = '<h2 class="mdl-card__title-text">Estimation poids idéal</h2>';
+		$title   = Wrapper::card_box_getH2Title(array("title" => "Estimation poids idéal"));
 		$content = '
 			<div class="gradientweight" style="float: left; margin-left: 5px;">
 				<div class="box box-wrapper" style="float: left; width: '.$largeur.'px; margin-top: 5px; padding-left: 10px;">

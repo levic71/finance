@@ -687,6 +687,10 @@ public static function card_box_6c($options)  { $options['nb_col_web']=6;  $opti
 public static function card_box_8c($options)  { $options['nb_col_web']=8;  Wrapper::card_box($options); }
 public static function card_box_10c($options) { $options['nb_col_web']=10; Wrapper::card_box($options); }
 
+public static function card_box_getH2Title($options) {
+	return  '<h2 class="mdl-card__title-text">'.$options['title'].'</h2>';
+}
+
 public static function card_box_getIconButton($options) {
 
 	$html = '';
