@@ -15,8 +15,8 @@ header span#logo { width: calc(100% - 100px); overflow: hidden; }
 
 #main .mdl-grid { overflow: hidden; }
 
-input not(#mtdsearch), textarea { padding: 5px; font: 13px 'lucida sans', 'trebuchet MS', 'Tahoma'; border: 0; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; outline: 0; background: #fff; box-shadow: 0 0 2px rgba(0,0,0,.8) inset; border: 1px solid #ddd; }
-input[type=text] not(#mtdsearch), input[type=password] { width: 330px; height: 16px;}
+textarea { padding: 5px; font: 13px 'lucida sans', 'trebuchet MS', 'Tahoma'; border: 0; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; outline: 0; background: #fff; box-shadow: 0 0 2px rgba(0,0,0,.8) inset; border: 1px solid #ddd; }
+input[type=password] { width: 330px; height: 16px;}
 
 .hide, .mobileonly { display: none; }
 .show { display: block; }

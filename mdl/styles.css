@@ -286,12 +286,12 @@ _:-ms-input-placeholder, :root .demo-graph {
 	margin-top: 3px;
 }
 .mdl-textfield.is-invalid .mdl-textfield__icon {
-    color: #de3226 !important;
+    color: #d50000 !important;
 }
 
 .mdl-textfield--required .mdl-textfield__input:after {
 	content: " * ";
-	color: #e32;
+	color: #d50000;
 	float: right;
 }
 
