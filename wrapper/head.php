@@ -124,5 +124,9 @@ window.onload = function() {
 
 	var pattern = Trianglify({ x_colors: ['#00525D', '#474554', '#FAF8FF', '#8F8D9E'], variance: 0, cell_size: 50, width: window.innerWidth, height: window.innerHeight });
 	document.body.appendChild(pattern.canvas());
+
+	window.addEventListener("orientationchange", function() {
+    	alert("the orientation of the device is now ");
+	});
 }
 </script>
