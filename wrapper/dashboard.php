@@ -31,7 +31,7 @@ if ($row = mysqli_fetch_array($res)) $nb_actions_links = $row['total'];
 
 $t = array();
 if ($sess_context->isAdmin()) {
-	array_push($t, array("id" => "sb_settings", "onclick" => "go({action: 'dashboard', id:'main', url:'edit_leagues.php?page=0&idl=" . $sess_context->getRealChampionnatId() . "&etape=1'})", "tooltip" => "Paramètres"));
+//	array_push($t, array("id" => "sb_settings", "onclick" => "go({action: 'dashboard', id:'main', url:'edit_leagues.php?page=0&idl=" . $sess_context->getRealChampionnatId() . "&etape=1'})", "tooltip" => "Paramètres"));
 	array_push($t, array("id" => "sb_saison", "onclick" => "mm({action: 'seasons'})", "tooltip" => "Gestion des saisons"));
 	array_push($t, array("id" => "sb_sync", "onclick" => "go({action: 'dashboard', id:'main', url:'admin_full_sync_do.php'})", "tooltip" => "Synchronisation journées"));
 	array_push($t, array("id" => "sb_backup", "onclick" => "go({action: 'dashboard', id:'main', url:'admin_backup_do.php'})", "tooltip" => "Backup/Restore"));
@@ -46,61 +46,55 @@ if ($sess_context->isAdmin()) {
 }
 Wrapper::fab_button_menu($t);
 
+
+$title = '<h2 class="mdl-card__title-text">'.$sess_context->getChampionnatNom().'</h2>';
+$menu  = '
+	<button id="btsante" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="go({action: \'dashboard\', id:\'main\', url:\'edit_leagues.php?page=0&idl='.$sess_context->getRealChampionnatId().'&etape=1\'});">
+		<i class="mdl-textfield__icon material-icons">more_horiz</i>
+	</button>
+	<div class="mdl-tooltip mdl-tooltip--left" for="btsante">Editer</div>
+';
+if (!$sess_context->isAdmin()) $menu = '';
+$content = '
+	<img src="'.$sess_context->_getChampionnatLogo().'" />
+	'.$libelle_type[$sess_context->getChampionnatType()].'
+	<div id="saisons"></div>
+';
+Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 6));
+
+
+$title = '<h2 class="mdl-card__title-text">Stats</h2>';
+$menu  = '
+';
+$content = '
+<button id="b1" class="button blue"><i class="material-icons">grid_on</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_saisons']).'</div><div class="txt">Saisons</div></button>
+<button id="b2" class="button blue" onclick="mm({action: \'players\'});"><i class="material-icons">person</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_joueurs']).'</div><div class="txt">Joueurs</div></button>
+<button id="b3" class="button blue" onclick="mm({action: \'teams\'});"><i class="material-icons">people</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_equipes']).'</div class="box"><div class="txt">Equipes</div></button>
+<button id="b4" class="button blue" onclick="mm({action: \'days\', grid: -1, tournoi: '.($sess_context->isTournoiXDisplay() ? 1 : 0).'});"><i class="material-icons">date_range</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_journees']).'</div><div class="txt">Journées</div></button>
+<button id="b5" class="button blue"><i class="material-icons">timer</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_matchs']).'</div><div class="txt">Matchs</div></button>
+';
+Wrapper::card_box_6c(array("id" => "dashcounter", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 6));
+
 ?>
-
-<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone">
-    <div class="mdl-card__title">
-        <img src="img/logo.png" />
-    </div>
-    <div class="mdl-card__supporting-text">
-			<h4><?= $sess_context->getChampionnatNom() ?></h4>
-			<?= $libelle_type[$sess_context->getChampionnatType()] ?>
-            <div id="saisons"></div>
-    </div>
-</div>
-
-<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone dashcounter">
-	<div class="dashcounter">
-		<button id="b1" class="button blue"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($infos['nb_saisons'])  ?></div><div class="txt">Saisons</div></div></button>
-		<button id="b2" class="button blue" onclick="mm({action: 'players'});"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($infos['nb_joueurs'])  ?></div><div class="txt">Joueurs</div></div></button>
-		<button id="b3" class="button blue" onclick="mm({action: 'teams'});"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($infos['nb_equipes'])  ?></div class="box"><div class="txt">Equipes</div></div></button>
-		<button id="b4" class="button blue" onclick="mm({action: 'days', grid: -1, tournoi: <?= $sess_context->isTournoiXDisplay() ? 1 : 0 ?>});"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($infos['nb_journees']) ?></div><div class="txt">Journées</div></div></button>
-		<button id="b5" class="button blue"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($infos['nb_matchs']) ?></div><div class="txt">Matchs</div></div></button>
-	</div>
-	<? if (false && $sess_context->championnat['twitter'] != "") { ?>
-		<div class="dashcounter box-wrapper" id="twitter_box"></div>
-	<? } ?>
-</div>
 
 <script>
     choices.build({ name: 'saisons', c1: 'blue', c2: 'white', callback: 'change_saison', singlepicking: true, removable: true, values: [ <?= $saisons ?> ] });
     change_saison = function(name) { xx({action: 'message', id:'main', url:'table_change_season_do.php?ids='+choices.getSelection(name)}); }
 </script>
 
-
-<div id="dash" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone">
-    <div id="dashjournee"></div>
-</div>
-
-
-<div id="dash" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone">
-
-<div class="vgrid" id="dashtable">
-<div class="mdl-card__title">
-<h3 class="mdl-card__title-text">
-	<!-- img class="bt" onclick="mm({action: 'tables'});" src="img/icons/dark/appbar.navigate.next.png" / -->
-<? if ($sess_context->isFreeXDisplay()) { ?>
-	<img id="more5" class="bt" onclick="toggle_all5(999);" src="img/icons/dark/appbar.add.png" />
-	<img id="less5" class="bt" onclick="toggle_all5(<?= sess_context::getHomeListHeadcount() ?>);" src="img/icons/dark/appbar.minus.png" />
-<? } else { ?>
-	<img id="more1" class="bt" onclick="show_elts('table_teams', 999, <?= sess_context::getHomeListHeadcount() ?>, 'more1', 'less1');" src="img/icons/dark/appbar.add.png" />
-	<img id="less1" class="bt" onclick="show_elts('table_teams', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_context::getHomeListHeadcount() ?>, 'more1', 'less1');" src="img/icons/dark/appbar.minus.png" />
-<? } ?>
-    <span>Classement général</span>
-</h3>
-</div>
-
 <?
+
+Wrapper::card_box_6c(array("id" => "dash", "content" => "<div id=\"dashjournee\"></div>", "nb_col_tablet" => 12, "nb_col_phone" => 12));
+
+$title = Wrapper::card_box_getH2Title(array("title" => "Classement général"));
+if ($sess_context->isFreeXDisplay()) {
+	$menu   = Wrapper::card_box_getIconButton(array("id" => "more5", "icon" => "unfold_more", "label" => "Etendre", "onclick" => "toggle_all5(999);" ));
+	$menu  .= Wrapper::card_box_getIconButton(array("id" => "less5", "icon" => "unfold_less", "label" => "Réduire", "onclick" => "toggle_all5(".sess_context::getHomeListHeadcount().");" ));
+} else {
+	$menu   = Wrapper::card_box_getIconButton(array("id" => "more1", "icon" => "unfold_more", "label" => "Etendre", "onclick" => "show_elts('table_teams', 999, ".sess_context::getHomeListHeadcount().", 'more1', 'less1');" ));
+	$menu  .= Wrapper::card_box_getIconButton(array("id" => "less1", "icon" => "unfold_less", "label" => "Réduire", "onclick" => "show_elts('table_teams', ".sess_context::getHomeListHeadcount().", ".sess_context::getHomeListHeadcount().", 'more1', 'less1');" ));
+}
+$content = '';
 $tbody = ""; $thead = "";
 
 if ($sess_context->isFreeXDisplay()) {
@@ -234,25 +228,16 @@ foreach($tab as $item)
 	$i++;
 }
 
+$content .= '<table cellspacing="0" cellpadding="0" class="jkgrid" id="'.($sess_context->isFreeXDisplay() ? "table_players" : "table_teams").'">';
+$content .= '<thead>'.$thead.'</thead>';
+$content .= '<tbody>'.$tbody.'</tbody>';
+$content .= '</table>';
 
+$bottom_text = '<div id="'.($sess_context->isFreeXDisplay() ? "occazbox" : "sizebox").'" class="noradius underline" style="padding: 5px 15px;"></div>';
+
+Wrapper::card_box_6c(array("id" => "dash", "title" => $title, "menu" => $menu, "content" => $content, "bottom_text" => $bottom_text, "nb_col_tablet" => 12));
 
 ?>
-<table cellspacing="0" cellpadding="0" class="jkgrid" id="<?= $sess_context->isFreeXDisplay() ? "table_players" : "table_teams" ?>">
-<thead><?= $thead ?></thead>
-<tbody><?= $tbody ?></tbody>
-</table>
-
-<? if ($sess_context->isFreeXDisplay()) { ?>
-<div id="occazbox" class="noradius underline" style="margin: 5px 0px;"></div>
-<? } else { ?>
-<div id="sizebox" class="noradius underline" style="margin: 5px 0px;"></div>
-<? } ?>
-
-</div>
-</div>
-
-
-
 
 <script>
 

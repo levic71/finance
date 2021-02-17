@@ -232,7 +232,7 @@ confirmDel = function(elt, e)
 
 annuler = function()
 {
-	mm({ action:'<?= $modifier ? "myprofile" : ($sess_context->isChampionnatNonDefini() ? "reload" : "tables") ?>' });
+	mm({ action: '<?= $modifier ? "myprofile" : "leagues" ?>' });
 	return true;
 }
 

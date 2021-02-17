@@ -62,7 +62,7 @@ $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : n
     <!-- Le styles -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-    <link href="css/home.css" rel="stylesheet">
+    <link href="css/home.css?fgf" rel="stylesheet">
    
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -94,6 +94,7 @@ $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : n
               <span class="icon-bar"></span>
             </button>
             <a class="brand" href="#">Jorkers.com</a>
+            <a id="second_id" href="../wrapper/jk.php?<?= isset($sess_context) && $sess_context->isUserConnected() ? "myprofile" : "auth" ?>" class="btn btn-primary pull-right" style="margin: 10px 0px 0px;"><?= isset($sess_context) && $sess_context->isUserConnected() ? "Hello ".$sess_context->user['pseudo'] : "<img src=\"../wrapper/img/user.png\" />" ?></a>
             <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
             <div class="nav-collapse collapse">
               <ul class="nav">
@@ -101,7 +102,7 @@ $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : n
                 <li><a href="#" class="btndemo">Démos</a></li>
                 <li><a href="#contact">Contact</a></li>
               </ul>
-              <a href="../wrapper/jk.php?<?= isset($sess_context) && $sess_context->isUserConnected() ? "myprofile" : "auth" ?>" class="btn btn-primary pull-right" style="margin: 10px 0px 0px;"><?= isset($sess_context) && $sess_context->isUserConnected() ? "Bienvenue ".$sess_context->user['pseudo'] : "S'incrire | Se connecter" ?></a>
+              <a href="../wrapper/jk.php?<?= isset($sess_context) && $sess_context->isUserConnected() ? "myprofile" : "auth" ?>" class="btn btn-primary pull-right" style="margin: 10px 0px 0px;"><?= isset($sess_context) && $sess_context->isUserConnected() ? "Hello ".$sess_context->user['pseudo'] : "S'incrire | Se connecter" ?></a>
             </div><!--/.nav-collapse -->
           </div><!-- /.navbar-inner -->
         </div><!-- /.navbar -->

@@ -38,7 +38,7 @@ if (!isset($options_type_matchs)) $options_type_matchs = "X|0";
 ?>
 
 <div class="mdl-card__title">
-<h3 class="mdl-card__title-text">
+<h2 class="mdl-card__title-text">
     <img class="bt" src="img/icons/dark/appbar.navigate.previous.png" style="float: left;" onclick="journee(null, '<?= $id_journee ?>|prev');" />
     <img class="bt" src="img/icons/dark/appbar.navigate.next.png" onclick="journee(null, '<?= $id_journee ?>|next');" />
     <span><?= ToolBox::conv_lib_journee($journee['nom'])."<br /><small>".ToolBox::mysqldate2date($journee['date']) ?></small></span>
@@ -61,10 +61,9 @@ if (!isset($options_type_matchs)) $options_type_matchs = "X|0";
 	<img id="less4" class="bt" onclick="show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>);" src="img/icons/dark/appbar.minus.png" />
 <? } ?>
 
-</h3>
+</h2>
 </div>
 
-<div style="padding: 10px;">
 <table id="matches" cellspacing="0" cellpadding="0" class="jkgrid <?= $sess_context->isTournoiXDisplay() ? "phasefinale" : "" ?> type_<?= $type_champ ?>" style="width: 100%;">
 <thead>
 <tr>
@@ -79,7 +78,6 @@ if (!isset($options_type_matchs)) $options_type_matchs = "X|0";
 <?= $sess_context->isTournoiXDisplay() ? journee_tournoi_display($journee, $saison_id, $real_id, $options_type_matchs) : journee_display($journee, $saison_id, "") ?>
 </tbody>
 </table>
-</div>
 
 
 

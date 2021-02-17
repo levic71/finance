@@ -633,12 +633,15 @@ public static function template_box_end() { ?>
 
 public static function template_box_title($title) { ?>
 	<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-		<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary"><?= $title ?></h2>
+		<h2 class="mdl-card__title-text mdl-color--primary"><?= $title ?></h2>
 	</div>
 <? }
 
 public static function javascript_form($options) { }
 
+//
+// CARD BOX
+//
 public static function card_box($options) {
 	$nb_col_web    = isset($options['nb_col_web'])    ? $options['nb_col_web']    : 12;
 	$nb_col_tablet = isset($options['nb_col_tablet']) ? $options['nb_col_tablet'] : 12;
@@ -683,6 +686,22 @@ public static function card_box_4c($options)  { $options['nb_col_web']=4;  $opti
 public static function card_box_6c($options)  { $options['nb_col_web']=6;  $options['nb_col_tablet']=4; Wrapper::card_box($options); }
 public static function card_box_8c($options)  { $options['nb_col_web']=8;  Wrapper::card_box($options); }
 public static function card_box_10c($options) { $options['nb_col_web']=10; Wrapper::card_box($options); }
+
+public static function card_box_getH2Title($options) {
+	return  '<h2 class="mdl-card__title-text">'.$options['title'].'</h2>';
+}
+
+public static function card_box_getIconButton($options) {
+
+	$html = '';
+
+	$html .= '<button id="'.$options['id'].'" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="'.$options['onclick'].'">';
+	$html .= '<i class="mdl-textfield__icon material-icons">'.$options['icon'].'</i>';
+	$html .= '</button>';
+	$html .= '<div class="mdl-tooltip mdl-tooltip--left" for="'.$options['id'].'">'.$options['label'].'</div>';
+
+	return $html;
+}
 
 }
 

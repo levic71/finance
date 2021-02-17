@@ -62,6 +62,8 @@
 #edit_inscription .c2 div { width: 220px; }
 #edit_inscription .c3 div { width: 460px; }
 
+#roles .c2 { width: 100%; }
+#roles .c3 { width: auto !important; }
 #roles .c2 div { width: 190px; }
 #roles .c3 div { width: 150px; }
 #roles .c4 div { width: 120px; text-align: center; }
@@ -69,6 +71,9 @@
 #roles .c10 div { width: 690px; }
 .lstroles .c2 div { width: 290px !important; }
 .lstroles .c5 div span { margin-left: 50px; }
+
+#billboard .mdl-card__supporting-text img, #card_photo .mdl-card__supporting-text { border-radius: 64% 36% 70% 30% / 37% 70% 30% 63%; width: 100%; }
+#billboard .mdl-card__supporting-text img { border-radius: 0% 100% 87% 100% / 0% 100% 87% 100%; }
 
 #links .c2 div, #links .c3 div { width: 220px; line-height: 14px; }
 #links .c2 div span, #links .c3 div span { clear: both; float: left; }
@@ -467,7 +472,7 @@ td.crochet3 {
 #dash .jkgrid th.c3 div, #dash .jkgrid th.c4 div { text-align: center; }
 #dash #dashjournee .c4 div { text-align: left; }
 #dash .jkgrid td { height: auto; }
-#dash .jkgrid td.c2 > div { background: none; padding-left: 0px; width: 165px; }
+#dash .jkgrid td.c2 > div { background: none; padding-left: 0px; width: 100%; }
 #dash .c3 div, #dash .jkgrid .c4 div { width: 47px; }
 #dash #table_teams td.c2 > div { width: 155px; padding-left: 5px; font-size: 12px; }
 #dash #table_teams .c3 { background: none; }
@@ -511,7 +516,6 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash #tr_2 .c1 { background: #813BEF; color: white; }
 #dash #tr_3 .c1 { background: #A677EF; color: white; }
 
-
 #dash #dashjournee th.c2 div { font-size: 14px; }
 #dash #dashjournee #matches .c1 { padding-right: 1px; }
 #dash #dashjournee #box3 .c2 div { width: 170px; padding-left: 5px; }
@@ -520,9 +524,15 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash #dashjournee #box3 #tr_1 .c2 div { width: 145px; padding-right: 25px; background: url('../img/trophy_gold.png') no-repeat right 3px; }
 #dash #dashjournee #box3 h2, #dash #dashjournee #box3 .c3, #dash #dashjournee #box3 .c6, #dash #dashjournee #box3 .c7 { display: none; }
 
-
 #dash #classementjournee .c2 div { width: 175px; padding-left: 5px; font-size: 12px; }
 #dash #classementjournee .c4 div { text-align: center; }
+
+#dash .mdl-card__supporting-text .c1 div { width: 30px !important; }
+#dash .mdl-card__supporting-text .c2 { width: 100% !important; }
+#dash .mdl-card__supporting-text .c2 > div { width: 100% !important; }
+#dash .mdl-card__supporting-text .c3 { width: auto !important; }
+#dash .mdl-card__supporting-text .c3 div { width: 50px !important; }
+#dash .mdl-card__supporting-text .c4 div { width: 70px !important; }
 
 h2.players .button, h2.dashboard .button { padding: 1px 10px 1px 1px !important; }
 h2.players .button img, h2.dashboard .button img { float: left; padding: 1px 10px 0px 5px; border-right: 1px solid #80bed6; }
