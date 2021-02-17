@@ -9,6 +9,7 @@ body {
 
 footer { padding: 0 20px; }
 
+#second_id { display: none; }
 
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
@@ -256,6 +257,8 @@ footer { padding: 0 20px; }
 
 @media (max-width: 979px) {
 
+  #second_id { display: block; }
+
   .container.navbar-wrapper {
     margin-bottom: 0;
     width: auto;
@@ -374,6 +377,9 @@ footer { padding: 0 20px; }
   }
   #marketing .span4 p.text {
     height: auto;
+  }
+  #contact .input-prepend {
+    width: 90% !important;
   }
 }
 

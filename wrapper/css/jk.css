@@ -7,14 +7,12 @@ body     { background: black; padding: 0px; margin: 0px; font: 12px/18px "Lucida
 .hack_ie { color: #fff; }
 iframe   { border: 0px solid #fff; }
 img      { border: 0px solid #fff; }
-h2.grid  { height: 40px; line-height: 40px; background: black; margin: 0px; padding: 0px 0px 0px 30px; }
 a        { color: #666; text-decoration: none; }
 a:hover  { color: #f78d1d; text-decoration: none; }
 legend   { color: #666; font-weight: bold; }
+h2.mdl-card__title-text { padding-left: 5px; }
 
 #main .mdl-grid { overflow: hidden; }
-#main .mdl-card__menu { top: 25px !important; }
-
 
 input not(#mtdsearch), textarea { padding: 5px; font: 13px 'lucida sans', 'trebuchet MS', 'Tahoma'; border: 0; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; outline: 0; background: #fff; box-shadow: 0 0 2px rgba(0,0,0,.8) inset; border: 1px solid #ddd; }
 input[type=text] not(#mtdsearch), input[type=password] { width: 330px; height: 16px;}
@@ -357,75 +355,52 @@ ul.upload_target li { float: left; margin: 0px 20px 10px 0px; }
 
 div#box { clear: both; }
 
-.dashcounter { padding: 5px 5px; text-align: center }
-.dashcounter button { width: 124px; height: 45px; line-height: 18px; font-size: 18px; text-align: left; margin: 5px 0px 5px 3px; }
-.dashcounter .box, .dashcounter .box { padding: 0px 10px 5px 40px; }
-.dashcounter button .cnt, .dashcounter button .txt { padding-left: 10px; border-left: 1px solid rgba(255, 255, 255, .3); }
-.dashcounter button .txt { line-height: 14px; font-size: 14px; }
-
-.dashcounter #b1 .box { background: url('../img/3x3_grid_icon&32.png') no-repeat; }
-.dashcounter #b2 .box { background: url('../img/user_icon&32.png') no-repeat; }
-.dashcounter #b3 .box { background: url('../img/users_icon&32.png') no-repeat; }
-.dashcounter #b4 .box { background: url('../img/calendar_2_icon&32.png') no-repeat; }
-.dashcounter #b5 .box { background: url('../img/stop_watch_icon&32.png') no-repeat; }
-
-.dashcounter #b6 .box { background: url('../img/heart_empty_icon&32.png') no-repeat; }
-.dashcounter #b7 .box { background: url('../img/height_32.png') no-repeat; }
-.dashcounter #b8 .box { background: url('../img/balance_icon&32.png') no-repeat; }
-.dashcounter #b9 .box { background: url('../img/weight_32.png') no-repeat; }
-.dashcounter #b10 { width: 45px !important; }
-.dashcounter #b10 .box { background: url('../img/chart_bar_icon&32.png') no-repeat; }
-.dashcounter #b11 .box { background: url('../img/icons/dark/appbar.gauge.75.png') no-repeat -7px -3px; }
-.dashcounter #b12 .box { background: url('../img/icons/dark/appbar.add.png') no-repeat -7px -8px; }
-.dashcounter #b12 .box .cnt { height: 30px; line-height: 30px; }
-.dashcounter #b13 .box { background: url('../img/icons/dark/appbar.minus.png') no-repeat -7px -10px; }
-.dashcounter #b13 .box .cnt { height: 30px; line-height: 30px; }
-.dashcounter #b55 .box { background: url('../img/icons/dark/appbar.twitter.bird.png') no-repeat -6px -9px; }
-
-.dashcounter.subbar .button { width: 128px; }
-
-.dashcounter .puceinfo:before {
-	content:url('../img/icons/dark/appbar.information.png');
-	position: absolute;
-	margin: 10px 0px 0 86px !important;
-	transform: scale(.5); -webkit-transform: scale(.5); -moz-transform: scale(.5); -o-transform: scale(.5); -ms-transform: scale(.5);
+#dash .mdl-card__supporting-text {
+    padding: 0px 0px 10px;
+    width: 100%;
 }
+#dashcounter button { width: 150px; height: 45px; line-height: 18px; font-size: 18px; text-align: left; margin: 5px 0px 5px 3px; }
 
-.dashcounter .pucelock:before {
-	content:url('../img/icons/dark/appbar.lock.png');
-	position: absolute;
-	margin: 10px 0px 0 86px !important;
-	transform: scale(.5); -webkit-transform: scale(.5); -moz-transform: scale(.5); -o-transform: scale(.5); -ms-transform: scale(.5);
-}
+#dashcounter .box, #dashcounter .box { padding: 0px 10px 5px 40px; }
 
-.bf0, .dashcounter #bf0 .box { background: url('../img/icons/dark/appbar.sleep.png') no-repeat -7px -10px; }
-.bf1, .dashcounter #bf1 .box { background: url('../img/icons/dark/appbar.smiley.angry.png') no-repeat -7px -10px; }
-.bf2, .dashcounter #bf2 .box { background: url('../img/icons/dark/appbar.smiley.cry.png') no-repeat -7px -10px; }
-.bf3, .dashcounter #bf3 .box { background: url('../img/icons/dark/appbar.smiley.tounge.png') no-repeat -7px -10px; }
-.bf4, .dashcounter #bf4 .box { background: url('../img/icons/dark/appbar.smiley.happy.png') no-repeat -7px -10px; }
-.bf5, .dashcounter #bf5 .box { background: url('../img/icons/dark/appbar.smiley.grin.png') no-repeat -7px -10px; }
-.bf8, .dashcounter #bf8 .box { background: url('../img/icons/dark/appbar.bed.png') no-repeat -7px -10px; }
-.bf9, .dashcounter #bf9 .box { background: url('../img/icons/dark/appbar.plane.rotated.45.png') no-repeat -7px -10px; }
+.bf0, #dashcounter #bf0 .box { background: url('../img/icons/dark/appbar.sleep.png') no-repeat -7px -10px; }
+.bf1, #dashcounter #bf1 .box { background: url('../img/icons/dark/appbar.smiley.angry.png') no-repeat -7px -10px; }
+.bf2, #dashcounter #bf2 .box { background: url('../img/icons/dark/appbar.smiley.cry.png') no-repeat -7px -10px; }
+.bf3, #dashcounter #bf3 .box { background: url('../img/icons/dark/appbar.smiley.tounge.png') no-repeat -7px -10px; }
+.bf4, #dashcounter #bf4 .box { background: url('../img/icons/dark/appbar.smiley.happy.png') no-repeat -7px -10px; }
+.bf5, #dashcounter #bf5 .box { background: url('../img/icons/dark/appbar.smiley.grin.png') no-repeat -7px -10px; }
+.bf8, #dashcounter #bf8 .box { background: url('../img/icons/dark/appbar.bed.png') no-repeat -7px -10px; }
+.bf9, #dashcounter #bf9 .box { background: url('../img/icons/dark/appbar.plane.rotated.45.png') no-repeat -7px -10px; }
 .formeind { background-position: 0px 0px; background-size: 32px 32px; height: 30px; width: 32px; }
 #dash .forme { float: left; width: 24px; margin: 2px 10px 2px 5px; }
 #dash .formeind { background-size: 24px 24px; height: 24px; width: 24px; }
-.dashcounter #bf6 .box { background: url('../img/icons/dark/appbar.smiley.squint.png') no-repeat -7px -10px; }
-.dashcounter #bf7 .box { background: url('../img/icons/dark/appbar.transit.car.accident.png') no-repeat -7px -10px; }
-.dashcounter #bf88 .box { background: url('../img/icons/dark/appbar.camera.flash.auto.png') no-repeat -7px -10px; }
-.dashcounter #bf99 .box { background: url('../img/icons/dark/appbar.chess.rook.png') no-repeat -7px -10px; }
-.dashcounter #bf10 .box { background: url('../img/icons/dark/appbar.chess.horse.png') no-repeat -7px -10px; }
-.dashcounter #bf11 .box { background: url('../img/icons/dark/appbar.inbox.out.png') no-repeat -7px -7px; }
-.dashcounter #bf12 .box { background: url('../img/icons/dark/appbar.inbox.in.png') no-repeat -7px -7px; }
-.dashcounter #bf13 .box { background: url('../img/icons/dark/appbar.cert.png') no-repeat 2px 0px; }
+#dashcounter #bf6 .box { background: url('../img/icons/dark/appbar.smiley.squint.png') no-repeat -7px -10px; }
+#dashcounter #bf7 .box { background: url('../img/icons/dark/appbar.transit.car.accident.png') no-repeat -7px -10px; }
+#dashcounter #bf88 .box { background: url('../img/icons/dark/appbar.camera.flash.auto.png') no-repeat -7px -10px; }
+#dashcounter #bf99 .box { background: url('../img/icons/dark/appbar.chess.rook.png') no-repeat -7px -10px; }
+#dashcounter #bf10 .box { background: url('../img/icons/dark/appbar.chess.horse.png') no-repeat -7px -10px; }
+#dashcounter #bf11 .box { background: url('../img/icons/dark/appbar.inbox.out.png') no-repeat -7px -7px; }
+#dashcounter #bf12 .box { background: url('../img/icons/dark/appbar.inbox.in.png') no-repeat -7px -7px; }
+#dashcounter #bf13 .box { background: url('../img/icons/dark/appbar.cert.png') no-repeat 2px 0px; }
 
-.dashcounter .title { float: left; width: 265px; line-height: 12px; font-size: 12px; color: #666; padding-left: 10px; }
+#dashcounter .small .cnt { font-size: 14px; line-height: 14px; }
+#dashcounter .small .txt { font-size: 10px; line-height: 10px; }
 
-.dashcounter .small .cnt { font-size: 14px; line-height: 14px; }
-.dashcounter .small .txt { font-size: 10px; line-height: 10px; }
+#dashcounter i {
+	font-size: 32px;
+	height: 30px;
+	float: left;
+	padding-right: 10px;
+	border-right: 1px solid rgba(255, 255, 255, 0.5);
+}
+#dashcounter .cnt, #dashcounter .txt {
+	padding-left: 10px;
+	float: right;
+	border: 0px !important;
+	width: 70px;
+	line-height: 14px; font-size: 14px;
+}
 
-#myprofile .dashcounter button { width: 102px; height: 50px; }
-.dashcounter button.calorie { width: 139px !important; }
-.dashcounter button.calorie .txt { font-size: 11px; }
 
 #bloc0 { float: right; height: 55px; padding: 0px; margin-top: 10px; }
 #bloc1 { height: 65px; margin-top: 10px; }
@@ -876,7 +851,7 @@ ul.trombinoscope li:hover {
     #shortcuts li.selected a { background: #373a47; color: #FF6A6A; }
     #shortcuts li:hover { border-bottom: 0px solid #f78d1d; }
 
-    h2, #dash {
+    h2 {
         border-radius: 0px !important;
         -moz-border-radius: 0px !important;
         -webkit-border-radius: 0px !important;
@@ -1042,11 +1017,24 @@ ul.trombinoscope li:hover {
     .mobileonly { display: block; }
 
 	h2.grid { padding: 0px 0px 0px 10px; }
+	#leagues .c5, #leagues .c7, #leagues .c8 { display: none; }
+	#leagues .c6 div { width: 70px !important; }
+	#roles .c2 { width: 100%; }
+	#roles .c2 div { width: auto !important; }
+	#roles .c3 { display: none; }
+
+	.choices_picker {
+		position: relative !important;
+		width: calc(100% - 80px) !important;
+		margin: 20px !important;
+		left: 0px !important;
+	}
 }
 
 @media only screen and (max-width:480px) {
 
 	#head { left: 0px !important; margin-left: 0px !important; width: 100% !important; }
+	#leagues .c2, #leagues .c6 { display: none }
 
 }
 
