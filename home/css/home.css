@@ -381,5 +381,7 @@ footer { padding: 0 20px; }
   #contact .input-prepend {
     width: 90% !important;
   }
+
+  #bt2id, .carousel-control { display: none; }
 }
 
