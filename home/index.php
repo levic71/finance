@@ -62,7 +62,7 @@ $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : n
     <!-- Le styles -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-    <link href="css/home.css?fgf" rel="stylesheet">
+    <link href="css/home.css?fgxcvf" rel="stylesheet">
    
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -98,11 +98,12 @@ $sess_context = isset($_SESSION['sess_context']) ? $_SESSION['sess_context'] : n
             <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
             <div class="nav-collapse collapse">
               <ul class="nav">
+                <li><a href="../wrapper/jk.php">Annuaire</a></li> 
                 <li><a href="#marketing">Fonctionnalités</a></li>
                 <li><a href="#" class="btndemo">Démos</a></li>
                 <li><a href="#contact">Contact</a></li>
               </ul>
-              <a href="../wrapper/jk.php?<?= isset($sess_context) && $sess_context->isUserConnected() ? "myprofile" : "auth" ?>" class="btn btn-primary pull-right" style="margin: 10px 0px 0px;"><?= isset($sess_context) && $sess_context->isUserConnected() ? "Hello ".$sess_context->user['pseudo'] : "S'incrire | Se connecter" ?></a>
+              <a id="bt2id" href="../wrapper/jk.php?<?= isset($sess_context) && $sess_context->isUserConnected() ? "myprofile" : "auth" ?>" class="btn btn-primary pull-right hidden-xs" style="margin: 10px 0px 0px;"><?= isset($sess_context) && $sess_context->isUserConnected() ? "Hello ".$sess_context->user['pseudo'] : "S'incrire | Se connecter" ?></a>
             </div><!--/.nav-collapse -->
           </div><!-- /.navbar-inner -->
         </div><!-- /.navbar -->
