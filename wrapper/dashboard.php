@@ -47,13 +47,8 @@ if ($sess_context->isAdmin()) {
 Wrapper::fab_button_menu($t);
 
 
-$title = '<h2 class="mdl-card__title-text">'.$sess_context->getChampionnatNom().'</h2>';
-$menu  = '
-	<button id="btsante" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect mdl-color-text--white" onclick="go({action: \'dashboard\', id:\'main\', url:\'edit_leagues.php?page=0&idl='.$sess_context->getRealChampionnatId().'&etape=1\'});">
-		<i class="mdl-textfield__icon material-icons">more_horiz</i>
-	</button>
-	<div class="mdl-tooltip mdl-tooltip--left" for="btsante">Editer</div>
-';
+$title  = Wrapper::card_box_getH2Title(array("title" => $sess_context->getChampionnatNom()));
+$menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "more_horiz", "label" => "Editer", "onclick" => "go({action: 'dashboard', id:'main', url:'edit_leagues.php?page=0&idl=".$sess_context->getRealChampionnatId()."&etape=1'});" ));
 if (!$sess_context->isAdmin()) $menu = '';
 $content = '
 	<img src="'.$sess_context->_getChampionnatLogo().'" />

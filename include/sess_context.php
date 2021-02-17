@@ -230,7 +230,7 @@ class sess_context
 	}
 	public static function _getChampionnatLogo() {
 		global $sess_context;
-		return (isset($sess_context->championnat['logo_photo']) && $sess_context->championnat['logo_photo'] != "" ? $sess_context->championnat['logo_photo'] : "img/logo.png");
+		return (isset($sess_context->championnat['logo_photo']) && $sess_context->championnat['logo_photo'] != "" ? $sess_context->championnat['logo_photo'] : "img/soccer-larger.jpg");
 	}
 	public static function _isTournoi() {
 		global $sess_context;

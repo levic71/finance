@@ -10,7 +10,8 @@ img      { border: 0px solid #fff; }
 a        { color: #666; text-decoration: none; }
 a:hover  { color: #f78d1d; text-decoration: none; }
 legend   { color: #666; font-weight: bold; }
-h2.mdl-card__title-text { padding-left: 5px; }
+h2.mdl-card__title-text { padding-left: 5px; white-space: nowrap; width: calc(100% - 60px); overflow: hidden; }
+header span#logo { width: calc(100% - 100px); overflow: hidden; }
 
 #main .mdl-grid { overflow: hidden; }
 
@@ -1038,6 +1039,10 @@ ul.trombinoscope li:hover {
 	#head { left: 0px !important; margin-left: 0px !important; width: 100% !important; }
 	#leagues .c2, #leagues .c6 { display: none }
 	.leagues_page #main .mdl-card__menu { top: 15px !important; }
+	#login_panel .mdl-chip__text { display: none; }
+	#login_panel .mdl-chip { padding: 0px; }
+	header span#logo { width: calc(100% - 40px); }
+
 
 }
 
