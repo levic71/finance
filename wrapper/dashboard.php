@@ -55,7 +55,7 @@ $content = '
 	'.$libelle_type[$sess_context->getChampionnatType()].'
 	<div id="saisons"></div>
 ';
-Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 6));
+Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 4));
 
 
 $title = '<h2 class="mdl-card__title-text">Stats</h2>';
@@ -68,7 +68,7 @@ $content = '
 <button id="b4" class="button blue" onclick="mm({action: \'days\', grid: -1, tournoi: '.($sess_context->isTournoiXDisplay() ? 1 : 0).'});"><i class="material-icons">date_range</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_journees']).'</div><div class="txt">Journées</div></button>
 <button id="b5" class="button blue"><i class="material-icons">timer</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_matchs']).'</div><div class="txt">Matchs</div></button>
 ';
-Wrapper::card_box_6c(array("id" => "dashcounter", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 6));
+Wrapper::card_box_6c(array("id" => "dashcounter", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 4));
 
 ?>
 
@@ -77,9 +77,9 @@ Wrapper::card_box_6c(array("id" => "dashcounter", "title" => $title, "menu" => $
     change_saison = function(name) { xx({action: 'message', id:'main', url:'table_change_season_do.php?ids='+choices.getSelection(name)}); }
 </script>
 
-<?
+<? 
 
-Wrapper::card_box_6c(array("id" => "dash", "content" => "<div id=\"dashjournee\"></div>", "nb_col_tablet" => 12, "nb_col_phone" => 12));
+Wrapper::card_box_6c(array("id" => "dashjournee", "nb_col_tablet" => 12, "nb_col_phone" => 12));
 
 $title = Wrapper::card_box_getH2Title(array("title" => "Classement général"));
 if ($sess_context->isFreeXDisplay()) {

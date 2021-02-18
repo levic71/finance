@@ -643,6 +643,7 @@ public static function javascript_form($options) { }
 // CARD BOX
 //
 public static function card_box($options) {
+	$framebox      = isset($options['framebox']) && $options['framebox'] == false ? false : true;
 	$nb_col_web    = isset($options['nb_col_web'])    ? $options['nb_col_web']    : 12;
 	$nb_col_tablet = isset($options['nb_col_tablet']) ? $options['nb_col_tablet'] : 12;
 	$nb_col_phone  = isset($options['nb_col_phone'])  ? $options['nb_col_phone']  : 12;
@@ -651,7 +652,10 @@ public static function card_box($options) {
 	if (isset($options['table'])) $card_class .= " mdl-card__list";
 ?>
 
+<? if ($framebox) { ?>
 <div <?= isset($options['id']) ? "id=".$options['id'] : "" ?> class="<?= $card_class ?>">
+<? } ?>
+
 <? if (isset($options['title']) && $options['title'] != "") { ?>
 	<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
 		<?= $options['title'] ?>
@@ -677,13 +681,17 @@ public static function card_box($options) {
 		<?= $options['bottom_text'] ?>
 	</div>
 <? } ?>
+
+<? if ($framebox) { ?>
 </div>
+<? } ?>
 
 <?
 }
 
-public static function card_box_4c($options)  { $options['nb_col_web']=4;  $options['nb_col_tablet']=4; Wrapper::card_box($options); }
-public static function card_box_6c($options)  { $options['nb_col_web']=6;  $options['nb_col_tablet']=4; Wrapper::card_box($options); }
+public static function card_box_frameless($options)  { $options['framebox']=false; Wrapper::card_box($options); }
+public static function card_box_4c($options)  { $options['nb_col_web']=4;  Wrapper::card_box($options); }
+public static function card_box_6c($options)  { $options['nb_col_web']=6;  Wrapper::card_box($options); }
 public static function card_box_8c($options)  { $options['nb_col_web']=8;  Wrapper::card_box($options); }
 public static function card_box_10c($options) { $options['nb_col_web']=10; Wrapper::card_box($options); }
 

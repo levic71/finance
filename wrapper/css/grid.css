@@ -482,12 +482,6 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash #table_players .c4 div { text-align: center; }
 #dash .jkgrid .button { padding: 4px !important; font-size: 12px; }
 
-#dash #matches td div { line-height: 28px !important; height: 28px !important; }
-#dash #matches td.c2, #dash #matches td.c4, #dash #matches td.c3 { padding: 2px 0px; }
-#dash #matches th { padding: 5px 0px; }
-#dash #matches .c3 { width: 10% !important; min-width: 50px; }
-#dash .type_1 .c3 div { width: 55px !important; }
-
 #dash #matches .c2, #dash #matches .c4 { width: 45% !important; padding: 0px 5px !important; }
 #dash #matches tr div { width: 100% !important; overflow: hidden; }
 
@@ -533,6 +527,16 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash .mdl-card__supporting-text .c3 { width: auto !important; }
 #dash .mdl-card__supporting-text .c3 div { width: 50px !important; }
 #dash .mdl-card__supporting-text .c4 div { width: 70px !important; }
+
+/* New CSS */
+.dashboard_page #dashjournee .mdl-card__supporting-text { padding: 0px 5px; width: auto; }
+
+.dashboard_page td { padding: 7px 5px; border-right: 0px solid #ccc; border-top: 1px solid #aaa; font-size: 12px; }
+.dashboard_page td div, .dashboard_page th div { width: auto !important; 4px/100% Arial, Helvetica, sans-serif; font-weight: normal; }
+.dashboard_page #matches th { padding: 5px 0px; }
+.dashboard_page #matches .score { margin: 0px 5px; padding: 0px; }
+
+
 
 h2.players .button, h2.dashboard .button { padding: 1px 10px 1px 1px !important; }
 h2.players .button img, h2.dashboard .button img { float: left; padding: 1px 10px 0px 5px; border-right: 1px solid #80bed6; }

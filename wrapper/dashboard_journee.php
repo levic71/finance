@@ -37,11 +37,10 @@ if (!isset($options_type_matchs)) $options_type_matchs = "X|0";
 
 ?>
 
-<div class="mdl-card__title">
-<h2 class="mdl-card__title-text">
-    <img class="bt" src="img/icons/dark/appbar.navigate.previous.png" style="float: left;" onclick="journee(null, '<?= $id_journee ?>|prev');" />
-    <img class="bt" src="img/icons/dark/appbar.navigate.next.png" onclick="journee(null, '<?= $id_journee ?>|next');" />
-    <span><?= ToolBox::conv_lib_journee($journee['nom'])."<br /><small>".ToolBox::mysqldate2date($journee['date']) ?></small></span>
+
+
+
+<? if (false) { // Boutons pour more/less items dans listes ?>
 <? if (!(!isset($id_journee) || $id_journee == "0") && false) { ?>
 	<img class="bt" onclick="mm({action:'matches', tournoi: <?= $sess_context->isTournoiXDisplay() ? 1 : 0 ?>, idj:'<?= $journee['id'] ?>', name:'<?= $journee['nom'] ?>', date:'<?= ToolBox::mysqldate2date($journee['date']) ?>'});" src="img/icons/dark/appbar.magnify.png" />
 <? } ?>
@@ -61,24 +60,30 @@ if (!isset($options_type_matchs)) $options_type_matchs = "X|0";
 	<img id="less4" class="bt" onclick="show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>);" src="img/icons/dark/appbar.minus.png" />
 <? } ?>
 
-</h2>
-</div>
-
-<table id="matches" cellspacing="0" cellpadding="0" class="jkgrid <?= $sess_context->isTournoiXDisplay() ? "phasefinale" : "" ?> type_<?= $type_champ ?>" style="width: 100%;">
-<thead>
-<tr>
-<? if ($sess_context->isTournoiXDisplay()) { ?>
-<th class="c1"><div>&nbsp;</div></th><th class="c2"><div>Matchs</div></th><th class="c3"><div>&nbsp</div></th>
-<? } else { ?>
-<th class="c2"><div>Equipe1</div></th><th class="c3"><div>&nbsp</div></th><th class="c4"><div>Equipe2</div></th>
 <? } ?>
-</tr>
-</thead>
-<tbody>
-<?= $sess_context->isTournoiXDisplay() ? journee_tournoi_display($journee, $saison_id, $real_id, $options_type_matchs) : journee_display($journee, $saison_id, "") ?>
-</tbody>
-</table>
 
+
+
+
+<?
+
+$content  = '';
+$content .= '<table id="matches" cellspacing="0" cellpadding="0" class="jkgrid2 '.($sess_context->isTournoiXDisplay() ? "phasefinale" : "").'type_'.$type_champ.'" style="width: 100%;">';
+$content .= '<thead><tr>';
+if ($sess_context->isTournoiXDisplay())
+	$content .= '<th class="c1"><div>&nbsp;</div></th><th class="c2"><div>Matchs</div></th><th class="c3"><div>&nbsp</div></th>';
+else
+	$content .= '<th class="c2"><div>Equipe1</div></th><th class="c3"><div>&nbsp</div></th><th class="c4"><div>Equipe2</div></th>';
+$content .= '</tr></thead><tbody>';
+
+if ($sess_context->isTournoiXDisplay())
+	$content .= journee_tournoi_display($journee, $saison_id, $real_id, $options_type_matchs);
+else
+	$content .= journee_display($journee, $saison_id, "");
+
+$content .= '</tbody></table>';
+
+?>
 
 
 <? if ($sess_context->isFreeXDisplay()) { ?>
@@ -104,7 +109,7 @@ toggle_all = function(nb) {
 }
 
 hide('box3'); hide('more31'); hide('less31'); hide('more32'); hide('less32');
-show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_context::getHomeListHeadcount() ?>, 'more32', 'less32');
+if (false) show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_context::getHomeListHeadcount() ?>, 'more32', 'less32');
 
 </script>
 <? } ?>
@@ -113,7 +118,7 @@ show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_conte
 
 <? if ($sess_context->isChampionnatXDisplay()) { ?>
 <script>
-show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_context::getHomeListHeadcount() ?>, 'more4', 'less4');
+if (false) show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_context::getHomeListHeadcount() ?>, 'more4', 'less4');
 </script>
 <? } ?>
 
@@ -127,6 +132,8 @@ show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_conte
 </table>
 
 <div id="classement" class="underline" style="margin: 5px 0px;"></div>
+
+
 <script>
 choices.build({ name: 'classement', c1: 'small selected', c2: 'small', callback: 'swap_box2', values: [ { v: 0, l: 'Classement', s: false }, { v: 1, l: 'Phase finale', s: true } ] });
 
@@ -154,6 +161,15 @@ show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_conte
 <? } ?>
 
 
+
+<?
+
+$title   = Wrapper::card_box_getH2Title(array("title" => "<span>".ToolBox::conv_lib_journee($journee['nom'])."<br /><small>".ToolBox::mysqldate2date($journee['date'])."</small></span>"));
+$menu    = Wrapper::card_box_getIconButton(array("id" => "btprev", "icon" => "navigate_before", "label" => "Journée précédente", "onclick" => "journee(null, '".$id_journee."|prev');" ));
+$menu   .= Wrapper::card_box_getIconButton(array("id" => "btnext", "icon" => "navigate_next",   "label" => "Journée suivante",   "onclick" => "journee(null, '".$id_journee."|next');" ));
+Wrapper::card_box_frameless(array("id" => "card_sante", "title" => $title, "menu" => $menu, "content" => $content));
+
+?>
 
 
 <?
@@ -201,6 +217,7 @@ function journee_tournoi_classement($journee, $saison_id, $champ_id, $matchs_nul
 
 function journee_tournoi_display($journee, $saison_id, $champ_id, $options_type_matchs)
 {
+	$str = "";
 	$i = 1;
 	$fxlist = new FXListMatchsPlayOff($saison_id, $journee['id'], $journee['tournoi_phase_finale'], false, "F");
 	foreach(array_reverse($fxlist->body->tab) as $item) {
@@ -223,16 +240,19 @@ function journee_tournoi_display($journee, $saison_id, $champ_id, $options_type_
 		$item['div_nom2'] = "<span class=\"".($vainqueur == 1 ? "equipe_perdu" : "equipe_gagne").(sess_context::getGestionFanny() == 1 && $item['fanny'] == 1 ? " fanny" : "")."\">".$item['nom2']."</span>";
 
 //		echo "<tr id=\"tr_".$i++."\"><td class=\"c1\"><div>".($item['niveau'] == "F|1|1" ? "F" : "&frac1".substr($item['niveau'], 2, 1).";")."</div></td><td class=\"c2\"><div>".$item['div_nom1']."</div></td><td class=\"c3\"><div>".$resultat."</div></td><td class=\"c4\"><div>".$item['div_nom2']."</div></td>";
-		echo "<tr id=\"tr_".$i++."\"><td class=\"c1\"><div>".($item['niveau'] == "F|1|1" ? "F" : "&frac1".substr($item['niveau'], 2, 1).";")."</div></td>";
-		echo "<td class=\"c2\"><div><ul><li>".$item['div_nom1']."</li><li>".$item['div_nom2']."</li></ul></div></td><td class=\"c3\"><div>".$resultat."</div></td>";
+		$str .= "<tr id=\"tr_".$i++."\"><td class=\"c1\"><div>".($item['niveau'] == "F|1|1" ? "F" : "&frac1".substr($item['niveau'], 2, 1).";")."</div></td>";
+		$str .= "<td class=\"c2\"><div><ul><li>".$item['div_nom1']."</li><li>".$item['div_nom2']."</li></ul></div></td><td class=\"c3\"><div>".$resultat."</div></td>";
 	}
 
 	$match_vide = array ("penaltys" => 0, "prolongation" => 0, "match_joue" => 0, "resultat" => "0/0", "fanny" => 0, "nbset" => 1);
-	for($x = $i; $x <= sess_context::getHomeListHeadcount(); $x++) echo "<tr id=\"tr_".$x."\"><td class=\"c1\"><div>-</div></td><td class=\"c2\"><div>-</div></td><td class=\"c3\"><div>".Wrapper::formatScore($match_vide)."</div></td></tr>";
+	for($x = $i; $x <= sess_context::getHomeListHeadcount(); $x++) $str .= "<tr id=\"tr_".$x."\"><td class=\"c1\"><div>-</div></td><td class=\"c2\"><div>-</div></td><td class=\"c3\"><div>".Wrapper::formatScore($match_vide)."</div></td></tr>";
+
+	return $str;
 }
 
 function journee_display($journee, $saison_id, $filtre)
 {
+	$str = "";
 	$k = 1;
 	$req = "SELECT m.penaltys, m.prolongation, m.id match_id, j.date mdate, m.match_joue, j.date date, e1.nom nom1, m.resultat resultat, e2.nom nom2, m.fanny, m.nbset, m.play_date FROM jb_matchs m, jb_equipes e1, jb_equipes e2, jb_journees j WHERE e1.id=m.id_equipe1 AND e2.id=m.id_equipe2 AND m.id_journee=j.id AND m.id_journee=".$journee['id']." AND m.id_champ=".$saison_id." ".$filtre;
 	if ($res = dbc::execSql($req)) {
@@ -240,18 +260,19 @@ function journee_display($journee, $saison_id, $filtre)
 		{
 			// Choix du vainqueur
 			$vainqueur = StatsJourneeBuilder::kikiGagne($row);
-			echo "<tr>";
-			echo "<td class=\"c2 ".($vainqueur == 1 ? "equipe_gagne" : "equipe_perdu")."\"><div>".$row['nom1']."</div></td>";
-			echo "<td class=\"c3 score\"><div>".Wrapper::formatScore($row)."</div></td>";
-			echo "<td class=\"c4 ".($vainqueur == 2 ? "equipe_gagne" : "equipe_perdu")."\"><div>".$row['nom2']."</div></td>";
-			echo "</tr>";
+			$str .= "<tr>";
+			$str .= "<td class=\"c2 ".($vainqueur == 1 ? "equipe_gagne" : "equipe_perdu")."\"><div>".$row['nom1']."</div></td>";
+			$str .= "<td class=\"c3 score\"><div>".Wrapper::formatScore($row)."</div></td>";
+			$str .= "<td class=\"c4 ".($vainqueur == 2 ? "equipe_gagne" : "equipe_perdu")."\"><div>".$row['nom2']."</div></td>";
+			$str .= "</tr>";
 			$k++;
-
 		}
 	}
 
 	$match_vide = array ("penaltys" => 0, "prolongation" => 0, "match_joue" => 0, "resultat" => "0/0", "fanny" => 0, "nbset" => 1);
-	for($x = $k; $x <= sess_context::getHomeListHeadcount(); $x++) echo "<tr><td class=\"c2\"><div>-</div></td><td class=\"c3 score\"><div>".Wrapper::formatScore($match_vide)."</div></td><td class=\"c4\"><div>-</div></td></tr>";
+	for($x = $k; $x <= sess_context::getHomeListHeadcount(); $x++) $str .= "<tr><td class=\"c2\"><div>-</div></td><td class=\"c3 score\"><div>".Wrapper::formatScore($match_vide)."</div></td><td class=\"c4\"><div>-</div></td></tr>";
+
+	return $str;
 }
 
 ?>
