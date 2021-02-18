@@ -532,7 +532,7 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 .dashboard_page #dashjournee .mdl-card__supporting-text { padding: 0px 5px; width: auto; }
 
 .dashboard_page td { padding: 7px 5px; border-right: 0px solid #ccc; border-top: 1px solid #aaa; font-size: 12px; }
-.dashboard_page td div, .dashboard_page th div { width: auto !important; 4px/100% Arial, Helvetica, sans-serif; font-weight: normal; }
+.dashboard_page td div, .dashboard_page th div { width: auto !important;  }
 .dashboard_page #matches th { padding: 5px 0px; }
 .dashboard_page #matches .score { margin: 0px 5px; padding: 0px; }
 
