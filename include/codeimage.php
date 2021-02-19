@@ -4,7 +4,10 @@
 
 	require_once '../artichow/AntiSpam.class.php';
 
-	$antispam = $_SESSION['antispam'];
+	if (isset($_SESSION['antispam'])) 
+		$antispam = $_SESSION['antispam'];
+	else
+		$antispam = "ERROR";
 
 	// On créé l'image anti-spam
 	$object = new AntiSpam($antispam);
