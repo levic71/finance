@@ -93,29 +93,35 @@ window.onload = function() {
 	go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
 
 	<? if ($wrapper) { ?>
-//		mm({action: 'days'});
+		mm({action: 'days'});
 	<? } else if (isset($auth)) { ?>
-		// hn=window.location.hostname;
-		// if (window.location.hostname == 'localhost') hn='localhost:443/jorkyball';
-		// window.location = 'https://'+hn+'/wrapper/jk.php?login';
+		hn=window.location.hostname;
+		if (window.location.hostname == 'localhost') hn='localhost:443/jorkyball';
+		window.location = 'https://'+hn+'/wrapper/jk.php?login';
 	<? } else if (isset($login)) { ?>
-		// mm({action: 'login'});
+		mm({action: 'login'});
 	<? } else if (isset($myprofile)) { ?>
-		// mm({action: 'myprofile'});
+		mm({action: 'myprofile'});
 	<? } else if ($chpwd) { ?>
-		// mm({action: 'chpwd', params: '<?= $chpwd ?>'});
+		mm({action: 'chpwd', params: '<?= $chpwd ?>'});
 	<? } else if ($id_msg > 0) { ?>
-		// go({action: 'tchat', id:'main', url:'edit_tchat.php?idp=<?= $id_msg ?>'});
+		go({action: 'tchat', id:'main', url:'edit_tchat.php?idp=<?= $id_msg ?>'});
 	<? } else if (isset($idp) && is_numeric($idp) && $idp > 0) { ?>
-		// mm({action: 'stats', idp: '<?= $idp ?>'});
+		mm({action: 'stats', idp: '<?= $idp ?>'});
 	<? } else if (isset($idt) && is_numeric($idt) && $idt > 0) { ?>
-		// mm({action: 'stats', idt: '<?= $idt ?>'});
+		mm({action: 'stats', idt: '<?= $idt ?>'});
 	<? } else if (isset($idj) && is_numeric($idj) && $idj > 0) { ?>
-		// mm({action: 'matches', idj: '<?= $idj ?>', date: '<?= $date ?>', name: '<?= $name ?>'});
+		mm({action: 'matches', idj: '<?= $idj ?>', date: '<?= $date ?>', name: '<?= $name ?>'});
+	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_PROFIL) { ?>
+		mm({action: 'leagues'});
+	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_LOGIN) { ?>
+		mm({action: 'leagues'});
+	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_HOME) { ?>
+		mm({action: 'leagues'});
 	<? } else if (isset($idc) && is_numeric($idc)) { ?>
-		// mm({action: 'dashboard', idc: <?= $idc ?> });
+		mm({action: 'dashboard', idc: <?= $idc ?> });
 	<? } else { ?>
-		// mm({action: 'leagues'});
+		mm({action: 'leagues'});
 	<? } ?>
 
 	var opts = { x_colors: ['#00525D', '#474554', '#FAF8FF', '#8F8D9E'], variance: 0, cell_size: 50, width: window.innerWidth, height: window.innerHeight };
