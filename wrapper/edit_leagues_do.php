@@ -155,7 +155,8 @@ else
 		$mail_to     = $sess_context->user['email'];
 		$mail_sujet  = "[Jorkers.com] Information";
 		$mail_corps  = "Bonjour et bienvenue,\n\nMerci d'avoir creer un tournoi/championnat sur le jorkers.com, si vous rencontrez des difficultes ou si vous avez des questions, n'hesitez pas a me <a href=\"http://www.jorkers.com\">contacter</a>.\n\n";
-		$mail_corps  .= "Votre championnat est directement accessible a l'adresse suivante <a href=\"http://".Wrapper::string2DNS($ch_nom).".jorkers.com\">http://".Wrapper::string2DNS($ch_nom).".jorkers.com</a>.\n\nCordialement\nVictor";
+		$mail_corps  .= "Votre championnat est directement accessible a l'adresse suivante <a href=\"http://".Wrapper::string2DNS($ch_nom).".jorkers.com\">http://".Wrapper::string2DNS($ch_nom).".jorkers.com</a>.\n\n";
+		$mail_corps  .= "ou à cette adresse <a href=\"http://www.jorkers.com/wrapper/jk.php?idc=".$row['championnat_id']."\">http://www.jorkers.com/wrapper/jk.php?idc=".$row['championnat_id']."</a>.\n\nCordialement\nVictor";
 		$mail_header = "From: contact@jorkers.com\n";
 		$mail_header .= "Bcc: contact@jorkers.com\n";
 		$mail_header .= "MIME-Version: 1.0\n";

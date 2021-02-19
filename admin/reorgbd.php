@@ -18,7 +18,33 @@ $db = dbc::connect();
 
 <?
 
+function string2DNS($str) {
+
+	$name = trim($str, "-");
+	$name = trim($name, " ");
+	$name = strtr($name, 'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ', 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+	$name = strtr($name, '+.,|!"ï¿½$%&/()=?^*ç°§;:_>][@);', '                             ');
+	$name = str_replace('\\', '', $name);
+	$name = str_replace('\'', '', $name);
+	$name = str_replace('-', ' ', $name);  /* ' */
+	while(substr_count($name,"  ") != 0) $name = str_replace("  ", " ", $name);
+	$name = str_replace(' ', '-', strtolower($name));
+
+	return $name;
+}
+
 // Avant de lancer ce script se connecter sur wrappeer/jk.php
+
+$i = 0;
+$req = "SELECT * FROM jb_championnat";
+$res = dbc::execSQL($req);
+while($row = mysqli_fetch_array($res))
+{
+	$sql = "UPDATE jb_championnat SET dns='".substr(strtolower(string2DNS($row['nom'])), 0, 32)."' WHERE id=".$row['id'];
+	echo $sql;
+	echo "<br />\n";
+	$ttt = dbc::execSQL($sql);
+}
 
 exit(0);
 
