@@ -35,6 +35,8 @@ function string2DNS($str) {
 
 // Avant de lancer ce script se connecter sur wrappeer/jk.php
 
+exit(0);
+
 $i = 0;
 $req = "SELECT * FROM jb_championnat";
 $res = dbc::execSQL($req);
@@ -46,7 +48,6 @@ while($row = mysqli_fetch_array($res))
 	$ttt = dbc::execSQL($sql);
 }
 
-exit(0);
 
 $req = "ALTER TABLE `jb_users` ADD `crypt` INT NOT NULL DEFAULT '0' AFTER `removed`;";
 $res = dbc::execSQL($req);
