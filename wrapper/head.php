@@ -112,12 +112,6 @@ window.onload = function() {
 		// mm({action: 'stats', idt: '<?= $idt ?>'});
 	<? } else if (isset($idj) && is_numeric($idj) && $idj > 0) { ?>
 		// mm({action: 'matches', idj: '<?= $idj ?>', date: '<?= $date ?>', name: '<?= $name ?>'});
-	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_PROFIL) { ?>
-		// mm({action: 'leagues'}); 1
-	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_LOGIN) { ?>
-		// mm({action: 'leagues'}); 2
-	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_HOME) { ?>
-		// mm({action: 'leagues'}); 3
 	<? } else if (isset($idc) && is_numeric($idc)) { ?>
 		// mm({action: 'dashboard', idc: <?= $idc ?> });
 	<? } else { ?>
