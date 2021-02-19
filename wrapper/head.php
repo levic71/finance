@@ -7,7 +7,6 @@ $id_msg  = isset($id_msg)  ? $id_msg  : 0;
 
 $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? rand(1, count($libelle_theme)) : $chp['theme'];
 
-exit(0);
 ?>
 
 <meta name="keywords"       content="jorkers,gratuit,gestion,championnat,tournoi,jorker,gestionnaire,multi sport,foot 2x2,jorky,championship,classement,statistique,joueur,équipe,journée,football,sport,compétition,futsal,tournaments,management" />
@@ -90,8 +89,8 @@ window.onload = function() {
 
 	window.scrollTo(0,0);
 
-	go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
-	go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
+	//go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
+	//go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
 
 	<? if ($wrapper) { ?>
 		mm({action: 'days'});
