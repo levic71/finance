@@ -74,7 +74,6 @@ $chp['pwd']   = "";
 $sess_context->setChampionnat($chp);
 
 $sess_context->resetAdmin();
-exit(0);
 
 
 // Si on vient d'une création de championnat
@@ -100,6 +99,9 @@ else
   else
     $sess_context->resetAdmin();
 }
+
+exit(0);
+
 
 ?>
 
