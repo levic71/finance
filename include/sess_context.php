@@ -299,7 +299,7 @@ class sess_context
 	}
 	public static function getHomeListHeadcount() {
 		global $sess_context;
-		return isset($sess_context->championnat['home_list_headcount']) ? $sess_context->championnat['home_list_headcount'] : 7;
+		return isset($sess_context->championnat['home_list_headcount']) ? $sess_context->championnat['home_list_headcount'] : 10;
 	}
 }
 

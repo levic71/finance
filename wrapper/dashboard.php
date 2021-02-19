@@ -47,6 +47,8 @@ if ($sess_context->isAdmin()) {
 Wrapper::fab_button_menu($t);
 
 
+
+
 $title  = Wrapper::card_box_getH2Title(array("title" => $sess_context->getChampionnatNom()));
 $menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "more_horiz", "label" => "Editer", "onclick" => "go({action: 'dashboard', id:'main', url:'edit_leagues.php?page=0&idl=".$sess_context->getRealChampionnatId()."&etape=1'});" ));
 if (!$sess_context->isAdmin()) $menu = '';
@@ -55,7 +57,10 @@ $content = '
 	'.$libelle_type[$sess_context->getChampionnatType()].'
 	<div id="saisons"></div>
 ';
+// Card_box Billboard général
 Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 4));
+
+
 
 
 $title = '<h2 class="mdl-card__title-text">Stats</h2>';
@@ -68,20 +73,27 @@ $content = '
 <button id="b4" class="button blue" onclick="mm({action: \'days\', grid: -1, tournoi: '.($sess_context->isTournoiXDisplay() ? 1 : 0).'});"><i class="material-icons">date_range</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_journees']).'</div><div class="txt">Journées</div></button>
 <button id="b5" class="button blue"><i class="material-icons">timer</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_matchs']).'</div><div class="txt">Matchs</div></button>
 ';
+// Card_Box Stats
 Wrapper::card_box_6c(array("id" => "dashcounter", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 4));
 
 ?>
-
 <script>
     choices.build({ name: 'saisons', c1: 'blue', c2: 'white', callback: 'change_saison', singlepicking: true, removable: true, values: [ <?= $saisons ?> ] });
     change_saison = function(name) { xx({action: 'message', id:'main', url:'table_change_season_do.php?ids='+choices.getSelection(name)}); }
 </script>
-
 <? 
 
+
+
+
+// Card_Box vide (remplit via request dynamique)
 Wrapper::card_box_6c(array("id" => "dashjournee", "nb_col_tablet" => 12, "nb_col_phone" => 12));
 
+
+
+
 $title = Wrapper::card_box_getH2Title(array("title" => "Classement général"));
+
 if ($sess_context->isFreeXDisplay()) {
 	$menu   = Wrapper::card_box_getIconButton(array("id" => "more5", "icon" => "unfold_more", "label" => "Etendre", "onclick" => "toggle_all5(999);" ));
 	$menu  .= Wrapper::card_box_getIconButton(array("id" => "less5", "icon" => "unfold_less", "label" => "Réduire", "onclick" => "toggle_all5(".sess_context::getHomeListHeadcount().");" ));
@@ -89,6 +101,7 @@ if ($sess_context->isFreeXDisplay()) {
 	$menu   = Wrapper::card_box_getIconButton(array("id" => "more1", "icon" => "unfold_more", "label" => "Etendre", "onclick" => "show_elts('table_teams', 999, ".sess_context::getHomeListHeadcount().", 'more1', 'less1');" ));
 	$menu  .= Wrapper::card_box_getIconButton(array("id" => "less1", "icon" => "unfold_less", "label" => "Réduire", "onclick" => "show_elts('table_teams', ".sess_context::getHomeListHeadcount().", ".sess_context::getHomeListHeadcount().", 'more1', 'less1');" ));
 }
+
 $content = '';
 $tbody = ""; $thead = "";
 
@@ -223,16 +236,21 @@ foreach($tab as $item)
 	$i++;
 }
 
-$content .= '<table cellspacing="0" cellpadding="0" class="jkgrid" id="'.($sess_context->isFreeXDisplay() ? "table_players" : "table_teams").'">';
+$content .= '<table cellspacing="0" cellpadding="0" class="jkgrid2" id="'.($sess_context->isFreeXDisplay() ? "table_players" : "table_teams").'">';
 $content .= '<thead>'.$thead.'</thead>';
 $content .= '<tbody>'.$tbody.'</tbody>';
 $content .= '</table>';
 
-$bottom_text = '<div id="'.($sess_context->isFreeXDisplay() ? "occazbox" : "sizebox").'" class="noradius underline" style="padding: 5px 15px;"></div>';
+$bottom_text = '';
+if ($sess_context->isFreeXDisplay()) $bottom_text = '<div id="occazbox" class="noradius underline" style="padding: 5px 15px;"></div>';
 
+// Card_box Classement
 Wrapper::card_box_6c(array("id" => "dash", "title" => $title, "menu" => $menu, "content" => $content, "bottom_text" => $bottom_text, "nb_col_tablet" => 12));
 
 ?>
+
+
+
 
 <script>
 
@@ -261,7 +279,7 @@ show_elts('table_teams', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_c
 
 <? } ?>
 
-// Plus utilise
-// nav_init('pages', 'j<?= Wrapper::getLastJourneePlayed($sess_context->getChampionnatId()) ?>', 10);
+// Plus utilisé
+//nav_init('pages', 'j<?= Wrapper::getLastJourneePlayed($sess_context->getChampionnatId()) ?>', 10);
 
 </script>
