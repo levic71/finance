@@ -45,6 +45,8 @@ if (count($tmp) >= 2) {
   }
 }
 
+exit(0);
+
 // $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : (isset($sess_context) && $sess_context->isSuperUser() ? 8 : 85);
 $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_CHAMP_ID_HOME;
 
