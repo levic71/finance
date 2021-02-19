@@ -781,6 +781,12 @@ ul.trombinoscope li:hover {
     left:-223px !important;
 }
 
+#dashjournee .mdl-card__title {
+	padding-top: 8px !important;
+	padding-bottom: 5px !important;
+}
+
+
 
 @media screen and (min-width:0px) and (max-width:1024px)
 {
@@ -1023,6 +1029,14 @@ ul.trombinoscope li:hover {
 	#roles .c2 div { width: auto !important; }
 	#roles .c3 { display: none; }
 
+	#main #dashjournee .mdl-card__title {
+		padding-top: 5px !important;
+		padding-bottom: 0px !important;
+	}
+	#main #dashjournee .mdl-card__title h2 {
+			font-size: 20px !important;
+	}
+
 	.choices_picker {
 		position: relative !important;
 		width: calc(100% - 80px) !important;
@@ -1042,8 +1056,6 @@ ul.trombinoscope li:hover {
 	#login_panel .mdl-chip__text { display: none; }
 	#login_panel .mdl-chip { padding: 0px; }
 	header span#logo { width: calc(100% - 40px); }
-
-
 }
 
 #main-content { padding: 20px 40px; }

@@ -21,7 +21,7 @@ cc = function(id, c) {
 }
 fs = function(id) { try { el(id).focus(); } catch(e) {} }
 isHidden = function(id) { try { return (el(id).style.display == 'none' ? true : false); } catch(e) {} }
-show = function(id) { try { el(id).style.display = 'block'; } catch(e) {} }
+show = function(id) { try { el(id).style.display = 'initial'; } catch(e) {} }
 hide = function(id) { try { el(id).style.display = 'none'; } catch(e) {} }
 toogle = function(id) { try { if (isHidden(id)) show(id); else hide(id); } catch(e) {} }
 valof = function(id) {
@@ -688,7 +688,7 @@ show_elts = function(name, nb_display, min, more, less) {
 	k=0;
 	for(var j=0; j < children.length; j++) {
 		if (children[j].parentNode == tbody) {
-			children[j].style.display = k < nb_display ? 'block' : 'none';
+			children[j].style.display = k < nb_display ? 'table-row' : 'none';
 			k++;
 		}
 	}
@@ -707,7 +707,7 @@ show_occaz = function(name, option, nb_display, min, more, less) {
 	var children = elt.getElementsByTagName("TBODY")[0].getElementsByTagName("TR");
 	var k=0;
 	for(var j=0; j < children.length; j++) {
-		children[j].style.display = (children[j].className.indexOf(option) >= 0 && k < nb_display) ? 'block' : 'none';
+		children[j].style.display = (children[j].className.indexOf(option) >= 0 && k < nb_display) ? 'table-row' : 'none';
 		if (children[j].className.indexOf(option) >= 0) k++;
 	}
 	hide(nb_display == min ? less : more);
@@ -771,6 +771,8 @@ nav_show = function(name, start, delta) {
 }
 
 nav_init = function(name, id, delta) {
+	alert(name);
+
 	elt = document.getElementById(name);
 	if (!elt.hasChildNodes()) return;
 

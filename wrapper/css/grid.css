@@ -482,12 +482,6 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash #table_players .c4 div { text-align: center; }
 #dash .jkgrid .button { padding: 4px !important; font-size: 12px; }
 
-#dash #matches td div { line-height: 28px !important; height: 28px !important; }
-#dash #matches td.c2, #dash #matches td.c4, #dash #matches td.c3 { padding: 2px 0px; }
-#dash #matches th { padding: 5px 0px; }
-#dash #matches .c3 { width: 10% !important; min-width: 50px; }
-#dash .type_1 .c3 div { width: 55px !important; }
-
 #dash #matches .c2, #dash #matches .c4 { width: 45% !important; padding: 0px 5px !important; }
 #dash #matches tr div { width: 100% !important; overflow: hidden; }
 
@@ -534,11 +528,53 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash .mdl-card__supporting-text .c3 div { width: 50px !important; }
 #dash .mdl-card__supporting-text .c4 div { width: 70px !important; }
 
+/* New 2021 CSS */
+.dashboard_page #dashjournee .mdl-card__supporting-text { padding: 0px 5px; width: auto; }
+
+.dashboard_page td { padding: 3px 5px; border-right: 0px solid #ccc; border-top: 1px solid #aaa; font-size: 12px; }
+.dashboard_page td div, .dashboard_page th div { font-weight: normal !important; height: 32px; line-height: 34px; display: table-cell; vertical-align: middle; }
+.dashboard_page td, .dashboard_page th { width: auto !important;  }
+.dashboard_page th { padding: 5px 0px; background: #ccc !important; line-height: 20px; }
+.dashboard_page th div { background: #ccc; color:#666 !important; font-weight: bold !important; }
+.dashboard_page .score { margin: 2px 5px; padding: 0px; }
+.dashboard_page #table_teams .c4 div, .dashboard_page #table_teams .c3 div { text-align: center !important; }
+.dashboard_page #btexpand { margin-top: 10px; }
+.dashboard_page #btexpand i, .dashboard_page #more21 i, .dashboard_page #more32 i { color: #777; }
+.dashboard_page #table_players .forme { height: 25px; width: 24px !important; margin: 0px 10px 0px 5px; }
+.dashboard_page #table_players .forme .formeind{ width: 24px !important; }
+.dashboard_page #table_players td.c2 > div {
+    padding-left: 0px;
+    background: none;
+    font-size: 14px;
+}
+.dashboard_page #table_teams button, .dashboard_page #table_players button { font-size: 12px; padding: 2px 5px !important; }
+.dashboard_page #table_teams .c1 div, .dashboard_page #table_players .c1 div {
+    text-align: center;
+    font-weight: bold !important;
+    padding: 0px 15px;
+}
+.dashboard_page td div .button { width: 45px; height: 26px; }
+#dash #table_players .gold .c1:before, #dash #table_players .silver .c1:before, #dash #table_players .bronze .c1:before { margin: -5px 0px 0 7px !important; }
+.dashboard_page #matches th.c2 { display: contents; }
+.dashboard_page #matches th.c2 div { text-align: right; }
+.dashboard_page #matches .c2, .dashboard_page #matches .c4 { width: 40% !important; white-space: nowrap; overflow: hidden; }
+.dashboard_page #matches .c3 { display: flex !important; justify-content: center; margin: 0px !important; }
+.dashboard_page #matches .c3 div { width: auto; justify-content: center; margin: 4px 0px 0px; }
+.dashboard_page .phasefinaletype_2 ul { padding: 0px; margin: 0px; }
+.dashboard_page .phasefinaletype_2 li { list-style: none; font-size: 12px; }
+.dashboard_page .phasefinaletype_2 .c1 { background: #666; color: white; padding: 0px 10px; text-align: center; display: table-cell; }
+.dashboard_page .phasefinaletype_2 .c1 div { display: initial; }
+.dashboard_page .phasefinaletype_2 #tr_1 .c1 { background: #5D00EF; }
+.dashboard_page .phasefinaletype_2 #tr_2 .c1 { background: #813BEF; }
+.dashboard_page .phasefinaletype_2 #tr_3 .c1 { background: #A677EF; }
+
+/* END NEW 2021 */
+
 h2.players .button, h2.dashboard .button { padding: 1px 10px 1px 1px !important; }
 h2.players .button img, h2.dashboard .button img { float: left; padding: 1px 10px 0px 5px; border-right: 1px solid #80bed6; }
 h2.players .button span, h2.dashboard .button span { float: right; padding: 0px 0px 0px 10px; line-height: 26px; font-weight: bold; }
 
-#tchat .c5 div .button, #tchat .c6 div .button, #table_groupe td div .button, #table_teams td div .button, #table_players td div .button, #dash .jkgrid .button { width: 45px; }
+#tchat .c5 div .button, #tchat .c6 div .button, #table_groupe td div .button, #table_teams td div .button, #table_players td div .button, #dash .jkgrid .button { width: 45px; height: 25px; }
 .synthese #table_groupe td div .button { width: 33px; }
 
 

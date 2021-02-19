@@ -182,8 +182,13 @@ public static function formatScore($val)
 }
 
 public static function displayMatchesStats($idj, $complete) {
+	echo Wrapper::getDisplayMatchesStats($idj, $complete, true);
+}
+
+public static function getDisplayMatchesStats($idj, $complete, $framebox) {
 
 	global $sess_context;
+	$str = "";
 
 	// On recupere les infos de la journée
 	$sql = "SELECT * FROM jb_journees WHERE id=".(isset($idj) && $idj != "" ? $idj : $sess_context->getJourneeId());
@@ -250,33 +255,27 @@ public static function displayMatchesStats($idj, $complete) {
 		}
 	}
 
-	// Stats Equipes (pas vraiment utile !!!!!!)
-	if ($sess_context->isChampionnatXDisplay() && false)
-	{
-		if ($classement_equipes != "")
-		{
-			echo "<tr><td>";
-			$fxlist = new FXListMatchsStatsEquipes($classement_equipes, $equipes);
-			$fxlist->FXDisplay();
-			echo "</td>";
-		}
+	if ($framebox) {
+		$res .= '<div id="box3" class="vgrid" style="clear: both; margin-top: 20px;">';
+		$res .= '<h2 class="grid leagues">Statistiques journée</h2>';
 	}
 
-?>
+	$str .= '<table cellspacing="0" cellpadding="0" class="jkgrid2 matches_grid" id="table_players_day">';
+	$str .= '<thead><tr><th class="c1"><div>N°</div></th><th class="c2"><div>Joueur</div></th><th class="c3"><div>J</div></th><th class="c4"><div>G</div></th><th class="c5"><div>AVG</div></th><th class="c6"><div>FI</div></th><th class="c7"><div>FO</div></th></tr></thead>';
+	$str .= '<tbody>';
+	$i = 1;
+	foreach($t as $j)
+		$str .= '<tr id="tr_'.$i.'" class="clickonit" onclick="mm({action:\'stats\', idp:\''.$j['id'].'\'});"><td class="c1"><div>'.$i++.'</div></td><td class="c2"><div>'.$j['joueur'].'</div></td><td class="c3"><div>'.$j['matchs_joues'].'</div></td><td class="c4"><div><button class="button gray bigrounded">'.$j['matchs_gagnes'].'</button></div></td><td class="c5"><div><button class="button bigrounded '.($j['diff'] >= 0 ? "green" : "red").'">'.$j['diff'].'</button></div></td><td class="c6"><div>'.$j['fanny_in'].'</div></td><td class="c7"><div>'.$j['fanny_out'].'</div></td></tr>';
+	if ($complete)
+		for($x=$i; $x <= sess_context::getHomeListHeadcount(); $x++)
+			$str .= '<tr id="tr_'.$x.'"><td class="c1"><div>'.$x.'</div></td><td class="c2"><div>-</div></td><td class="c3"><div>0</div></td><td class="c4"><div><button class="button bigrounded disable">0</button></div></td><td class="c5"><div><button class="button bigrounded disable">0</button></div></td><td class="c6"><div>-</div></td><td class="c7"><div>-</div></td></tr>';
 
-<div id="box3" class="vgrid" style="clear: both; margin-top: 20px;">
-<h2 class="grid leagues">Statistiques journï¿½e</h2>
-<table cellspacing="0" cellpadding="0" class="jkgrid matches_grid" id="table_players">
-<thead><tr><th class="c1"><div>N?</div></th><th class="c2"><div>Joueur</div></th><th class="c3"><div>J</div></th><th class="c4"><div>G</div></th><th class="c5"><div>AVG</div></th><th class="c6"><div>FI</div></th><th class="c7"><div>FO</div></th></tr></thead>
-<tbody>
-<? $i = 1; foreach($t as $j) { ?><tr id="tr_<?= $i ?>" class="clickonit" onclick="mm({action:'stats', idp:'<?= $j['id'] ?>'});"><td class="c1"><div><?= $i++ ?></div></td><td class="c2"><div><?= $j['joueur'] ?></div></td><td class="c3"><div><?= $j['matchs_joues'] ?></div></td><td class="c4"><div><button class="button gray bigrounded"><?= $j['matchs_gagnes'] ?></button></div></td><td class="c5"><div><button class="button bigrounded <?= $j['diff'] >= 0 ? "green" : "red" ?>"><?= $j['diff'] ?></button></div></td><td class="c6"><div><?= $j['fanny_in'] ?></div></td><td class="c7"><div><?= $j['fanny_out'] ?></div></td></tr><? } ?>
-<? if ($complete) for($x=$i; $x <= sess_context::getHomeListHeadcount(); $x++) { ?><tr id="tr_<?= $x ?>"><td class="c1"><div><?= $x ?></div></td><td class="c2"><div>-</div></td><td class="c3"><div>0</div></td><td class="c4"><div><button class="button bigrounded disable">0</button></div></td><td class="c5"><div><button class="button bigrounded disable">0</button></div></td><td class="c6"><div>-</div></td><td class="c7"><div>-</div></td></tr><? } ?>
-</tbody>
-</table>
-</div>
+	$str .= '</tbody>';
+	$str .= '</table>';
 
-<?
+	if ($framebox) $str .= '</div>';
 
+	return $str;
 }
 
 public static function reformatTournoiClassement($tab) {
@@ -336,7 +335,7 @@ public static function string2DNS($str) {
 
 	$name = trim($str, "-");
 	$name = trim($name, " ");
-	$name = strtr($name, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+	$name = strtr($name, 'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ', 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
 	$name = strtr($name, '+.,|!"ï¿½$%&/()=?^*ç°§;:_>][@);', '                             ');
 	$name = str_replace('\\', '', $name);
 	$name = str_replace('\'', '', $name);
@@ -530,7 +529,7 @@ public static function textarea_form($item) { ?>
 
 public static function textfield_place_form($item) { ?>
 	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><input class="mdl-textfield__input" type="text" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : "" ?> />
-	<a href="#" style="float:left;" onclick="choosegooglemap();"><img title="Gï¿½olocalisation" src="img/download.png" /></a>
+	<a href="#" style="float:left;" onclick="choosegooglemap();"><img title="Géolocalisation" src="img/download.png" /></a>
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
 <? }
 
@@ -643,6 +642,7 @@ public static function javascript_form($options) { }
 // CARD BOX
 //
 public static function card_box($options) {
+	$framebox      = isset($options['framebox']) && $options['framebox'] == false ? false : true;
 	$nb_col_web    = isset($options['nb_col_web'])    ? $options['nb_col_web']    : 12;
 	$nb_col_tablet = isset($options['nb_col_tablet']) ? $options['nb_col_tablet'] : 12;
 	$nb_col_phone  = isset($options['nb_col_phone'])  ? $options['nb_col_phone']  : 12;
@@ -651,7 +651,10 @@ public static function card_box($options) {
 	if (isset($options['table'])) $card_class .= " mdl-card__list";
 ?>
 
-<div <?= isset($options['id']) ? "id=".$options['id'] : "" ?> class="<?= $card_class ?>">
+<? if ($framebox) { ?>
+<div <?= isset($options['id']) ? "id=\"".$options['id']."\"" : "" ?> class="<?= $card_class ?>">
+<? } ?>
+
 <? if (isset($options['title']) && $options['title'] != "") { ?>
 	<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
 		<?= $options['title'] ?>
@@ -677,13 +680,17 @@ public static function card_box($options) {
 		<?= $options['bottom_text'] ?>
 	</div>
 <? } ?>
+
+<? if ($framebox) { ?>
 </div>
+<? } ?>
 
 <?
 }
 
-public static function card_box_4c($options)  { $options['nb_col_web']=4;  $options['nb_col_tablet']=4; Wrapper::card_box($options); }
-public static function card_box_6c($options)  { $options['nb_col_web']=6;  $options['nb_col_tablet']=4; Wrapper::card_box($options); }
+public static function card_box_frameless($options)  { $options['framebox']=false; Wrapper::card_box($options); }
+public static function card_box_4c($options)  { $options['nb_col_web']=4;  Wrapper::card_box($options); }
+public static function card_box_6c($options)  { $options['nb_col_web']=6;  Wrapper::card_box($options); }
 public static function card_box_8c($options)  { $options['nb_col_web']=8;  Wrapper::card_box($options); }
 public static function card_box_10c($options) { $options['nb_col_web']=10; Wrapper::card_box($options); }
 
