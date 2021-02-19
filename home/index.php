@@ -16,6 +16,7 @@ $dns = explode('.', $_SERVER['SERVER_NAME']);
 
 // Accès direct au championnat via sous domaine
 if (isset($dns[0]) && strtolower($dns[0]) != "www" && strtolower($dns[0]) != "www") {
+  echo $dns;
 
 	$r7_dns = explode('-', $dns[0]);
 	$r7 = isset($r7_dns[0]) && strtolower($r7_dns[0]) == "r7" ? true : false;
@@ -25,6 +26,12 @@ if (isset($dns[0]) && strtolower($dns[0]) != "www" && strtolower($dns[0]) != "ww
 	$res = dbc::execSQL($sql);
 	if ($row = mysqli_fetch_array($res)) {
   	ToolBox::do_redirect($protocole.($r7 ? "r7" : "www").".jorkers.com/wrapper/jk.php?idc=".$row['id']);
+  }
+  else
+  {
+    echo "not foound";
+    echo $sql;
+    exit(0);
   }
 }
 
