@@ -92,15 +92,7 @@ window.onload = function() {
 	go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
 	go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
 
-	<? if ($wrapper) { ?>
-		mm({action: 'days'});
-	<? } else if (isset($auth)) { ?>
-		hn=window.location.hostname;
-		if (window.location.hostname == 'localhost') hn='localhost:443/jorkyball';
-		window.location = 'https://'+hn+'/wrapper/jk.php?login';
-	<? } else { ?>
 		mm({action: 'leagues'});
-	<? } ?>
 
 	var opts = { x_colors: ['#00525D', '#474554', '#FAF8FF', '#8F8D9E'], variance: 0, cell_size: 50, width: window.innerWidth, height: window.innerHeight };
 	var pattern = Trianglify(opts);
