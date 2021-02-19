@@ -20,6 +20,7 @@ if (isset($dns[0]) && strtolower($dns[0]) != "www" && strtolower($dns[0]) != "ww
 	$r7_dns = explode('-', $dns[0]);
 	$r7 = isset($r7_dns[0]) && strtolower($r7_dns[0]) == "r7" ? true : false;
   $protocole = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https://' : 'http://';
+  if ($r7) $protocole = "https://";
 
 	// $sql = "SELECT id, nom FROM jb_championnat WHERE entity='_NATIF_' AND actif = 1 AND nom != '' AND lower(REPLACE(nom, '-', ' '))='".str_replace('-', ' ', strtolower($r7 ? $r7_dns['1'] : $dns['0']))."' ORDER BY dt_creation DESC";
 	$sql = "SELECT id, nom FROM jb_championnat WHERE entity='_NATIF_' AND actif = 1 AND nom != '' AND lower(dns)='".strtolower($r7 ? $r7_dns['1'] : $dns['0'])."' ORDER BY dt_creation DESC";
