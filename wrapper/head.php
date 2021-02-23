@@ -57,7 +57,6 @@ $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? ra
 
 <!-- Add to homescreen for Chrome on Android -->
 <meta name="mobile-web-app-capable" content="yes" />
-<link rel="icon" type="image/png" sizes="225x225" href="../images/android-desktop.png" />
 
 <!-- Add to homescreen for Safari on iOS -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -65,7 +64,7 @@ $theme   = $chp['theme'] == 1 && $sess_context->getRealChampionnatId() == 8 ? ra
 <meta name="apple-mobile-web-app-title" content="Jorker's" />
 <link rel="apple-touch-icon-precomposed" href="../images/ios-desktop.png" />
 
-<link rel="icon" type="image/png" href="favicon.ico" />
+<link rel="icon" type="image/png" href="../favicon<?= sess_context::isLocalHost() ? "_dev" : (sess_context::isR7Host() ? "_r7" : "") ?>.png" />
 <link rel="apple-touch-icon" href="img/webclip.png" />
 <link rel="apple-touch-icon" sizes="72x72" href="img/webclip72.png" />
 <link rel="apple-touch-icon" sizes="114x114" href="img/webclip114.png" />

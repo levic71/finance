@@ -184,7 +184,7 @@ class sess_context
 	function isAllXDisplay()			{ return (($this->xdisplay == _XDISPLAY_ALL_) ? true : false); }
 	function getXDisplay()				{ return $this->xdisplay; }
 
-	public static function isSuperUser() { $sn = strtolower(getenv('SERVER_NAME')); $ra = strtolower(getenv('REMOTE_ADDR')); return ($sn == "localhost" || strtolower($sn) == "r7.jorkers.com" || substr(strtolower($sn), 0, 3) == "r7-" || $rn == "81.57.60.63" || $rn == "127.0.0.1" || $rn == "localhost" ? true : false); }
+	public static function isSuperUser() { $sn = strtolower(getenv('SERVER_NAME')); $ra = strtolower(getenv('REMOTE_ADDR')); return ($sn == "localhost" || strtolower($sn) == "r7.jorkers.com" || substr(strtolower($sn), 0, 3) == "r7-" || $rn == "91.164.59.145" || $rn == "127.0.0.1" || $rn == "localhost" ? true : false); }
 	public static function isR7Host()    { $sn = strtolower(getenv('SERVER_NAME')); $ra = strtolower(getenv('REMOTE_ADDR')); return (strtolower($sn) == "r7.jorkers.com" || substr(strtolower($sn), 0, 3) == "r7-" ? true : false); }
 	public static function isLocalHost() { $sn = strtolower(getenv('SERVER_NAME')); $ra = strtolower(getenv('REMOTE_ADDR')); return ($sn == "localhost" || $rn == "127.0.0.1" || $rn == "localhost" ? true : false); }
 
