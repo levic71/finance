@@ -7,25 +7,24 @@
 	position:relative;
 	font: 14px/100% Arial, Helvetica, sans-serif;
 	font-weight: normal;
-	color: #777;
+	color: darkslategray;
 }
 * html .jkgrid { border-top:1px solid #aaa; }
 .jkgrid tr {
 	display:block;
-	color:#666;
-	font-weight:bold;
+	color:darkslategray;
 	text-decoration:none;
 }
 
 .jkgrid tr.clickonit { cursor: pointer; }
-.jkgrid tbody tr:hover { color:#3B4F1B; background: #CBF484; }
+.jkgrid tbody tr:hover { background: lightcyan; }
 
 .jkgrid.nohighlight tbody tr:hover {
 	color:#777;
 	background:#eee;
 }
-.jkgrid th { padding: 8px 7px 8px 3px; }
-.jkgrid td { line-height: 30px; height: 30px; padding: 5px 7px 5px 3px; }
+.jkgrid th { padding: 8px 7px 8px 3px; font-weight: normal !important; color: #777 !important; }
+.jkgrid td { font-weight:bold; line-height: 30px; height: 30px; padding: 5px 7px 5px 3px; }
 .jkgrid div { text-align: left; overflow: hidden; white-space: nowrap; }
 .jkgrid a { text-decoration: none; color: #777; }
 .jkgrid a:hover { text-decoration: underline; }
@@ -87,7 +86,7 @@
 #leagues .c3 div { width: 50px; }
 #leagues .c4 div { width: 210px; }
 #leagues .c4 div span { clear: both; float: left; line-height: 14px; }
-#leagues .c4 div small { clear: both; float: left; line-height: 12px; font-weight: normal; }
+#leagues .c4 div small { clear: both; float: left; line-height: 12px; font-weight: normal; color: chocolate; }
 #leagues .c5 div { width: 134px; }
 #leagues .c6 div { width: 50px; text-align: center; }
 #leagues .c6 img { height: 24px; width: 24px; }
@@ -330,8 +329,7 @@ tr.points .button { padding: 5px 0px !important; width: 70px; }
 
 .jkgrid td.empty div { width: 690px; }
 .jkgrid th { background: #ccc !important; }
-.jkgrid th div { color: #666 !important; }
-*html .jkgrid th div { color: #777 !important; }
+.jkgrid th div { color: #777 !important; }
 
 td.c2 .fanny { background: url('../img/14anidot4ab.gif') no-repeat left 8px; }
 td.c4 .fanny { background: url('../img/14anidot4ab.gif') no-repeat right 8px; }
@@ -535,7 +533,7 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 .dashboard_page td div, .dashboard_page th div { font-weight: normal !important; height: 32px; line-height: 34px; display: table-cell; vertical-align: middle; }
 .dashboard_page td, .dashboard_page th { width: auto !important;  }
 .dashboard_page th { padding: 5px 0px; background: #ccc !important; line-height: 20px; }
-.dashboard_page th div { background: #ccc; color:#666 !important; font-weight: bold !important; }
+.dashboard_page th div { background: #ccc; color:#666 !important; }
 .dashboard_page .score { margin: 2px 5px; padding: 0px; }
 .dashboard_page #table_teams .c4 div, .dashboard_page #table_teams .c3 div { text-align: center !important; }
 .dashboard_page #btexpand { margin-top: 10px; }
@@ -548,7 +546,7 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
     font-size: 14px;
 }
 .dashboard_page #table_teams button, .dashboard_page #table_players button { font-size: 12px; padding: 2px 5px !important; }
-.dashboard_page #table_teams .c1 div, .dashboard_page #table_players .c1 div {
+.dashboard_page #table_teams td.c1 div, .dashboard_page #table_players td.c1 div {
     text-align: center;
     font-weight: bold !important;
     padding: 0px 15px;
