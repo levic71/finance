@@ -453,7 +453,7 @@ if ($_action_ == "leagues") $moreopt .= ", filtre_type_champ: '".$filtre_type_ch
 ?>
 
 <? if ($total > 0 && !($begin == 1 && $end == 1)) { ?>
-<div class="mdl-dialog__actions pagination mdl-color-text--grey-600">
+<div class="mdl-dialog__actions pagination">
 	<button id="ctrl4" class="mdl-button mdl-js-button mdl-button--icon <?= ($page+1)*$delta < $total ? "disable" : "disable" ?>" <?= ($page+1)*$delta < $total ? "onclick=\"mm({action:'".$_action_."', page:'".(floor($total / $delta) - (($total % $delta) == 0 ? 1 : 0))."', sport_sort: ".$sport_sort.", favoris: getfav(), search: ".($search == "" ? "0" : "1").", sort: '".$sort."', next:'1' ".$moreopt." })\"" : "" ?> >
 	  <i class="material-icons">skip_next</i>
 	</button>

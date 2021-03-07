@@ -67,7 +67,7 @@ html, body {
   bottom: 19px;
 }
 .demo-layout .mdl-layout__header .mdl-layout__drawer-button {
-    background: none;
+  background: none;
   color: rgba(0, 0, 0, 0.54);
 }
 .mdl-layout__drawer .avatar {
@@ -434,6 +434,7 @@ _:-ms-input-placeholder, :root .demo-graph {
   font-size: 14px;
   height: 20px;
   line-height: 20px;
+  color: grey;
 }
 
 .center_content {
@@ -507,9 +508,13 @@ _:-ms-input-placeholder, :root .demo-graph {
 }
 
 .mdl-card {
-  border-radius: 5px;
   background: white;
-  background: linear-gradient(0deg, rgba(195,195,195,0.7) 0%, rgba(255,255,255,0.7) 50%);
+  background: linear-gradient(0deg, rgba(195,195,195,0.5) 0%, rgba(255,255,255,0.5) 50%);
+
+  backdrop-filter: blur(12.5px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
+  border-radius: 5px;
 }
 
 #card_photo {
@@ -518,3 +523,5 @@ _:-ms-input-placeholder, :root .demo-graph {
 #card_photo .mdl-chip {
   padding: 0px;
 }
+
+.mdl-card__supporting-text { color: darkslategray; }
