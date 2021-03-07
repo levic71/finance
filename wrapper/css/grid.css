@@ -218,7 +218,6 @@ tr.points .button { padding: 5px 0px !important; width: 70px; }
 #box3 #table_players .c7 div { text-align: center; }
 #box3 #table_players #tr_0 .c2 div { width: 264px; padding-right: 25px; background: url('../img/trophy_gold.png') no-repeat right 3px; }
 
-
 .jkgrid .c3 { width: 100%; }
 .jkgrid .c3 div { width: auto !important; }
 #leagues .c3 { width: 50px !important; }
@@ -525,6 +524,8 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash .mdl-card__supporting-text .c3 { width: auto !important; }
 #dash .mdl-card__supporting-text .c3 div { width: 50px !important; }
 #dash .mdl-card__supporting-text .c4 div { width: 70px !important; }
+
+# test
 
 /* New 2021 CSS */
 .dashboard_page #dashjournee .mdl-card__supporting-text { padding: 0px 5px; width: auto; }
