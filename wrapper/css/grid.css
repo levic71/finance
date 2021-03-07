@@ -533,7 +533,7 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 .dashboard_page td div, .dashboard_page th div { font-weight: normal !important; height: 32px; line-height: 34px; display: table-cell; vertical-align: middle; }
 .dashboard_page td, .dashboard_page th { width: auto !important;  }
 .dashboard_page th { padding: 5px 0px; background: #ccc !important; line-height: 20px; }
-.dashboard_page th div { background: #ccc; color:#666 !important; }
+.dashboard_page th div { background: #ccc; }
 .dashboard_page .score { margin: 2px 5px; padding: 0px; }
 .dashboard_page #table_teams .c4 div, .dashboard_page #table_teams .c3 div { text-align: center !important; }
 .dashboard_page #btexpand { margin-top: 10px; }
