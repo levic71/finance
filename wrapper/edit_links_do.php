@@ -62,4 +62,4 @@ if ($modifier)
 	}
 }
 
-?><span class="hack_ie"><span class="hack_ie">_HACK_IE_</span></span><script>mm({action:'links'}); $cMsg({ msg: 'Rattachement <?= $modifier ? "modifié" : "ajouté" ?>' });</script>
+?><span class="hack_ie">_HACK_IE_</span><script>mm({action:'links'}); $cMsg({ msg: 'Rattachement <?= $modifier ? "modifié" : "ajouté" ?>' });</script>

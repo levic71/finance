@@ -198,7 +198,7 @@ public static function getDisplayMatchesStats($idj, $complete, $framebox) {
 
 	$classement_joueurs = "";
 	// Si le champ 'joueurs' est renseignié alors on affiche les stats des joueurs (en principe, jamais vide)
-	if ($row['joueurs'] != "")
+	if (isset($row['joueurs'] ) && $row['joueurs'] != "")
 	{
 		// On r?cup?res les infos des joueurs (avec init classement vierge si besoin)
 		$req = "SELECT * FROM jb_joueurs WHERE id_champ=".$sess_context->getRealChampionnatId()." AND id IN (".SQLServices::cleanIN($row['joueurs']).") ORDER BY pseudo ASC";
@@ -215,7 +215,7 @@ public static function getDisplayMatchesStats($idj, $complete, $framebox) {
 
 	$classement_equipes = "";
 	// Si le champ 'equipes' est renseignié alors on affiche les stats des équipes
-	if ($row['equipes'] != "")
+	if (isset($row['equipes']) && $row['equipes'] != "")
 	{
 		// On récupéres les infos des joueurs (avec init classement vierge si besoin)
 		$req = "SELECT * FROM jb_equipes WHERE id_champ=".$sess_context->getRealChampionnatId()." AND id IN (".SQLServices::cleanIN($row['equipes']).") ORDER BY nom ASC";
@@ -465,10 +465,12 @@ public static function fb_tag($name, $url)      {
 	return $ret;
 }
 
+//
+// Form Builder
+//
 public static function fab_button_menu($items) {
 
     if (count($items) == 0) return;
-
 ?>
     <nav class="fabmenu">
         <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
@@ -485,7 +487,7 @@ public static function fab_button_menu($items) {
 }
 
 public static function annuler_valider_buttons($items) {
-	$items[0]['color'] = isset($items[0]['color']) ? $items[0]['color'] : "mdl-color-text--grey";
+	$items[0]['color'] = isset($items[0]['color']) ? $items[0]['color'] : "mdl-color-text--grey-600";
 	$items[0]['libelle'] = isset($items[0]['libelle']) ? $items[0]['libelle'] : "Annuler";
 	$items[1]['libelle'] = isset($items[1]['libelle']) ? $items[1]['libelle'] : "Valider";
 	Wrapper::two_action_buttons($items);
@@ -510,9 +512,15 @@ public static function divider_form($item) { ?>
 <? }
 
 public static function textfield_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><input class="mdl-textfield__input" type="<?= isset($item['password']) ? "password" : "text" ?>" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : ""?> <?= isset($item['autofocus']) ? "autofocus" : "" ?> />
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
+	<input class="mdl-textfield__input" type="<?= isset($item['password']) ? "password" : "text" ?>" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : ""?> <?= isset($item['autofocus']) ? "autofocus" : "" ?> />
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
 	<? if (isset($item['subtext'])) { ?><span class="mdl-textfield__subtext"><?= $item['subtext'] ?></span><? } ?>
+<? }
+
+public static function label_form($item) { ?>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
+	<div class="mdl-cell"><?= $item['libelle'] ?></div>
 <? }
 
 public static function checkbox_form($item) { ?>
@@ -523,18 +531,20 @@ public static function checkbox_form($item) { ?>
 <? }
 
 public static function textarea_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><textarea class="mdl-textfield__input" rows="3" type="text" id="<?= $item['id'] ?>" <?= isset($item['required']) ? "required" : "" ?>><?= $item['value'] ?></textarea>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
+	<textarea class="mdl-textfield__input" rows="3" type="text" id="<?= $item['id'] ?>" <?= isset($item['required']) ? "required" : "" ?>><?= $item['value'] ?></textarea>
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
 <? }
 
 public static function textfield_place_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><input class="mdl-textfield__input" type="text" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : "" ?> />
-	<a href="#" style="float:left;" onclick="choosegooglemap();"><img title="Géolocalisation" src="img/download.png" /></a>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
+	<input class="mdl-textfield__input" type="text" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : "" ?> />
+	<a href="#" style="float:left;" onclick="choosegooglemap()"><img title="Géolocalisation" src="img/download.png" /></a>
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
 <? }
 
 public static function upload_image_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
 	<ul class="upload_target"><li><img style="width: 64px; height: 64px;" id="img_target" src="<?= $item['value'] ?>" /></li><li id="f1_upload_process"><img src="img/loader.gif" /></li><li id="f1_upload_ok"><img src="img/tick_32.png" /></li><li id="f1_upload_err"><img src="img/block_32.png" /></li></ul>
 	<input type="hidden" name="<?= $item['id'] ?>" id="<?= $item['id'] ?>" value="<?= $item['value'] ?>" <?= isset($item['required']) ? "required" : "" ?> />
 
@@ -549,7 +559,7 @@ public static function upload_image_form($item) { ?>
 <? }
 
 public static function captcha_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
 	<div class="slide-to-unlock old-slider">
 		<div id="<?= $item['id'] ?>" class="dragdealer">
 			<div class="slide-text">slide to unlock</div>
@@ -560,24 +570,25 @@ public static function captcha_form($item) { ?>
 <? }
 
 public static function captcha2_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
 	<input style="float: left; margin-top: 8px; margin-right: 15px;" type="text" id="<?= $item['id'] ?>" name="<?= $item['id'] ?>" size="32" maxlength="16" value="<?= $item['value'] ?>" /><img style="float: left;" src="../include/codeimage.php?<?= ToolBox::getRand(5) ?>" />
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
 <? }
 
 public static function choice_component_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i><div id="<?= $item['id'] ?>" <?= isset($item['grouped']) ? "class=\"grouped\"" : "" ?>></div>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
+	<div id="<?= $item['id'] ?>" <?= isset($item['grouped']) ? "class=\"grouped\"" : "" ?>></div>
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
 <? }
 
 public static function number_component_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
 	<button class="button orange" id="<?= $item['id'] ?>" onclick="numbers.picker({ name: '<?= $item['id'] ?>', start: <?= $item['start'] ?>, end: <?= $item['end'] ?> });"><?= $item['value'] ?></button>
 	<label class="mdl-textfield__label" for="<?= $item['id'] ?>"><?= $item['libelle'] ?></label>
 <? }
 
 public static function calendar_component_form($item) { ?>
-	<i class="mdl-textfield__icon material-icons"><?= $item['icon'] ?></i>
+	<i class="<?= $item['icon_class'] ?>"><?= $item['icon'] ?></i>
 
 	<div class="singlepicking">
 		<button class="button blue" id="<?= $item['id'] ?>" onclick="calendar.picker({ name: '<?= $item['id'] ?>' });"><span><?= $item['value'] ?></span></button>
@@ -588,12 +599,16 @@ public static function calendar_component_form($item) { ?>
 
 public static function item_form($item) {
 
+	$item['icon'] = isset($item['icon']) ? $item['icon'] : "";
+	$item['icon_class'] = "mdl-textfield__icon material-icons ".(isset($item['icon_class']) ? $item['icon_class'] : "");
+
 	$classes  = "";
 	$classes .= "mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell ".($item['func'] == "divider_form" ? "mdl-divider " : "");
 	$classes .= "mdl-cell--".$item['nb_col']."-col";
 	$classes .= ($item['func'] == "calendar_component_form" || $item['func'] == "choice_component_form" || $item['func'] == "number_component_form" || $item['func'] == "captcha_form" || $item['func'] == "upload_image_form") ? " is-dirty " : "";
 	$classes .= ($item['func'] == "captcha_form") ? " is-captcha " : "";
 	$classes .= isset($item['required']) ? " mdl-textfield--required " : "";
+	$classes .= isset($item['class']) ? " ".$item['class'] : "";
 
 	if (!isset($item['value'])) $item['value'] = "";
 ?>
@@ -620,6 +635,9 @@ public static function build_form($options) {
 	Wrapper::template_box_end();
 }
 
+//
+// Page Builder (template box)
+//
 public static function template_box_start($nb_col) { ?>
 	<div class="mdl-layout-spacer"></div>
 	<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--<?= $nb_col ?>-col mdl-cell--12-tablet mdl-cell--4-col-phone mdl-cell--middle">
@@ -639,7 +657,7 @@ public static function template_box_title($title) { ?>
 public static function javascript_form($options) { }
 
 //
-// CARD BOX
+// Card Box Builder
 //
 public static function card_box($options) {
 	$framebox      = isset($options['framebox']) && $options['framebox'] == false ? false : true;

@@ -1421,7 +1421,7 @@ class StatsGlobalBuilder
 		$order_defense = array();
 
 		// Si pas d'équipe ...
-		if (count($this->stats_equipes) == 0) return;
+		if (!is_array($this->stats_equipes) || count(array($this->stats_equipes)) == 0) return;
 
         reset($this->stats_equipes);
         while(list($id, $val) = each($this->stats_equipes))
@@ -1520,7 +1520,7 @@ class StatsGlobalBuilder
 	function computeMoreStatsPlayers()
 	{
 		// Si pas de joueurs ...
-		if (count(array($this->stats_joueurs)) == 0) return;
+		if (!is_array($this->stats_joueurs) || count(array($this->stats_joueurs)) == 0) return;
 
         reset($this->stats_joueurs);
         while(list($id, $val) = each($this->stats_joueurs))
@@ -1868,6 +1868,10 @@ class StatsGlobalBuilder
 	{
 		$res   = array();
 		$sort1 = array();
+
+		// Si pas de joueurs ...
+		if (!is_array($this->stats_joueurs) || count(array($this->stats_joueurs)) == 0) return;
+
 		reset($this->stats_joueurs);
 		while(list($cle, $val) = each($this->stats_joueurs))
 		{

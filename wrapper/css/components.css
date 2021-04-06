@@ -1190,17 +1190,11 @@ html>body .singlepicking .button span { min-height: 14px; line-height: 14px; }
 	margin: 5px;
 }
 
-.purple-title-card {
-	color: #f4d3f5;
-	border: solid 1px rgba(172, 79, 201, 0.86);
-	background: #7f008b;
+.blue {
+	background: #1A7FF7;
 }
 
-.purple-title-card:hover {
-	background: rgba(172, 79, 201, 0.86);
+.blue:hover {
+	background:#1560bbda;
+	;
 }
-
-.purple-title-card:active {
-	color: #f4d3f5;
-}
-

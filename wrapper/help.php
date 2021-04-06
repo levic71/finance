@@ -11,10 +11,9 @@ header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 
 $db = dbc::connect();
 
-?>
+Wrapper::template_box_start(10);
 
-<div class="mdl-layout-spacer mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--10-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone" id="help">
+?>
 
 <style>
 
@@ -257,6 +256,4 @@ $db = dbc::connect();
 	</div>
 </div>
 
-
-</div>
-<div class="mdl-layout-spacer mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+<? Wrapper::template_box_end(); ?>

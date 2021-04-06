@@ -17,7 +17,7 @@
 }
 
 .jkgrid tr.clickonit { cursor: pointer; }
-.jkgrid tbody tr:hover { background: lightcyan; }
+.jkgrid tbody tr:hover { background: rgba(137, 207, 241, 0.37); }
 
 .jkgrid.nohighlight tbody tr:hover {
 	color:#777;

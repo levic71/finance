@@ -22,6 +22,9 @@ header('Content-Type: text/html; charset='.sess_context::xhr_charset);
       <a class="mdl-navigation__link" href="#" onclick="mm({action: 'photos'});"><i class="material-icons" role="presentation">photo</i>Photos</a>
   <? } ?>
       <a id="home" class="mdl-navigation__link" href="#" onclick="mm({action: 'leagues'});"><i class="material-icons" role="presentation">list</i>Annuaire</a>
+      <a class="mdl-navigation__link" href="#" onclick="go({action: 'leagues', id:'main', url:'edit_leagues.php'});"><i class="material-icons mdl-color-text--gray-200" role="presentation">add_box</i><button class="mdl-button mdl-js-button mdl-button--raised mdl-color--blue">New</button></a>
+  <? if (!($sess_context->getRealChampionnatId() > 0)) { ?>
+  <? } ?>
 </nav>
   
 <footer class="mdl-mega-footer">

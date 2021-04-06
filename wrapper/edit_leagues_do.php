@@ -102,6 +102,8 @@ if ($modifier)
 
 	JKCache::delCache("../cache/stats_champ_".$sess_context->getRealChampionnatId()."_".$sess_context->getChampionnatId().".txt", "_FLUX_STATS_CHAMP_");
 	JKCache::delCache("../cache/info_champ_".$sess_context->getRealChampionnatId()."_.txt", "_FLUX_INFO_CHAMP_");
+
+	?><span class="hack_ie">_HACK_IE_</span><script>removejscssfile('theme', 'css'); addcssfile('css/theme<?= $theme ?>.css');<?= false && $logo_photo != "" ? "el('inner').style.backgroundImage='url(".$logo_photo.")';" : "" ?> <?= $logo_font != "" ? "el('logo').className='logo".$logo_font."';" : "" ?> mm({action:'dashboard'}); $cMsg({ msg: 'Championnat <?= $modifier ? "modifié" : "créé" ?>' });</script><?
 }
 else
 {
@@ -111,11 +113,13 @@ else
 	// Si le championnat existe déjà, alors on retourne sur la page d'inscription
 	if ($row)
 	{
-		echo "-1||Nom championnat déjà existant"; exit(0);
+		echo "-1||Nom championnat déjà existant";
+		exit(0);
 	}
 	else if (false && $ch_controle != $_SESSION['antispam'])
 	{
-		echo "-1||Vérification robot non valide"; exit(0);
+		echo "-1||Vérification robot non valide";
+		exit(0);
 	}
 	else
 	{
@@ -172,9 +176,9 @@ else
 		unset($_SESSION['autologonadmin']);
 		$_SESSION['autologonadmin'] = 1;
 
-		?><span class="hack_ie">_HACK_IE_</span><script>mm({action:'home', idc:<?= $row['championnat_id'] ?>});</script><?
-		exit(0);
+		?><span class="hack_ie">_HACK_IE_</span><script>mm({action:'reload', idc:<?= $row['championnat_id'] ?>});</script><?
 	}
 }
 
-?><span class="hack_ie">_HACK_IE_</span><script>removejscssfile('theme', 'css'); addcssfile('css/theme<?= $theme ?>.css');<?= false && $logo_photo != "" ? "el('inner').style.backgroundImage='url(".$logo_photo.")';" : "" ?> <?= $logo_font != "" ? "el('logo').className='logo".$logo_font."';" : "" ?> mm({action:'dashboard'}); $cMsg({ msg: 'Championnat <?= $modifier ? "modifié" : "créé" ?>' });</script>
+?>
+

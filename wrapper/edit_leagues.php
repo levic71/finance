@@ -17,68 +17,53 @@ $choix_type = Wrapper::getRequest('choix_type', _TYPE_CHAMPIONNAT_);
 
 header('Content-Type: text/html; charset='.sess_context::xhr_charset);
 
-if ($etape == 0 && !$sess_context->isUserConnected()) { ?>
+if ($etape == 0 && !$sess_context->isUserConnected()) {
 
-		<div class="mdl-layout-spacer"></div>
-		<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--6-col mdl-cell--middle">
-			<div class="mdl-grid mdl-card__title mdl-color--primary mdl-color-text--white">
-				<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Création d'un championnat</h2>
-			</div>
-			<div class="mdl-card__supporting-text form-group mdl-grid">
-				<div class="mdl-card__supporting-text mdl-cell mdl-cell--12-col">
-					Pour créer un nouveau championnat vous devez vous authentifier ou vous inscrire.
-				</div>
-			</div>
-
-			<? Wrapper::two_action_buttons(array(0 => array("libelle" => "Annuler", "onclick" => "return mm({action: 'leagues'});", "color" => "mdl-color-text--grey"), 1 => array("libelle" => "Continuer", "onclick" => "mm({action: 'login'});"))); ?>
-
-		</div>
-		<div class="mdl-layout-spacer"></div>
-
-	<? exit(0);
-
+	$items = array();
+	array_push($items, array("func" => "label_form", "id" => "warning", "icon" => "warning", "libelle" => "Pour créer un nouveau championnat vous devez vous authentifier ou vous inscrire.", "nb_col" => 11, "checked" => 1));
+	$actions = array(0 => array("onclick" => "mm({action: 'leagues'});", "libelle" => "Annuler", "color" => "mdl-color-text--grey-600"), 1 => array("onclick" => "mm({action: 'login'});", "libelle" => "Continuer"));
+	Wrapper::build_form(array("nb_col" => 8, "title" => "Nouvelle Compétition", "items" => $items, "actions" => $actions));
+	exit(0);
 }
 
 $nb_fonts = 25;
 
-if ($etape == 0) { ?>
+if ($etape == 0) {
+	
+	$items = array();
+	$tmp1 = '<div class="mdl-cell mdl-cell--4-col mdl-typography--text-center"> '.
+				'<span><i class="material-icons mdl-icon-toggle">list</i>Championnat classique</span>'.
+				'<hr />'.
+				'<p style="white-space:normal; text-align: justify; line-height: 20px;">'.
+				'	Vous êtes organisés comme un véritable championnat avec un nombre d\'équipes fini qui se rencontrent les unes contre les autres tout au long d\'une saison sur plusieurs journées.'.
+				'</p>'.
+				'<hr />'.
+				'<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="xx({action:\'leagues\', id:\'main\', url:\'edit_leagues.php?etape=1&choix_type=1\'});">Créer</button>'.
+			'</div><br />';
+	$tmp2 = '<div class="mdl-cell mdl-cell--4-col mdl-typography--text-center"> '.
+				'<span><i class="material-icons mdl-icon-toggle">change_history</i>Tournoi</span>'.
+				'<hr />'.
+				'<p style="white-space:normal; text-align: justify; line-height: 20px;">'.
+				'	Vous organisez un tournoi dans lequel les équipes vont se rencontrer d\'abord en poule, les meilleurs disputeront la phase finale en élimination directe pour déterminer le vainqueur.'.
+				'</p>'.
+				'<hr /><br />'.
+				'<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="xx({action:\'leagues\', id:\'main\', url:\'edit_leagues.php?etape=1&choix_type=2\'});">Créer</button>'.
+			'</div>';
+	$tmp3 = '<div class="mdl-cell mdl-cell--4-col mdl-typography--text-center"> '.
+			'<span><i class="material-icons mdl-icon-toggle">star_border</i>Championnat libre</span>'.
+			'<hr />'.
+			'<p style="white-space:normal; text-align: justify; line-height: 20px;">'.
+			'	Vous jouez entre amis sans vraiment de contraintes, toutes les équipes sont possibles et varient au fil des journées, chaque joueur est de mesurer ces statistiques de progression.'.
+			'</p>'.
+			'<hr /><br />'.
+			'<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="xx({action:\'leagues\', id:\'main\', url:\'edit_leagues.php?etape=1&choix_type=0\'});">Créer</button>'.
+		'</div>';
 
-
-	<div class="mdl-layout-spacer"></div>
-	<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--10-col mdl-cell--middle">
-		<div class="mdl-grid mdl-card__title mdl-color--primary mdl-color-text--white">
-			<h2 class="mdl-cell mdl-cell--12-col mdl-card__title-text mdl-color--primary">Choix du type de compétition</h2>
-		</div>
-		<div class="mdl-card__supporting-text form-group mdl-grid mdl-grid--no-spacing">
-			<div class="mdl-card__supporting-text mdl-cell mdl-cell--4-col" style="text-align: center;">
-				<h6><i class="material-icons mdl-icon-toggle">list</i>Championnat classique</h6>
-				<hr />
-				<p style="white-space:normal; text-align: center; line-height: 20px; height: 130px;">
-					Vous êtes organisés comme un véritable championnat avec un nombre d'équipes fini qui se rencontrent les unes contre les autres tout au long d'une saison sur plusieurs journées.
-				</p>
-				<hr />
-				<button class="button blue" onclick="xx({action:'leagues', id:'main', url:'edit_leagues.php?etape=1&choix_type=1'});">Créer</button>
-			</div>
-			<div class="mdl-card__supporting-text mdl-cell mdl-cell--4-col" style="text-align: center;">
-				<h6><i class="material-icons mdl-icon-toggle">change_history</i>Tournoi</h6>
-				<hr />
-				<p style="white-space:normal; text-align: center; line-height: 20px; height: 130px;">
-					Vous organisez un tournoi dans lequel les équipes vont se rencontrer d'abord en poule, les meilleurs disputeront la phase finale en élimination directe pour déterminer le vainqueur.
-				</p>
-				<hr />
-				<button class="button blue" onclick="xx({action:'leagues', id:'main', url:'edit_leagues.php?etape=1&choix_type=2'});">Créer</button>
-			</div>
-			<div class="mdl-card__supporting-text mdl-cell mdl-cell--4-col" style="text-align: center;">
-				<h6><i class="material-icons mdl-icon-toggle">star_border</i>Championnat libre</h6>
-				<hr />
-				<p style="white-space:normal; text-align: center; line-height: 20px; height: 130px;">
-					Vous jouez entre amis sans vraiment de contraintes, toutes les équipes sont possibles et varient au fil des journées, chaque joueur est de mesurer ces statistiques de progression.
-				</p>
-				<hr />
-				<button class="button blue" onclick="xx({action:'leagues', id:'main', url:'edit_leagues.php?etape=1&choix_type=0'});">Créer</button>
-			</div>
-		</div>
-	</div>
+	$tmp4 = '<div class="mdl-grid">'.$tmp1.$tmp2.$tmp3.'</div>';
+	array_push($items, array("func" => "label_form", "id" => "new-league", "class" => "no-left-margin", "libelle" => $tmp4, "nb_col" => 12));
+	$actions = array(0 => array("onclick" => "mm({action: 'leagues'});", "libelle" => "Annuler", "color" => "mdl-color-text--grey-600"), 1 => array("onclick" => "mm({action: 'login'});", "libelle" => "Continuer"));
+	Wrapper::build_form(array("nb_col" => 12, "title" => "Choix du type de Compétition", "items" => $items));
+?>
 	<div class="mdl-layout-spacer"></div>
 	<div class="mdl-card__supporting-text mdl-cell mdl-cell--12-col">
 		<div style="text-align: center !important; font-style: italic; font: normal 11px/12px 'lucida sans', 'trebuchet MS', 'Tahoma';">Jorkers.com ne pourrait en aucun cas être tenu pour responsable des pannes ou des dysfonctionnements <br />qui pourraient survenir suite à l'utilisation de ce site. Jorkers.com se donne le droit de pouvoir<br /> supprimer n'importe quel championnat sans avoir à fournir d'explication</div>
@@ -159,7 +144,7 @@ else
 	}
 
 }
-if (!isset($row['photo']) || $row['photo'] == "") $row['photo'] = 'img/logo.png';
+if (!isset($row['photo']) || $row['photo'] == "") $row['photo'] = 'img/soccer-larger.jpg';
 
 $mes_options = explode('|', $row['options']);
 $display_news         = isset($mes_options[0])  ? $mes_options[0]  : 1;
@@ -211,14 +196,14 @@ $mode_modification = $modifier && !$demo;
 	array_push($items, array("func" => "number_component_form", "id" => "valeur-victoire-zip", "icon" => "add_circle_outline", "libelle" => "Points victoire", "nb_col" => 4, "value" => $row['valeur_victoire'], "start" => 0, "end" => 100));
 	array_push($items, array("func" => "number_component_form", "id" => "valeur-nul-zip", "icon" => "highlight_off", "libelle" => "Points nul", "nb_col" => 4, "value" => $row['valeur_nul'], "start" => 0, "end" => 100));
 	array_push($items, array("func" => "number_component_form", "id" => "valeur-defaite-zip", "icon" => "remove_circle_outline", "libelle" => "Points défaite", "nb_col" => 4, "value" => $row['valeur_defaite'], "start" => 0, "end" => 100));
-	array_push($items, array("func" => "number_component_form", "id" => "headcount", "icon" => "blur_on", "libelle" => "Nb items dashboard", "value" => $row['headcount'], "nb_col" => 4, "start" => 0, "end" => 100));
-	array_push($items, array("func" => "number_component_form", "id" => "forfaitpenalitebonus", "icon" => "blur_on", "libelle" => "Bonus goal average en cas de forfait", "nb_col" => 4, "value" => $row['forfait_penalite_bonus'], "start" => 0, "end" => 100));
-	array_push($items, array("func" => "number_component_form", "id" => "forfaitpenalitemalus", "icon" => "blur_on", "libelle" => "Malus goal average en cas de forfait", "nb_col" => 4, "value" => $row['forfait_penalite_malus'], "start" => 0, "end" => 100));
-	array_push($items, array("func" => "choice_component_form", "id" => "theme", "icon" => "blur_on", "libelle" => "Thème", "nb_col" => 6));
+	array_push($items, array("func" => "number_component_form", "id" => "headcount", "icon" => "view_list", "libelle" => "Nb items dashboard", "value" => $row['headcount'], "nb_col" => 4, "start" => 0, "end" => 100));
+	array_push($items, array("func" => "number_component_form", "id" => "forfaitpenalitebonus", "icon" => "add_circle_outline", "libelle" => "Bonus goal average en cas de forfait", "nb_col" => 4, "value" => $row['forfait_penalite_bonus'], "start" => 0, "end" => 100));
+	array_push($items, array("func" => "number_component_form", "id" => "forfaitpenalitemalus", "icon" => "remove_circle_outline", "libelle" => "Malus goal average en cas de forfait", "nb_col" => 4, "value" => $row['forfait_penalite_malus'], "start" => 0, "end" => 100));
+	array_push($items, array("func" => "choice_component_form", "id" => "theme", "icon" => "landscape", "libelle" => "Thème", "nb_col" => 6));
 	array_push($items, array("func" => "choice_component_form", "id" => "logo_font", "icon" => "font_download", "libelle" => "Font entête", "nb_col" => 6));
-	array_push($items, array("func" => "upload_image_form",     "id" => "photo", "value" => $row['photo'], "icon" => "photo_camera", "libelle" => "Logo", "nb_col" => 12));
-	array_push($items, array("func" => "choice_component_form", "id" => "gestion_twitter", "icon" => "blur_on", "libelle" => "Twitter", "nb_col" => 6, "grouped" => 1));
-	array_push($items, array("func" => "textfield_form",        "id" => "twitter", "value" => $row['twitter'], "icon" => "text_fields", "libelle" => "Nom du compte twitter", "nb_col" => 6));
+	array_push($items, array("func" => "upload_image_form",     "id" => "photo", "value" => $row['photo'], "icon" => "photo_camera", "libelle" => "Logo", "nb_col" => 6));
+//	array_push($items, array("func" => "choice_component_form", "id" => "gestion_twitter", "icon" => "blur_on", "libelle" => "Twitter", "nb_col" => 6, "grouped" => 1));
+//	array_push($items, array("func" => "textfield_form",        "id" => "twitter", "value" => $row['twitter'], "icon" => "text_fields", "libelle" => "Nom du compte twitter", "nb_col" => 6));
 	if (!$modifier) array_push($items, array("func" => "captcha_form", "id" => "ch_controle", "icon" => "text_fields", "libelle" => "Je ne suis pas un robot", "nb_col" => 6));
 
 	$actions = array(0 => array("onclick" => "return annuler();"), 1 => array("onclick" => "return validate_and_submit();"));
@@ -233,10 +218,10 @@ $mode_modification = $modifier && !$demo;
 <script>
 
 <? $sports = ""; reset($libelle_genre); while (list($cle, $val) = each($libelle_genre)) { $sports .= ($sports == "" ? "" : ",")."{ v: '".$cle."', l: '<img src=\"img/sports/".$icon_genre[$cle]."\" />".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type_sport'] ? "true" : "false")." }"; } ?>
-choices.build({ name: 'type_sport', c1: 'purple', singlepicking: true, removable: true, values: [<?= $sports ?>] });
+choices.build({ name: 'type_sport', c1: 'blue', singlepicking: true, removable: true, values: [<?= $sports ?>] });
 
 <? $type = ""; reset($libelle_type); while (list($cle, $val) = each($libelle_type)) { $type .= ($type == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type'] ? "true" : "false")." }"; } ?>
-choices.build({ name: 'type', c1: 'purple', singlepicking: true, removable: true, values: [<?= $type ?>] });
+choices.build({ name: 'type', c1: 'blue', singlepicking: true, removable: true, values: [<?= $type ?>] });
 
 <? $type = ""; reset($libelle_typelieu); while (list($cle, $val) = each($libelle_typelieu)) {  $type .= ($type == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type_lieu'] ? "true" : "false")." }"; } ?>
 choices.build({ name: 'type_lieu', c1: 'blue', c2: 'white', values: [<?= $type ?>] });
@@ -247,7 +232,7 @@ choices.build({ name: 'gestion_nul', c1: 'blue', c2: 'white', callback: 'cb_nul_
 choices.build({ name: 'gestion_sets', c1: 'blue', c2: 'white', values: [{ v: 0, l: 'Non', s: <?= $row['gestion_sets'] == 0 ? "true" : "false" ?> }, { v: 1, l: 'Oui', s: <?= $row['gestion_sets'] == 1 ? "true" : "false" ?> }] });
 choices.build({ name: 'gestion_fanny', c1: 'blue', c2: 'white', values: [{ v: 0, l: 'Non', s: <?= $row['gestion_fanny'] == 0 ? "true" : "false" ?> }, { v: 1, l: 'Oui', s: <?= $row['gestion_fanny'] == 1 ? "true" : "false" ?> }] });
 choices.build({ name: 'gestion_twitter', c1: 'blue', c2: 'white', callback: 'cb_twitter_input', values: [{ v: 0, l: 'Non', s: <?= $row['gestion_twitter'] == 0 ? "true" : "false" ?> }, { v: 1, l: 'Oui', s: <?= $row['gestion_twitter'] == 1 ? "true" : "false" ?> }] });
-choices.build({ name: 'logo_font', c1: 'purple', c2: 'white', singlepicking: true, removable: true, values: [
+choices.build({ name: 'logo_font', c1: 'blue', c2: 'white', singlepicking: true, removable: true, values: [
 <? for($i = 1; $i <= $nb_fonts; $i++) { ?>
 	<?= $i > 1 ? "," : "" ?> { v: <?= $i ?>, l: 'Sample', s: <?= $row['logo_font'] == $i ? "true" : "false" ?> }
 <? } ?>
@@ -266,7 +251,7 @@ buttons = logo_font_choice.getElementsByTagName('button');
 for(var i=0; i < buttons.length; i++) { buttons[i].style.fontFamily = "logo"+(i+1); buttons[i].style.fontSize = "18px"; buttons[i].style.lineHeight = "18px"; buttons[i].style.height = "30px"; }
 
 <? $themes = ""; while(list($cle, $val) = each($libelle_theme)) { $themes .= ($themes == "" ? "" : ",")."{ v: '".$cle."', l: '".$val."', s: ".($cle == $row['theme'] ? "true" : "false")." }";  } ?>
-choices.build({ name: 'theme', c1: 'purple', c2: 'white', singlepicking: true, removable: true, values: [ <?= $themes ?> ] });
+choices.build({ name: 'theme', c1: 'blue', c2: 'white', singlepicking: true, removable: true, values: [ <?= $themes ?> ] });
 
 <? if ($row['gestion_nul'] == 0) { ?>hide('valeur-nul-zip-box');<? } else { ?>show('valeur-nul-zip-box');<? } ?>
 <? if ($row['gestion_twitter'] == 0) { ?>hide('twitter-box');<? } else { ?>show('twitter-box');<? } ?>

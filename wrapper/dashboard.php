@@ -50,7 +50,7 @@ Wrapper::fab_button_menu($t);
 
 
 $title  = Wrapper::card_box_getH2Title(array("title" => $sess_context->getChampionnatNom()));
-$menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "more_horiz", "label" => "Editer", "onclick" => "go({action: 'dashboard', id:'main', url:'edit_leagues.php?page=0&idl=".$sess_context->getRealChampionnatId()."&etape=1'});" ));
+$menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "edit", "label" => "Editer", "onclick" => "go({action: 'dashboard', id:'main', url:'edit_leagues.php?page=0&idl=".$sess_context->getRealChampionnatId()."&etape=1'});" ));
 if (!$sess_context->isAdmin()) $menu = '';
 $content = '
 	<img src="'.$sess_context->_getChampionnatLogo().'" />
