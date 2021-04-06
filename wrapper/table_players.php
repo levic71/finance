@@ -37,13 +37,12 @@ if ($sess_context->championnat['entity'] == "_NATIF_") array_push($t, array("id"
     "target" => "_blank",
     "href" => Wrapper::fb_tag("Accès au classement", "http://www.jorkers.com/wrapper/fb.php?idc=".$sess_context->getRealChampionnatId()) ,
     "tooltip" => "Publier sur Facebook"));
+
 Wrapper::fab_button_menu($t);
 
+Wrapper::template_box_start(10);
+
 ?>
-
-
-<div class="mdl-layout-spacer mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--10-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone">
 
 
 <div class="vgrid <?= $sess_context->getGestionSets() == 1 ? "" : "nosets" ?>" id="box">
@@ -54,10 +53,10 @@ Wrapper::fab_button_menu($t);
 // TABLEAU SYNTHESE JOUEURS
 // /////////////////////////////////////////////////////////////////////////////////////////////
 if ($choix_stat == 0)
-{ ?>
+{
+	Wrapper::template_box_title("Classement joueurs");
+	// <h2 class="grid leagues">Classement joueurs</h2>
 
-<h2 class="grid leagues">Classement joueurs</h2>
-<?
 	$fxlist = new FXListStatsJoueurs($sgb);
 	$fxlist->FXSetFooter($sgb->getNbMatchs()." matchs joués dans le championnat sur ".$sgb->getNbJournees()." journées (".sprintf("%.2f", $sgb->getMoyMatchsJoues())." matchs/journ?e)");
 
@@ -301,6 +300,4 @@ bars.build({ name :'bestdef', tsize: 130, rsize: 267, msize: 190, values: [<?= $
 
 </div>
 
-</div>
-<div class="mdl-layout-spacer mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-
+<? Wrapper::template_box_end(); ?>

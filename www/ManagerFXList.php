@@ -1906,6 +1906,9 @@ class FXListClassementJourneeTournoi extends FXListPresentation
 		// Récupération des infos de la journée
 		$journee = $this->sjs->getJournee();
 
+		// Si pas de joueurs ...
+		if (!isset($journee['equipes']) || !is_array($journee['equipes']) || count(array($journee['equipes'])) == 0) return;
+
 		// Recherche du nb d'equipes
 		$tmp = str_replace('|', ',', $journee['equipes']);
 		$lst = explode(',', $tmp);

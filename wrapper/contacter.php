@@ -29,10 +29,10 @@ unset($_SESSION['antispam']);
 $_SESSION['antispam'] = ToolBox::getRand(5);
 
 $test  = false;
-$nom   = $test ? "Victor's - Ã©Ã©Ã©Ã©" : "";
+$nom   = $test ? "Victor's - test" : "";
 $email = $test ? "victor.ferreira@laposte.net" : "";
-$sujet = $test ? "hÃ©hÃ©hÃ©'s @+#'!" : "";
-$msg   = $test ? "Cool,\n\nhÃ©hÃ©hÃ©#hoho's\n\n@+" : "";
+$sujet = $test ? "Tests's @+#'!" : "";
+$msg   = $test ? "Cool,\n\nhTests ééé éééhoho's\n\n@+" : "";
 $ctrl  = $test ? $_SESSION['antispam'] : "";
 
 $str = $sess_context->championnat['type'] == 2 ? "tournoi" : "championnat";
@@ -40,7 +40,7 @@ $str = $sess_context->championnat['type'] == 2 ? "tournoi" : "championnat";
 if ($type_mail == 0) {
     $lib = "Contacter le  webmaster du Jorkers.com";
 } else if ($type_mail == 1) {
-    $lib = "Contacter le g?rant du ".$str." '".$sess_context->getChampionnatNom()."'";
+    $lib = "Contacter le gérant du ".$str." '".$sess_context->getChampionnatNom()."'";
 } else if ($sess_context->isAdmin() && $type_mail == 2) {
     $lib   = $date.": ".ToolBox::conv_lib_journee($name)." => Invitation";
     $nom   = $sess_context->championnat['gestionnaire'];
@@ -62,7 +62,7 @@ if ($type_mail == 0) {
     $p     = $sps->getJoueur($idp);
     $lib   = "Rattachement ? un joueur du ".$str;
     $sujet = $lib;
-    $msg   = "Bonjour,\n\nJe suis le joueur '".$p['nom']." ".$p['prenom']."' du ".$str." '".$sess_context->championnat['championnat_nom']."', pouvez-vous associer mon compte ? ce joueur.\n\nCordialement\n".$sess_context->user['pseudo'];
+    $msg   = "Bonjour,\n\nJe suis le joueur '".$p['nom']." ".$p['prenom']."' du ".$str." '".$sess_context->championnat['championnat_nom']."', pouvez-vous associer mon compte à ce joueur.\n\nCordialement\n".$sess_context->user['pseudo'];
 } else {
 }
 

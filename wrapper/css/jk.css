@@ -244,7 +244,7 @@ ul.sidebar li a {
 .fabmenu .sb_del, ul.sidebar li a#sb_del		{ background: #444 url('../img/icons/dark/appbar.delete.png') no-repeat -4px; }
 .fabmenu .sb_upd, ul.sidebar li a#sb_upd		{ background: #444 url('../img/icons/dark/appbar.edit.png') no-repeat -4px; }
 .fabmenu .sb_buildall, ul.sidebar li a#sb_buildall	{ background: #444 url('../img/icons/dark/appbar.magic.wand.png') no-repeat -4px; }
-.fabmenu .sb_map, ul.sidebar li a#sb_map		{ background: #444 url('../img/icons/dark/appbar.map2.png') no-repeat -4px; }
+.fabmenu .sb_map, ul.sidebar li a#sb_map		{ background: #444 url('../img/icons/dark/appbar.map2.png') no-repeat 3px !important; }
 .fabmenu .sb_best, ul.sidebar li a#sb_best		{ background: #444 url('../img/icons/dark/appbar.stock.up.png') no-repeat -4px; }
 .fabmenu .sb_besta, ul.sidebar li a#sb_besta	{ background: #444 url('../img/icons/dark/appbar.people.down.png') no-repeat -4px; }
 .fabmenu .sb_bestd, ul.sidebar li a#sb_bestd	{ background: #444 url('../img/icons/dark/appbar.people.up.png') no-repeat -4px; }
@@ -393,6 +393,7 @@ div#box { clear: both; }
 	float: left;
 	padding-right: 10px;
 	border-right: 1px solid rgba(255, 255, 255, 0.5);
+	color: rgba(15, 60, 113, 0.7)
 }
 #dashcounter .cnt, #dashcounter .txt {
 	padding-left: 10px;
@@ -776,9 +777,20 @@ ul.trombinoscope li:hover {
     transform: translate3d(0, -480px, 0);
 }
 .fabmenu .ToolTextHover span {
+	opacity: 1;
     z-index: -10000 !important;
     top: 5px !important;
-    left:-223px !important;
+    left:-250px !important;
+	background:rgba(125, 125, 125, .9);
+	border-radius: 5px;
+	height: 20px;
+	line-height: 20px;
+	top: 10px !important;
+	color: white;
+	border: 0px;
+	text-align: center;
+	padding-right: 10px !important;
+	width: 225px !important;
 }
 
 #dashjournee .mdl-card__title {

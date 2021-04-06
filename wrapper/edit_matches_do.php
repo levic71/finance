@@ -86,7 +86,6 @@ mm({action:'matches', idj:'<?= $sess_context->getJourneeId() ?>', name:'<?= $jou
 <? } ?>
 $cMsg({ msg: 'Match supprimé' });
 </script>
-</div>
 <?
 	exit(0);
 }
@@ -193,4 +192,3 @@ mm({action:'matches', idj:'<?= $sess_context->getJourneeId() ?>', name:'<?= $jou
 <? } ?>
 $cMsg({ msg: 'Match <?= $modifier ? "modifié" : "ajouté" ?>' });
 </script>
-</div>
