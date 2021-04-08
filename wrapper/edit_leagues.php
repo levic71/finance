@@ -31,31 +31,25 @@ $nb_fonts = 25;
 if ($etape == 0) {
 	
 	$items = array();
-	$tmp1 = '<div class="mdl-cell mdl-cell--4-col mdl-typography--text-center"> '.
-				'<span><i class="material-icons mdl-icon-toggle">list</i>Championnat classique</span>'.
+	$tmp1 = '<div class="mdl-cell mdl-cell--4-col"> '.
+				'<i class="material-icons mdl-icon-toggle">list</i><br /><span>Championnat classique</span>'.
 				'<hr />'.
-				'<p style="white-space:normal; text-align: justify; line-height: 20px;">'.
-				'	Vous êtes organisés comme un véritable championnat avec un nombre d\'équipes fini qui se rencontrent les unes contre les autres tout au long d\'une saison sur plusieurs journées.'.
-				'</p>'.
+				'<p>Vous êtes organisés comme un véritable championnat avec un nombre d\'équipes fini qui se rencontrent les unes contre les autres tout au long d\'une saison sur plusieurs journées.</p>'.
 				'<hr />'.
 				'<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="xx({action:\'leagues\', id:\'main\', url:\'edit_leagues.php?etape=1&choix_type=1\'});">Créer</button>'.
-			'</div><br />';
-	$tmp2 = '<div class="mdl-cell mdl-cell--4-col mdl-typography--text-center"> '.
-				'<span><i class="material-icons mdl-icon-toggle">change_history</i>Tournoi</span>'.
+			'</div>';
+	$tmp2 = '<div class="mdl-cell mdl-cell--4-col"> '.
+				'<i class="material-icons mdl-icon-toggle">change_history</i><br /><span>Tournoi</span>'.
 				'<hr />'.
-				'<p style="white-space:normal; text-align: justify; line-height: 20px;">'.
-				'	Vous organisez un tournoi dans lequel les équipes vont se rencontrer d\'abord en poule, les meilleurs disputeront la phase finale en élimination directe pour déterminer le vainqueur.'.
-				'</p>'.
-				'<hr /><br />'.
+				'<p>Vous organisez un tournoi dans lequel les équipes vont se rencontrer d\'abord en poule, les meilleurs disputeront la phase finale en élimination directe pour déterminer le vainqueur.</p>'.
+				'<hr />'.
 				'<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="xx({action:\'leagues\', id:\'main\', url:\'edit_leagues.php?etape=1&choix_type=2\'});">Créer</button>'.
 			'</div>';
-	$tmp3 = '<div class="mdl-cell mdl-cell--4-col mdl-typography--text-center"> '.
-			'<span><i class="material-icons mdl-icon-toggle">star_border</i>Championnat libre</span>'.
+	$tmp3 = '<div class="mdl-cell mdl-cell--4-col"> '.
+			'<i class="material-icons mdl-icon-toggle">star_border</i><br /><span>Championnat libre</span>'.
 			'<hr />'.
-			'<p style="white-space:normal; text-align: justify; line-height: 20px;">'.
-			'	Vous jouez entre amis sans vraiment de contraintes, toutes les équipes sont possibles et varient au fil des journées, chaque joueur est de mesurer ces statistiques de progression.'.
-			'</p>'.
-			'<hr /><br />'.
+			'<p>Vous jouez entre amis sans vraiment de contraintes, toutes les équipes sont possibles et varient au fil des journées, chaque joueur est de mesurer ces statistiques de progression.</p>'.
+			'<hr />'.
 			'<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="xx({action:\'leagues\', id:\'main\', url:\'edit_leagues.php?etape=1&choix_type=0\'});">Créer</button>'.
 		'</div>';
 

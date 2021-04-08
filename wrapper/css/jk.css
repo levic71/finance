@@ -12,6 +12,13 @@ a:hover  { color: #f78d1d; text-decoration: none; }
 legend   { color: #666; font-weight: bold; }
 h2.mdl-card__title-text { padding-left: 5px; white-space: nowrap; width: calc(100% - 60px); overflow: hidden; }
 header span#logo { width: calc(100% - 100px); overflow: hidden; }
+body > canvas {
+	position: fixed;
+	padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 #main .mdl-grid { overflow: hidden; }
 
@@ -360,7 +367,8 @@ div#box { clear: both; }
     padding: 0px 0px 10px;
     width: 100%;
 }
-#dashcounter button { width: 150px; height: 45px; line-height: 18px; font-size: 18px; text-align: left; margin: 5px 0px 5px 3px; }
+#dashcounter { text-align: center; }
+#dashcounter button { width: 250px; height: 45px; line-height: 18px; font-size: 18px; text-align: left; margin: 5px 0px 5px 3px; }
 
 #dashcounter .box, #dashcounter .box { padding: 0px 10px 5px 40px; }
 
@@ -372,9 +380,11 @@ div#box { clear: both; }
 .bf5, #dashcounter #bf5 .box { background: url('../img/icons/dark/appbar.smiley.grin.png') no-repeat -7px -10px; }
 .bf8, #dashcounter #bf8 .box { background: url('../img/icons/dark/appbar.bed.png') no-repeat -7px -10px; }
 .bf9, #dashcounter #bf9 .box { background: url('../img/icons/dark/appbar.plane.rotated.45.png') no-repeat -7px -10px; }
+
 .formeind { background-position: 0px 0px; background-size: 32px 32px; height: 30px; width: 32px; }
 #dash .forme { float: left; width: 24px; margin: 2px 10px 2px 5px; }
 #dash .formeind { background-size: 24px 24px; height: 24px; width: 24px; }
+
 #dashcounter #bf6 .box { background: url('../img/icons/dark/appbar.smiley.squint.png') no-repeat -7px -10px; }
 #dashcounter #bf7 .box { background: url('../img/icons/dark/appbar.transit.car.accident.png') no-repeat -7px -10px; }
 #dashcounter #bf88 .box { background: url('../img/icons/dark/appbar.camera.flash.auto.png') no-repeat -7px -10px; }
@@ -391,17 +401,22 @@ div#box { clear: both; }
 	font-size: 32px;
 	height: 30px;
 	float: left;
-	padding-right: 10px;
+	padding: 0px 15px 0px 5px;
 	border-right: 1px solid rgba(255, 255, 255, 0.5);
 	color: rgba(15, 60, 113, 0.7)
 }
 #dashcounter .cnt, #dashcounter .txt {
 	padding-left: 10px;
-	float: right;
+	float: left;
 	border: 0px !important;
-	width: 70px;
-	line-height: 14px; font-size: 14px;
+	line-height: 30px; font-size: 16px;
 }
+#dashcounter .cnt {
+	padding-left: 15px;
+	width: 30px;
+	text-align: right;
+}
+#dashcounter #saisons button { text-align: center; }
 
 
 #bloc0 { float: right; height: 55px; padding: 0px; margin-top: 10px; }
@@ -793,7 +808,7 @@ ul.trombinoscope li:hover {
 	width: 225px !important;
 }
 
-#dashjournee .mdl-card__title {
+#billboard .mdl-card__title, #dashjournee .mdl-card__title {
 	padding-top: 8px !important;
 	padding-bottom: 5px !important;
 }

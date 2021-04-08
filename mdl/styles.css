@@ -535,3 +535,35 @@ _:-ms-input-placeholder, :root .demo-graph {
   margin-left: 0px !important;
   width: 100% !important;
 }
+
+.no-left .material-icons {
+  color: slategray;
+}
+
+#new-champ {
+  background: slategray;
+}
+#new-champ small {
+  line-height: 12px;
+  font-size: 10px;
+  color: white;
+  background: slategray;
+}
+#new-champ .material-icons {
+  float: left;
+  color: aliceblue;
+}
+
+#new-league-box .mdl-cell {
+  text-align: center;
+}
+#new-league-box .material-icons {
+  font-size: 50px;
+  padding: 0px 0px 30px;
+  color: midnightblue;
+}
+#new-league-box p {
+  white-space:normal;
+  text-align: justify;
+  line-height: 20px;
+}
