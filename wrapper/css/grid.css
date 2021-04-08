@@ -70,6 +70,7 @@
 .lstroles .c2 div { width: 290px !important; }
 .lstroles .c5 div span { margin-left: 50px; }
 
+#billboard .mdl-card__supporting-text { width: 100%; }
 #billboard .mdl-card__supporting-text img, #card_photo .mdl-card__supporting-text { border-radius: 64% 36% 70% 30% / 37% 70% 30% 63%; width: 100%; }
 #billboard .mdl-card__supporting-text img { border-radius: 0% 100% 87% 100% / 0% 100% 87% 100%; }
 
@@ -525,7 +526,7 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash .mdl-card__supporting-text .c4 div { width: 70px !important; }
 
 /* New 2021 CSS */
-.dashboard_page #dashjournee .mdl-card__supporting-text { padding: 0px 5px; width: auto; }
+.dashboard_page .mdl-card__supporting-text { padding: 0px 5px; }
 
 .dashboard_page td { padding: 3px 5px; border-right: 0px solid #ccc; border-top: 1px solid #aaa; font-size: 12px; }
 .dashboard_page td div, .dashboard_page th div { font-weight: normal !important; height: 32px; line-height: 34px; display: table-cell; vertical-align: middle; }

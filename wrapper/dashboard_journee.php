@@ -175,7 +175,7 @@ show_elts('matches', <?= sess_context::getHomeListHeadcount() ?>, <?= sess_conte
 
 <?
 
-$title   = Wrapper::card_box_getH2Title(array("title" => "<span>".ToolBox::conv_lib_journee($journee['nom'])."<br /><small>".ToolBox::mysqldate2date($journee['date'])."</small></span>"));
+$title   = Wrapper::card_box_getH2Title(array("title" => "<span>".($id_journee == 0 ? $journee['nom'] : ToolBox::conv_lib_journee($journee['nom']))."<br /><small>".ToolBox::mysqldate2date($journee['date'])."</small></span>"));
 $menu    = Wrapper::card_box_getIconButton(array("id" => "btprev", "icon" => "navigate_before", "label" => "Journée précédente", "onclick" => "journee(null, '".$id_journee."|prev');" ));
 $menu   .= Wrapper::card_box_getIconButton(array("id" => "btnext", "icon" => "navigate_next",   "label" => "Journée suivante",   "onclick" => "journee(null, '".$id_journee."|next');" ));
 Wrapper::card_box_frameless(array("id" => "card_sante", "bottom_text" => $bottom, "title" => $title, "menu" => $menu, "content" => $content));

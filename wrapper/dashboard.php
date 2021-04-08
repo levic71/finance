@@ -48,33 +48,27 @@ Wrapper::fab_button_menu($t);
 
 
 
-
-$title  = Wrapper::card_box_getH2Title(array("title" => $sess_context->getChampionnatNom()));
+$title  = Wrapper::card_box_getH2Title(array("title" => "<span>".$sess_context->getChampionnatNom()."<br /><small>".$libelle_type[$sess_context->getChampionnatType()]."</small></span>"));
 $menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "edit", "label" => "Editer", "onclick" => "go({action: 'dashboard', id:'main', url:'edit_leagues.php?page=0&idl=".$sess_context->getRealChampionnatId()."&etape=1'});" ));
 if (!$sess_context->isAdmin()) $menu = '';
 $content = '
-	<img src="'.$sess_context->_getChampionnatLogo().'" />
-	'.$libelle_type[$sess_context->getChampionnatType()].'
-	<div id="saisons"></div>
+<div class="mdl-grid">
+	<div class="mdl-cell mdl-cell--6-col">
+		<img src="'.$sess_context->_getChampionnatLogo().'" />
+	</div>
+	<div id="dashcounter" class="mdl-cell mdl-cell--6-col">
+		<button id="b1" class="button blue"><i class="material-icons">grid_on</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_saisons']).'</div><div class="txt">Saisons</div></button>
+		<button id="b2" class="button blue" onclick="mm({action: \'players\'});"><i class="material-icons">person</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_joueurs']).'</div><div class="txt">Joueurs</div></button>
+		<button id="b3" class="button blue" onclick="mm({action: \'teams\'});"><i class="material-icons">people</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_equipes']).'</div class="box"><div class="txt">Equipes</div></button>
+		<button id="b4" class="button blue" onclick="mm({action: \'days\', grid: -1, tournoi: '.($sess_context->isTournoiXDisplay() ? 1 : 0).'});"><i class="material-icons">date_range</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_journees']).'</div><div class="txt">Journées</div></button>
+		<button id="b5" class="button blue"><i class="material-icons">timer</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_matchs']).'</div><div class="txt">Matchs</div></button>
+		<div id="saisons"></div>
+	</div>
+</div>
 ';
 // Card_box Billboard général
-Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 4));
-
-
-
-
-$title = '<h2 class="mdl-card__title-text">Stats</h2>';
-$menu  = '
-';
-$content = '
-<button id="b1" class="button blue"><i class="material-icons">grid_on</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_saisons']).'</div><div class="txt">Saisons</div></button>
-<button id="b2" class="button blue" onclick="mm({action: \'players\'});"><i class="material-icons">person</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_joueurs']).'</div><div class="txt">Joueurs</div></button>
-<button id="b3" class="button blue" onclick="mm({action: \'teams\'});"><i class="material-icons">people</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_equipes']).'</div class="box"><div class="txt">Equipes</div></button>
-<button id="b4" class="button blue" onclick="mm({action: \'days\', grid: -1, tournoi: '.($sess_context->isTournoiXDisplay() ? 1 : 0).'});"><i class="material-icons">date_range</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_journees']).'</div><div class="txt">Journées</div></button>
-<button id="b5" class="button blue"><i class="material-icons">timer</i><div class="cnt">'.Wrapper::formatNumber($infos['nb_matchs']).'</div><div class="txt">Matchs</div></button>
-';
-// Card_Box Stats
-Wrapper::card_box_6c(array("id" => "dashcounter", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 4));
+Wrapper::card_box(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content));
+//Wrapper::card_box_6c(array("id" => "dashcounter", "title" => $title, "menu" => $menu, "content" => $content, "nb_col_tablet" => 4));
 
 ?>
 <script>
