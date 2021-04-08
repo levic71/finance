@@ -567,9 +567,9 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 
 /* END NEW 2021 */
 
-h2.players .button, h2.dashboard .button { padding: 1px 10px 1px 1px !important; }
-h2.players .button img, h2.dashboard .button img { float: left; padding: 1px 10px 0px 5px; border-right: 1px solid #80bed6; }
-h2.players .button span, h2.dashboard .button span { float: right; padding: 0px 0px 0px 10px; line-height: 26px; font-weight: bold; }
+.players_page .mdl-card__menu .button { padding: 1px 10px 1px 1px !important; margin-top: 0px; }
+.players_page .mdl-card__menu .button i { float: left; padding: 1px 10px 0px 5px; border-right: 1px solid #80bed6; }
+.players_page .mdl-card__menu .button span { float: right; padding: 0px 0px 0px 10px; line-height: 26px; font-weight: bold; }
 
 #tchat .c5 div .button, #tchat .c6 div .button, #table_groupe td div .button, #table_teams td div .button, #table_players td div .button, #dash .jkgrid .button { width: 45px; height: 25px; }
 .synthese #table_groupe td div .button { width: 33px; }
