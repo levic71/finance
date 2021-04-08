@@ -105,19 +105,6 @@ else if ($_action_ == "links")
 	$th    = array("player" => "Joueur", "user" => "Utisateur", "status" => "Rattachement");
 	$cols  = array("player" => 1, "user" => 1, "status" => 1);
 }
-else if (false && $_SERVER['REMOTE_ADDR'] == "88.183.221.28" && $_action_ == "players") // EN attendant de migrer vers mysql5 !!!
-{
-	$sort  = $sort == '' ? '1name' : $sort;
-	$nosort  = array();
-	$filtre .= $search != "" ? " AND (j.nom LIKE '%".$search."%' OR xpseudo LIKE '%".$search."%' OR j.prenom LIKE '%".$search."%')" : "";
-	$order = 'ORDER BY '.(substr($sort, 1) == "name" || substr($sort, 1) == "name" ? "j.nom" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
-	$sqlc  = 'SELECT count(*) total FROM jb_joueurs j WHERE j.id_champ='.$sess_context->getRealChampionnatId().' '.$filtre;
-	$str   = 'CONCAT("<a href=\"#\" onclick=\"mm({action:\'stats\', idp:\'", j.id, "\'});\" class=\"full-circle\"><img src=\"img/statistics_16.png\" /><span class=\"bullet\"></span></a>") go, IF(uname IS NULL, CONCAT(j.nom, " ", j.prenom), uname) name, IF(upseudo IS NULL, j.pseudo, upseudo) xpseudo, CONCAT("<img src=\"", IF(uphoto IS NULL, IF(j.photo="", "img/userxxl.png", j.photo), uphoto), "\" />") portrait';
-	$sql   = 'SELECT *, j.id id, '.$str.' FROM jb_joueurs j LEFT JOIN (SELECT *, u.photo uphoto, u.pseudo upseudo, CONCAT(u.nom, " ", u.prenom) uname FROM jb_user_player up, jb_users u WHERE u.id = up.id_user AND up.status=1) xx ON j.id = xx.id_player WHERE j.id_champ='.$sess_context->getRealChampionnatId().' '.$filtre.' '.$order;
-
-	$th    = array("portrait" => "&nbsp;", "name" => "Nom", "xpseudo" => "Pseudo", "go" => "&nbsp;");
-	$cols  = array("portrait" => 1, "name" => 1, "xpseudo" => 1, "go" => 1);
-}
 else if ($_action_ == "players")
 {
 	$id_saison = $sess_context->getChampionnatId();
@@ -147,7 +134,9 @@ else if ($_action_ == "players")
 		$filtre = ($j != "" ? " AND id IN (".SQLServices::cleanIN($j).")" : "");
 	}
 
-	$label = "Joueurs <button class=\"button blue right\" style=\"margin-bottom: 0px;\" onclick=\"xx({action: 'stats', id:'main', url:'stats_player.php?trombinoscope=1%26idp=".$idp."'});\"><img src=\"img/contact_card_icon%2624.png\" /><span>X</span></button>";
+	$right_menu  = "<button id=\"trombi\" onclick=\"xx({action: 'stats', id:'main', url:'stats_player.php?trombinoscope=1%26idp=".$idp."'});\" class=\"mdl-button mdl-button--icon material-icons mdl-badge mdl-badge--overlap\" data-badge=\"X\">contacts</button><div class=\"mdl-tooltip\" for=\"trombi\">Trombinoscope</div>";
+
+	$label = "Joueurs";
 	$new_tip = "Nouveau joueur"; $upd_tip = "Modifier joueur"; $del_tip = "Supprimer joueur";
 
 	$sort  = $sort == '' ? '1name' : $sort;
@@ -246,7 +235,7 @@ $data = mysqli_fetch_assoc($req);
 $total = $data['total'];
 if ($page*$delta > $total) $page = 0;
 
-if ($_action_ == "players") $label = str_replace("X", $total, $label);
+if ($_action_ == "players") $right_menu = str_replace("X", $total, $right_menu);
 
 // page parameters
 $start = $page*$delta;
