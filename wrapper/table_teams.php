@@ -44,32 +44,29 @@ if ($sess_context->championnat['entity'] == "_NATIF_") array_push($t, array("id"
     "message=".utf8_encode("Laisser un message !")."&" .
     "redirect_uri=http://www.jorkers.com/wrapper/fb.php?idc=".$sess_context->getRealChampionnatId(),
     "tooltip" => "Publier sur Facebook"));
+
 Wrapper::fab_button_menu($t);
 
-?>
+Wrapper::template_box_start(12);
 
-<div class="mdl-layout-spacer mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--10-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone">
-
-<div class="vgrid <?= $sess_context->getGestionSets() ? "" : "nosets" ?> type_<?= $sess_context->getChampionnatType() ?> <?= $sess_context->getGestionMatchsNul() ? "gestion_nuls" : "" ?> <?= $sess_context->getGestionSets() ? "gestion_sets" : "" ?>" id="box">
-
-<?
+?> <div class="vgrid <?= $sess_context->getGestionSets() ? "" : "nosets" ?> type_<?= $sess_context->getChampionnatType() ?> <?= $sess_context->getGestionMatchsNul() ? "gestion_nuls" : "" ?> <?= $sess_context->getGestionSets() ? "gestion_sets" : "" ?>" id="box"> <?
 
 // /////////////////////////////////////////////////////////////////////////////////////////////
 // TABLEAU SYNTHESE EQUIPES
 // /////////////////////////////////////////////////////////////////////////////////////////////
 if ($choix_stat == 0)
-{ ?>
+{ 
+	
+	$mytitle = '
+	<span>Classement équipes</span>
+	<div class="mdl-card__menu">
+		<span class="mdl-chip"><a href="../wpdf.new/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A5" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a5.png" /></a></span>
+		<span class="mdl-chip"><a href="../wpdf.new/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A4" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a4.png" /></a></span>
+		<span class="mdl-chip"><a href="../wpdf.new/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A3" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a3.png" /></a></span>
+	</div>';
 
-<h2 class="grid leagues">
-	<span style="float: left;">Classement équipes</span>
-	<table><tr>
-		<td><a href="../wpdf/pdf_classement.php?champ=<?= $sess_context->getRealChampionnatId() ?>&format=A5" onclick="google_tracking('pdf_classement.php?format=A5');" target="_blank"><img src="img/adobe-pdf-icon-a5.png" alt="" /></a></td>
-		<td><a href="../wpdf/pdf_classement.php?champ=<?= $sess_context->getRealChampionnatId() ?>&format=A4" target="_blank"><img src="img/adobe-pdf-icon-a4.png" alt="" /></a></td>
-		<td><a href="../wpdf/pdf_classement.php?champ=<?= $sess_context->getRealChampionnatId() ?>&format=A3" target="_blank"><img src="img/adobe-pdf-icon-a3.png" alt="" /></a></td>
-	</tr></table>
-</h2>
-<?
+	Wrapper::template_box_title($mytitle);
+
 	$th = array("nom" => "Equipe", "points" => "Pts", "matchs_joues" => "J", "matchs_gagnes" => "G", "matchs_nuls" => "N", "matchs_perdus" => "P", "sets_joues" => "SJ", "sets_gagnes" => "SG", "sets_nuls" => "SN", "sets_perdus" => "SP", "sets_diff" => "SD", "buts_marques" => "p", "buts_encaisses" => "c",  "moy_classement" => "Cm", "diff" => "Diff");
 
 	if ($sess_context->getChampionnatType() == _TYPE_TOURNOI_)
@@ -237,5 +234,5 @@ bars.build({ name :'bestatt', tsize: 160, rsize: 237, msize: 190, values: [<?= $
 
 </div>
 
-</div>
-<div class="mdl-layout-spacer mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+<? Wrapper::template_box_end(); ?>
+

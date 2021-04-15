@@ -366,12 +366,12 @@ check_num = function(num, label, min, max)
 isacar = function(car) { if ((car >= "0" && car <= "9") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z")) return true; return false; }
 isaextcar = function(car)
 {
-	if ((car >= "0" && car <= "9") || (car == "&") || (car == "?") || (car == "\"") || (car == "\n") || (car == "'") || (car == "(") ||
-		(car == ")") || (car == "-") || (car == "?") || (car == "_") || (car == "?") || (car == ",") || (car == "?") || (car == ")") ||
+	if ((car >= "0" && car <= "9") || (car == "&") || (car == "é") || (car == "\"") || (car == "\n") || (car == "'") || (car == "(") ||
+		(car == ")") || (car == "-") || (car == "è") || (car == "_") || (car == "ç") || (car == ",") || (car == "à") || (car == ")") ||
 		(car == "=") || (car == "+") || (car == "#") || (car == "{") || (car == "[") || (car == "|") || (car == "\\") || (car == "@") ||
-		(car == "?") || (car == "$") || (car == "?") || (car == "?") || (car == "?") || (car == "?") || (car == "?") || (car == "?") ||
-		(car == "?") || (car == " ") || (car == "?") || (car == "\;") || (car == ".") || (car == "?") || (car == "/") || (car == ":") ||
-		(car == "!") || (car == "?") || (car == "%") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z"))
+		(car == "ù") || (car == "$") || (car == "£") || (car == "§") || (car == "ê") || (car == "â") || (car == "ô") || (car == "ä") ||
+		(car == "ë") || (car == " ") || (car == "ï") || (car == "\;") || (car == ".") || (car == "?") || (car == "/") || (car == ":") ||
+		(car == "!") || (car == "°") || (car == "%") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z"))
 		return true;
 
 	return false;

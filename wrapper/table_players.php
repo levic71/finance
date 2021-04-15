@@ -40,14 +40,9 @@ if ($sess_context->championnat['entity'] == "_NATIF_") array_push($t, array("id"
 
 Wrapper::fab_button_menu($t);
 
-Wrapper::template_box_start(10);
+Wrapper::template_box_start(12);
 
-?>
-
-
-<div class="vgrid <?= $sess_context->getGestionSets() == 1 ? "" : "nosets" ?>" id="box">
-
-<?
+?> <div class="vgrid <?= $sess_context->getGestionSets() == 1 ? "" : "nosets" ?>" id="box"> <?
 
 // /////////////////////////////////////////////////////////////////////////////////////////////
 // TABLEAU SYNTHESE JOUEURS
@@ -147,7 +142,7 @@ if ($choix_stat == 0)
 <tbody><?= $tbody ?></tbody>
 </table>
 
-<div id="occazbox" class="noradius underline" style="float: right; margin: 5px 0px;"></div>
+<div id="occazbox" class="noradius underline" style="float: right; margin: 5px 0px; padding: 5px 15px;"></div>
 
 <script>
 choices.build({ name: 'occazbox', c1: 'small selected', c2: 'small', callback: 'occaz_call', values: [ { v: 0, l: 'Occassionels', s: false }, { v: 1, l: 'Réguliers', s: true } ] });

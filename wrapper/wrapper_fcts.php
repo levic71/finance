@@ -256,8 +256,8 @@ public static function getDisplayMatchesStats($idj, $complete, $framebox) {
 	}
 
 	if ($framebox) {
-		$res .= '<div id="box3" class="vgrid" style="clear: both; margin-top: 20px;">';
-		$res .= '<h2 class="grid leagues">Statistiques journée</h2>';
+	//	$res .= '<div id="box3" class="vgrid" style="clear: both; margin-top: 20px;">';
+	//	$res .= '<h2 class="grid leagues">Statistiques journée</h2>';
 	}
 
 	$str .= '<table cellspacing="0" cellpadding="0" class="jkgrid2 matches_grid" id="table_players_day">';

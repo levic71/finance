@@ -158,7 +158,7 @@ function getHtmlContent($nom, $tab, $format = "A4", $page, $delta)
 			if ($c[5] == "skip") continue;
 			$val = $i;
 			if (isset($item[$c[5]])) $val = $item[$c[5]];
-			if (($is_tournoi && $c[5] == "1") || ($is_championnat && $c[5] == "nom")) $val = strtoupper(caractersConverter(ereg_replace("<.*>", "", str_replace("</A>", "", $item[$c[5]]))));
+			if (($is_tournoi && $c[5] == "1") || ($is_championnat && $c[5] == "nom")) $val = strtoupper(caractersConverter(preg_replace("<.*>", "", str_replace("</A>", "", $item[$c[5]]))));
 
 			if ($c[5] == "buts_marques") $val = $item[$c[5]]."/".$item['buts_encaisses'];
 			if ($is_tournoi && $c[0] == "Buts") $val = $item[$c[5]]."/".$item[11];

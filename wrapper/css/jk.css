@@ -181,7 +181,7 @@ h2.grid { background-position: 10px 10px; }
 .actions #ctrl3 div { background: url('../img/icons/dark/appbar.control.next.png') no-repeat -12px -16px; }
 .actions #ctrl4 div { background: url('../img/icons/dark/appbar.control.fastforward.png') no-repeat -12px -16px; }
 .actions .disable { background-color: #aaa; }
-.full-circle:hover { background: #fff; -moz-border-radius: 20px; -webkit-border-radius: 20px; border-radius: 20px; }
+/* .full-circle:hover { background: #fff; -moz-border-radius: 20px; -webkit-border-radius: 20px; border-radius: 20px; } */
 * html .full-circle:hover { background: #fff; }
 
 .full-circle img { border: 0px; }
