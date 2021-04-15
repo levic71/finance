@@ -60,9 +60,9 @@ if ($choix_stat == 0)
 	$mytitle = '
 	<span>Classement équipes</span>
 	<div class="mdl-card__menu">
-		<span class="mdl-chip"><a href="../wpdf.new/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A5" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a5.png" /></a></span>
-		<span class="mdl-chip"><a href="../wpdf.new/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A4" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a4.png" /></a></span>
-		<span class="mdl-chip"><a href="../wpdf.new/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A3" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a3.png" /></a></span>
+		<span class="mdl-chip"><a href="../wpdf2/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A5" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a5.png" /></a></span>
+		<span class="mdl-chip"><a href="../wpdf2/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A4" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a4.png" /></a></span>
+		<span class="mdl-chip"><a href="../wpdf2/pdf_classement.php?champ='.$sess_context->getRealChampionnatId().'&format=A3" target="_blank"><img class="mdl-chip__contact" src="img/adobe-pdf-icon-a3.png" /></a></span>
 	</div>';
 
 	Wrapper::template_box_title($mytitle);
