@@ -4,10 +4,9 @@
 .iPhoneCal .calwrapper{ display:block; }
 .iPhoneCal .calweekswrapper{ display:block; }
 .iPhoneCal .calheader{ background: #000; display: block; width:100%; text-align:center; font-size:22px; font-weight: bold; }
-.iPhoneCal .calheader .caltitle, .iPhoneCal .calheader .calcontrol{ line-height: 32px; }
-.iPhoneCal .calheader a, .iPhoneCal .calheader a:visited{ text-decoration: none; color: #fff; }
-.iPhoneCal .caltitle{ width:auto; margin-left:auto; margin-right:auto; text-align:center; height:40px; padding-top: 6px; vertical-align: bottom; }
-.iPhoneCal .calcontrol{ font-weight: bold; width:99px; padding-top: 6px; height:40px; }
+.iPhoneCal .calheader a, .iPhoneCal .calheader a:visited, .iPhoneCal .material-icons { text-decoration: none; color: #fff; }
+.iPhoneCal .caltitle{ width:auto; margin-left:auto; margin-right:auto; text-align:center; vertical-align: bottom; }
+.iPhoneCal .calcontrol{ font-weight: bold; width:99px; }
 .iPhoneCal .calprevmonth{float:left;}
 .iPhoneCal .calnextmonth{float:right;}
 .iPhoneCal .daybox{background:rgb(230,230,230);float:left;border-top:1px solid #fff;border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:99px;height:45px;font-weight:bold;text-align:center;padding-top:25px;cursor:pointer;}

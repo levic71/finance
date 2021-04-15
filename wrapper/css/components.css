@@ -533,7 +533,7 @@ ul#leftsidebar .ToolTextHover span {
 }
 .underline .selected, .underline .button:hover {
 	border-bottom: solid 3px #26b1e7;
-	color: #6ccff5;
+	color: #628491;
 }
 
 .actions.grouped_inv .button { float: right; }

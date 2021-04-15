@@ -125,7 +125,7 @@ window.onload = function() {
 
 	var h = Math.max(2600, window.innerHeight);
 	var w = Math.max(2600, window.innerWidth);
-	var opts = { x_colors: ['#00525D', '#474554', '#FAF8FF', '#8F8D9E'], variance: 0, cell_size: 50, width: w, height: h };
+	var opts = { x_colors: ['#474554', '#FAF8FF', '#8F8D9E'], variance: 5, cell_size: 125, width: w, height: h };
 	var pattern = Trianglify(opts);
 	document.body.appendChild(pattern.canvas());
 

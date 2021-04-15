@@ -17,7 +17,7 @@ var nD = new Date(y2, m2-1, 1);
 dim2 = (m2 == 2) ? ((((nD.getFullYear()%100!=0)&&(nD.getFullYear()%4==0))||(nD.getFullYear()%400==0))?29:28) : dim[m2-1];
 
 var t='<div class="'+cM+'">';
-t+='<div class="calheader"><div class="calcontrol calprevmonth"><img id="prevdate" class="bt" src="img/icons/dark/appbar.navigate.previous.png" onclick="return cal_prev('+m+', '+y+', '+admin+', '+tournoi+')" /></div><div class="calcontrol calnextmonth"><img class="bt" src="img/icons/dark/appbar.navigate.next.png" onclick="return cal_next('+m+', '+y+', '+admin+', '+tournoi+')" /></div><a href="#" onclick="return cal_go('+curmonth+', '+curyear+', '+admin+', '+tournoi+')"><div class="caltitle">'+mn[m-1]+' '+y+'</div></a></div>';
+t+='<div class="calheader mdl-card__title mdl-color--primary"><div class="calcontrol calprevmonth"><button class="mdl-button mdl-js-button mdl-button--icon" onclick="return cal_prev('+m+', '+y+', '+admin+', '+tournoi+')"><i class="material-icons">fast_rewind</i></button></div><div class="calcontrol calnextmonth"><button class="mdl-button mdl-js-button mdl-button--icon" onclick="return cal_next('+m+', '+y+', '+admin+', '+tournoi+')" /><i class="material-icons">fast_forward</i></button></div><a href="#" onclick="return cal_go('+curmonth+', '+curyear+', '+admin+', '+tournoi+')"><div class="caltitle">'+mn[m-1]+' '+y+'</div></a></div>';
 
 t+='<div class="cal_wrapper">';
 

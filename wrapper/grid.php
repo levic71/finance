@@ -31,10 +31,10 @@ $favoris    = Wrapper::getRequest('favoris', 0);
 $sport_sort = Wrapper::getRequest('sport_sort', 99);
 $filtre_type_champ = Wrapper::getRequest('filtre_type_champ', 9);
 
-$delta    = $_action_ == "matches" ? 999 : 10;
-$opt_edit = "?page=".$page;
-$sqlc     = "";
-$trclick = "";
+$delta      = $_action_ == "matches" ? 999 : 10;
+$opt_edit   = "?page=".$page;
+$sqlc       = "";
+$trclick    = "";
 $right_menu = "";
 
 $idj = Wrapper::getRequest('idj', 0);
@@ -70,40 +70,40 @@ if ($_action_ == "leagues")
 }
 else if ($_action_ == "seasons")
 {
-	$label = "Saisons";
-	$filtre = "";
+	$label   = "Saisons";
+	$filtre  = "";
 	$new_tip = "Nouvelle saison"; $upd_tip = "Modifier saison"; $del_tip = "Supprimer saison";
 	$sort    = $sort == '' ? '1date_creation2' : $sort;
 	$nosort  = array();
 	$order   = 'ORDER BY '.(substr($sort, 1) == "date_creation2" ? "date_creation" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
-	$sql   = 'SELECT *, ELT(active+1, "-", "<img src=\"img/tick_16.png\" />") active, CONCAT("<button class=\"button orange\">", DATE_FORMAT(date_creation, \'%d/%m/%y\'), "</button>") date_creation2 FROM jb_saisons WHERE id_champ='.$sess_context->getRealChampionnatId().' '.$filtre.' '.$order;
-	$th    = array("nom" => "Nom", "date_creation2" => "Date création", "active" => "Active");
-	$cols  = array("nom" => 1, "date_creation2" => 1, "active" => 1);
+	$sql     = 'SELECT *, ELT(active+1, "-", "<img src=\"img/tick_16.png\" />") active, CONCAT("<button class=\"button orange\">", DATE_FORMAT(date_creation, \'%d/%m/%y\'), "</button>") date_creation2 FROM jb_saisons WHERE id_champ='.$sess_context->getRealChampionnatId().' '.$filtre.' '.$order;
+	$th      = array("nom" => "Nom", "date_creation2" => "Date création", "active" => "Active");
+	$cols    = array("nom" => 1, "date_creation2" => 1, "active" => 1);
 }
 else if ($_action_ == "roles")
 {
-	$label = "Droits d'administration";
-	$filtre = " AND (nom LIKE '%".$search."%' OR prenom LIKE '%".$search."%' OR pseudo LIKE '%".$search."%')";
+	$label   = "Droits d'administration";
+	$filtre  = " AND (nom LIKE '%".$search."%' OR prenom LIKE '%".$search."%' OR pseudo LIKE '%".$search."%')";
 	$new_tip = "Nouveau droit"; $upd_tip = "Modifier droit"; $del_tip = "Supprimer droit";
 	$sort    = "";
 	$nosort  = array();
 	$order   = '';
-	$sql   = 'SELECT r.id id, CONCAT(u.nom, " ", u.prenom) nom, u.pseudo pseudo, r.role role, r.role role2, ELT(r.status+1, "<img src=\"img/block_16.png\" />", "<img src=\"img/tick_16.png\" />") status FROM jb_roles r, jb_users u WHERE r.id_champ='.$sess_context->getRealChampionnatId().' AND r.id_user = u.id '.$filtre.' '.$order;
-	$th    = array("nom" => "Nom", "pseudo" => "Pseudo", "role" => "Role", "status" => "Actif");
-	$cols  = array("nom" => 1, "pseudo" => 1, "role" => 1, "status" => 1);
+	$sql     = 'SELECT r.id id, CONCAT(u.nom, " ", u.prenom) nom, u.pseudo pseudo, r.role role, r.role role2, ELT(r.status+1, "<img src=\"img/block_16.png\" />", "<img src=\"img/tick_16.png\" />") status FROM jb_roles r, jb_users u WHERE r.id_champ='.$sess_context->getRealChampionnatId().' AND r.id_user = u.id '.$filtre.' '.$order;
+	$th      = array("nom" => "Nom", "pseudo" => "Pseudo", "role" => "Role", "status" => "Actif");
+	$cols    = array("nom" => 1, "pseudo" => 1, "role" => 1, "status" => 1);
 }
 else if ($_action_ == "links")
 {
-	$label = "Rattachement joueurs";
-	$filtre = " AND (u.nom LIKE '%".$search."%' OR u.prenom LIKE '%".$search."%' OR u.pseudo LIKE '%".$search."%')";
+	$label   = "Rattachement joueurs";
+	$filtre  = " AND (u.nom LIKE '%".$search."%' OR u.prenom LIKE '%".$search."%' OR u.pseudo LIKE '%".$search."%')";
 	$new_tip = "Nouveau rattachement"; $upd_tip = "Modifier rattachement"; $del_tip = "Supprimer rattachement";
 	$sort    = $sort == '' ? '1player' : $sort;
 	$nosort  = array();
-	$order = 'ORDER BY '.substr($sort, 1).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
-	$sqlc  = 'SELECT count(*) total FROM jb_user_player up, jb_users u, jb_joueurs p WHERE up.id_champ='.$sess_context->getRealChampionnatId().' AND up.id_player=p.id AND up.id_user = u.id '.$filtre;
-	$sql   = 'SELECT up.id id, CONCAT("<span>", u.nom, " ", u.prenom, "</span><small>alias ", u.pseudo, "</small>") user, CONCAT("<span>", p.nom, " ", p.prenom, "</span><small>alias ", p.pseudo, "</small>") player, ELT(up.status+1, "<img src=\"img/block_16.png\" />", "<img src=\"img/tick_16.png\" />") status FROM jb_user_player up, jb_users u, jb_joueurs p WHERE up.id_champ='.$sess_context->getRealChampionnatId().' AND up.id_player=p.id AND up.id_user = u.id '.$filtre.' '.$order;
-	$th    = array("player" => "Joueur", "user" => "Utisateur", "status" => "Rattachement");
-	$cols  = array("player" => 1, "user" => 1, "status" => 1);
+	$order   = 'ORDER BY '.substr($sort, 1).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
+	$sqlc    = 'SELECT count(*) total FROM jb_user_player up, jb_users u, jb_joueurs p WHERE up.id_champ='.$sess_context->getRealChampionnatId().' AND up.id_player=p.id AND up.id_user = u.id '.$filtre;
+	$sql     = 'SELECT up.id id, CONCAT("<span>", u.nom, " ", u.prenom, "</span><small>alias ", u.pseudo, "</small>") user, CONCAT("<span>", p.nom, " ", p.prenom, "</span><small>alias ", p.pseudo, "</small>") player, ELT(up.status+1, "<img src=\"img/block_16.png\" />", "<img src=\"img/tick_16.png\" />") status FROM jb_user_player up, jb_users u, jb_joueurs p WHERE up.id_champ='.$sess_context->getRealChampionnatId().' AND up.id_player=p.id AND up.id_user = u.id '.$filtre.' '.$order;
+	$th      = array("player" => "Joueur", "user" => "Utisateur", "status" => "Rattachement");
+	$cols    = array("player" => 1, "user" => 1, "status" => 1);
 }
 else if ($_action_ == "players")
 {
@@ -136,17 +136,17 @@ else if ($_action_ == "players")
 
 	$right_menu  = "<button id=\"trombi\" onclick=\"xx({action: 'stats', id:'main', url:'stats_player.php?trombinoscope=1%26idp=".$idp."'});\" class=\"mdl-button mdl-button--icon material-icons mdl-badge mdl-badge--overlap\" data-badge=\"X\">contacts</button><div class=\"mdl-tooltip\" for=\"trombi\">Trombinoscope</div>";
 
-	$label = "Joueurs";
+	$label   = "Joueurs";
 	$new_tip = "Nouveau joueur"; $upd_tip = "Modifier joueur"; $del_tip = "Supprimer joueur";
 
-	$sort  = $sort == '' ? '1name' : $sort;
+	$sort    = $sort == '' ? '1name' : $sort;
 	$nosort  = array();
 	$filtre .= $search != "" ? " AND (nom LIKE '%".$search."%' OR pseudo LIKE '%".$search."%' OR prenom LIKE '%".$search."%')" : "";
-	$order = 'ORDER BY '.(substr($sort, 1) == "name" ? "nom" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
-	$str   = 'CONCAT("<a href=\"#\" onclick=\"mm({action:\'stats\', idp:\'", id, "\'});\" class=\"full-circle\"><img src=\"img/statistics_16.png\" /><span class=\"bullet\"></span></a>") go, CONCAT(nom, " ", prenom) name, CONCAT("<img src=\"", IF(photo="", "img/user-img.png", photo), "\" />") portrait';
-	$sql   = 'SELECT *, '.$str.' FROM jb_joueurs WHERE id_champ='.$sess_context->getRealChampionnatId().' '.$filtre.' '.$order;
-	$th    = array("portrait" => "&nbsp;", "name" => "Nom", "pseudo" => "Pseudo", "go" => "&nbsp;");
-	$cols  = array("portrait" => 1, "name" => 1, "pseudo" => 1, "go" => 1);
+	$order   = 'ORDER BY '.(substr($sort, 1) == "name" ? "nom" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
+	$str     = 'CONCAT("<a href=\"#\" onclick=\"mm({action:\'stats\', idp:\'", id, "\'});\" class=\"full-circle\"><img src=\"img/statistics_16.png\" /><span class=\"bullet\"></span></a>") go, CONCAT(nom, " ", prenom) name, CONCAT("<img src=\"", IF(photo="", "img/user-img.png", photo), "\" />") portrait';
+	$sql     = 'SELECT *, '.$str.' FROM jb_joueurs WHERE id_champ='.$sess_context->getRealChampionnatId().' '.$filtre.' '.$order;
+	$th      = array("portrait" => "&nbsp;", "name" => "Nom", "pseudo" => "Pseudo", "go" => "&nbsp;");
+	$cols    = array("portrait" => 1, "name" => 1, "pseudo" => 1, "go" => 1);
 	$trclick = "mm({action:'stats', idp: '_id_'});";
 }
 else if ($_action_ == "teams")
@@ -160,40 +160,40 @@ else if ($_action_ == "teams")
 	if (!$sess_context->isFreeXDisplay() && $saison['equipes'] != "") $filtre .= " AND id IN (".SQLServices::cleanIN($saison['equipes']).")";
 	$filtre .= $search != "" ? " AND (nom LIKE '%".$search."%')" : "";
 
-	$label = "Equipes";
+	$label   = "Equipes";
 	$new_tip = "Nouvelle équipe"; $upd_tip = "Modifier équipe"; $del_tip = "Supprimer équipe";
-	$sort  = $sort == '' ? '1nom' : $sort;
+	$sort    = $sort == '' ? '1nom' : $sort;
 	$nosort  = array("js" => 1);
-	$order = 'ORDER BY '.(substr($sort, 1) == "js" ? "nb_joueurs" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
-	$sql   = 'SELECT *, CONCAT("<img src=\"", IF(photo="", "img/team-icon.png", photo), "\" />") portrait, CONCAT("<button id=\"b12\" class=\"button blue\"><div class=\"box\">", nb_joueurs, "</div></button>") js, CONCAT("<a href=\"#\" onclick=\"mm({action:\'stats\', idt:\'", id, "\'});\" class=\"full-circle\"><img src=\"img/statistics_16.png\" /><span class=\"bullet\"></span></a>") go FROM jb_equipes WHERE id_champ='.$sess_context->getRealChampionnatId().' '.$filtre.' '.$order;
-	$th    = array("portrait" => "&nbsp;", "nom" => "Nom", "js" => "Nb joueurs", "go" => "&nbsp;");
-	$cols  = array("portrait" => 1, "nom" => 1, "js" => 1, "go" => 1);
+	$order   = 'ORDER BY '.(substr($sort, 1) == "js" ? "nb_joueurs" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
+	$sql     = 'SELECT *, CONCAT("<img src=\"", IF(photo="", "img/team-icon.png", photo), "\" />") portrait, CONCAT("<button id=\"b12\" class=\"button blue\"><div class=\"box\">", nb_joueurs, "</div></button>") js, CONCAT("<a href=\"#\" onclick=\"mm({action:\'stats\', idt:\'", id, "\'});\" class=\"full-circle\"><img src=\"img/statistics_16.png\" /><span class=\"bullet\"></span></a>") go FROM jb_equipes WHERE id_champ='.$sess_context->getRealChampionnatId().' '.$filtre.' '.$order;
+	$th      = array("portrait" => "&nbsp;", "nom" => "Nom", "js" => "Nb joueurs", "go" => "&nbsp;");
+	$cols    = array("portrait" => 1, "nom" => 1, "js" => 1, "go" => 1);
 	$trclick = "mm({action:'stats', idt: '_id_'});";
 }
 else if ($_action_ == "days")
 {
-	$label = "Journées";
+	$label   = "Journées";
 	$new_tip = "Nouvelle journée";
-	$filtre = $search != "" ? " AND (nom LIKE '%".$search."%')" : "";
+	$filtre  = $search != "" ? " AND (nom LIKE '%".$search."%')" : "";
 	$sort    = $sort == '' ? '1mydate' : $sort;
 	$nosort  = array();
 	$order   = 'ORDER BY '.(substr($sort, 1) == "mydate" ? "date" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
-	$sql   = 'SELECT *, DATE_FORMAT(date, \'%d/%m/%Y\') fdate, CONCAT("<button class=\"button orange\">", DATE_FORMAT(date, \'%d/%m/%Y\'), "</button>") mydate, CONCAT("<a href=\"#\" onclick=\"mm({action:\'matches\', tournoi: '.($sess_context->isTournoiXDisplay() ? 1 : 0).', idj:\'", id,"\', name:\'", nom,"\', date:\'", DATE_FORMAT(date, \'%d/%m/%Y\'),"\'});\" class=\"full-circle\"><img src=\"img/ballon.png\" /><span class=\"bullet\"></span></a>") go FROM jb_journees WHERE id_champ='.$sess_context->getChampionnatId()." ".$filtre." ".$order;
-	$th    = array("mydate" => "Date", "nom" => "Nom", "go" => "&nbsp;");
-	$cols  = array("mydate" => 1, "nom" => 1, "go" => 1);
+	$sql     = 'SELECT *, DATE_FORMAT(date, \'%d/%m/%Y\') fdate, CONCAT("<button class=\"button orange\">", DATE_FORMAT(date, \'%d/%m/%Y\'), "</button>") mydate, CONCAT("<a href=\"#\" onclick=\"mm({action:\'matches\', tournoi: '.($sess_context->isTournoiXDisplay() ? 1 : 0).', idj:\'", id,"\', name:\'", nom,"\', date:\'", DATE_FORMAT(date, \'%d/%m/%Y\'),"\'});\" class=\"full-circle\"><img src=\"img/ballon.png\" /><span class=\"bullet\"></span></a>") go FROM jb_journees WHERE id_champ='.$sess_context->getChampionnatId()." ".$filtre." ".$order;
+	$th      = array("mydate" => "Date", "nom" => "Nom", "go" => "&nbsp;");
+	$cols    = array("mydate" => 1, "nom" => 1, "go" => 1);
 	$trclick = "mm({action:'matches', tournoi: ".($sess_context->isTournoiXDisplay() ? 1 : 0).", idj: '_id_', name: '_name_', date: '_date_'});";
 }
 else if ($_action_ == "matches")
 {
-	$label2 = $date.': '.ToolBox::conv_lib_journee($name);
-	$label = '<div class="daycontrol"><div class="dayprev"><img class="bt" src="img/icons/dark/appbar.navigate.previous.png" onclick="mm({action:\'matches\', idj:\''.$idj.'|prev\', name:\'\', date:\'\'});" /></div><a href="#"><div class="daytitle">'.$label2.'</div></a><div class="daynext"><img class="bt" src="img/icons/dark/appbar.navigate.next.png" onclick="mm({action:\'matches\', idj:\''.$idj.'|next\', name:\'\', date:\'\'});" /></div></div>';
+	$label2  = $date.': '.ToolBox::conv_lib_journee($name);
+	$label   = '<div class="daycontrol"><div class="dayprev"><img class="bt" src="img/icons/dark/appbar.navigate.previous.png" onclick="mm({action:\'matches\', idj:\''.$idj.'|prev\', name:\'\', date:\'\'});" /></div><a href="#"><div class="daytitle">'.$label2.'</div></a><div class="daynext"><img class="bt" src="img/icons/dark/appbar.navigate.next.png" onclick="mm({action:\'matches\', idj:\''.$idj.'|next\', name:\'\', date:\'\'});" /></div></div>';
 	$new_tip = "Nouveau match"; $upd_tip = "Modifier journée"; $del_tip = "Supprimer journée";
-	$filtre = "";
+	$filtre  = "";
 	$sess_context->setJourneeId($idj);
 	$nosort  = array("nom1" => 1, "resultat" => 1, "nom2" => 1);
-	$sql   = "SELECT m.journal_empty, m.penaltys, m.prolongation, m.id match_id, j.date mdate, m.match_joue, j.date date, e1.nom nom1, m.resultat resultat, e2.nom nom2, m.fanny, m.nbset FROM jb_matchs m, jb_equipes e1, jb_equipes e2, jb_journees j WHERE e1.id=m.id_equipe1 AND e2.id=m.id_equipe2 AND m.id_journee=j.id AND m.id_journee=".$idj." AND m.id_champ=".$sess_context->getChampionnatId()." ".$filtre;
-	$th    = array("nom1" => "Equipe 1", "resultat" => "Score", "nom2" => "Equipe 2", "journal_empty" => "&nbsp;");
-	$cols  = array("nom1" => 1, "resultat" => 1, "nom2" => 1, "journal_empty" => 1);
+	$sql     = "SELECT m.journal_empty, m.penaltys, m.prolongation, m.id match_id, j.date mdate, m.match_joue, j.date date, e1.nom nom1, m.resultat resultat, e2.nom nom2, m.fanny, m.nbset FROM jb_matchs m, jb_equipes e1, jb_equipes e2, jb_journees j WHERE e1.id=m.id_equipe1 AND e2.id=m.id_equipe2 AND m.id_journee=j.id AND m.id_journee=".$idj." AND m.id_champ=".$sess_context->getChampionnatId()." ".$filtre;
+	$th      = array("nom1" => "Equipe 1", "resultat" => "Score", "nom2" => "Equipe 2", "journal_empty" => "&nbsp;");
+	$cols    = array("nom1" => 1, "resultat" => 1, "nom2" => 1, "journal_empty" => 1);
 	if ($sess_context->isAdmin()) unset($cols["journal_empty"]);
 	$opt_edit .= "&idj=".$idj."&date=".$date."&name=".$name;
 }
@@ -214,15 +214,15 @@ else if ($_action_ == "fannys")
 }
 else if ($_action_ == "tchat")
 {
-	$label = "Tchat";
+	$label   = "Tchat";
 	$new_tip = "Nouveau message"; $upd_tip = "Modifier message"; $del_tip = "Supprimer message";
-	$filtre = $search != "" ? " AND (title LIKE '%".$search."%' OR nom LIKE '%".$search."%')" : "";
+	$filtre  = $search != "" ? " AND (title LIKE '%".$search."%' OR nom LIKE '%".$search."%')" : "";
 	$sort    = $sort == '' ? '0date' : $sort;
 	$nosort  = array("nb_lectures" => 1, "nb_reponses" => 1);
 	$order   = 'ORDER BY '.(substr($sort, 1) == "mydate" ? "date" : substr($sort, 1)).' '.(substr($sort, 0, 1) == '1' ? 'ASC' : 'DESC');
-	$sql   = 'SELECT *, CONCAT("<button class=\"button orange\">", DATE_FORMAT(date, \'%d/%m/%y\'), "</button>") mydate, CONCAT("<a href=\"#\" onclick=\"go({action: \'tchat\', id:\'main\', url:\'edit_tchat.php?idp=", id, "\' });\" class=\"full-circle\"><img src=\"img/magnifying.png\" /><span class=\"bullet\"></span></a>") go FROM jb_forum WHERE id_champ='.$sess_context->getRealChampionnatId().' AND in_response=0 AND del != 1 '.$filtre.' '.$order;
-	$th    = array("mydate" => "Date", "title" => "Titre", "nom" => "Auteur", "nb_lectures" => "L", "nb_reponses" => "R", "go" => "&nbsp;");
-	$cols  = array("mydate" => 1, "title" => 1, "nom" => 1, "nb_lectures" => 1, "nb_reponses" => 1, "go" => 1);
+	$sql     = 'SELECT *, CONCAT("<button class=\"button orange\">", DATE_FORMAT(date, \'%d/%m/%y\'), "</button>") mydate, CONCAT("<a href=\"#\" onclick=\"go({action: \'tchat\', id:\'main\', url:\'edit_tchat.php?idp=", id, "\' });\" class=\"full-circle\"><img src=\"img/magnifying.png\" /><span class=\"bullet\"></span></a>") go FROM jb_forum WHERE id_champ='.$sess_context->getRealChampionnatId().' AND in_response=0 AND del != 1 '.$filtre.' '.$order;
+	$th      = array("mydate" => "Date", "title" => "Titre", "nom" => "Auteur", "nb_lectures" => "L", "nb_reponses" => "R", "go" => "&nbsp;");
+	$cols    = array("mydate" => 1, "title" => 1, "nom" => 1, "nb_lectures" => 1, "nb_reponses" => 1, "go" => 1);
 	$trclick = "go({action: 'tchat', id:'main', url:'edit_tchat.php?idp=_id_' });";
 }
 else
@@ -464,7 +464,6 @@ if ($_action_ == "leagues") $moreopt .= ", filtre_type_champ: '".$filtre_type_ch
 <div id="box2"></div>
 
 <? if ($_action_ == "matches" && $sess_context->isFreeXDisplay()) Wrapper::displayMatchesStats($sess_context->getJourneeId(), false); ?>
-
 <? if ($_action_ == "leagues") { ?><script>showfavs();</script><? } ?>
 
 </div>
@@ -535,7 +534,5 @@ function filterList($list, $start, $delta)
 
 	return $tab;
 }
-
-
 
 ?>
