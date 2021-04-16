@@ -7,8 +7,8 @@ ini_set('session_domain', '.jorkers.com');
 ini_set("session.cookie_domain", ".jorkers.com");
 // Empecher la lecture des cookies en javascript pour eviter CSS
 //ini_set('session.cookie_secure', 1);
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
+//ini_set('session.cookie_httponly', 1);
+//ini_set('session.use_only_cookies', 1);
 ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
