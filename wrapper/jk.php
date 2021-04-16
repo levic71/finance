@@ -7,6 +7,7 @@ ini_set("session.cookie_domain", ".jorkers.com");
 ini_set('session.cookie_secure', 1);
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
+ini_set('session.cookie_samesite', 'None');
 ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
@@ -14,10 +15,12 @@ ini_set('arg_separator.output', '&amp;');
 session_cache_expire(60 * 60);
 session_start();
 
+// Pb sur safari
+session_set_cookie_params(0, "/");
+
 require_once "../include/sess_context.php";
 
 header('Content-Type: text/html; path=/; domain=example.org; Http SameSite=Lax; charset=' . sess_context::charset);
-header("Set-Cookie: key=value; path=/; domain=example.org; HttpOnly; SameSite=Lax");
 
 require_once "../include/constantes.php";
 require_once "../include/toolbox.php";
