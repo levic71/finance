@@ -10,7 +10,6 @@ ini_set('session.use_only_cookies', 1);
 ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
-
 require_once "../include/sess_context.php";
 
 header('Content-Type: text/html; charset=' . sess_context::charset);
@@ -38,8 +37,6 @@ if (count($tmp) >= 2) {
 		$name = isset($tmp[3]) ? utf8_decode($tmp[3]) : "";
 	}
 }
-
-phpinfo();
 
 // $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : (isset($sess_context) && $sess_context->isSuperUser() ? 8 : 85);
 $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_CHAMP_ID_HOME;
