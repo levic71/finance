@@ -6,6 +6,8 @@ session_start();
 
 header('Content-Type: text/html; charset='.sess_context::charset);
 
+exit(0);
+
 if (isset($_SESSION["sess_context"])) $sess_context = $_SESSION["sess_context"];
 
 // if (!isset($sess_context)) { echo "<script>window.location.reload( false );</script>"; exit(0); }
