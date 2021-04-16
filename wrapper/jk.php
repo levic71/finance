@@ -16,8 +16,6 @@ ini_set('arg_separator.output', '&amp;');
 session_cache_expire(60 * 60);
 session_start();
 
-setcookie('PHPSESSID', session_id(), 0, '/');
-
 header('Content-Type: text/html; charset=' . sess_context::charset);
 
 require_once "../include/constantes.php";

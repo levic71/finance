@@ -71,14 +71,14 @@ if ($choix_stat == 0)
 	if ($nbr < 10)
 	{
 		$empty_row = array('id' => 0, 'pseudo' => 'z', 'presence' => 1); reset($cols);
-		while (list($cle, $val) = each($cols)) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "-";
+		foreach($cols as $cle => $val) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "-";
 		for($x=0; $x < (10-$nbr); $x++) $tab[] = $empty_row;
 	}
 
 	if ($nbo < 10)
 	{
 		$empty_row = array('id' => 0, 'pseudo' => 'z', 'presence' => 0); reset($cols);
-		while (list($cle, $val) = each($cols)) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "-";
+		foreach($cols as $cle => $val) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "-";
 		for($x=0; $x < (10-$nbo); $x++) $tab[] = $empty_row;
 	}
 
@@ -114,7 +114,7 @@ if ($choix_stat == 0)
 
 		$j=2;
 		reset($cols);
-		while (list($cle, $val) = each($cols))
+		foreach($cols as $cle => $val)
 		{
 			$item[$cle] = preg_replace("/..\/images/", "img", $item[$cle]);
 			if ($cle == 'pourc_joues' || $cle == 'pourc_gagnes') $item[$cle] = preg_replace("/<.*>/", "", preg_replace("/<\/.*>/", "", $item[$cle]));

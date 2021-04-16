@@ -115,7 +115,7 @@ if ($choix_stat == 0)
 		$j=2;
 
 		reset($cols);
-		while (list($cle, $val) = each($cols))
+		foreach($cols as $cle => $val)
 		{
 			if (!$empty && $cle == 'nom') $item[$cle] = preg_replace("/<.*>/", "", str_replace("</A>", "", $item[$cle]));
 			if (!$empty && $cle == 'nom') $item[$cle] = "<a href=\"#\" onclick=\"mm({action:'stats', idt:'".$item['id']."'});\">".$item[$cle]."</a>";
