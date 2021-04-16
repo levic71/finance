@@ -233,7 +233,7 @@ class sess_context
 	public static function isLocalHost() {
 		$sn = strtolower(getenv('SERVER_NAME'));
 		$ra = strtolower(getenv('REMOTE_ADDR'));
-		return ($sn == "localhost" || $rn == "127.0.0.1" || $rn == "localhost" ? true : false);
+		return ($sn == "localhost" || $ra == "127.0.0.1" || $ra == "localhost" ? true : false);
 	}
 
 	public function setChampionnatValide()
