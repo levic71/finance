@@ -17,8 +17,6 @@ session_start();
 
 header('Content-Type: text/html; charset=' . sess_context::charset);
 
-$debug = false;
-
 require_once "../include/constantes.php";
 require_once "../include/toolbox.php";
 require_once "../include/cache_manager.php";
@@ -46,13 +44,14 @@ if (count($tmp) >= 2) {
 // $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : (isset($sess_context) && $sess_context->isSuperUser() ? 8 : 85);
 $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_CHAMP_ID_HOME;
 
-$new_sess = 0;
 
+// /////////////////////////////////////////////////////
+// Initialisation sess_context
+// => Dans les autres programmes include common.php qui vérifie existance sinon renvoie sur jk.php
+// /////////////////////////////////////////////////////
 if (isset($_SESSION['sess_context'])) {
 	$sess_context = $_SESSION['sess_context'];
-}
-
-if (!isset($sess_context)) {
+} else {
 	$sess_context = new sess_context();
 	$_SESSION["sess_context"] = $sess_context;
 }
