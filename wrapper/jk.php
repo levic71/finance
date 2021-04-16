@@ -2,6 +2,15 @@
 
 require_once "../include/sess_context.php";
 
+// Permettre le partage de session entre sous domaines
+ini_set('session_domain', '.jorkers.com');
+ini_set("session.cookie_domain", ".jorkers.com");
+// Empecher la lecture des cookies en javascript pour eviter CSS
+ini_set('session.cookie_secure', 1);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+ini_set("url_rewriter.tags", "input=src");
+ini_set('arg_separator.output', '&amp;');
 
 session_cache_expire(60 * 60);
 session_start();
@@ -31,6 +40,8 @@ if (count($tmp) >= 2) {
 		$name = isset($tmp[3]) ? utf8_decode($tmp[3]) : "";
 	}
 }
+
+phpinfo();
 
 // $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : (isset($sess_context) && $sess_context->isSuperUser() ? 8 : 85);
 $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_CHAMP_ID_HOME;
