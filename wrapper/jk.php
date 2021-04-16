@@ -2,33 +2,9 @@
 
 require_once "../include/sess_context.php";
 
-// Permettre le partage de session entre sous domaines
-ini_set('session_domain', '.jorkers.com');
-ini_set("session.cookie_domain", ".jorkers.com");
-// Empecher la lecture des cookies en javascript pour eviter CSS
-//ini_set('session.cookie_secure', 1);
-//ini_set('session.cookie_httponly', 1);
-//ini_set('session.use_only_cookies', 1);
-ini_set("url_rewriter.tags", "input=src");
-ini_set('arg_separator.output', '&amp;');
 
 session_cache_expire(60 * 60);
 session_start();
-
-if (!session_id()) {
-	session_start();
-	$currentCookieParams = session_get_cookie_params();
-	$sidvalue = session_id();
-	setcookie(
-		'PHPSESSID',//name
-		$sidvalue,//value
-		0,//expires at end of session
-		$currentCookieParams['path'],//path
-		$currentCookieParams['domain'],//domain
-		true //secure
-	);
-}
-
 
 header('Content-Type: text/html; charset=' . sess_context::charset);
 
