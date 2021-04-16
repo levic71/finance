@@ -1,6 +1,6 @@
 <?
 
-require_once "../include/sess_context.php";
+
 
 // Permettre le partage de session entre sous domaines
 ini_set('session_domain', '.jorkers.com');
@@ -13,7 +13,10 @@ ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
 session_cache_expire(60 * 60);
-session_start();
+$res = session_start();require_once "../include/sess_context.php";
+echo $res;
+
+
 
 header('Content-Type: text/html; charset=' . sess_context::charset);
 
