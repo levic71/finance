@@ -142,7 +142,7 @@ function getHtmlContent($nom, $tab, $format = "A4", $page, $delta)
 		if ($nb_pull_col > 0) $extra_width = ($over_width / (count($cols) - $nb_pull_col));
 
 		if ($i == (($page * $delta) + 1)) {
-			$htmlcontent .= "<tr><td colspan=\"100\"  width=\"".$line_width."\" height=\"".round(30 * $ratio)."\" style=\"font-size: ".round(50 * $ratio)."px;\">&nbsp;&nbsp;".strtoupper($nom)."</td></tr>";
+			$htmlcontent .= "<tr><td colspan=\"100\"  width=\"".$line_width."\" height=\"".round(24 * $ratio)."\" style=\"font-size: ".round(30 * $ratio)."px;\">".strtoupper($nom)."</td></tr>";
 			$htmlcontent .= "<tr>";
 			reset($cols);
 			foreach($cols as $c) {
@@ -152,13 +152,15 @@ function getHtmlContent($nom, $tab, $format = "A4", $page, $delta)
 			$htmlcontent .= "</tr>";
 		}
 
-		$htmlcontent .= "<tr bgcolor=\"#111\">";
+		$bg_color_line = $i <= 3 ? "#444444" : ($i <= 10 ? "#333333" : ($i <= 16 ? "#222222" : "#111111"));
+		$htmlcontent .= "<tr bgcolor=\"".$bg_color_line."\">";
+
 		reset($cols);
 		foreach($cols as $c) {
 			if ($c[5] == "skip") continue;
 			$val = $i;
 			if (isset($item[$c[5]])) $val = $item[$c[5]];
-			if (($is_tournoi && $c[5] == "1") || ($is_championnat && $c[5] == "nom")) $val = strtoupper(caractersConverter(preg_replace("<.*>", "", str_replace("</A>", "", $item[$c[5]]))));
+			if (($is_tournoi && $c[5] == "1") || ($is_championnat && $c[5] == "nom")) $val = strtoupper(caractersConverter(strip_tags($item[$c[5]])));
 
 			if ($c[5] == "buts_marques") $val = $item[$c[5]]."/".$item['buts_encaisses'];
 			if ($is_tournoi && $c[0] == "Buts") $val = $item[$c[5]]."/".$item[11];
@@ -178,7 +180,7 @@ function getHtmlContent($nom, $tab, $format = "A4", $page, $delta)
 		if ($i > ($page+1)*$delta ) break;
 	}
 
-	$htmlcontent .= "<tr><td style=\"font-size: ".round(20 * $ratio)."px;\" align=\"right\" width=\"".$line_width."\" colspan=\"100\" height=\"".round(12 * $ratio)."\">Pts: Points, [J,G,N,P]: [Matchs joués, gagnés, nuls, perdus], [SJ,SG,SN,SP]: [Sets joués, gagnés, nuls, perdus], Buts: Buts marqués/encaissés".($is_tournoi ? ", CM: Classement moyen" : "")."<br />Publié le ".date("j-m-Y")."</td></tr>";
+	$htmlcontent .= "<tr><td style=\"font-size: ".round(7 * $ratio)."px;\" align=\"right\" width=\"".$line_width."\" colspan=\"100\" height=\"".round(12 * $ratio)."\"><i>Pts: Points, [J,G,N,P]: [Matchs joués, gagnés, nuls, perdus], [SJ,SG,SN,SP]: [Sets joués, gagnés, nuls, perdus], Buts: Buts marqués/encaissés".($is_tournoi ? ", CM: Classement moyen" : "")."<br />Publié le ".date("j-m-Y")."</i></td></tr>";
 
 	$htmlcontent .= "</table>";
 
@@ -300,7 +302,7 @@ for($k = 0; $k < ceil(count($mytab) / $delta); $k++) {
 
 	// new style
 	$style = array(
-		'border' => false,
+		'border' => true,
 		'vpadding' => 'auto',
 		'hpadding' => 'auto',
 		'fgcolor' => array(0,0,0),
@@ -308,8 +310,7 @@ for($k = 0; $k < ceil(count($mytab) / $delta); $k++) {
 		'module_width' => 1, // width of a single module in points
 		'module_height' => 1 // height of a single module in points
 	);
-	$pdf->write2DBarcode('http://'.Wrapper::string2DNS($row['championnat_nom']).'.jorkers.com', 'DATAMATRIX', ((210 - 30) * $ratio) - $my_posx_table, 10 * $ratio, 30 * $ratio, 30 * $ratio, $style, 'N');
-
+	$pdf->write2DBarcode('https://www.jorkers.com/wrapper/jk.php?idc='.$real_champ_id, 'QRCODE,L', ((210 - 30) * $ratio) - $my_posx_table, 10 * $ratio, 30 * $ratio, 30 * $ratio, $style, 'N');
 }
 
 //Close and output PDF document
