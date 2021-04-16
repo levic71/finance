@@ -221,61 +221,66 @@ mm = function(args) {
 
 	close_menu();
 
-	if (mem != null && next == 0 && prev == 0 && page == 0 && search == 0 && sort == '') {
-		if ((mktime - mem.mktime) < 3600)
-		{
-			page = mem.page;
-			if (mem.search_value != '' && mem.search_value != 'undefined') { search = 1; search_value = mem.search_value; }
-			sort = mem.sort;
+	try {
+
+		if (mem != null && next == 0 && prev == 0 && page == 0 && search == 0 && sort == '') {
+			if ((mktime - mem.mktime) < 3600)
+			{
+				page = mem.page;
+				if (mem.search_value != '' && mem.search_value != 'undefined') { search = 1; search_value = mem.search_value; }
+				sort = mem.sort;
+			}
+			else
+				store.remove(action);
 		}
 		else
-			store.remove(action);
+			store.set(action, { mktime: mktime, page: page, search_value: search_value, sort: sort });
+
+		if (action == 'reload')
+			{ window.location = 'jk.php?idc='+idc; }
+		else if (action == 'home')
+			{ window.location = '../home/index.php'; }
+		else if (action == 'dashboard')
+			xx({action: action, id:'main', url:'dashboard.php'});
+		else if (action == 'myprofile')
+			xx({action: action, id:'main', url:'myprofile.php', mobile: mobile});
+		else if (action == 'login')
+			xx({action: action, id:'main', url:'login.php', mobile: mobile});
+		else if (action == 'logout')
+			window.location = 'logout.php';
+		else if (action == 'inscription')
+			xx({action: action, id:'main', url:'inscription.php'});
+		else if (action == 'chpwd')
+			xx({action: action, id:'main', url:'login_chpwd.php?chpwd='+params});
+		else if (action == 'updprofile')
+			xx({action: action, id:'main', url:'inscription.php?upd=1'});
+		else if (action == 'photos')
+			xx({action: action, id:'main', url:'albums.php?id_theme='+idg});
+		else if (action == 'valid')
+			xx({action: action, id:'main', url:'login_valid.php?params='+params+'&mobile='+mobile, mobile: mobile});
+		else if (action == 'days')
+			xx({action: action, id:'main', tournoi: tournoi, url:'grid.php?action='+action+'&page='+page+'&sort='+sort+(search == 1 ? '&search='+search_value : ''), grid: grid});
+		else if (action == 'tables')
+			xx({action: action, id:'main', url:'table_teams.php'});
+		else if (action == 'stats' && idt!=0)
+			xx({action: action, id:'main', url:'stats_team.php?idt='+idt});
+		else if (action == 'stats' && idp!=0)
+			xx({action: action, id:'main', url:'stats_player.php?idp='+idp});
+		else if (action == 'matches' && tournoi == 1)
+			xx({action: action, id:'main', tournoi: tournoi, url:'tournament_matches.php?action='+action+'&page='+page+'&idj='+idj+'&name='+name+'&date='+date});
+		else if (action == 'matches')
+			xx({action: action, id:'main', tournoi: tournoi, url:'grid.php?action='+action+'&page='+page+'&idj='+idj+'&name='+name+'&date='+date});
+		else if (action == 'fannys' && idp!=0)
+			xx({action: action, id:'main', url:'grid.php?action='+action+'&page='+page+'&idp='+idp});
+		else if (action == 'fannys' && idt!=0)
+			xx({action: action, id:'main', url:'grid.php?action='+action+'&page='+page+'&idt='+idt});
+		else
+			xx({action: action, id:'main', tournoi: tournoi, url:'grid.php?action='+action+'&page='+page+'&sort='+sort+(search == 1 ? '&search='+search_value : '')+(filtre_type_champ != 9 ? '&filtre_type_champ='+filtre_type_champ : '')+(favoris != 0 ? '&favoris='+favoris : '')+'&sport_sort='+sport_sort});
+
+		myconsole('mm end   : action=' + action);
+
 	}
-	else
-		store.set(action, { mktime: mktime, page: page, search_value: search_value, sort: sort });
-
-	if (action == 'reload')
-		{ window.location = 'jk.php?idc='+idc; }
-	else if (action == 'home')
-		{ window.location = '../home/index.php'; }
-	else if (action == 'dashboard')
-		xx({action: action, id:'main', url:'dashboard.php'});
-	else if (action == 'myprofile')
-		xx({action: action, id:'main', url:'myprofile.php', mobile: mobile});
-	else if (action == 'login')
-		xx({action: action, id:'main', url:'login.php', mobile: mobile});
-	else if (action == 'logout')
-		window.location = 'logout.php';
-	else if (action == 'inscription')
-		xx({action: action, id:'main', url:'inscription.php'});
-	else if (action == 'chpwd')
-		xx({action: action, id:'main', url:'login_chpwd.php?chpwd='+params});
-	else if (action == 'updprofile')
-		xx({action: action, id:'main', url:'inscription.php?upd=1'});
-	else if (action == 'photos')
-		xx({action: action, id:'main', url:'albums.php?id_theme='+idg});
-	else if (action == 'valid')
-		xx({action: action, id:'main', url:'login_valid.php?params='+params+'&mobile='+mobile, mobile: mobile});
-	else if (action == 'days')
-		xx({action: action, id:'main', tournoi: tournoi, url:'grid.php?action='+action+'&page='+page+'&sort='+sort+(search == 1 ? '&search='+search_value : ''), grid: grid});
-	else if (action == 'tables')
-		xx({action: action, id:'main', url:'table_teams.php'});
-	else if (action == 'stats' && idt!=0)
-		xx({action: action, id:'main', url:'stats_team.php?idt='+idt});
-	else if (action == 'stats' && idp!=0)
-		xx({action: action, id:'main', url:'stats_player.php?idp='+idp});
-	else if (action == 'matches' && tournoi == 1)
-		xx({action: action, id:'main', tournoi: tournoi, url:'tournament_matches.php?action='+action+'&page='+page+'&idj='+idj+'&name='+name+'&date='+date});
-	else if (action == 'matches')
-		xx({action: action, id:'main', tournoi: tournoi, url:'grid.php?action='+action+'&page='+page+'&idj='+idj+'&name='+name+'&date='+date});
-	else if (action == 'fannys' && idp!=0)
-		xx({action: action, id:'main', url:'grid.php?action='+action+'&page='+page+'&idp='+idp});
-	else if (action == 'fannys' && idt!=0)
-		xx({action: action, id:'main', url:'grid.php?action='+action+'&page='+page+'&idt='+idt});
-	else
-		xx({action: action, id:'main', tournoi: tournoi, url:'grid.php?action='+action+'&page='+page+'&sort='+sort+(search == 1 ? '&search='+search_value : '')+(filtre_type_champ != 9 ? '&filtre_type_champ='+filtre_type_champ : '')+(favoris != 0 ? '&favoris='+favoris : '')+'&sport_sort='+sport_sort});
-
-	myconsole('mm end   : action=' + action);
+	catch(e) { myconsole('mm error: '+ e.text); }
 }
 
 updateContext = function(action) {
