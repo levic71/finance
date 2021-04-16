@@ -88,8 +88,6 @@ window.onload = function() {
 
 	window.scrollTo(0,0);
 
-	go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
-	go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
 
 	<? if ($wrapper) { ?>
 		mm({action: 'days'});
@@ -120,7 +118,6 @@ window.onload = function() {
 	<? } else if (isset($idc) && is_numeric($idc)) { ?>
 		mm({action: 'dashboard', idc: <?= $idc ?> });
 	<? } else { ?>
-		mm({action: 'leagues'});
 	<? } ?>
 
 	var h = Math.max(2600, window.innerHeight);
