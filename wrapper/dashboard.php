@@ -126,7 +126,7 @@ if ($sess_context->getGestionMatchsNul() == 0) { /* unset($cols['matchs_nuls']);
 
 // Empty Line
 $j = 2; $empty_line = "";
-while (list($cle, $val) = each($cols)) {
+foreach($cols as $cle => $val) {
 	$c = "-";
 	if ($cle == "pourc_joues" || $cle == "pourc_gagnes" || $cle == "points"|| $cle == "diff") $c = "<button class=\"button bigrounded disable\">0</button>";
 	$empty_line .= "<td class=\"c".$j++."\"><div>".$c."</div></td>";
@@ -150,7 +150,7 @@ if ($sess_context->isFreeXDisplay()) {
 	if ($nbo < sess_context::getHomeListHeadcount())
 	{
 		$empty_row = array('id' => 0, 'forme_indice' => '', 'pseudo' => 'z', 'presence' => 0); reset($cols);
-		while (list($cle, $val) = each($cols)) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "";
+		foreach($cols as $cle => $val) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "";
 		for($x=0; $x < (sess_context::getHomeListHeadcount()-$nbo); $x++) $tab[] = $empty_row;
 	}
 
@@ -169,7 +169,7 @@ if ($sess_context->isFreeXDisplay()) {
 		}
 	}
 	$empty_row = array('id' => 0); reset($cols);
-	while (list($cle, $val) = each($cols)) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "";
+	foreach($cols as $cle => $val) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "";
 	for($x=0; $x < (sess_context::getHomeListHeadcount()-$nb); $x++) $tab[] = $empty_row;
 }
 
@@ -203,7 +203,7 @@ foreach($tab as $item)
 
 	$j=2;
 	reset($cols);
-	while (list($cle, $val) = each($cols))
+	foreach($cols as $cle => $val)
 	{
 		if ($sess_context->isFreeXDisplay()) {
 			if ($cle == 'pourc_joues' || $cle == 'pourc_gagnes') $item[$cle] = preg_replace("/<.*>/", "", preg_replace("/<\/.*>/", "", $item[$cle]));

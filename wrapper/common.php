@@ -1,12 +1,17 @@
 <?
 
+
+// //////////////////////////////////////
 // Debug r7/prod si nécessaire
+// //////////////////////////////////////
 if (true) {
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 	ini_set('error_log', "./php_errors.log");
 }
+// //////////////////////////////////////
+
 
 if (session_status() != PHP_SESSION_ACTIVE) session_cache_expire(60*60);
 
@@ -28,9 +33,9 @@ if (!isset($_SESSION["sess_context"]))
 	$dns = explode('.', $_SERVER['SERVER_NAME']);
 
 	if ($_SERVER['SERVER_NAME'] == "localhost" || (isset($dns[0]) && $dns[0] == "www"))
-		ToolBox::do_redirect("jk.php");
+		ToolBox::do_redirect($location = 'https://'.$_SERVER['HTTP_HOST']."wrapper/jk.php");
 	else
-		ToolBox::do_redirect("http://".$_SERVER['SERVER_NAME']);
+		ToolBox::do_redirect("https://".$_SERVER['SERVER_NAME']);
 	
 	exit(0);
 }

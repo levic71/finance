@@ -1424,7 +1424,7 @@ class StatsGlobalBuilder
 		if (!is_array($this->stats_equipes) || count(array($this->stats_equipes)) == 0) return;
 
         reset($this->stats_equipes);
-        while(list($id, $val) = each($this->stats_equipes))
+        foreach($this->stats_equipes as $id => $val)
         {
 			if ($this->stats_equipes[$id]->tournoi_nb_participation > 0)
 				$this->stats_equipes[$id]->tournoi_classement_moy = sprintf("%.2f", ($this->stats_equipes[$id]->tournoi_classement_moy / $this->stats_equipes[$id]->tournoi_nb_participation));
@@ -1731,7 +1731,7 @@ class StatsGlobalBuilder
 		$sort2 = array();
 		$sort3 = array();
 		reset($this->best_equipes);
-		while(list($cle, $val) = each($this->best_equipes))
+		foreach($this->best_equipes as $cle => $val)
 		{
 			$id = $val['id'];
 			if ($id_joueur != "" && $this->stats_equipes[$id]->defenseur != $id_joueur && $this->stats_equipes[$id]->attaquant != $id_joueur) continue;
@@ -1769,7 +1769,7 @@ class StatsGlobalBuilder
 		$sort2 = array();
 		$sort3 = array();
 		reset($this->best_equipes);
-		while(list($cle, $val) = each($this->best_equipes))
+		foreach($this->best_equipes as $cle => $val)
 		{
 			$id = $val['id'];
 			$this->stats_equipes[$id]->tournoi_points += $this->stats_equipes[$id]->bonus;
@@ -1799,7 +1799,7 @@ class StatsGlobalBuilder
 		$sort3 = array();
 		$sort4 = array();
 		reset($this->best_equipes);
-		while(list($cle, $val) = each($this->best_equipes))
+		foreach($this->best_equipes as $cle => $val)
 		{
 			$id = $val['id'];
 			$res[$id]   = $this->stats_equipes[$id];
@@ -1831,7 +1831,7 @@ class StatsGlobalBuilder
 	{
 		$res = array();
 		reset($this->most_equipes);
-		while(list($cle, $val) = each($this->most_equipes))
+		foreach($this->most_equipes as $cle => $val)
 		{
 			$id = $val['id'];
 			if ($id_joueur != "" && $this->stats_equipes[$id]->defenseur != $id_joueur && $this->stats_equipes[$id]->attaquant != $id_joueur) continue;

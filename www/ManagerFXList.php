@@ -864,7 +864,7 @@ class FXListMatchsGen extends FXList
 	function formatForDisplay($fannys = true)
 	{
 		$counts = array();
-		while(list($cle, $val) = each($this->fxbody->tab))
+		foreach($this->fxbody->tab as $cle => $val)
 		{
 			if ($val == _FXSEPARATORWITHINIT_) continue;
 			if ($val == _FXSEPARATOR_) continue;
@@ -1891,7 +1891,7 @@ class FXListClassementJourneeTournoi extends FXListPresentation
 	{
 		$i = 1;
 		$res = array();
-		while(list($cle, $val) = each($this->datas))
+		foreach($this->datas as $cle => $val)
 		{
 			$res[] = $val;
 			if ($i == 1 || $i == 4 || $i == 8 || $i == 16 || $i == 32 || $i == 64) $res[] = _FXLINESEPARATOR_;
@@ -2076,7 +2076,7 @@ class FXListClassementGeneralTournoi extends FXListPresentation
 	{
 		$i = 1;
 		$res = array();
-		while(list($cle, $val) = each($this->datas))
+		foreach($this->datas as $cle => $val)
 		{
 			$res[] = $val;
 			if ($i == 1 || $i == 4 || $i == 8 || $i == 16 || $i == 32 || $i == 64) $res[] = _FXLINESEPARATOR_;
@@ -2448,7 +2448,7 @@ class FXListStatsJoueurs extends FXList
 		$t = array();
 
 		$items = $id_joueur == "-1" ? $this->getStatsAllJoueurs() : $this->getStatsJoueur($id_joueur);
-		if ($items) while(list($cle, $val) = each($items))
+		if ($items) foreach($items as $cle => $val)
         {
 			if ($val == _FXSEPARATOR_ || $val == _FXSEPARATORWITHINIT_)
 			{
@@ -2548,7 +2548,7 @@ class FXListStatsJoueurs extends FXList
 		$okaz     = array();
 
 		sort($this->nom_joueurs);
-		while(list($cle, $val) = each($this->nom_joueurs))
+		foreach($this->nom_joueurs as $cle => $val)
 		{
         	$id = $this->id_joueurs[$val];
 			if ($this->stats_joueurs[$id]->presence == 0) $okaz[$cle] = $val;
