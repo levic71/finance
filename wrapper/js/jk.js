@@ -214,6 +214,8 @@ mm = function(args) {
 	var mktime = Math.floor((new Date()).getTime() / 1000);
 	var search_value = (search == 1 && valof('search') != '') ? valof('search') : '';
 
+	return;
+	
 	myconsole('mm begin : action=' + action);
 
 	// On réinit de temps en temps la classe de MAIN-CONTENT
