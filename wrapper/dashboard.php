@@ -4,6 +4,8 @@ require_once "../include/sess_context.php";
 
 session_start();
 
+exit(0);
+
 include "common.php";
 include "../include/inc_db.php";
 include "../www/ManagerFXList.php";

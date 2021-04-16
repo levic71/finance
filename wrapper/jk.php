@@ -78,6 +78,7 @@ $chp['pwd'] = "";
 //$chp['home_list_headcount'] = 2;
 $sess_context->setChampionnat($chp);
 
+// Remise à zero Admin
 $sess_context->resetAdmin();
 
 // Si on vient d'une création de championnat
@@ -106,17 +107,19 @@ if (isset($_SESSION['autologonadmin']) && $_SESSION['autologonadmin'] == 1) {
 
 }
 
+// ////////////////////////////////////////
+// TEMPLATE HTML PRINCIPAL DE TOUT LE SITE
+// Redirection JS possible dans head.php
+///////////////////////////////////////////
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
-<head>
-	<?require_once "head.php";?>
-</head>
+<head><? require_once "head.php"; ?></head>
 
 <body>
-
 	<div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
 
 		<header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600" id="myheader">
@@ -139,7 +142,7 @@ if (isset($_SESSION['autologonadmin']) && $_SESSION['autologonadmin'] == 1) {
 
 	<script src="../mdl/material.min.js"></script>
 
-	<?if (!$sess_context->isSuperUser()) {?>
+<? if (!$sess_context->isSuperUser()) { ?>
 
 	<script type="text/javascript">
 		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -151,9 +154,7 @@ if (isset($_SESSION['autologonadmin']) && $_SESSION['autologonadmin'] == 1) {
 		pageTracker._trackPageview();
 	</script>
 
-	<?}?>
-
+<? } ?>
 
 </body>
-
 </html>
