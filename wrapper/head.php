@@ -122,7 +122,7 @@ window.onload = function() {
 		<? } else if (isset($idc) && is_numeric($idc)) { ?>
 			mm({action: 'dashboard', idc: <?= $idc ?> });
 		<? } else { ?>
-			// mm({action: 'leagues'});
+			mm({action: 'leagues'});
 		<? } ?>
 
 		var h = Math.max(2600, window.innerHeight);
