@@ -27,12 +27,7 @@ $sess_context = $_SESSION["sess_context"];
 // if (!isset($sess_context) || ($sess_context->isChampionnatNonDefini() && basename($SCRIPT_NAME) != "login.php" && basename($SCRIPT_NAME) != "upload.php" && basename($SCRIPT_NAME) != "logout.php" && basename($SCRIPT_NAME) != "inscription.php" && basename($SCRIPT_NAME) != "inscription_do.php" && basename($SCRIPT_NAME) != "login_panel.php" && basename($SCRIPT_NAME) != "myprofile.php"))
 if (!isset($sess_context))
 {
-	$dns = explode('.', $_SERVER['SERVER_NAME']);
-
-	if ($_SERVER['SERVER_NAME'] == "localhost" || (isset($dns[0]) && $dns[0] == "www"))
-		ToolBox::do_redirect("jk.php");
-	else
-		ToolBox::do_redirect("http://".$_SERVER['SERVER_NAME']);
+	ToolBox::do_redirect("jk.php");
 }
 
 require_once "../lang/nls_".$sess_context->getLangue().".php";
