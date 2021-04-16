@@ -31,6 +31,8 @@ if (!isset($_SESSION["sess_context"]))
 		ToolBox::do_redirect("jk.php");
 	else
 		ToolBox::do_redirect("http://".$_SERVER['SERVER_NAME']);
+	
+	exit(0);
 }
 
 $sess_context = $_SESSION["sess_context"];
