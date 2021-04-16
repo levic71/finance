@@ -1,7 +1,5 @@
 <?
 
-
-
 // Permettre le partage de session entre sous domaines
 ini_set('session_domain', '.jorkers.com');
 ini_set("session.cookie_domain", ".jorkers.com");
@@ -13,10 +11,25 @@ ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
 session_cache_expire(60 * 60);
-$res = session_start();require_once "../include/sess_context.php";
-echo $res;
+$res = session_start();
 
+if(!session_id()) {
+	session_start();
+	$currentCookieParams = session_get_cookie_params();
+	$sidvalue = session_id();
+	setcookie(
+		'PHPSESSID',//name
+		$sidvalue,//value
+		0,//expires at end of session
+		$currentCookieParams['path'],//path
+		$currentCookieParams['domain'],//domain
+		true //secure
+	);
+	echo $res;
 
+}
+
+require_once "../include/sess_context.php";
 
 header('Content-Type: text/html; charset=' . sess_context::charset);
 
