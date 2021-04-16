@@ -26,6 +26,8 @@ require_once "../wrapper/wrapper_fcts.php";
 // VERSION DU PROJET
 $projet_version = "Jorky 3.0";
 
+// BUG sur Safari qui bouclait sur jk.php en http, d'ou le redirect en https forcé qd sess_context vide, pb creation cookie PHPSESSID
+
 // Si on est jamais passé par jk.php, on redirige vers cette page
 // if (!isset($sess_context) || ($sess_context->isChampionnatNonDefini() && basename($SCRIPT_NAME) != "login.php" && basename($SCRIPT_NAME) != "upload.php" && basename($SCRIPT_NAME) != "logout.php" && basename($SCRIPT_NAME) != "inscription.php" && basename($SCRIPT_NAME) != "inscription_do.php" && basename($SCRIPT_NAME) != "login_panel.php" && basename($SCRIPT_NAME) != "myprofile.php"))
 if (!isset($_SESSION["sess_context"]))
@@ -33,7 +35,7 @@ if (!isset($_SESSION["sess_context"]))
 	$dns = explode('.', $_SERVER['SERVER_NAME']);
 
 	if ($_SERVER['SERVER_NAME'] == "localhost" || (isset($dns[0]) && $dns[0] == "www"))
-		ToolBox::do_redirect($location = 'https://'.$_SERVER['HTTP_HOST']."wrapper/jk.php");
+		ToolBox::do_redirect($location = 'https://'.$_SERVER['HTTP_HOST']."/wrapper/jk.php");
 	else
 		ToolBox::do_redirect("https://".$_SERVER['SERVER_NAME']);
 	
