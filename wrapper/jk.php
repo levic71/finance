@@ -1,5 +1,7 @@
 <?
 
+require_once "../include/sess_context.php";
+
 // Permettre le partage de session entre sous domaines
 ini_set('session_domain', '.jorkers.com');
 ini_set("session.cookie_domain", ".jorkers.com");
@@ -7,6 +9,7 @@ ini_set("session.cookie_domain", ".jorkers.com");
 ini_set('session.cookie_secure', 1);
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
+ini_set('session.cookie_samesite', 'None');
 ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
@@ -14,10 +17,7 @@ ini_set('arg_separator.output', '&amp;');
 session_cache_expire(60 * 60);
 session_start();
 
-require_once "../include/sess_context.php";
-
-header('Content-Type: text/html; path=/; domain=example.org; Http SameSite=Lax; charset=' . sess_context::charset);
-header("Set-Cookie: key=value; path=/; domain=example.org; HttpOnly; SameSite=Lax");
+header('Content-Type: text/html; charset=' . sess_context::charset);
 
 require_once "../include/constantes.php";
 require_once "../include/toolbox.php";
