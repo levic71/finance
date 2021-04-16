@@ -118,6 +118,7 @@ window.onload = function() {
 	<? } else if (isset($idc) && is_numeric($idc) && $idc == sess_context::INVALID_CHAMP_ID_HOME) { ?>
 		mm({action: 'leagues'});
 	<? } else if (isset($idc) && is_numeric($idc)) { ?>
+		mm({action: 'dashboard', idc: <?= $idc ?> });
 	<? } else { ?>
 		mm({action: 'leagues'});
 	<? } ?>
