@@ -51,9 +51,11 @@ $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_C
 // /////////////////////////////////////////////////////
 if (isset($_SESSION['sess_context'])) {
 	$sess_context = $_SESSION['sess_context'];
+	echo "toto"; exit(0);
 } else {
 	$sess_context = new sess_context();
 	$_SESSION["sess_context"] = $sess_context;
+	echo "totffff"; exit(0);
 }
 
 $db = dbc::connect();
