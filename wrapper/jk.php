@@ -10,20 +10,6 @@ ini_set('session.use_only_cookies', 1);
 ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
-session_cache_expire(60 * 60);
-$res = session_start();
-echo $res;
-	$currentCookieParams = session_get_cookie_params();
-	$sidvalue = session_id();
-	setcookie(
-		'PHPSESSID',//name
-		$sidvalue,//value
-		0,//expires at end of session
-		$currentCookieParams['path'],//path
-		$currentCookieParams['domain'],//domain
-		true //secure
-	);
-
 
 require_once "../include/sess_context.php";
 
@@ -65,11 +51,9 @@ $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_C
 // /////////////////////////////////////////////////////
 if (isset($_SESSION['sess_context'])) {
 	$sess_context = $_SESSION['sess_context'];
-	echo "toto"; exit(0);
 } else {
 	$sess_context = new sess_context();
 	$_SESSION["sess_context"] = $sess_context;
-	echo "totffff"; exit(0);
 }
 
 $db = dbc::connect();
