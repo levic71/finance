@@ -10,6 +10,13 @@ ini_set('session.use_only_cookies', 1);
 ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
+// Nouvelle session
+session_cache_expire(60 * 60);
+session_start();
+
+// Pb sur safari
+session_set_cookie_params(0, "/");
+
 require_once "../include/sess_context.php";
 
 header('Content-Type: text/html; charset=' . sess_context::charset);
@@ -48,9 +55,11 @@ $idc = is_numeric($_REQUEST['idc']) ? $_REQUEST['idc'] : sess_context::INVALID_C
 // /////////////////////////////////////////////////////
 if (isset($_SESSION['sess_context'])) {
 	$sess_context = $_SESSION['sess_context'];
+	echo "toto"; exit(0);
 } else {
 	$sess_context = new sess_context();
 	$_SESSION["sess_context"] = $sess_context;
+	echo "totffff"; exit(0);
 }
 
 $db = dbc::connect();
