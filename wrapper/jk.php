@@ -9,13 +9,14 @@ ini_set("session.cookie_domain", ".jorkers.com");
 ini_set('session.cookie_secure', 1);
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_samesite', 'None');
 ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
 // Nouvelle session
 session_cache_expire(60 * 60);
 session_start();
+
+setcookie('PHPSESSID', session_id(), 0, '/');
 
 header('Content-Type: text/html; charset=' . sess_context::charset);
 
