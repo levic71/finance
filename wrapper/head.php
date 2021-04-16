@@ -88,7 +88,7 @@ window.onload = function() {
 
 	window.scrollTo(0,0);
 
-	go({action: 'slidebar', id:'slidebar', url:'navslidebar.php'});
+	go({ action: 'login_panel', id: 'login_panel', url: 'login_panel.php' });
 
 	<? if ($wrapper) { ?>
 		mm({action: 'days'});
