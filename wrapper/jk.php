@@ -17,7 +17,7 @@ session_start();
 
 header('Content-Type: text/html; charset=' . sess_context::charset);
 
-$debug = false;
+$debug = true;
 
 require_once "../include/constantes.php";
 require_once "../include/toolbox.php";
