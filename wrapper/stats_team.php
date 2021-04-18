@@ -41,7 +41,7 @@ if (count($xt->evol_classement) > 0 || true)
 	$q22 = "";
 	$tips_labels = "";
 	$steps = ceil(count($stats_teams) / 5);
-	while(list($cle, $val) = each($xt->evol_classement))
+	foreach($xt->evol_classement as $cle => $val)
 	{
 		if (strlen($val."") > 0) {
 			$tmp = $val == "" ? "@" : -$val;

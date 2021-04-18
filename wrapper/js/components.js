@@ -1368,7 +1368,7 @@ var o = {
 	drawMarks: function (r, size, rad, max) {
 		var out = r.set(),
 			hash = document.location.hash,
-			marksAttr = {fill: hash || "#ccc", stroke: "none"};
+			marksAttr = {fill: hash || "#999", stroke: "none"};
 
 		for (var value = 0; value < max; value++) {
 			var alpha = 360 / max * value, a = (90 - alpha) * Math.PI / 180;
