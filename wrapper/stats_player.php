@@ -83,6 +83,9 @@ if ($trombinoscope == 1)
 // /////////////////////////////////////////////////////
 
 
+// /////////////////////////////////////////////////////
+// Stats individuelles
+// /////////////////////////////////////////////////////
 $tab = array();
 
 $req = "SELECT * FROM jb_equipes WHERE (joueurs='".$idp."' OR joueurs LIKE '".$idp."|%' OR joueurs LIKE '%|".$idp."' OR joueurs LIKE '%|".$idp."|%') AND id_champ=".$sess_context->getRealChampionnatId()." ".($sess_context->isFreeXDisplay() ? "" : "AND id IN (".SQLServices::cleanIN($saison['equipes']).")");
@@ -129,7 +132,7 @@ if (true || $sess_context->isFreeXDisplay()) {
 	$q2 = "";
 	$q11 = "";
 	$q22 = "";
-	while(list($cle, $val) = each($j->evol_pourc_gagne))
+	foreach($j->evol_pourc_gagne as $cle => $val)
 	{
 		if (strlen($val."") > 0) {
 			$q1 .= ($q1 == "") ? $val : "§".$val;
@@ -176,6 +179,42 @@ if ($user = mysqli_fetch_array($res)) {
 	$photo = $user['photo'] == "" ? $photo : $user['photo'];
 }
 
+
+$title  = Wrapper::card_box_getH2Title(array("title" => "<span>".$patronyme."<br /><small> as ".$j->pseudo."</small></span>"));
+$menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "view_comfy", "label" => "Trombinoscope", "onclick" => "xx({action: 'stats', id:'main', url:'stats_player.php?trombinoscope=1&idp=".$idp."'});" ));
+$content = '
+<div class="mdl-grid">
+	<div id="dashcounter" class="mdl-cell mdl-cell--12-col">
+		<div class="btj2 button black '.Wrapper::getColorMedaille($j->medaille).'" style="width: auto;" onclick="mm({action:\'stats\', idp:".$idp."});">
+			<img src="'.$photo.'" />
+		</div>
+	</div>
+	<div id="dashcounter" class="mdl-cell mdl-cell--12-col">
+		<button id="b1" class="button blue"><i class="material-icons">grid_on</i><div class="cnt">0</div><div class="txt">Saisons</div></button>
+		<button id="b2" class="button blue" onclick="mm({action: \'players\'});"><i class="material-icons">person</i><div class="cnt">0</div><div class="txt">Joueurs</div></button>
+		<button id="b3" class="button blue" onclick="mm({action: \'teams\'});"><i class="material-icons">people</i><div class="cnt">0</div class="box"><div class="txt">Equipes</div></button>
+	</div>
+</div>
+';
+// Card_box Billboard général
+Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content));
+
+
+$title  = Wrapper::card_box_getH2Title(array("title" => "Statistiques"));
+$menu   = '';
+$content = '
+<div class="mdl-grid">
+	<div id="diagram" class="mdl-cell mdl-cell--12-col"></div>
+	<div class="mdl-cell mdl-cell--12-col">
+		<div class="skills">
+			<ul id="skills_list"></ul>
+		</div>
+	</div>
+</div>
+';
+// Card_box Billboard général
+Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content));
+
 ?>
 
 
@@ -202,22 +241,6 @@ if ($user = mysqli_fetch_array($res)) {
 
 
 <h2 class="grid tables"><?= $patronyme  ?> <button class="button gray right" onclick="xx({action: 'stats', id:'main', url:'stats_player.php?trombinoscope=1&idp=<?= $idp ?>'});">Trombinoscope</button></h2>
-
-
-<table border="0" style="width: 100%;border-radius: 0px 0px 10px 10px; -moz-border-radius: 0px 0px 10px 10px; -webkit-border-radius: 0px 0px 10px 10px;" class="dash_player  box-wrapper">
-	<tr valign="center">
-		<td id="legend">
-			<div class="btj2 button black <?= Wrapper::getColorMedaille($j->medaille) ?>" style="width: auto;" onclick="mm({action:'stats', idp:<?= $idp ?>});">
-				<img src="<?= $photo ?>" />
-				<div><?= $j->pseudo  ?></div>
-			</div>
-			<div class="skills">
-				<ul id="skills_list"></ul>
-			</div>
-		</td>
-		<td><div id="diagram"></div></td>
-	</tr>
-</table>
 
 
 <? if ($sess_context->isFreeXDisplay()) { ?>
@@ -342,7 +365,7 @@ $i = 1; while ($row = mysqli_fetch_array($res))
 
 <? } ?>
 
-
+<? // Raphel composnent => code include in component.js + raphael.min.js ?>
 <script>
 <? if ($sess_context->getGestionFanny()) { ?>
 o.init({ name: 'diagram', skills_list: 'skills_list', size: 400, cc_size: 75, rad: 62, data: [ { rs: 180+(<?= round($j->pourc_joues)/2 ?>*3.6), v: <?= round($j->pourc_joues) ?>, t: 'Matchs joués', c: "#ED0086" }, { rs: 180+(<?= round($j->pourc_gagnes)/2 ?>*3.6), v: <?= round($j->pourc_gagnes) ?>, t: 'Matchs gagnés', c: "#08A7DC" }, { rs: 270+(<?= round($j->justesse_gagnes) ?>*3.6), v: [<?= round($j->justesse_gagnes) ?>,<?= round($j->justesse_perdus) ?>], t: ['Gagnés de\n justesse', 'Perdus de\n justesse'], c: ["#FFBF67","#FF6F67"] }, { rs: 90+(<?= round($j->fanny_in) ?>*3.6), v: [<?= round($j->fanny_in) ?>, <?= round($j->fanny_out) ?>], t: ['Fannys pris','Fannys donnés'], c: [{bg:"#FFE700", fg:"#6B6000"}, {bg:"#AFF53D",fg:"#496619"}] } ] });

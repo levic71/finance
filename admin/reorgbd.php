@@ -35,6 +35,62 @@ function string2DNS($str) {
 
 // Avant de lancer ce script se connecter sur wrappeer/jk.php
 
+
+// Nettoyage images absentes
+$i = 0;
+$req = "SELECT * FROM jb_joueurs";
+$res = dbc::execSQL($req);
+while($row = mysqli_fetch_array($res))
+{
+	if ($row['photo'] != "" && !file_exists($row['photo']))
+	{
+		$i++;
+		$sql = "UPDATE jb_joueurs SET photo='' WHERE id=".$row['id'];
+		$ttt = dbc::execSQL($sql);
+	}
+}
+echo "Joueurs: ".$i." images reset<br />";
+$i = 0;
+$req = "SELECT * FROM jb_equipes";
+$res = dbc::execSQL($req);
+while($row = mysqli_fetch_array($res))
+{
+	if ($row['photo'] != "" && !file_exists($row['photo']))
+	{
+		$i++;
+		$sql = "UPDATE jb_equipes SET photo='' WHERE id=".$row['id'];
+		$ttt = dbc::execSQL($sql);
+	}
+}
+echo "Equipes: ".$i." images reset<br />";
+$i = 0;
+$req = "SELECT * FROM jb_forum";
+$res = dbc::execSQL($req);
+while($row = mysqli_fetch_array($res))
+{
+	if ($row['image'] != "" && !file_exists($row['image']))
+	{
+		$i++;
+		$sql = "UPDATE jb_forum SET image='' WHERE id=".$row['id'];
+		$ttt = dbc::execSQL($sql);
+	}
+}
+echo "Forum: ".$i." images reset<br />";
+$i = 0;
+$req = "SELECT * FROM jb_albums";
+$res = dbc::execSQL($req);
+while($row = mysqli_fetch_array($res))
+{
+	if ($row['photo'] != "" && !file_exists($row['photo']))
+	{
+		$i++;
+		$sql = "UPDATE jb_albums SET photo='' WHERE id=".$row['id'];
+		$ttt = dbc::execSQL($sql);
+	}
+}
+echo "Albums: ".$i." images reset <br />";
+
+
 exit(0);
 
 $i = 0;
