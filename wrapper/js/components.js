@@ -1389,7 +1389,9 @@ var o = {
 				if(Raphael.type != 'VML') //solves IE problem
 				this.toFront();
 				opt.title.stop().animate({ opacity: 0 }, opt.speed, '>', function(){
-					var skill = elt.t.skl||(elt.t + '\n' + elt.v + '%');
+// On affiche que le %
+//					var skill = elt.t.skl||(elt.t + '\n' + elt.v + '%');
+					var skill = elt.t.skl||(elt.v + '%');
 					this.attr({ text: skill }).animate({ opacity: 1 }, opt.speed, '<');
 				});
 			})})(elt);
@@ -1413,7 +1415,9 @@ var o = {
 				if(Raphael.type != 'VML') //solves IE problem
 				z.toFront();
 				opt.title.stop().animate({ opacity: 0 }, opt.speed, '>', function(){
-					var skill = elt.t.skl||(elt.t + '\n' + elt.v + '%');
+// On affiche que le %
+//					var skill = elt.t.skl||(elt.t + '\n' + elt.v + '%');
+					var skill = elt.t.skl||(elt.v + '%');
 					this.attr({ text: skill }).animate({ opacity: 1 }, opt.speed, '<');
 				});
 			}})(z, elt);

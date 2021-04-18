@@ -181,7 +181,7 @@ if ($user = mysqli_fetch_array($res)) {
 
 
 $title  = Wrapper::card_box_getH2Title(array("title" => "<span>".$patronyme."<br /><small> as ".$j->pseudo."</small></span>"));
-$menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "view_comfy", "label" => "Trombinoscope", "onclick" => "xx({action: 'stats', id:'main', url:'stats_player.php?trombinoscope=1&idp=".$idp."'});" ));
+$menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "contacts", "label" => "Trombinoscope", "onclick" => "xx({action: 'stats', id:'main', url:'stats_player.php?trombinoscope=1&idp=".$idp."'});" ));
 $content = '
 <div class="mdl-grid">
 	<div id="dashcounter" class="mdl-cell mdl-cell--12-col">
@@ -240,7 +240,6 @@ Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $me
 </ul>
 
 
-<h2 class="grid tables"><?= $patronyme  ?> <button class="button gray right" onclick="xx({action: 'stats', id:'main', url:'stats_player.php?trombinoscope=1&idp=<?= $idp ?>'});">Trombinoscope</button></h2>
 
 
 <? if ($sess_context->isFreeXDisplay()) { ?>
@@ -368,9 +367,9 @@ $i = 1; while ($row = mysqli_fetch_array($res))
 <? // Raphel composnent => code include in component.js + raphael.min.js ?>
 <script>
 <? if ($sess_context->getGestionFanny()) { ?>
-o.init({ name: 'diagram', skills_list: 'skills_list', size: 400, cc_size: 75, rad: 62, data: [ { rs: 180+(<?= round($j->pourc_joues)/2 ?>*3.6), v: <?= round($j->pourc_joues) ?>, t: 'Matchs joués', c: "#ED0086" }, { rs: 180+(<?= round($j->pourc_gagnes)/2 ?>*3.6), v: <?= round($j->pourc_gagnes) ?>, t: 'Matchs gagnés', c: "#08A7DC" }, { rs: 270+(<?= round($j->justesse_gagnes) ?>*3.6), v: [<?= round($j->justesse_gagnes) ?>,<?= round($j->justesse_perdus) ?>], t: ['Gagnés de\n justesse', 'Perdus de\n justesse'], c: ["#FFBF67","#FF6F67"] }, { rs: 90+(<?= round($j->fanny_in) ?>*3.6), v: [<?= round($j->fanny_in) ?>, <?= round($j->fanny_out) ?>], t: ['Fannys pris','Fannys donnés'], c: [{bg:"#FFE700", fg:"#6B6000"}, {bg:"#AFF53D",fg:"#496619"}] } ] });
+o.init({ name: 'diagram', skills_list: 'skills_list', size: 340, cc_size: 45, rad: 25, data: [ { rs: 180+(<?= round($j->pourc_joues)/2 ?>*3.6), v: <?= round($j->pourc_joues) ?>, t: 'Matchs joués', c: "#ED0086" }, { rs: 180+(<?= round($j->pourc_gagnes)/2 ?>*3.6), v: <?= round($j->pourc_gagnes) ?>, t: 'Matchs gagnés', c: "#08A7DC" }, { rs: 270+(<?= round($j->justesse_gagnes) ?>*3.6), v: [<?= round($j->justesse_gagnes) ?>,<?= round($j->justesse_perdus) ?>], t: ['Gagnés de\n justesse', 'Perdus de\n justesse'], c: ["#FFBF67","#FF6F67"] }, { rs: 90+(<?= round($j->fanny_in) ?>*3.6), v: [<?= round($j->fanny_in) ?>, <?= round($j->fanny_out) ?>], t: ['Fannys pris','Fannys donnés'], c: [{bg:"#FFE700", fg:"#6B6000"}, {bg:"#AFF53D",fg:"#496619"}] } ] });
 <? } else { ?>
-o.init({ name: 'diagram', skills_list: 'skills_list', size: 400, cc_size: 75, rad: 62, data: [ { rs: 180+(<?= round($j->pourc_joues)/2 ?>*3.6), v: <?= round($j->pourc_joues) ?>, t: 'Matchs joués', c: "#ED0086" }, { rs: 180+(<?= round($j->pourc_gagnes)/2 ?>*3.6), v: <?= round($j->pourc_gagnes) ?>, t: 'Matchs gagnés', c: "#08A7DC" }, { v: <?= round($j->justesse_gagnes) ?>, t: 'Gagnés de\n justesse', c: "#FFE700" }, { v: <?= round($j->justesse_perdus) ?>, t: 'Perdus de\n justesse', c: "#AFF53D" } ] });
+o.init({ name: 'diagram', skills_list: 'skills_list', size: 340, cc_size: 45, rad: 25, data: [ { rs: 180+(<?= round($j->pourc_joues)/2 ?>*3.6), v: <?= round($j->pourc_joues) ?>, t: 'Matchs joués', c: "#ED0086" }, { rs: 180+(<?= round($j->pourc_gagnes)/2 ?>*3.6), v: <?= round($j->pourc_gagnes) ?>, t: 'Matchs gagnés', c: "#08A7DC" }, { v: <?= round($j->justesse_gagnes) ?>, t: 'Gagnés de\n justesse', c: "#FFE700" }, { v: <?= round($j->justesse_perdus) ?>, t: 'Perdus de\n justesse', c: "#AFF53D" } ] });
 <? } ?>
 drawAnalytics({ name: "perfgraph", width: 670, height: 200, avg: <?= $moy == 0 ? "0.1" : $moy ?>, labels: <?= $q22 ?>, data: <?= $q11 ?>, overmax: 100 });
 </script>

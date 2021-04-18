@@ -38,6 +38,19 @@ function string2DNS($str) {
 
 // Nettoyage images absentes
 $i = 0;
+$req = "SELECT * FROM jb_users";
+$res = dbc::execSQL($req);
+while($row = mysqli_fetch_array($res))
+{
+	if ($row['photo'] != "" && !file_exists($row['photo']))
+	{
+		$i++;
+		$sql = "UPDATE jb_users SET photo='' WHERE id=".$row['id'];
+		$ttt = dbc::execSQL($sql);
+	}
+}
+echo "Joueurs: ".$i." images reset<br />";
+$i = 0;
 $req = "SELECT * FROM jb_joueurs";
 $res = dbc::execSQL($req);
 while($row = mysqli_fetch_array($res))
