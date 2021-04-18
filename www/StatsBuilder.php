@@ -977,7 +977,7 @@ class StatsJourneeBuilder
 	function formatClassementPlayers($classement)
 	{
 		$ret = "";
-        while(list($cle, $val) = each($classement))
+        foreach($classement as $cle => $val)
         {
 			if ($ret != "") $ret .= "|";
             $ret .= $cle."@";
@@ -1012,7 +1012,7 @@ class StatsJourneeBuilder
         $classement = array();
 
 		reset($this->statsJoueurs);
-		while(list($cle, $val) = each($this->statsJoueurs))
+		foreach($this->statsJoueurs as $cle => $val)
 			$classement[$cle] = (($this->statsJoueurs[$cle]->matchs_jouesA+$this->statsJoueurs[$cle]->matchs_jouesD) > 0 ? "1" : "0").sprintf("%03s", $this->statsJoueurs[$cle]->matchs_gagnes).sprintf("%04s", 1000+$this->statsJoueurs[$cle]->diff).sprintf("%04s", 1000+$this->statsJoueurs[$cle]->buts_marques);
 
 		arsort($classement);
@@ -1023,7 +1023,7 @@ class StatsJourneeBuilder
 	function formatClassementTeams($classement)
 	{
 		$ret = "";
-        while(list($cle, $val) = each($classement))
+        foreach($classement as $cle => $val)
         {
 			if ($ret != "") $ret .= "|";
             $ret .= $cle."@";
@@ -1059,7 +1059,7 @@ class StatsJourneeBuilder
 		if (count($this->statsTeams) == 0) return "";
 
 		reset($this->statsTeams);
-		while(list($cle, $val) = each($this->statsTeams))
+		foreach($this->statsTeams as $cle => $val)
 		{
 			if ($this->type_championnat == _TYPE_TOURNOI_)
 				$classement[$cle] = sprintf("%03s", $this->statsTeams[$cle]->tournoi_classement).sprintf("%05s", 10000+$this->statsTeams[$cle]->tournoi_points).sprintf("%05s", 10000+$this->statsTeams[$cle]->buts_marques);
@@ -1091,7 +1091,7 @@ class StatsJourneeBuilder
 
 		// Création d'un tableau pour le tri
 		reset($this->statsTeams);
-		while(list($cle, $val) = each($this->statsTeams))
+		foreach($this->statsTeams as $cle => $val)
 		{
 			if (array_search($cle, $liste_des_equipes) >= 0)
 			{
@@ -1108,11 +1108,11 @@ class StatsJourneeBuilder
 		$cs = $classement;
 
 		// Calcul du goal average + goal average particulier si souhaité pour affiner le classement
-		while(list($cle, $val) = each($classement))
+		foreach($classement as $cle => $val)
 		{
 			reset($cs);
 
-			while(list($cle2, $val2) = each($cs))
+			foreach($cs as $cle2 => $val2)
 			{
 				if (substr($val, 0, 3) == substr($val2, 0, 3))
 				{
@@ -1135,7 +1135,7 @@ class StatsJourneeBuilder
 		// Recherche des égalités parfaites (pour les tournois) ou si gestion gavgp
 		$tmp_val = "";
 		$tmp_cle = "";
-		while(list($cle, $val) = each($classement))
+		foreach($classement as $cle => $val)
 		{
 			if ($val == $tmp_val)
 			{
@@ -1329,7 +1329,7 @@ class StatsGlobalBuilder
 
 		// On affecte le pourcentage de victoire à "" pour cette date à toutes les équipes (utile pour le graph)
 //	    reset($this->stats_equipes);
-//	    while(list($id, $val) = each($this->stats_equipes)) $this->stats_equipes[$val]->evol_classement[$date_journee] = "";
+//	    foreach($this->stats_equipes as $id => $val) $this->stats_equipes[$val]->evol_classement[$date_journee] = "";
 
 		$podium = 1;
 		$sjt = new StatJourneeTeam();
@@ -1454,7 +1454,7 @@ class StatsGlobalBuilder
 
 		// On affecte le pourcentage de victoire à "" pour cette date à tous les joueurs (utile pour le graph)
 	    reset($this->id_joueurs);
-	    while(list($id, $val) = each($this->id_joueurs)) $this->stats_joueurs[$val]->evol_pourc_gagne[$date_journee] = "";
+	    foreach($this->id_joueurs as $id => $val) $this->stats_joueurs[$val]->evol_pourc_gagne[$date_journee] = "";
 
 		// Compteur pour le classement sur la journée
 		$k   = 0;
@@ -1523,7 +1523,7 @@ class StatsGlobalBuilder
 		if (!is_array($this->stats_joueurs) || count(array($this->stats_joueurs)) == 0) return;
 
         reset($this->stats_joueurs);
-        while(list($id, $val) = each($this->stats_joueurs))
+        foreach($this->stats_joueurs as $id => $val)
         {
         	$this->stats_joueurs[$id]->lib_presence = $this->stats_joueurs[$id]->presence == 1 ? "Régulier" : "Invité";
 
@@ -1753,7 +1753,7 @@ class StatsGlobalBuilder
 	{
 		$res = array();
 		reset($this->best_equipes);
-		while(list($cle, $val) = each($this->best_equipes))
+		foreach($this->best_equipes as $cle => $val)
 		{
 			$id = $val['id'];
 			if ($id_joueur != "" && $this->stats_equipes[$id]->defenseur != $id_joueur && $this->stats_equipes[$id]->attaquant != $id_joueur) continue;
@@ -1844,7 +1844,7 @@ class StatsGlobalBuilder
 	{
 		$res = array();
 		reset($this->best_attaques);
-		while(list($cle, $val) = each($this->best_attaques))
+		foreach($this->best_attaques as $cle => $val)
 		{
 			$id = $val['id'];
 			if ($this->stats_equipes[$id]->matchs_joues > 0) $res[] = $this->stats_equipes[$id];
@@ -1856,7 +1856,7 @@ class StatsGlobalBuilder
 	{
 		$res = array();
 		reset($this->best_defenses);
-		while(list($cle, $val) = each($this->best_defenses))
+		foreach($this->best_defenses as $cle => $val)
 		{
 			$id = $val['id'];
 			if ($this->stats_equipes[$id]->matchs_joues > 0) $res[] = $this->stats_equipes[$id];
@@ -1873,7 +1873,7 @@ class StatsGlobalBuilder
 		if (!is_array($this->stats_joueurs) || count(array($this->stats_joueurs)) == 0) return;
 
 		reset($this->stats_joueurs);
-		while(list($cle, $val) = each($this->stats_joueurs))
+		foreach($this->stats_joueurs as $cle => $val)
 		{
 			if ($val->joues > 0 && $val->presence == 1)
 			{
@@ -1898,7 +1898,7 @@ class StatsGlobalBuilder
 		$res   = array();
 		$sort1 = array();
 		reset($this->stats_joueurs);
-		while(list($cle, $val) = each($this->stats_joueurs))
+		foreach($this->stats_joueurs as $cle => $val)
 		{
 			if ($val->joues > 0)
 			{
