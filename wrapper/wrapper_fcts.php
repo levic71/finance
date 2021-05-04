@@ -64,7 +64,7 @@ public static function getPrevNextJournees($idj)
     $index_selected = -1;
     if (count($journees) > 0)
     {
-        while(list($cle, $valeur) = each($journees))
+        foreach($journees as $cle => $valeur)
         {
             if ($valeur['id'] == $tmp[0])
             {
@@ -260,7 +260,7 @@ public static function getDisplayMatchesStats($idj, $complete, $framebox) {
 	//	$res .= '<h2 class="grid leagues">Statistiques journée</h2>';
 	}
 
-	$str .= '<table cellspacing="0" cellpadding="0" class="jkgrid2 matches_grid" id="table_players_day">';
+	$str .= '<table cellspacing="0" cellpadding="0" class="jkgrid2 classement matches_grid" id="table_players_day">';
 	$str .= '<thead><tr><th class="c1"><div>N°</div></th><th class="c2"><div>Joueur</div></th><th class="c3"><div>J</div></th><th class="c4"><div>G</div></th><th class="c5"><div>AVG</div></th><th class="c6"><div>FI</div></th><th class="c7"><div>FO</div></th></tr></thead>';
 	$str .= '<tbody>';
 	$i = 1;

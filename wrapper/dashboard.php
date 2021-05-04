@@ -80,7 +80,7 @@ Wrapper::card_box(array("id" => "billboard", "title" => $title, "menu" => $menu,
 
 
 
-// Card_Box vide (remplit via request dynamique)
+// Card_Box vide (remplit via requete dynamique)
 Wrapper::card_box_6c(array("id" => "dashjournee", "nb_col_tablet" => 12, "nb_col_phone" => 12));
 
 
@@ -143,7 +143,7 @@ if ($sess_context->isFreeXDisplay()) {
 	if ($nbr < sess_context::getHomeListHeadcount())
 	{
 		$empty_row = array('id' => 0, 'forme_indice' => '', 'pseudo' => 'z', 'presence' => 1); reset($cols);
-		while (list($cle, $val) = each($cols)) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "";
+		foreach($cols as $cle => $val) $empty_row[$cle] = isset($empty_row[$cle]) ? $empty_row[$cle] : "";
 		for($x=0; $x < (sess_context::getHomeListHeadcount()-$nbr); $x++) $tab[] = $empty_row;
 	}
 
@@ -230,7 +230,7 @@ foreach($tab as $item)
 	$i++;
 }
 
-$content .= '<table cellspacing="0" cellpadding="0" class="jkgrid2" id="'.($sess_context->isFreeXDisplay() ? "table_players" : "table_teams").'">';
+$content .= '<table cellspacing="0" cellpadding="0" class="jkgrid2 classement" id="'.($sess_context->isFreeXDisplay() ? "table_players" : "table_teams").'">';
 $content .= '<thead>'.$thead.'</thead>';
 $content .= '<tbody>'.$tbody.'</tbody>';
 $content .= '</table>';

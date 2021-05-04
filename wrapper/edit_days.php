@@ -51,7 +51,7 @@ $sss = new SQLSaisonsServices($sess_context->getRealChampionnatId(), $sess_conte
 $liste_joueurs = $sss->getListeJoueurs();
 
 // Tri des joueurs
-while(list($cle, $valeur) = each($liste_joueurs))
+foreach($liste_joueurs as $cle => $valeur)
 {
     if ($valeur['presence'] == _JOUEUR_REGULIER_)
 		$joueurs_reguliers[$valeur['id']] = $valeur;

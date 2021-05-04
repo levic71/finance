@@ -21,7 +21,7 @@ cc = function(id, c) {
 }
 fs = function(id) { try { el(id).focus(); } catch(e) {} }
 isHidden = function(id) { try { return (el(id).style.display == 'none' ? true : false); } catch(e) {} }
-show = function(id) { try { el(id).style.display = 'initial'; } catch(e) {} }
+show = function(id) { try { el(id).style.display = el(id).tagName.toUpperCase() == "TABLE" ? 'inline-table' : 'initial'; } catch(e) {} }
 hide = function(id) { try { el(id).style.display = 'none'; } catch(e) {} }
 toogle = function(id) { try { if (isHidden(id)) show(id); else hide(id); } catch(e) {} }
 valof = function(id) {

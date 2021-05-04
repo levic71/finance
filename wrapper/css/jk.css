@@ -59,7 +59,14 @@ div#head #power ul li a#log.powerr:hover, div#head #power ul li a#log.powerg:hov
 div#head #inner { background: url('../img/logo.png') no-repeat 50px 10px; background-size: 64px 64px; position: absolute; left: 0px; top: 0px; }
 .wrapper .logo, span#logo { height: 64px; color:#333; line-height: 64px; font-weight: bold; white-space: nowrap; margin: 0px 0px 0px; padding: 0px 0px; }
 .wrapper .logo { width: 200px; }
-span#logo { font-family: logo5; font-size: 32px; font-weight: bold; }
+span#logo { font-family: logo5; font-size: 32px; font-weight: bold;
+/*
+	text-shadow: 
+		1px 1px 1px #919191,
+		1px 2px 1px #919191,
+		2px 3px 6px rgba(90,90,90,0.4);
+*/
+}
 
 #logo_font_picker .button.blue { font-size: 24px !important; line-height: 24px !important; height: 50px !important; width: 180px !important; }
 
@@ -457,8 +464,8 @@ div#box { clear: both; }
 #dash #journee_detail tr td.score { width: 100px; }
 
 #dash #journee_detail tr td .score td { padding: 0px 4px; }
-#occazbox, #classement { text-align: right; }
-#occazbox .button, #classement .button { float: none; }
+#occazbox, #classement_tab { text-align: right; }
+#occazbox .button, #classement_tab .button { float: none; }
 
 h2.dashboard .button span { padding: 0px 24px 0px 12px !important; font-weight: normal !important; line-height: 20px !important; }
 
@@ -925,7 +932,7 @@ ul.trombinoscope li:hover {
     .dashboard_page .bt {
         background: none !important;
     }
-    .dashboard_page .box-wrapper #occazbox, .dashboard_page .box-wrapper #classement {
+    .dashboard_page .box-wrapper #occazbox, .dashboard_page .box-wrapper #classement_tab {
         background: rgba(0, 0, 0, .05);
         margin: 0px !important;
     }

@@ -56,11 +56,11 @@ choices.build({ name: 'status', c1: 'blue', c2: 'white', values: [ {v: 0, l: 'No
 <? } ?>
 
 <? if ($role == _ROLE_ADMIN_ && $sess_context->isOnlyDeputy()) { ?>
-<? $values = ""; reset($libelle_role);  while(list($cle, $val) = each($libelle_role)) if ($cle == _ROLE_ADMIN_) $values .= ($values == "" ? "" : ",")."{ v: '".$cle."', l: '".$val."', s: ".($role == $cle ? "true" : "false")." }"; ?>
+<? $values = ""; reset($libelle_role); foreach($libelle_role as $cle => $val) if ($cle == _ROLE_ADMIN_) $values .= ($values == "" ? "" : ",")."{ v: '".$cle."', l: '".$val."', s: ".($role == $cle ? "true" : "false")." }"; ?>
 <? } else if ($sess_context->isOnlyDeputy()) { ?>
-<? $values = ""; reset($libelle_role);  while(list($cle, $val) = each($libelle_role)) if ($cle != _ROLE_ADMIN_) $values .= ($values == "" ? "" : ",")."{ v: '".$cle."', l: '".$val."', s: ".($role == $cle ? "true" : "false")." }"; ?>
+<? $values = ""; reset($libelle_role); foreach($libelle_role as $cle => $val) if ($cle != _ROLE_ADMIN_) $values .= ($values == "" ? "" : ",")."{ v: '".$cle."', l: '".$val."', s: ".($role == $cle ? "true" : "false")." }"; ?>
 <? } else { ?>
-<? $values = ""; reset($libelle_role);  while(list($cle, $val) = each($libelle_role)) $values .= ($values == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($role == $cle ? "true" : "false")." }"; ?>
+<? $values = ""; reset($libelle_role); foreach($libelle_role as $cle => $val) $values .= ($values == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($role == $cle ? "true" : "false")." }"; ?>
 <? } ?>
 
 choices.build({ name: 'role', c1: 'blue', c2: 'white', values: [<?= $values ?>] });

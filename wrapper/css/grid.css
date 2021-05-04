@@ -2,7 +2,7 @@
 /* Grid */
 /* ------------------------------------------ */
 .jkgrid {
-	width: 100%;
+	width: 100% !important;
 	padding: 0px;
 	position:relative;
 	font: 14px/100% Arial, Helvetica, sans-serif;
@@ -10,14 +10,16 @@
 	color: darkslategray;
 }
 * html .jkgrid { border-top:1px solid #aaa; }
-.jkgrid tr {
-	display:block;
-	color:darkslategray;
+.jkgrid, .jkgrid2 {
+	display: inline-table;
+}
+.jkgrid tr, .jkgrid2 tr {
+    color:darkslategray;
 	text-decoration:none;
 }
 
-.jkgrid tr.clickonit { cursor: pointer; }
-.jkgrid tbody tr:hover { background: rgba(137, 207, 241, 0.37); }
+.jkgrid tr.clickonit, .jkgrid2 tr.clickonit { cursor: pointer; }
+.jkgrid tbody tr:hover, .jkgrid2 tbody tr:hover { background: rgba(137, 207, 241, 0.37); }
 
 .jkgrid.nohighlight tbody tr:hover {
 	color:#777;
@@ -119,7 +121,7 @@
 .classic #days .c3 div { width: 470px; }
 #days .c4 div { width: 30px; }
 
-#matches .c2 div, #matches .c4 div { width: 205px; text-align: right; }
+#matches .c2 div, #matches .c4 div { width: 250px; text-align: right; }
 .classic #matches .c2 div, .classic #matches .c4 div { width: 230px; }
 #matches .c3 div { width: 130px; text-align: center; }
 #matches .c4 div { text-align: left; }
@@ -165,7 +167,7 @@ tr.points .button { padding: 5px 0px !important; width: 70px; }
 #tchat .c6 div { width: 50px; text-align: center; }
 #tchat .c7 div { width: 30px; }
 
-#table_teams, #table_players { display: grid; }
+#table_teams, #table_players { display: inline-table; }
 
 #table_teams div { width: 30px; text-align: right; }
 #table_teams .c1 { background: #ddd; }
@@ -387,7 +389,7 @@ table.score {
 .match2, .match4 { width: 140px !important; overflow: hidden !important; white-space: nowrap !important; }
 .match3 { width: 20px !important; border-right: 1px solid #aaa; }
 
-table.score td { padding: 0px 3px; font-weight:bold; line-height: 24px; height: 24px; }
+table.score td { padding: 0px 3px; font-weight: bold; line-height: 24px; height: 24px; }
 table.score .score_perdu, table .match2, table .match4 { color: #666 !important; }
 table.score .score_gagne { color: #fff !important; }
 table.score .score_gagne { background: #9E0303 !important; }
@@ -398,7 +400,7 @@ table.score td:last-child { border-radius: 0px 3px 3px 0px; -moz-border-radius: 
 
 table.sets td { padding: 0px; font-weight: bold; border: 0px solid #fff !important; }
 table.score ul { margin: 0px; padding: 0px; }
-table.score li { list-style: none; padding: 0px 5px; height: 16px; line-height: 16px; }
+table.score li { list-style: none; padding: 0px 5px; height: 16px; line-height: 16px; font-weight: bold; font-size: 12px; }
 table.score li.score_gagne { background-color: #9E0303; }
 
 table.sets td:first-child li:first-child { border-radius: 3px 0px 0px 0px; -moz-border-radius: 3px 0px 0px 0px; -webkit-border-radius: 3px 0px 0px 0px; }
@@ -452,8 +454,7 @@ td.crochet3 {
 
 .pyramid#box { display: none; }
 
-#dashjournee #table_players tr:first-child .c2  , #table_teams tr:first-child .c2  , .matches_grid tr:first-child .c2  , .matches_grid tr:first-child .c2  , #dash #classementjournee tr:first-child .c2 div ,
-#dashjournee #table_players tr:first-child .c2 a, #table_teams tr:first-child .c2 a, .matches_grid tr:first-child .c2 a, .matches_grid tr:first-child .c2 a, #dash #classementjournee tr:first-child .c2 div a { color: #9E0303; }
+#dashjournee #table_players tr:first-child .c2 a, #table_teams tr:first-child .c2 a, .matches_grid tr:first-child .c2 a, .matches_grid tr:first-child .c2 a, #dashjournee #classementjournee tr:first-child .c2 div a { color: #9E0303; }
 
 .links { padding: 10px 0px; }
 .links a { padding: 2px 0px 2px 20px; background: url('../img/dir.png') no-repeat 0px 3px; }
@@ -504,10 +505,10 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash .phasefinale .c2 div span { float: right; }
 #dash .phasefinale .c4 div span { float: left; }
 
-#dash #tr_5 .c1, #dash #tr_6 .c1, #dash #tr_7 .c1, #dash #tr_8 .c1, #dash #tr_9 .c1, #dash #tr_10 .c1, #dash #tr_4 .c1,#dash #tr_11 .c1, #dash #tr_12 .c1, #dash #tr_13 .c1, #dash #tr_14 .c1, #dash #tr_15 .c1, #dash #tr_16 .c1 { background: #777; color: white; }
-#dash #tr_1 .c1 { background: #5D00EF; color: white; }
-#dash #tr_2 .c1 { background: #813BEF; color: white; }
-#dash #tr_3 .c1 { background: #A677EF; color: white; }
+.classement #tr_5 .c1, .classement #tr_6 .c1, .classement #tr_7 .c1, .classement #tr_8 .c1, .classement #tr_9 .c1, .classement #tr_10 .c1, .classement #tr_4 .c1,.classement #tr_11 .c1, .classement #tr_12 .c1, .classement #tr_13 .c1, .classement #tr_14 .c1, .classement #tr_15 .c1, .classement #tr_16 .c1 { background: #777; color: white; }
+.classement #tr_1 .c1 { background: #5D00EF; color: white; }
+.classement #tr_2 .c1 { background: #813BEF; color: white; }
+.classement #tr_3 .c1 { background: #A677EF; color: white; }
 
 #dash #dashjournee th.c2 div { font-size: 14px; }
 #dash #dashjournee #matches .c1 { padding-right: 1px; }
@@ -517,8 +518,8 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash #dashjournee #box3 #tr_1 .c2 div { width: 145px; padding-right: 25px; background: url('../img/trophy_gold.png') no-repeat right 3px; }
 #dash #dashjournee #box3 h2, #dash #dashjournee #box3 .c3, #dash #dashjournee #box3 .c6, #dash #dashjournee #box3 .c7 { display: none; }
 
-#dash #classementjournee .c2 div { width: 175px; padding-left: 5px; font-size: 12px; }
-#dash #classementjournee .c4 div { text-align: center; }
+#dashjournee #classementjournee .c2 div { width: 175px; padding-left: 5px; font-size: 12px; }
+#dashjournee #classementjournee .c4 div { text-align: center; }
 
 #dash .mdl-card__supporting-text .c1 div { width: 30px !important; }
 #dash .mdl-card__supporting-text .c2 { width: 100% !important; }
@@ -529,6 +530,9 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 
 /* New 2021 CSS */
 .dashboard_page .mdl-card__supporting-text, .stats_page .mdl-card__supporting-text { padding: 0px 5px; }
+#dashjournee .mdl-card__supporting-text { padding: 0px; width: 100%; }
+.mdl-cell .mdl-card__supporting-text ~ .mdl-card__supporting-text { border-top: 1px solid #aaa; }
+.matches_grid { width: 100% !important; }
 
 .dashboard_page td { padding: 3px 5px; border-right: 0px solid #ccc; border-top: 1px solid #aaa; font-size: 12px; }
 .dashboard_page td div, .dashboard_page th div { font-weight: normal !important; height: 32px; line-height: 34px; display: table-cell; vertical-align: middle; }
@@ -536,6 +540,7 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 .dashboard_page th { padding: 5px 0px; background: #ccc !important; line-height: 20px; }
 .dashboard_page th div { background: #ccc; }
 .dashboard_page .score { margin: 2px 5px; padding: 0px; }
+.dashboard_page #dashjournee #matches .score { margin: 0px 5px; }
 .dashboard_page #table_teams .c4 div, .dashboard_page #table_teams .c3 div { text-align: center !important; }
 .dashboard_page #btexpand { margin-top: 10px; }
 .dashboard_page #btexpand i, .dashboard_page #more21 i, .dashboard_page #more32 i { color: #777; }
@@ -544,28 +549,37 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 .dashboard_page #table_players td.c2 > div {
     padding-left: 0px;
     background: none;
-    font-size: 14px;
 }
 .dashboard_page #table_teams button, .dashboard_page #table_players button { font-size: 12px; padding: 2px 5px !important; }
-.dashboard_page #table_teams td.c1 div, .dashboard_page #table_players td.c1 div {
+.dashboard_page .classement td.c1 div, .dashboard_page .classement td.c1 div {
     text-align: center;
     font-weight: bold !important;
     padding: 0px 15px;
+    line-height: 12px;
 }
 .dashboard_page td div .button { width: 45px; height: 26px; }
 #dash #table_players .gold .c1:before, #dash #table_players .silver .c1:before, #dash #table_players .bronze .c1:before { margin: -5px 0px 0 7px !important; }
 .dashboard_page #matches th.c2 { display: contents; }
-.dashboard_page #matches th.c2 div { text-align: right; }
-.dashboard_page #matches .c2, .dashboard_page #matches .c4 { width: 40% !important; white-space: nowrap; overflow: hidden; }
+.dashboard_page #matches th.c2 div { text-align: left; }
+.dashboard_page #matches .c2, .dashboard_page #matches .c4 { width: 60% !important; white-space: nowrap; overflow: hidden; }
 .dashboard_page #matches .c3 { display: flex !important; justify-content: center; margin: 0px !important; }
-.dashboard_page #matches .c3 div { width: auto; justify-content: center; margin: 4px 0px 0px; }
-.dashboard_page .phasefinaletype_2 ul { padding: 0px; margin: 0px; }
-.dashboard_page .phasefinaletype_2 li { list-style: none; font-size: 12px; }
-.dashboard_page .phasefinaletype_2 .c1 { background: #666; color: white; padding: 0px 10px; text-align: center; display: table-cell; }
-.dashboard_page .phasefinaletype_2 .c1 div { display: initial; }
-.dashboard_page .phasefinaletype_2 #tr_1 .c1 { background: #5D00EF; }
-.dashboard_page .phasefinaletype_2 #tr_2 .c1 { background: #813BEF; }
-.dashboard_page .phasefinaletype_2 #tr_3 .c1 { background: #A677EF; }
+.dashboard_page #matches .c3 div { width: auto; justify-content: center; margin: 1px 0px 1px; }
+.dashboard_page .phasefinale.type_2 ul { padding: 0px; margin: 0px; }
+.dashboard_page .phasefinale.type_2 li { list-style: none; font-size: 12px; line-height: 14px; }
+.dashboard_page .phasefinale.type_2 .c1 { width: 30px !important; background: #666; color: white; padding: 0px 5px; text-align: center; display: table-cell; }
+.dashboard_page .phasefinale.type_2 .c1 div { display: initial; }
+.dashboard_page .phasefinale.type_2 #tr_1 .c1 { background: #5D00EF; }
+.dashboard_page .phasefinale.type_2 #tr_2 .c1 { background: #813BEF; }
+.dashboard_page .phasefinale.type_2 #tr_3 .c1 { background: #A677EF; }
+
+#table_players_day .c1 div { width: 30px; }
+#table_players_day .c2 div { width: 250px; text-align: left; }
+#table_players_day .c3 div { width: 50px; }
+#table_players_day .c4 div { width: 50px; }
+#table_players_day .c5 div { width: 50px; }
+#table_players_day .c6 div { width: 50px; }
+#table_players_day .c7 div { width: 50px; }
+
 
 /* END NEW 2021 */
 

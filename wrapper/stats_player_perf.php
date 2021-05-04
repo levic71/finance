@@ -17,7 +17,7 @@ if (count($axes) > 10)
 	$mod = count($axes) > 20 ? 4 : 2;
 	$i = 0;
 	reset($axes);
-	while(list($cle, $val) = each($axes))
+	foreach($axes as $cle => $val)
 	{
 		if (($i++ % $mod) != 0) $axes[$cle] = "";
 	}

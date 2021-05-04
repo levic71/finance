@@ -25,7 +25,7 @@ if ($chart == 1) {
 		$mod = count($axes) > 20 ? 3 : 2;
 		$i = 0;
 		reset($axes);
-		while(list($cle, $val) = each($axes))
+		foreach($axes as $cle => $val)
 		{
 			if (($i++ % 2) != 0) $axes[$cle] = "";
 		}

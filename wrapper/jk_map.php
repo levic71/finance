@@ -77,7 +77,7 @@ infoWindow = null;
 function initialize() {
 
 	var libelle_genre = [];
-	<? while (list($cle, $val) = each($libelle_genre)) { echo "libelle_genre[".$cle."]='".$val."';\n"; } ?>
+	<? foreach($libelle_genre as $cle => $val) { echo "libelle_genre[".$cle."]='".$val."';\n"; } ?>
 
 	var center = new google.maps.LatLng(48.856614, 2.3522219);
 	map = new google.maps.Map(document.getElementById('map'), { zoom: 3, center: center, mapTypeId: google.maps.MapTypeId.ROADMAP });

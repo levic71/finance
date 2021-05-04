@@ -92,7 +92,7 @@ if ($choix_stat == 0)
 
 	if (count($tab) < 10) {
 		$empty_row = array('id' => 0); reset($cols);
-		while (list($cle, $val) = each($cols)) $empty_row[$cle] = "-";
+		foreach($cols as $cle => $val) $empty_row[$cle] = "-";
 
 		$c = count($tab);
 		for($x=0; $x < (10-$c); $x++) $tab[] = $empty_row;
