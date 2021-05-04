@@ -187,13 +187,13 @@ for($i=$nbset; $i < 5; $i++) { $score[$i][0] = ""; $score[$i][1] = ""; }
 
 
 $select1 = ""; $nom1 = ""; reset($eq);
-while(list($cle, $valeur) = each($eq)) {
+foreach($eq as $cle => $valeur) {
 	$select1 .= "<option value=\"".$valeur['id']."|".$valeur['joueurs']."\" ".($valeur['id'] == $selected_eq1 ? "selected=\"selected\"" : "").">".$cle."</option>";
 	if ($valeur['id'] == $selected_eq1) $nom1 = $cle;
 }
 
 $select2 = ""; $nom2 = ""; reset($eq);
-while(list($cle, $valeur) = each($eq)) {
+foreach($eq as $cle => $valeur) {
 	$select2 .= "<option value=\"".$valeur['id']."|".$valeur['joueurs']."\" ".($valeur['id'] == $selected_eq2 ? "selected=\"selected\"" : "").">".$cle."</option>";
 	if ($valeur['id'] == $selected_eq2) $nom2 = $cle;
 }

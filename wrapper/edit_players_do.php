@@ -232,7 +232,7 @@ else
 		$players_name = getPlayersNameForInsert($sess_context->getRealChampionnatId(), $auto_create_team);
 
 		// On créé automatiquement toutes les équipes avec ce nouveau joueurs
-		while(list($cle, $match) = each($players_name))
+		foreachch($players_name as $cle => $match)
 		{
 			if ($cle != $last_id_insert)
 			{

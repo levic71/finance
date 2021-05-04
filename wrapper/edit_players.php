@@ -122,7 +122,7 @@ if ($modifier) {
 <script>
 choices.build({ name: 'sexe', c1: 'blue', c2: 'white', values: [{ v: 1, l: 'Homme', s: <?= $j_sexe == 1 ? 'true' : 'false' ?> }, { v: 2, l: 'Femme', s: <?= $j_sexe == 2 ? 'true' : 'false' ?> }] });
 choices.build({ name: 'presence', c1: 'blue', c2: 'white', values: [ {v: 0, l: 'Non', s: <?= $j_presen == 0 ? "true" : "false" ?>}, {v: 1, l: 'Oui', s: <?= $j_presen == 1 ? "true" : "false" ?>} ] });
-<? $values = ""; reset($libelle_etat_joueur);  while(list($cle, $val) = each($libelle_etat_joueur)) $values .= ($values == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($j_etat == $cle ? "true" : "false")." }"; ?>
+<? $values = ""; reset($libelle_etat_joueur);  foreach($libelle_etat_joueur as $cle => $val) $values .= ($values == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($j_etat == $cle ? "true" : "false")." }"; ?>
 choices.build({ name: 'etat', c1: 'blue', c2: 'white', values: [<?= $values ?>] });
 <? if (!$modifier && $sess_context->isFreeXDisplay()) { ?>
 choices.build({ name: 'auto_create_team', c1: 'blue', c2: 'white', values: [{ v: 0, l: 'Oui', s: true}, { v: 1, l: 'Oui pour les joueurs réguliers'}, { v: 2, l: 'Non'}] });

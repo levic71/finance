@@ -93,7 +93,7 @@ for($x = 0; $x < $nb_journees; $x++)
 if ($allerretour == 0)
 {
 	$l2 = $liste_matchs;
-	while(list($cle, $val) = each($l2))
+	foreach($l2 as $cle => $val)
 	{
 		$date_j = $liste_dates[$ind_journee++];
 
@@ -110,7 +110,7 @@ if ($allerretour == 0)
 // Insertion ou affichage
 $display = 0;
 $nom = 1;
-while(list($cle, $val) = each($liste_matchs))
+foreach($liste_matchs as $cle => $val)
 {
 	if ($display == 1)
 		echo "<br />".$cle."<br />";

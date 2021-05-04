@@ -211,13 +211,13 @@ $mode_modification = $modifier && !$demo;
 
 <script>
 
-<? $sports = ""; reset($libelle_genre); while (list($cle, $val) = each($libelle_genre)) { $sports .= ($sports == "" ? "" : ",")."{ v: '".$cle."', l: '<img src=\"img/sports/".$icon_genre[$cle]."\" />".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type_sport'] ? "true" : "false")." }"; } ?>
+<? $sports = ""; reset($libelle_genre); foreach($libelle_genre as $cle => $val) { $sports .= ($sports == "" ? "" : ",")."{ v: '".$cle."', l: '<img src=\"img/sports/".$icon_genre[$cle]."\" />".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type_sport'] ? "true" : "false")." }"; } ?>
 choices.build({ name: 'type_sport', c1: 'blue', singlepicking: true, removable: true, values: [<?= $sports ?>] });
 
-<? $type = ""; reset($libelle_type); while (list($cle, $val) = each($libelle_type)) { $type .= ($type == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type'] ? "true" : "false")." }"; } ?>
+<? $type = ""; reset($libelle_type); foreach($libelle_type as $cle => $val) { $type .= ($type == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type'] ? "true" : "false")." }"; } ?>
 choices.build({ name: 'type', c1: 'blue', singlepicking: true, removable: true, values: [<?= $type ?>] });
 
-<? $type = ""; reset($libelle_typelieu); while (list($cle, $val) = each($libelle_typelieu)) {  $type .= ($type == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type_lieu'] ? "true" : "false")." }"; } ?>
+<? $type = ""; reset($libelle_typelieu); foreach($libelle_typelieu as $cle => $val) {  $type .= ($type == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $row['type_lieu'] ? "true" : "false")." }"; } ?>
 choices.build({ name: 'type_lieu', c1: 'blue', c2: 'white', values: [<?= $type ?>] });
 
 choices.build({ name: 'type_gestionnaire', c1: 'blue', c2: 'white', values: [ { v: 0, l: 'Particulier', s: <?= $row['type_gestionnaire'] == 0 ? "true" : "false" ?> }, { v: 1, l: 'Gérant club', s: <?= $row['type_gestionnaire'] == 1 ? "true" : "false" ?> }] });
@@ -244,7 +244,7 @@ logo_font_choice = document.getElementById('logo_font');
 buttons = logo_font_choice.getElementsByTagName('button');
 for(var i=0; i < buttons.length; i++) { buttons[i].style.fontFamily = "logo"+(i+1); buttons[i].style.fontSize = "18px"; buttons[i].style.lineHeight = "18px"; buttons[i].style.height = "30px"; }
 
-<? $themes = ""; while(list($cle, $val) = each($libelle_theme)) { $themes .= ($themes == "" ? "" : ",")."{ v: '".$cle."', l: '".$val."', s: ".($cle == $row['theme'] ? "true" : "false")." }";  } ?>
+<? $themes = ""; foreach($libelle_theme as $cle => $val) { $themes .= ($themes == "" ? "" : ",")."{ v: '".$cle."', l: '".$val."', s: ".($cle == $row['theme'] ? "true" : "false")." }";  } ?>
 choices.build({ name: 'theme', c1: 'blue', c2: 'white', singlepicking: true, removable: true, values: [ <?= $themes ?> ] });
 
 <? if ($row['gestion_nul'] == 0) { ?>hide('valeur-nul-zip-box');<? } else { ?>show('valeur-nul-zip-box');<? } ?>

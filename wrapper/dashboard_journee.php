@@ -64,7 +64,7 @@ if ($sess_context->isTournoiXDisplay()) {
 
 
 $content  = '';
-$content .= '<table id="matches" cellspacing="0" cellpadding="0" class="jkgrid99 '.($sess_context->isTournoiXDisplay() ? "phasefinale" : "").'type_'.$type_champ.'" style="width: 100%;">';
+$content .= '<table id="matches" cellspacing="0" cellpadding="0" class="jkgrid2 classement '.($sess_context->isTournoiXDisplay() ? "phasefinale" : "").' type_'.$type_champ.'" style="width: 100%;">';
 $content .= '<thead><tr>';
 if ($sess_context->isTournoiXDisplay())
 	$content .= '<th class="c1"><div>&nbsp;</div></th><th class="c2"><div>Matchs</div></th><th class="c3"><div>&nbsp</div></th>';
@@ -87,11 +87,11 @@ $content .= '</tbody></table>';
 <? if ($sess_context->isFreeXDisplay()) {
 	$res = Wrapper::getDisplayMatchesStats($journee['id'], true, false);
 	$content .= $res;
-	$bottom  .= '<div id="classement" class="underline" style="margin: 5px 10px;"></div>';
+	$bottom  .= '<div id="classement_tab" class="underline" style="margin: 5px 10px;"></div>';
 ?>
 
 <script>
-choices.build({ name: 'classement', c1: 'small selected', c2: 'small', callback: 'swap_box', values: [ { v: 0, l: 'Classement', s: false }, { v: 1, l: 'Matchs', s: true }] });
+choices.build({ name: 'classement_tab', c1: 'small selected', c2: 'small', callback: 'swap_box', values: [ { v: 0, l: 'Classement', s: false }, { v: 1, l: 'Matchs', s: true }] });
 
 var compact3 = <?= sess_context::getHomeListHeadcount() ?>;
 
@@ -105,8 +105,8 @@ toggle_all = function(nb) {
 	compact3 = nb;
 	show_elts('table_players_day', compact3, <?= sess_context::getHomeListHeadcount() ?>, 'more31', 'less31');
 	show_elts('matches', compact3, <?= sess_context::getHomeListHeadcount() ?>, 'more32', 'less32');
-	hide(choices.getSelection('classement') == 1 ? 'more31' : 'more32');
-	hide(choices.getSelection('classement') == 1 ? 'less31' : 'less32');
+	hide(choices.getSelection('classement_tab') == 1 ? 'more31' : 'more32');
+	hide(choices.getSelection('classement_tab') == 1 ? 'less31' : 'less32');
 }
 
 hide('table_players_day'); hide('more31'); hide('less31'); hide('more32'); hide('less32');
@@ -141,12 +141,12 @@ if ($sess_context->isTournoiXDisplay()) {
 	$content .= "<table id=\"classementjournee\" cellspacing=\"0\" cellpadding=\"0\" class=\"jkgrid99 matchespoules\" style=\"width: 100%;\">";
 	$content .= journee_tournoi_classement($journee, $saison_id, $real_id, $sess_context->getGestionMatchsNul());
 	$content .= "</table>";
-	$bottom .= "<div id=\"classement\" class=\"underline\" style=\"margin: 5px 0px;\"></div>";
+	$bottom .= "<div id=\"classement_tab\" class=\"underline\" style=\"margin: 5px 10px;\"></div>";
 
 ?>
 
 <script>
-choices.build({ name: 'classement', c1: 'small selected', c2: 'small', callback: 'swap_box2', values: [ { v: 0, l: 'Classement', s: false }, { v: 1, l: 'Phase finale', s: true } ] });
+choices.build({ name: 'classement_tab', c1: 'small selected', c2: 'small', callback: 'swap_box2', values: [ { v: 0, l: 'Classement', s: false }, { v: 1, l: 'Phase finale', s: true } ] });
 
 var compact2 = <?= sess_context::getHomeListHeadcount() ?>;
 
@@ -161,8 +161,8 @@ toggle_all2 = function(nb) {
 	compact2 = nb;
 	show_elts('classementjournee', compact2, <?= sess_context::getHomeListHeadcount() ?>, 'more21', 'less21');
 	show_elts('matches', compact2, <?= sess_context::getHomeListHeadcount() ?>, 'more22', 'less22');
-	hide(choices.getSelection('classement') == 1 ? 'more21' : 'more22');
-	hide(choices.getSelection('classement') == 1 ? 'less21' : 'less22');
+	hide(choices.getSelection('classement_tab') == 1 ? 'more21' : 'more22');
+	hide(choices.getSelection('classement_tab') == 1 ? 'less21' : 'less22');
 }
 
 hide('classementjournee'); hide('more21'); hide('less21'); hide('more22'); hide('less22');

@@ -87,7 +87,7 @@ $equipes = array();
 if ($type_matchs == "SP")
 {
 	reset($liste_poules);
-	while(list($cle, $equipes_poules) = each($liste_poules))
+	foreach($liste_poules as $cle => $equipes_poules)
 	{
 		// On récupères les infos des equipes (avec init classement vierge si besoin)
 		if ($equipes_poules != "")
@@ -255,7 +255,7 @@ if ($type_matchs == "C")
 	$fxlist = new FXListMatchsClassementTournoiIII($sess_context->getChampionnatId(), $is_journee_alias ? $id_journee_mere : $sess_context->getJourneeId(), isset($equipes[$niveau_type]) ? count($equipes[$niveau_type]) : 0, $sess_context->isAdmin(), "AND niveau like 'C|%'", $consolante, $phase_finale);
 	$i = 1;
 //	print_r($fxlist->body->tab);
-	while(list($cle, $item) = each($fxlist->body->tab)) {
+	foreach($fxlist->body->tab as $cle => $item) {
 
 		if ($sess_context->isAdmin()) {
 			if (str_replace('<FONT CLASS="equipe_gagne">', '', str_replace('</FONT>', '', $item['nom1'])) == "-") {
@@ -463,7 +463,7 @@ if ($type_matchs == "SP") {
 	$i = 0;
 	$nb_poules = 3;
 	reset($classement_equipes);
-	while(list($cle, $classement) = each($classement_equipes))
+	foreach($classement_equipes as $cle => $classement)
 	{
 		if (($i % 2) == 0) echo "<tr valign=\"top\">";
 		echo "<td id=\"slide".$nb_poules++."\" class=\"slide\" width=\"50%\">";

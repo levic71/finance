@@ -272,7 +272,7 @@ class FXListForumWhois extends FXList
 		while(list($ip, $val) = each($tab))
 		{
 			$pseudos = "";
-			while(list($cle, $val2) = each($tab[$ip]))
+			foreach($tab[$ip] as $cle => $val2)
 			    $pseudos .= ($pseudos == "" ? "" : "<br />").$val2;
 
 			$rows[] = array("ip" => $ip, "nom" => $pseudos);
@@ -470,7 +470,7 @@ class FXListTeams extends FXList
 		$sjs = new SQLJoueursServices($this->championnat);
 		$lst = $sjs->getListeJoueurs();
 
-		while(list($cle, $val) = each($this->fxbody->tab))
+		foreach($this->fxbody->tab as $cle => $val)
 		{
 			$items = explode('@', $this->fxbody->tab[$cle]['nb_joueurs']);
 			if (isset($items[1]) && $items[1] > 0)
@@ -552,7 +552,7 @@ class FXListJournees extends FXList
 
 	function formatForDisplay()
 	{
-		while(list($cle, $val) = each($this->fxbody->tab))
+		foreach($this->fxbody->tab as $cle => $val)
 		{
 			$this->fxbody->tab[$cle]['nom'] = ToolBox::conv_lib_journee($this->fxbody->tab[$cle]['nom']);
 			if ($this->fxbody->tab[$cle]['virtuelle'] == 1)
@@ -790,7 +790,7 @@ class FXListStatsTeamsII extends FXList
 	{
 		// Synthèse des stats avec tri sur tournoi_points
 		reset($this->body->tab);
-		while(list($cle, $val) = each($this->body->tab))
+		foreach($this->body->tab as $cle => $val)
 		{
 			$elt = $this->body->tab[$cle];
 			echo "<EQUIPE CLASSEMENT=\"".($cle+1)."\" NOM=\"".$elt['nom']."\" POINTS=\"".$elt['points']."\" MATCHS=\"".$elt['matchs_joues']."|".$elt['matchs_gagnes']."|".$elt['matchs_perdus']."\" SETS=\"".$elt['sets_joues']."|".$elt['sets_gagnes']."|".$elt['sets_perdus']."|".$elt['sets_diff']."\" BUTS=\"".$elt['buts_marques']."|".$elt['buts_encaisses']."|".$elt['diff']."\">";
@@ -1101,7 +1101,7 @@ class FXListMatchsPoules extends FXListMatchsGen
 		}
 
 		$tri = array();
-		while(list($cle, $val) = each($this->fxbody->tab))
+		foreach($this->fxbody->tab as $cle => $val)
 		{
 			if (isset($date_matchs[$this->fxbody->tab[$cle]['match_id']]))
 				$this->fxbody->tab[$cle]['mdate'] = $date_matchs[$this->fxbody->tab[$cle]['match_id']];
@@ -2139,7 +2139,7 @@ class FXListClassementGeneralTournoi extends FXListPresentation
 	{
 		// Synthèse des stats avec tri sur tournoi_points
 		reset($this->classement);
-		while(list($cle, $st) = each($this->classement))
+		foreach($this->classement as $cle => $st)
 		{
 			echo "<EQUIPE CLASSEMENT=\"".($cle+1)."\" NOM=\"".$st->nom."\" POINTS=\"".$st->tournoi_points."\" MATCHS=\"".$st->matchs_joues."|".$st->matchs_gagnes."|".$st->matchs_perdus."\" SETS=\"".$st->sets_joues."|".$st->sets_gagnes."|".$st->sets_perdus."|".($st->sets_diff > 0 ? "+" : "").$st->sets_diff."\" BUTS=\"".$st->buts_marques."|".$st->buts_encaisses."|".($st->diff > 0 ? "+" : "").$st->diff."\" MOYENNE=\"".$st->tournoi_classement_moy."\">";
 			echo "</EQUIPE>\n";
@@ -2530,7 +2530,7 @@ class FXListStatsJoueurs extends FXList
 		$res = array();
 
 		sort($this->nom_joueurs);
-		while(list($cle, $val) = each($this->nom_joueurs))
+		foreach($this->nom_joueurs as $cle => $val)
 		{
         	if ($this->id_joueurs[$val] == $id_joueur)
 			{
@@ -2566,7 +2566,7 @@ class FXListStatsJoueurs extends FXList
 	{
         // Synthèse des stats avec tri sur tournoi_points
 		reset($this->fxbody->tab);
-		while(list($cle, $val) = each($this->fxbody->tab))
+		foreach($this->fxbody->tab as $cle => $val)
 		{
 			$elt = $this->fxbody->tab[$cle];
 			echo "<JOUEUR CLASSEMENT=\"".($cle+1)."\" NOM=\"".$elt['joueur']."\" PRESENCE=\"".$elt['lib_presence']."\" MATCHS=\"".$elt['pourc_joues']."|".$elt['pourc_gagnes']."\" SETS=\"".$elt['sets_joues']."|".$elt['sets_gagnes']."|".$elt['sets_perdus']."|".($elt['sets_diff'] > 0 ? "+" : "").$elt['sets_diff']."\" FORME= BUTS=\"".$elt['moy_marquesA']."|".$elt['moy_encaissesD']."\">";

@@ -344,7 +344,7 @@ if ($total > 0) {
 else {
 		$j = 2;
 
-		while (list($cle, $val) = each($cols))
+		foreach($cols as $cle => $val)
 		{
 			$class = "";
 			$thead .= '<th class="c'.$j.''.($cle == "go" ? " edit go" : "").'"><div>'.(isset($th[$cle]) ? $th[$cle] : $cle).'</div></th>';
@@ -493,7 +493,7 @@ sport_sort = function(name) {
 
 <? if ($_action_ == "leagues") { ?>
 choices.build({ name: 'champ_sort',  c1: 'blue purple-title-card', c2: 'white', singlepicking: true, removable: true, callback: 'champ_sort', values: [ { v: 0, l: 'Libres', s: <?= $filtre_type_champ == 0 ? "true" : "false" ?> }, { v: 1, l: 'Championnats', s: <?= $filtre_type_champ == 1 ? "true" : "false" ?> }, { v: 2, l: 'Tournois', s: <?= $filtre_type_champ == 2 ? "true" : "false" ?> }, { v: 6, l: 'Favoris', s: <?= $filtre_type_champ == 6 ? "true" : "false" ?> }, { v: 9, l: 'Comp&eacute;titions ', s: <?= $filtre_type_champ == 9 ? "true" : "false" ?> } ] });
-<? $sports = "{ v: 99, l: 'Sports ', s: ".($sport_sort == 99 ? "true" : "false")."}"; reset($libelle_genre); while (list($cle, $val) = each($libelle_genre)) { $sports .= ($sports == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $sport_sort ? "true" : "false")." }"; } ?>
+<? $sports = "{ v: 99, l: 'Sports ', s: ".($sport_sort == 99 ? "true" : "false")."}"; reset($libelle_genre); foreach($libelle_genre as $cle => $val) { $sports .= ($sports == "" ? "" : ",")."{ v: '".$cle."', l: '".Wrapper::stringEncode4JS($val)."', s: ".($cle == $sport_sort ? "true" : "false")." }"; } ?>
 choices.build({ name: 'sport_sort',  c1: 'blue purple-title-card', c2: 'white', singlepicking: true, removable: true, callback: 'sport_sort', values: [ <?= $sports ?> ] });
 <? } ?>
 </script>
