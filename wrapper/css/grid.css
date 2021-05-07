@@ -35,8 +35,7 @@
 .jkgrid tbody tr td { border-bottom: 1px solid rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.5); }
 .jkgrid thead tr th { border-bottom: 1px solid rgba(0, 0, 0, 0.2); }
 
-.jkgrid tbody tr:first-child td { padding-top: 10px; }
-.jkgrid tbody tr:last-child td { border-bottom: 1px solid rgba(0, 0, 0, 0.25); padding-bottom: 10px; }
+.jkgrid tbody tr:last-child td { border-bottom: 1px solid rgba(0, 0, 0, 0.25); }
 
 .jkgrid th div a.desc { padding-right: 20px; background: url('../img/dir.png') no-repeat right -97px; }
 .jkgrid th div a.asc { padding-right: 20px; background: url('../img/dir.png') no-repeat right -34px; }
@@ -190,20 +189,21 @@ tr.points .button { padding: 5px 0px !important; width: 70px; }
 .type_2 #table_teams .c10 div { width: 40px !important; }
 #table_teams .c3 .button, #table_teams .c11 .button { width: 55px; }
 
-.gestion_nuls #table_teams .c2 div { width: 220px; text-align: left; }
-.type_2 #table_teams .c2 div { width: 220px; text-align: left; }
+.gestion_nuls #table_teams .c2 div { width: 350px !important; text-align: left; }
+.type_2 #table_teams .c2 div { width: 350px !important; text-align: left; }
 .gestion_nuls #table_teams .c6 { display: table-cell; color: #666; }
 
 
+#table_players td, #table_teams td { padding: 3px 5px; }
 #table_players div { width: 32px; text-align: right; }
 #table_players .c1 { background: #ddd; }
 #table_players .c2 a { color: #666; }
-#table_players .c2 > div { width: 150px !important; text-align: left; }
+#table_players .c2 > div { width: 350px !important; text-align: left; }
 #table_players th.c2 > div { padding-right: 25px; }
 #table_players td.c2 > div { padding-left: 25px; background: url('../img/user.png') no-repeat 0px 5px; }
 .nosets #table_players .c2 div { width: 155px !important; text-align: left; }
-#table_players .c3 > div { width: 34px; text-align: center; }
-#table_players .c4 > div { width: 34px; text-align: center; }
+#table_players .c3 > div { width: 34px !important; text-align: center; }
+#table_players .c4 > div { width: 34px !important; text-align: center; }
 #table_players .c5 div, #table_players .c6 div { text-align: center; }
 #table_players .c7 div, #table_players .c8 div { width: 40px; text-align: center; }
 #table_players .c9 div, #table_players .c10 div { width: 25px; text-align: center; }
@@ -485,6 +485,9 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 #dash #matches .c2, #dash #matches .c4 { width: 45% !important; padding: 0px 5px !important; }
 #dash #matches tr div { width: 100% !important; overflow: hidden; }
 
+.dashboard_page table.score { margin-top: 5px !important; }
+.dashboard_page table._3sets, .dashboard_page table._4sets, .dashboard_page table._5sets { margin-top: 2px !important; }
+
 #dash table.score { padding: 0px; }
 #dash table.score td { height: 23px !important; line-height: 23px !important; font-size: 11px; padding: 1px 4px; }
 #dash table.sets li { height: 13px !important; line-height: 13px !important; border-right: 0px solid #ccc; }
@@ -560,8 +563,8 @@ table.score .score_gagne, table.score .score_perdu { background: #ccc; border-bo
 .dashboard_page td div .button { width: 45px; height: 26px; }
 #dash #table_players .gold .c1:before, #dash #table_players .silver .c1:before, #dash #table_players .bronze .c1:before { margin: -5px 0px 0 7px !important; }
 .dashboard_page #matches th.c2 { display: contents; }
-.dashboard_page #matches th.c2 div { text-align: left; }
-.dashboard_page #matches .c2, .dashboard_page #matches .c4 { width: 60% !important; white-space: nowrap; overflow: hidden; }
+.dashboard_page .type_2 th.c2 div { text-align: left !important; }
+.dashboard_page #matches .c2, .dashboard_page #matches .c4 { width: 50% !important; white-space: nowrap; overflow: hidden; }
 .dashboard_page #matches .c3 { display: flex !important; justify-content: center; margin: 0px !important; }
 .dashboard_page #matches .c3 div { width: auto; justify-content: center; margin: 1px 0px 1px; }
 .dashboard_page .phasefinale.type_2 ul { padding: 0px; margin: 0px; }

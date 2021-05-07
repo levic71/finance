@@ -137,7 +137,7 @@ if ($choix_stat == 0)
 	}
 ?>
 
-<table cellspacing="0" cellpadding="0" class="jkgrid" id="table_players">
+<table cellspacing="0" cellpadding="0" class="jkgrid classement" id="table_players">
 <thead><?= $thead ?></thead>
 <tbody><?= $tbody ?></tbody>
 </table>
