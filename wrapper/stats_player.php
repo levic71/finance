@@ -185,14 +185,43 @@ $menu   = Wrapper::card_box_getIconButton(array("id" => "btediter", "icon" => "c
 $content = '
 <div class="mdl-grid">
 	<div id="dashcounter" class="mdl-cell mdl-cell--12-col">
-		<div class="btj2 button black '.Wrapper::getColorMedaille($j->medaille).'" style="width: auto;" onclick="mm({action:\'stats\', idp:".$idp."});">
+		<div class="btj2 '.Wrapper::getColorMedaille($j->medaille).'" style="width: auto;" onclick="mm({action:\'stats\', idp:".$idp."});">
 			<img src="'.$photo.'" />
 		</div>
-	</div>
-	<div id="dashcounter" class="mdl-cell mdl-cell--12-col">
-		<button id="b1" class="button blue"><i class="material-icons">grid_on</i><div class="cnt">0</div><div class="txt">Saisons</div></button>
-		<button id="b2" class="button blue" onclick="mm({action: \'players\'});"><i class="material-icons">person</i><div class="cnt">0</div><div class="txt">Joueurs</div></button>
-		<button id="b3" class="button blue" onclick="mm({action: \'teams\'});"><i class="material-icons">people</i><div class="cnt">0</div class="box"><div class="txt">Equipes</div></button>
+		<div>
+
+		<div class="skills">
+			<ul>
+				<li style="background-color: '.Wrapper::getColorFromFormeIndice($j->forme_indice).'"><div class="formeind bf'.$j->forme_indice.'"></div><span>Forme actuelle</span></li>
+				<li style="background-color: '.Wrapper::getColorFromFormeIndice($j->forme_last_indice).'"><div class="formeind bf'.$j->forme_last_indice.'"></div><span>Dernière journée</span></li>
+				<li style="background-color: rgb(255, 191, 103); color: rgb(255, 255, 255);">Gagnés de justesse</li>
+				<li style="background-color: rgb(255, 111, 103); color: rgb(255, 255, 255);">Perdus de justesse</li>
+';
+if ($user_linked) {
+	if (Wrapper::isUserDataPublic($user)) {
+		$content .='
+				<li style="background-color: '.Wrapper::getColorFromSexeIndice($user['sexe']).'"><div class="formeind"></div><span>'.Wrapper::formatNumber(Toolbox::date2age($user['date_nais'])).' ans</span></li>
+				<button id="b7" class="button blue"><div class="box"><div class="cnt">'.Wrapper::formatNumber($user['taille']).'</div><div class="txt">Cm</div></div></button>
+				<button id="b9" class="button blue"><div class="box"><div class="cnt">'.Wrapper::formatNumber($user['poids']).'</div><div class="txt">Kg</div></div></button>
+		';
+	} else {
+		$content .='
+				<button id="b6" class="button disable pucelock" onclick="alert(\'Information confidentielle !\');"><div class="box"><div class="cnt">-</div><div class="txt">Ans</div></div></button>
+				<button id="b7" class="button disable pucelock" onclick="alert(\'Information confidentielle !\');"><div class="box"><div class="cnt">-</div><div class="txt">Cm</div></div></button>
+				<button id="b9" class="button disable pucelock" onclick="alert(\'Information confidentielle !\');"><div class="box"><div class="cnt">-</div><div class="txt">Kg</div></div></button>
+		';
+	}
+} else {
+	$content .='
+				<button id="b6" class="button disable puceinfo" onclick="alert(\'Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !\');"><div class="box"><div class="cnt">-</div><div class="txt">Ans</div></div></button>
+				<button id="b7" class="button disable puceinfo" onclick="alert(\'Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !\');"><div class="box"><div class="cnt">-</div><div class="txt">Cm</div></div></button>
+				<button id="b9" class="button disable puceinfo" onclick="alert(\'Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !\');"><div class="box"><div class="cnt">-</div><div class="txt">Kg</div></div></button>
+	';
+}
+$content .='
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
 ';
@@ -200,7 +229,7 @@ $content = '
 Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $menu, "content" => $content));
 
 
-$title  = Wrapper::card_box_getH2Title(array("title" => "Statistiques"));
+$title  = Wrapper::card_box_getH2Title(array("title" =>"<span>Statistiques<br><small>&nbsp;</small></span>"));
 $menu   = '';
 $content = '
 <div class="mdl-grid">
@@ -239,52 +268,6 @@ Wrapper::card_box_6c(array("id" => "billboard", "title" => $title, "menu" => $me
 	<li><a href="#" onclick="mm({action: 'players'});" id="sb_back" class="swap ToolText" onmouseover="showtip('sb_back');"><span>Retour</span></a></li>
 </ul>
 
-
-
-
-<? if ($sess_context->isFreeXDisplay()) { ?>
-	<div id="bloc1" class="dashcounter box-wrapper subbar">
-		<div class="title">Forme</div><div class="title" style="width: 390px;">Morphologie</div>
-		<button id="bf<?= $j->forme_indice ?>" class="button <?= Wrapper::getColorFromFormeIndice($j->forme_indice) ?>"><div class="box"><div class="txt">Forme actuelle</div></div></button>
-		<button id="bf<?= $j->forme_last_indice ?>" class="button <?= Wrapper::getColorFromFormeIndice($j->forme_last_indice) ?>"><div class="box"><div class="txt">Dernière journée</div></div></button>
-		<? if ($user_linked) { ?>
-			<? if (Wrapper::isUserDataPublic($user)) { ?>
-				<button id="b6" class="button <?= Wrapper::getColorFromSexeIndice($user['sexe']) ?>"><div class="box"><div class="cnt"><?= Wrapper::formatNumber(Toolbox::date2age($user['date_nais'])) ?></div><div class="txt">Ans</div></div></button>
-				<button id="b7" class="button blue"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($user['taille']) ?></div><div class="txt">Cm</div></div></button>
-				<button id="b9" class="button blue"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($user['poids']) ?></div><div class="txt">Kg</div></div></button>
-			<? } else { ?>
-				<button id="b6" class="button disable pucelock" onclick="alert('Information confidentielle !');"><div class="box"><div class="cnt">-</div><div class="txt">Ans</div></div></button>
-				<button id="b7" class="button disable pucelock" onclick="alert('Information confidentielle !');"><div class="box"><div class="cnt">-</div><div class="txt">Cm</div></div></button>
-				<button id="b9" class="button disable pucelock" onclick="alert('Information confidentielle !');"><div class="box"><div class="cnt">-</div><div class="txt">Kg</div></div></button>
-			<? } ?>
-		<? } else { ?>
-			<button id="b6" class="button disable puceinfo" onclick="alert('Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !');"><div class="box"><div class="cnt">-</div><div class="txt">Ans</div></div></button>
-			<button id="b7" class="button disable puceinfo" onclick="alert('Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !');"><div class="box"><div class="cnt">-</div><div class="txt">Cm</div></div></button>
-			<button id="b9" class="button disable puceinfo" onclick="alert('Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !');"><div class="box"><div class="cnt">-</div><div class="txt">Kg</div></div></button>
-		<? } ?>
-	</div>
-<? } else { ?>
-	<div id="bloc1" class="dashcounter box-wrapper subbar">
-		<div class="title">Forme</div><div class="title" style="width: 390px;">Morphologie</div>
-		<button id="bf<?= $j->forme_indice ?>" class="button <?= Wrapper::getColorFromFormeIndice($j->forme_indice) ?>"><div class="box"><div class="txt">Forme actuelle</div></div></button>
-		<button id="bf<?= $j->forme_last_indice ?>" class="button <?= Wrapper::getColorFromFormeIndice($j->forme_last_indice) ?>"><div class="box"><div class="txt">Dernière journée</div></div></button>
-		<? if ($user_linked) { ?>
-			<? if (Wrapper::isUserDataPublic($user)) { ?>
-				<button id="b6" class="button <?= Wrapper::getColorFromSexeIndice($user['sexe']) ?>"><div class="box"><div class="cnt"><?= Wrapper::formatNumber(Toolbox::date2age($user['date_nais'])) ?></div><div class="txt">Ans</div></div></button>
-				<button id="b7" class="button blue"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($user['taille']) ?></div><div class="txt">Cm</div></div></button>
-				<button id="b9" class="button blue"><div class="box"><div class="cnt"><?= Wrapper::formatNumber($user['poids']) ?></div><div class="txt">Kg</div></div></button>
-			<? } else { ?>
-				<button id="b6" class="button disable pucelock" onclick="alert('Information confidentielle !');"><div class="box"><div class="cnt">-</div><div class="txt">Ans</div></div></button>
-				<button id="b7" class="button disable pucelock" onclick="alert('Information confidentielle !');"><div class="box"><div class="cnt">-</div><div class="txt">Cm</div></div></button>
-				<button id="b9" class="button disable pucelock" onclick="alert('Information confidentielle !');"><div class="box"><div class="cnt">-</div><div class="txt">Kg</div></div></button>
-			<? } ?>
-		<? } else { ?>
-			<button id="b6" class="button disable puceinfo" onclick="alert('Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !');"><div class="box"><div class="cnt">-</div><div class="txt">Ans</div></div></button>
-			<button id="b7" class="button disable puceinfo" onclick="alert('Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !');"><div class="box"><div class="cnt">-</div><div class="txt">Cm</div></div></button>
-			<button id="b9" class="button disable puceinfo" onclick="alert('Si vous êtes ce joueur, connectez-vous ou inscrivez-vous et demandez le rattachement au gestionnaire,\nvous pourrez ainsi compléter ces informations !');"><div class="box"><div class="cnt">-</div><div class="txt">Kg</div></div></button>
-		<? } ?>
-	</div>
-<? } ?>
 
 
 <div class="dashcounter box-wrapper subbar" style="margin-top: 10px; min-height: 50px;"><div class="title">Performance</div><div id="perfgraph"></div></div>

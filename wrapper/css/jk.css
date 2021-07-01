@@ -425,6 +425,10 @@ div#box { clear: both; }
 }
 #dashcounter #saisons button { text-align: center; }
 
+#dashcounter .skills .formeind {
+	width: 45px !important;
+	float: left !important;
+}
 
 #bloc0 { float: right; height: 55px; padding: 0px; margin-top: 10px; }
 #bloc1 { height: 65px; margin-top: 10px; }
@@ -497,29 +501,24 @@ background-image: -webkit-gradient(linear, right top, left top, color-stop(0.20,
 }
 
 .btj div { margin: 5px; border-top: 1px dashed #fff; font-size: x-small; }
-.btj2 { width: 165px; height: 165px; }
 .btj2 div { margin: 5px; padding: 3px 0px; border-top: 1px dashed #444; font-size: 12px; line-height: 16px ! important; overflow: hidden; }
 .btj2.blue div, .btj2.orange div { border-top: 1px dashed #fff; }
 .btj2 div span { width: 100px; white-space: nowrap; overflow: hidden; }
 
+.btj2.gold:before, .btj2.silver:before, .btj2.bronze:before {
+	position: absolute;
+	margin: 280px 0 0 250px !important;
+	transform: scale(.5); -webkit-transform: scale(.5); -moz-transform: scale(.5); -o-transform: scale(.5); -ms-transform: scale(.5);
+}
 .btj2.gold:before {
 	content:url('../img/gold.png');
-	position: absolute;
-	margin: 90px 0 0 100px !important;
-	transform: scale(.5); -webkit-transform: scale(.5); -moz-transform: scale(.5); -o-transform: scale(.5); -ms-transform: scale(.5);
- }
+}
 .btj2.silver:before {
 	content:url('../img/silver.png');
-	position: absolute;
-	margin: 90px 0 0 100px !important;
-	transform: scale(.5); -webkit-transform: scale(.5); -moz-transform: scale(.5); -o-transform: scale(.5); -ms-transform: scale(.5);
- }
+}
 .btj2.bronze:before {
 	content:url('../img/bronze.png');
-	position: absolute;
-	margin: 90px 0 0 100px !important;
-	transform: scale(.5); -webkit-transform: scale(.5); -moz-transform: scale(.5); -o-transform: scale(.5); -ms-transform: scale(.5);
- }
+}
 
 .trombinoscope .btj2.gold:before, .trombinoscope .btj2.silver:before, .trombinoscope .btj2.bronze:before { margin: 65px 0 0 80px !important; }
 
