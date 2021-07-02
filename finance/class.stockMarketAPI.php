@@ -309,5 +309,6 @@ class StockMarketAPI
 				break;
 		}
 	}
+}
 
 ?>

@@ -1,7 +1,9 @@
 <?php
 require_once('class.stockMarketAPI.php');
 ?>
-
+<html>
+<body>
+	
 <h1>Current Stock Information for AAPL</h1>
 
 <?php
@@ -34,3 +36,5 @@ $StockMarketAPI = new StockMarketAPI;
 $StockMarketAPI->symbol = array('AAPL', 'MSFT', 'GOOGL');
 ?>
 <pre><?php print_r($StockMarketAPI->getData());?></pre>
+
+</body></html>
