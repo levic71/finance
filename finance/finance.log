@@ -5534,3 +5534,339 @@ Stack trace:
 [08-Jul-2021 07:51:01 UTC] INFO  CRON   UST.PAR    [Daily Time Series Adjusted FULL] => No update
 [08-Jul-2021 07:51:01 UTC] INFO  CRON   UST.PAR    [Daily Time Series Adjusted COMPACT] => No update
 [08-Jul-2021 07:51:01 UTC] INFO  CRON   UST.PAR    [Quote] => No update
+[08-Jul-2021 10:13:25 Europe/Paris] INFO  CRON   BRE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:13:27 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:13:27 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:13:28 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:13:43 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:13:43 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:13:43 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:13:43 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:13:44 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:13:44 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:13:44 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:13:44 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:13:53 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:13:53 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:13:53 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:13:53 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:13:54 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:13:54 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:13:54 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:13:54 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:14:03 Europe/Paris] INFO  CRON   OBLI.PAR   , CACHE refresh Ok
+[08-Jul-2021 10:14:05 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:14:05 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:14:05 Europe/Paris] INFO  CRON   OBLI.PAR   [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:14:19 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:14:19 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:14:19 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:14:19 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:14:20 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:14:20 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:14:20 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:14:20 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:20:29 Europe/Paris] INFO  CRON   BRE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:20:30 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:20:31 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:20:31 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:20:32 Europe/Paris] INFO  CRON   ESE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:20:32 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:32 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:20:33 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:33 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:20:33 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:33 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:20:34 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:34 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:20:34 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:34 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:20:34 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:34 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:20:35 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:35 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:20:35 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:35 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:20:35 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:35 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:20:36 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:36 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:20:36 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:36 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:20:36 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:36 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:20:36 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:36 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:20:37 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:37 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:20:37 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:20:37 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:21:15 Europe/Paris] INFO  CRON   BRE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:21:16 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:21:17 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:21:17 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:21:18 Europe/Paris] INFO  CRON   ESE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:21:18 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:18 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:21:18 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:18 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:21:19 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:19 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:21:19 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:19 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:21:19 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:19 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:21:20 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:20 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:21:20 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:20 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:21:21 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:21 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:21:21 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:21 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:21:21 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:21 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:21:22 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:22 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:21:22 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:22 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:21:23 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:23 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:21:23 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:23 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:21:23 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:21:23 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:22:01 Europe/Paris] INFO  CRON   BRE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:22:02 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:22:02 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:22:03 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:22:03 Europe/Paris] INFO  CRON   ESE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:22:03 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:03 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:22:04 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:04 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:22:04 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:04 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:22:04 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:04 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:22:05 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:05 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:22:05 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:05 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:22:05 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:05 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:22:06 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:06 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:22:06 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:06 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:22:06 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:06 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:22:07 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:07 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:22:07 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:07 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:22:07 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:07 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:22:08 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:08 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:22:08 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:22:08 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:28:26 Europe/Paris] INFO  CRON   BRE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:28:27 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:28:27 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:28:27 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:28:27 Europe/Paris] INFO  CRON   ESE.PAR    , CACHE refresh Ok
+[08-Jul-2021 10:28:28 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:28 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:28:28 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:28 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:28:29 Europe/Paris] INFO  CRON   ESE.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:29 Europe/Paris] INFO  CRON   ESE.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:28:29 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:29 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:28:30 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:30 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:28:30 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:30 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:28:30 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:30 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:28:31 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:31 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:28:31 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:31 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:28:32 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:32 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:28:32 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:32 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:28:32 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:32 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:28:33 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:33 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:28:33 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:33 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:28:33 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:28:33 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:29:27 Europe/Paris] INFO  CRON   BRE.PAR    [Overview] => No update
+[08-Jul-2021 10:29:27 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:29:27 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:29:27 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => No update
+[08-Jul-2021 10:29:27 Europe/Paris] INFO  CRON   ESE.PAR    [Overview] => No update
+[08-Jul-2021 10:29:30 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:29:31 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:29:31 Europe/Paris] INFO  CRON   ESE.PAR    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:29:32 Europe/Paris] INFO  CRON   OBLI.PAR   , CACHE refresh Ok
+[08-Jul-2021 10:29:33 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:29:33 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:33 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:29:33 Europe/Paris] INFO  CRON   OBLI.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:33 Europe/Paris] INFO  CRON   OBLI.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:29:34 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:34 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:29:34 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:34 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:29:35 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:35 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:29:35 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:35 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:29:36 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:36 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:29:36 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:36 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:29:36 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:36 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:29:37 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:29:37 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   BRE.PAR    [Overview] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   ESE.PAR    [Overview] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   ESE.PAR    [Quote] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   OBLI.PAR   [Overview] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:30:29 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:30:30 Europe/Paris] INFO  CRON   OBLI.PAR   [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:30:30 Europe/Paris] INFO  CRON   PUST.PAR   , CACHE refresh Ok
+[08-Jul-2021 10:30:32 Europe/Paris] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:30:33 Europe/Paris] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:30:33 Europe/Paris] INFO  CRON   PUST.PAR   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:30:33 Europe/Paris] INFO  CRON   PUST.PAR   Runtime Exception NOTE
+[08-Jul-2021 10:30:33 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:30:33 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:30:34 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:30:34 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:30:34 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:30:34 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:30:35 Europe/Paris] INFO  CRON   SPY4.LON   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:30:35 Europe/Paris] INFO  CRON   SPY4.LON   Runtime Exception NOTE
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   BRE.PAR    [Overview] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   ESE.PAR    [Overview] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   ESE.PAR    [Quote] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   OBLI.PAR   [Overview] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   OBLI.PAR   [Quote] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   PUST.PAR   [Overview] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   PUST.PAR   [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:33:13 Europe/Paris] INFO  CRON   SPY4.LON   [Overview] => CACHE refresh Ok
+[08-Jul-2021 10:33:16 Europe/Paris] INFO  CRON   SPY4.LON   [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:33:17 Europe/Paris] INFO  CRON   SPY4.LON   [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:33:18 Europe/Paris] INFO  CRON   SPY4.LON   [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   BRE.PAR    [Overview] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   ESE.PAR    [Overview] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   ESE.PAR    [Quote] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   OBLI.PAR   [Overview] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   OBLI.PAR   [Quote] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   PUST.PAR   [Overview] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   PUST.PAR   [Quote] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   SPY4.LON   [Overview] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   SPY4.LON   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   SPY4.LON   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:33:34 Europe/Paris] INFO  CRON   SPY4.LON   [Quote] => No update
+[08-Jul-2021 10:35:05 Europe/Paris] INFO  CRON   PMEH.PAR   [Overview] => CACHE refresh Ok
+[08-Jul-2021 10:35:07 Europe/Paris] INFO  CRON   PMEH.PAR   [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:35:07 Europe/Paris] INFO  CRON   PMEH.PAR   [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:35:08 Europe/Paris] INFO  CRON   PMEH.PAR   [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:45:09 Europe/Paris] INFO  CRON   CRB.PAR    [Overview] => CACHE refresh Ok
+[08-Jul-2021 10:45:13 Europe/Paris] INFO  CRON   CRB.PAR    [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:45:14 Europe/Paris] INFO  CRON   CRB.PAR    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:45:14 Europe/Paris] INFO  CRON   CRB.PAR    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:45:22 Europe/Paris] INFO  CRON   GWT.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:45:22 Europe/Paris] INFO  CRON   GWT.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:45:22 Europe/Paris] INFO  CRON   GWT.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:45:22 Europe/Paris] INFO  CRON   GWT.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:45:23 Europe/Paris] INFO  CRON   GWT.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:45:23 Europe/Paris] INFO  CRON   GWT.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:45:23 Europe/Paris] INFO  CRON   GWT.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:45:23 Europe/Paris] INFO  CRON   GWT.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:45:42 Europe/Paris] INFO  CRON   IS04.DEX   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:45:42 Europe/Paris] INFO  CRON   IS04.DEX   Runtime Exception NOTE
+[08-Jul-2021 10:45:42 Europe/Paris] INFO  CRON   IS04.DEX   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:45:42 Europe/Paris] INFO  CRON   IS04.DEX   Runtime Exception NOTE
+[08-Jul-2021 10:45:42 Europe/Paris] INFO  CRON   IS04.DEX   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:45:42 Europe/Paris] INFO  CRON   IS04.DEX   Runtime Exception NOTE
+[08-Jul-2021 10:45:43 Europe/Paris] INFO  CRON   IS04.DEX   Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:45:43 Europe/Paris] INFO  CRON   IS04.DEX   Runtime Exception NOTE
+[08-Jul-2021 10:46:03 Europe/Paris] INFO  CRON   R2US.PAR   [Overview] => CACHE refresh Ok
+[08-Jul-2021 10:46:05 Europe/Paris] INFO  CRON   R2US.PAR   [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:46:05 Europe/Paris] INFO  CRON   R2US.PAR   [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:46:06 Europe/Paris] INFO  CRON   R2US.PAR   [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   BRE.PAR    [Overview] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   BRE.PAR    [Quote] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   CRB.PAR    [Overview] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   CRB.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   CRB.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   CRB.PAR    [Quote] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   ESE.PAR    [Overview] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   ESE.PAR    [Quote] => No update
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   GWT.PAR    [Overview] => CACHE refresh Ok
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   GWT.PAR    Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 10:46:59 Europe/Paris] INFO  CRON   GWT.PAR    Runtime Exception NOTE
+[08-Jul-2021 10:47:00 Europe/Paris] INFO  CRON   GWT.PAR    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:47:00 Europe/Paris] INFO  CRON   GWT.PAR    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:47:01 Europe/Paris] INFO  CRON   IS04.DEX   [Overview] => CACHE refresh Ok
+[08-Jul-2021 10:47:03 Europe/Paris] INFO  CRON   IS04.DEX   [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:47:03 Europe/Paris] INFO  CRON   IS04.DEX   [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   IS04.DEX   [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   OBLI.PAR   [Overview] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   OBLI.PAR   [Quote] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   PMEH.PAR   [Overview] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   PMEH.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   PMEH.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   PMEH.PAR   [Quote] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   PUST.PAR   [Overview] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   PUST.PAR   [Quote] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   R2US.PAR   [Overview] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   R2US.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   R2US.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   R2US.PAR   [Quote] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   SPY4.LON   [Overview] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   SPY4.LON   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   SPY4.LON   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 10:47:04 Europe/Paris] INFO  CRON   SPY4.LON   [Quote] => No update
