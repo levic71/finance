@@ -1,4 +1,10 @@
-<? include_once "include.php" ?>
+<?
+
+include_once "include.php";
+
+if (!is_dir("cache/")) mkdir("cache/");
+
+?>
 
 <!doctype html>
 <html lang="en">
