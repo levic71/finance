@@ -376,6 +376,11 @@ class cacheData {
         // self::buildCacheIntraday($symbol);
     }
 
+    public static function deleteCacheSymbol($symbol) {
+        foreach(["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"] as $key)
+            if (file_exists("cache/".$key."_".$symbol.".json")) unlink("cache/".$key."_".$symbol.".json");
+    }
+
 }
 
 //
