@@ -1,6 +1,9 @@
 #lst_stock td {
     text-align: center;
 }
+#lst_stock td:nth-child(2) {
+    text-align: left;
+}
 #lst_stock td:nth-child(10), #lst_stock td:nth-child(11),#lst_stock td:nth-child(12), #lst_stock td:nth-child(13), #lst_stock td:nth-child(14), #lst_stock td:nth-child(15) {
     text-align: right;
 }
