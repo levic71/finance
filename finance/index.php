@@ -2,6 +2,7 @@
 
 include_once "include.php";
 $pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
+$admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
 
 ?>
 
@@ -11,7 +12,7 @@ $pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
         <meta charset="utf-8">
         <meta http-equiv="z-ua-compatible" content="ie=edge">
         <title>Market Data</title>
-		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="style.css?ver=122" />
 		<script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
@@ -21,7 +22,10 @@ $pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
         <nav class="navbar navbar-default">
           <div class="container">
             <div class="navbar-header">
-              World Markets <button onclick="window.location='search.php'">search</button>
+            	World Markets
+<? if ($admin) { ?>
+				<button onclick="window.location='search.php'">search</button>
+<? } ?>
             </div>
           </div>
         </nav>
@@ -46,9 +50,11 @@ $pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
                             <th>MM200</th>
                             <th>MM20</th>
                             <th>MM7</th>
+<? if ($admin) { ?>
+							<th></th>
                             <th></th>
                             <th></th>
-                            <th></th>
+<? } ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,7 +69,7 @@ while($row = mysqli_fetch_array($res)) {
 	$c = calc::processData($row['symbol']);
 
 	echo "<tr>
-		<td>".$row['symbol']."</td><td></td><td>".$row['currency']."</td>
+		<td>".$row['symbol']."</td><td>".$row['name']."</td><td>".$row['currency']."</td>
 		<td>".$row['type']."</td><td>".$row['region']."</td>
 		<td>".$row['marketopen']."-".$row['marketclose']."</td><td>".$row['timezone']."</td>
 		<td>".$row['day']."</td><td>".sprintf("%.2f", $row['price'])."</td>
@@ -72,11 +78,18 @@ while($row = mysqli_fetch_array($res)) {
 		<td>".sprintf("%.2f", $c['MM200'])."</td>
 		<td>".sprintf("%.2f", $c['MM20'])."</td>
 		<td>".sprintf("%.2f", $c['MM7'])."</td>
+	";
+
+	if ($admin) {
+		echo "
 		<td><button onclick=\"location.href='detail.php?symbol=".$row['symbol']."'\">more</button></td>
 		<td><button onclick=\"updateStock('".$row['symbol']."');\">update</button></td>
 		<td><button onclick=\"deleteStock('".$row['symbol']."');\">delete</button></td>
-	</tr>";
+	";
 
+	}
+	
+	echo "</tr>";
 }
 
 ?>
