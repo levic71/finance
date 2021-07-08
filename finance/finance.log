@@ -5534,3 +5534,172 @@ Stack trace:
 [08-Jul-2021 07:51:01 UTC] INFO  CRON   UST.PAR    [Daily Time Series Adjusted FULL] => No update
 [08-Jul-2021 07:51:01 UTC] INFO  CRON   UST.PAR    [Daily Time Series Adjusted COMPACT] => No update
 [08-Jul-2021 07:51:01 UTC] INFO  CRON   UST.PAR    [Quote] => No update
+[08-Jul-2021 08:57:54 UTC] INFO  CRON   AAPL       [Overview] => CACHE refresh Ok
+[08-Jul-2021 08:57:57 UTC] INFO  CRON   AAPL       [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 08:57:57 UTC] INFO  CRON   AAPL       [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 08:57:58 UTC] INFO  CRON   AAPL       [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:03:50 UTC] INFO  CRON   MSFT       [Overview] => CACHE refresh Ok
+[08-Jul-2021 09:03:53 UTC] INFO  CRON   MSFT       [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:03:54 UTC] INFO  CRON   MSFT       [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:03:54 UTC] INFO  CRON   MSFT       Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.
+[08-Jul-2021 09:03:54 UTC] INFO  CRON   MSFT       Runtime Exception NOTE
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   AAPL       [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   AAPL       [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   AAPL       [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   AAPL       [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   BRE.PAR    [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   BRE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   BRE.PAR    [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   CRB.PAR    [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   CRB.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   CRB.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   CRB.PAR    [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   ESE.PAR    [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   ESE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   ESE.PAR    [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   GLE.PAR    [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   GLE.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   GLE.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   GLE.PAR    [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   GWT.PAR    [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   GWT.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   GWT.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   GWT.PAR    [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   IBM        [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   IBM        [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   IBM        [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   IBM        [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   IS04.DEX   [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   IS04.DEX   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   IS04.DEX   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   IS04.DEX   [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   MSFT       [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   MSFT       [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   MSFT       [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   MSFT       [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   OBLI.PAR   [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   OBLI.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   OBLI.PAR   [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   PMEH.PAR   [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   PMEH.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   PMEH.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   PMEH.PAR   [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   PUST.PAR   [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   PUST.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   PUST.PAR   [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   R2US.PAR   [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   R2US.PAR   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   R2US.PAR   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   R2US.PAR   [Quote] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   SPY4.LON   [Overview] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   SPY4.LON   [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   SPY4.LON   [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:00 UTC] INFO  CRON   SPY4.LON   [Quote] => No update
+[08-Jul-2021 09:05:01 UTC] INFO  CRON   UST.PAR    [Overview] => No update
+[08-Jul-2021 09:05:01 UTC] INFO  CRON   UST.PAR    [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:05:01 UTC] INFO  CRON   UST.PAR    [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:05:01 UTC] INFO  CRON   UST.PAR    [Quote] => No update
+[08-Jul-2021 09:41:05 UTC] INFO  CRON   AAPL       [Overview] => No update
+[08-Jul-2021 09:41:05 UTC] INFO  CRON   AAPL       [Daily Time Series Adjusted FULL] => No update
+[08-Jul-2021 09:41:05 UTC] INFO  CRON   AAPL       [Daily Time Series Adjusted COMPACT] => No update
+[08-Jul-2021 09:41:05 UTC] INFO  CRON   AAPL       [Quote] => No update
+[08-Jul-2021 09:45:08 UTC] INFO  CRON   BRE.FRK    [Overview] => CACHE refresh Ok
+[08-Jul-2021 09:45:12 UTC] INFO  CRON   BRE.FRK    [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:45:13 UTC] INFO  CRON   BRE.FRK    [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:45:13 UTC] INFO  CRON   BRE.FRK    [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:51:15 UTC] INFO  CRON   MSFT       [Overview] => CACHE refresh Ok
+[08-Jul-2021 09:51:17 UTC] INFO  CRON   MSFT       [Daily Time Series Adjusted FULL] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:51:18 UTC] INFO  CRON   MSFT       [Daily Time Series Adjusted COMPACT] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 09:51:18 UTC] INFO  CRON   MSFT       [Quote] => Update DB Ok, CACHE refresh Ok
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:23 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:30 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:01:44 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Array to string conversion in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Undefined variable: Array in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Trying to access array offset on value of type null in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 16
+[08-Jul-2021 10:02:52 UTC] PHP Notice:  Undefined variable: symbole in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 17
+[08-Jul-2021 10:02:52 UTC] INFO  UDT               UPDATE stock SET name='Lyxor Index Fund - Lyxor Stoxx Europe 600 Basic Resources UCITS ETF', type='', region='', marketopen='', marketclose='', timezone='', currency='') WHERE symbol='BRE.PAR'
+[08-Jul-2021 10:06:45 UTC] PHP Notice:  Undefined variable: symbole in /Applications/MAMP/htdocs/jorkyball/finance/stock_update.php on line 17
+[08-Jul-2021 10:06:45 UTC] INFO  UDT               UPDATE stock SET name='Lyxor Index Fund - Lyxor Stoxx Europe 600 Basic Resources UCITS ETF', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR') WHERE symbol='BRE.PAR'
+[08-Jul-2021 10:07:45 UTC] INFO  UDT    BRE.PAR    UPDATE stock SET name='Lyxor Index Fund - Lyxor Stoxx Europe 600 Basic Resources UCITS ETF', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='BRE.PAR'
+[08-Jul-2021 10:07:53 UTC] INFO  UDT    CRB.PAR    UPDATE stock SET name='Multi Units Luxembourg- Lyxor Commodities Thomson Reuters/Corecommodity Crb Tr Ucits Etf', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='CRB.PAR'
+[08-Jul-2021 10:07:55 UTC] INFO  UDT    ESE.PAR    UPDATE stock SET name='EasyETF - BNP Paribas Easy S&P 500 UCITS ETF', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='ESE.PAR'
+[08-Jul-2021 10:07:58 UTC] INFO  UDT    GWT.PAR    UPDATE stock SET name='Lyxor Index Fund - Lyxor MSCI EMU Growth (DR) UCITS ETF', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='GWT.PAR'
+[08-Jul-2021 10:08:02 UTC] INFO  UDT    OBLI.PAR   UPDATE stock SET name='Lyxor Index Fund - Lyxor PEA Obligations d\'Etat Euro UCITS ETF', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='OBLI.PAR'
+[08-Jul-2021 10:08:07 UTC] INFO  UDT    PMEH.PAR   UPDATE stock SET name='LYXOR UCITS ETF PEA FTSE EPRA/NAREIT Developed Europe', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='PMEH.PAR'
+[08-Jul-2021 10:08:10 UTC] INFO  UDT    PUST.PAR   UPDATE stock SET name='LYXOR UCITS ETF PEA NASDAQ-100', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='PUST.PAR'
+[08-Jul-2021 10:08:13 UTC] INFO  UDT    R2US.PAR   UPDATE stock SET name='SSgA SPDR ETFs Europe II Public Limited Company - SPDR Russell 2000 U.S. Small Cap UCITS ETF', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='R2US.PAR'
+[08-Jul-2021 10:08:16 UTC] INFO  UDT    R2US.PAR   UPDATE stock SET name='SSgA SPDR ETFs Europe II Public Limited Company - SPDR Russell 2000 U.S. Small Cap UCITS ETF', type='ETF', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='R2US.PAR'
+[08-Jul-2021 10:08:19 UTC] INFO  UDT    SPY4.LON   UPDATE stock SET name='SSgA SPDR ETFs Europe I Public Limited Company - SPDR S&P 400 US Mid Cap UCITS ETF', type='ETF', region='United Kingdom', marketopen='08:00', marketclose='16:30', timezone='UTC+01', currency='USD' WHERE symbol='SPY4.LON'
+[08-Jul-2021 10:08:25 UTC] INFO  UDT    GLE.PAR    UPDATE stock SET name='Société Générale Société anonyme', type='Equity', region='Paris', marketopen='09:00', marketclose='17:30', timezone='UTC+02', currency='EUR' WHERE symbol='GLE.PAR'
+[08-Jul-2021 10:08:32 UTC] INFO  UDT    IS04.DEX   UPDATE stock SET name='iShares IV Public Limited Company - iShares $ Treasury Bond 20+yr UCITS ETF', type='ETF', region='XETRA', marketopen='08:00', marketclose='20:00', timezone='UTC+02', currency='EUR' WHERE symbol='IS04.DEX'

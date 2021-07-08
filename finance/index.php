@@ -12,6 +12,7 @@ $pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
         <meta http-equiv="z-ua-compatible" content="ie=edge">
         <title>Market Data</title>
 		<link rel="stylesheet" href="style.css" />
+		<script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
 
@@ -20,7 +21,7 @@ $pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
         <nav class="navbar navbar-default">
           <div class="container">
             <div class="navbar-header">
-              World Markets
+              World Markets <button onclick="window.location='search.php'">search</button>
             </div>
           </div>
         </nav>
@@ -46,6 +47,8 @@ $pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
                             <th>MM20</th>
                             <th>MM7</th>
                             <th></th>
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,8 +73,9 @@ while($row = mysqli_fetch_array($res)) {
 		<td>".sprintf("%.2f", $c['MM20'])."</td>
 		<td>".sprintf("%.2f", $c['MM7'])."</td>
 		<td><button onclick=\"location.href='detail.php?symbol=".$row['symbol']."'\">more</button></td>
-		</tr>
-	";
+		<td><button onclick=\"updateStock('".$row['symbol']."');\">update</button></td>
+		<td><button onclick=\"deleteStock('".$row['symbol']."');\">delete</button></td>
+	</tr>";
 
 }
 
