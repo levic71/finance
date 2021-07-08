@@ -12,8 +12,8 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
         <meta charset="utf-8">
         <meta http-equiv="z-ua-compatible" content="ie=edge">
         <title>Market Data</title>
-		<link rel="stylesheet" href="style.css?ver=122" />
-		<script type="text/javascript" src="scripts.js"></script>
+		<link rel="stylesheet" href="css/style.css?ver=122" />
+		<script type="text/javascript" src="js/scripts.js"></script>
     </head>
     <body>
 

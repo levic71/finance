@@ -12,7 +12,7 @@ $search = isset($_GET["search"]) ? $_GET["search"] : "";
     <meta charset="utf-8">
     <meta http-equiv="z-ua-compatible" content="ie=edge">
     <title>Market Data</title>
-    <script type="text/javascript" src="scripts.js"></script>
+    <script type="text/javascript" src="js/scripts.js"></script>
 </head>
 
 <body>

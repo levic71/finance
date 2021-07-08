@@ -11,7 +11,7 @@ $symbol = isset($_GET["symbol"]) ? $_GET["symbol"] : "";
         <meta charset="utf-8">
         <meta http-equiv="z-ua-compatible" content="ie=edge">
         <title>Market Data</title>
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="css/style.css" />
     </head>
     <body>
 
