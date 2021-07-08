@@ -234,11 +234,12 @@ class cacheData {
             try {
                 $data = aafinance::getOverview($symbol);
         
+                $msg = "[Overview] => ";
                 $fp = fopen($file_cache, 'w');
                 fwrite($fp, json_encode($data));
                 fclose($fp);
     
-                $msg .= ", CACHE refresh Ok";
+                $msg .= "CACHE refresh Ok";
     
             } catch(RuntimeException $e) {
                 $msg = "Runtime Exception ".($e->getCode() == 1 ? "ERROR" : "NOTE");
