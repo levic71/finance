@@ -1,4 +1,9 @@
-<? include_once "include.php" ?>
+<?
+
+include_once "include.php";
+$pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
+
+?>
 
 <!doctype html>
 <html lang="en">
@@ -48,7 +53,7 @@
 
 $db = dbc::connect();
 
-$req = "SELECT * FROM stock s, quote q WHERE s.symbol = q.symbol AND (pea=1 OR s.symbol='SPY4.LON') ORDER BY s.symbol";
+$req = "SELECT * FROM stock s, quote q WHERE s.symbol = q.symbol AND ".($pea == -1 ? "1=1" : "pea=".$pea)." ORDER BY s.symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
