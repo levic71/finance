@@ -194,6 +194,9 @@ class aafinance {
 //
 class cacheData {
 
+    public static $lst_cache = ["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"];
+
+
     public static function refreshCache($filename, $timeout) {
 
         $update_cache = false;
@@ -377,7 +380,7 @@ class cacheData {
     }
 
     public static function deleteCacheSymbol($symbol) {
-        foreach(["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"] as $key)
+        foreach(self::$lst_cache as $key)
             if (file_exists("cache/".$key."_".$symbol.".json")) unlink("cache/".$key."_".$symbol.".json");
     }
 

@@ -83,6 +83,10 @@ while($row = mysqli_fetch_array($res)) {
     echo "<li>Ref date MMZ1M => ".$c['MMZ1MDate']."</li>";
     echo "<li>Ref date MMZ3M => ".$c['MMZ3MDate']."</li>";
     echo "<li>Ref date MMZ6M => ".$c['MMZ6MDate']."</li>";
+
+    foreach(cacheData::$lst_cache as $key)
+        echo "<li>Cache ".$key."_".$symbol.".json ".(file_exists("cache/".$key."_".$symbol.".json") ? "Ok" : "NOK")."</li>";
+
 ?>
 </ul>
             </div>
