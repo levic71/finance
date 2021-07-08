@@ -1,4 +1,9 @@
-<? include_once "include.php" ?>
+<?
+
+include_once "include.php";
+$symbol = isset($_GET["symbol"]) ? $_GET["symbol"] : "";
+
+?>
 
 <!doctype html>
 <html lang="en">
@@ -6,7 +11,7 @@
         <meta charset="utf-8">
         <meta http-equiv="z-ua-compatible" content="ie=edge">
         <title>Market Data</title>
-		<link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="style.css" />
     </head>
     <body>
 
@@ -35,7 +40,7 @@
                             <th>Time Zone</th>
                             <th>Last Day Quote</th>
                             <th>Price</th>
-                            <th>DM Float</th>
+                            <th>DM flottant</th>
                             <th>DM TKL</th>
                             <th>MM200</th>
                             <th>MM20</th>
@@ -48,7 +53,7 @@
 
 $db = dbc::connect();
 
-$req = "SELECT * FROM stock s, quote q WHERE s.symbol = q.symbol AND (pea=1 OR s.symbol='SPY4.LON') ORDER BY s.symbol";
+$req = "SELECT * FROM stock s, quote q WHERE s.symbol = q.symbol AND s.symbol='".$symbol."'";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
@@ -57,14 +62,14 @@ while($row = mysqli_fetch_array($res)) {
 	echo "<tr>
 		<td>".$row['symbol']."</td><td></td><td>".$row['currency']."</td>
 		<td>".$row['type']."</td><td>".$row['region']."</td>
-		<td>".$row['marketopen']."-".$row['marketclose']."</td><td>".$row['timezone']."</td>
-		<td>".$row['day']."</td><td>".sprintf("%.2f", $row['price'])."</td>
-		<td>".sprintf("%.2f", $c['MMFDM'])."%</td>
-		<td>".sprintf("%.2f", $c['MMZDM'])."%</td>
-		<td>".sprintf("%.2f", $c['MM200'])."</td>
-		<td>".sprintf("%.2f", $c['MM20'])."</td>
-		<td>".sprintf("%.2f", $c['MM7'])."</td>
-		<td><button onclick=\"location.href='detail.php?symbol=".$row['symbol']."'\">more</button></td>
+        <td>".$row['marketopen']."-".$row['marketclose']."</td><td>".$row['timezone']."</td>
+		<td>".$row['day']."</td><td>".$row['price']."</td>
+		<td>".$c['MMFDM']."%</td>
+		<td>".$c['MMZDM']."%</td>
+		<td>".$c['MM200']."</td>
+		<td>".$c['MM20']."</td>
+		<td>".$c['MM7']."</td>
+		<td><button onclick=\"location.href='index.php'\">back</button></td>
 		</tr>
 	";
 
@@ -72,7 +77,14 @@ while($row = mysqli_fetch_array($res)) {
 
 ?>
                     </tbody>
-                </table></pre> 
+                </table></pre>
+<ul> 
+<?
+    echo "<li>Ref date MMZ1M => ".$c['MMZ1MDate']."</li>";
+    echo "<li>Ref date MMZ3M => ".$c['MMZ3MDate']."</li>";
+    echo "<li>Ref date MMZ6M => ".$c['MMZ6MDate']."</li>";
+?>
+</ul>
             </div>
         </div>
     </div>

@@ -14,3 +14,4 @@ jorkyball.code-workspace*
 mdl/index.php
 jorkersdb5*.zip
 .DS_Store
+finance/cache/**
