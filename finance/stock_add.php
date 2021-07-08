@@ -1,7 +1,6 @@
 <?
 
 include_once "include.php";
-$symbol = isset($_GET["symbol"]) ? $_GET["symbol"] : "";
 
 foreach(['symbol', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : "";
