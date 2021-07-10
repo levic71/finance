@@ -62,29 +62,36 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
 
 $db = dbc::connect();
 
+$stocks = array();
+
 $req = "SELECT * FROM stock s, quote q WHERE s.symbol = q.symbol AND ".($pea == -1 ? "1=1" : "pea=".$pea)." ORDER BY s.symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
-	$c = calc::processData($row['symbol']);
+	$symbol = $row['symbol'];
+	$stocks[$symbol] = array_merge($row, calc::processData($symbol));
+	$perf[$symbol] = $stocks[$symbol]['MMZDM'];
 
 	echo "<tr>
-		<td>".$row['symbol']."</td><td>".$row['name']."</td><td>".$row['currency']."</td>
-		<td>".$row['type']."</td><td>".$row['region']."</td>
-		<td>".$row['marketopen']."-".$row['marketclose']."</td><td>".$row['timezone']."</td>
-		<td>".$row['day']."</td><td>".sprintf("%.2f", $row['price'])."</td>
-		<td>".sprintf("%.2f", $c['MMFDM'])."%</td>
-		<td>".sprintf("%.2f", $c['MMZDM'])."%</td>
-		<td>".sprintf("%.2f", $c['MM200'])."</td>
-		<td>".sprintf("%.2f", $c['MM20'])."</td>
-		<td>".sprintf("%.2f", $c['MM7'])."</td>
+		<td>".$stocks[$symbol]['symbol']."</td>
+		<td>".$stocks[$symbol]['name']."</td><td>".$row['currency']."</td>
+		<td>".$stocks[$symbol]['type']."</td><td>".$row['region']."</td>
+		<td>".$stocks[$symbol]['marketopen']."-".$row['marketclose']."</td>
+		<td>".$stocks[$symbol]['timezone']."</td>
+		<td>".$stocks[$symbol]['day']."</td>
+		<td>".sprintf("%.2f", $stocks[$symbol]['price'])."</td>
+		<td>".sprintf("%.2f", $stocks[$symbol]['MMFDM'])."%</td>
+		<td>".sprintf("%.2f", $stocks[$symbol]['MMZDM'])."%</td>
+		<td>".sprintf("%.2f", $stocks[$symbol]['MM200'])."</td>
+		<td>".sprintf("%.2f", $stocks[$symbol]['MM20'])."</td>
+		<td>".sprintf("%.2f", $stocks[$symbol]['MM7'])."</td>
 	";
 
 	if ($admin) {
 		echo "
-		<td><button onclick=\"location.href='detail.php?symbol=".$row['symbol']."'\">more</button></td>
-		<td><button onclick=\"updateStock('".$row['symbol']."');\">update</button></td>
-		<td><button onclick=\"deleteStock('".$row['symbol']."');\">delete</button></td>
+		<td><button onclick=\"location.href='detail.php?symbol=".$symbol."'\">more</button></td>
+		<td><button onclick=\"updateStock('".$symbol."');\">update</button></td>
+		<td><button onclick=\"deleteStock('".$symbol."');\">delete</button></td>
 	";
 
 	}
@@ -95,6 +102,30 @@ while($row = mysqli_fetch_array($res)) {
 ?>
                     </tbody>
                 </table></pre> 
+
+				- DM RP PEA<br />
+<?
+
+arsort($perf);
+echo "<ul>";
+foreach($perf as $key => $val) {
+	if ($key == "BRE.PAR" || $key == "ESE.PAR" || $key == "PUST.PAR" || $key == "OBLI.PAR") echo "<li>".$key." : ".$val."</li>";
+}
+echo "</ul>";
+
+?>
+				- DM+ PEA<br />
+<?
+
+arsort($perf);
+echo "<ul>";
+foreach($perf as $key => $val) {
+	if ($key == "GWT.PAR" || $key == "PMEH.PAR" || $key == "BRE.PAR" || $key == "ESE.PAR" || $key == "PUST.PAR" || $key == "OBLI.PAR") echo "<li>".$key." : ".$val."</li>";
+}
+echo "</ul>";
+
+?>
+				- Calcul MM sur les mois precedents
             </div>
         </div>
     </div>
