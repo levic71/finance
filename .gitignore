@@ -16,7 +16,12 @@ jorkersdb5*.zip
 .DS_Store
 finance/cache/**
 <<<<<<< HEAD
+<<<<<<< HEAD
 finance/finance.log
 =======
 finance/finance.log
 >>>>>>> 27a76a8a218adb5be3841229215bc206432c0dcf
+=======
+finance/finance.log
+finance/finance.log
+>>>>>>> 9784003e0f2100a676692ebccc93304953fd7ca3
