@@ -39,7 +39,33 @@ class dbc
 //
 class calc
 {
-    public static function processData($symbol) {
+    public static function getDailyHistoryQuote($symbol, $day) {
+
+        $ret = "0";
+
+        $req = "SELECT close FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day='".$day."'";
+        $res = dbc::execSql($req);
+        if ($row = mysqli_fetch_array($res)) $ret = $row['close'];
+
+        return $ret;
+    }
+
+    public static function getMaxHistoryDate($symbol) {
+
+        $ret = "0000-00-00";
+
+        $req = "SELECT day FROM daily_time_series_adjusted WHERE symbol='".$symbol."' ORDER BY day ASC LIMIT 1" ;
+        $res = dbc::execSql($req);
+        if ($row = mysqli_fetch_array($res)) $ret = $row['day'];
+
+        return $ret;
+    }
+
+    public static function processData($symbol, $day) {
+
+        global $dbg, $dbg_data;
+
+        if ($dbg_data) echo $symbol.", ".$day."<br />";
 
         $ret = array();
 
@@ -58,8 +84,12 @@ class calc
         $ref2_T1M = 0;
         $ref2_T3M = 0;
         $ref2_T6M = 0;
+        $ref_D1M = "0000-00-00";
+        $ref_D3M = "0000-00-00";
+        $ref_D6M = "0000-00-00";
 
-        $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' ORDER BY day DESC LIMIT 200" ;
+
+        $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200" ;
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res)) {
 
@@ -78,7 +108,7 @@ class calc
                 $m = $ref_MJ0 - 2;
                 $y = $ref_YJ0;
                 if ($m <= 0) {
-                    $m += 12 + 1;
+                    $m += 12;
                     $y -= 1;
                 }
                 $ref_D3M = date('Y-m-d', strtotime($y.'-'.$m.'-01'.' -1 day'));
@@ -87,10 +117,10 @@ class calc
                 $m = $ref_MJ0 - 5;
                 $y = $ref_YJ0;
                 if ($m <= 0) {
-                    $m += 12 + 1;
+                    $m += 12;
                     $y -= 1;
                 }
-                $ref_D6M = date('Y-m-d', strtotime($y.'-'.$m.'-01'.' -1 day'));
+                $ref_D6M = date('Y-m-t', strtotime($y.'-'.$m.'-01'.' -1 day'));
             }
 
             // Récupration cotation en mois flottant
@@ -117,22 +147,49 @@ class calc
                 $ret['MMZ6MDate'] = $row['day'];
             }
 
+            if ($dbg_data) echo $row['day']." ".$row['symbol']." ".$row['close']."<br />";
+
             $i++;
         }
+
+        if ($dbg_data) echo $symbol." => ref_D6M = ".$ref_D6M.", ref2_T6M = ".$ref2_T6M."<br />";
+
+        $ret['ref_close'] = $ref_TJ0;
+        $ret['ref_day'] = $ref_DAY;
 
         $ret['MM7']   = round(($sum_MM7   / 7),   2);
         $ret['MM20']  = round(($sum_MM20  / 20),  2);
         $ret['MM200'] = round(($sum_MM200 / 200), 2);
 
-        $ret['MMF1M'] = round(($ref_TJ0 - $ref_T1M)*100/$ref_T1M, 2);
-        $ret['MMF3M'] = round(($ref_TJ0 - $ref_T3M)*100/$ref_T3M, 2);
-        $ret['MMF6M'] = round(($ref_TJ0 - $ref_T6M)*100/$ref_T6M, 2);
-        $ret['MMFDM'] = round(($ret['MMF1M']+$ret['MMF3M']+$ret['MMF6M'])/3, 2);
+        $ret['MMF1M'] = $ref_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref_T1M)*100/$ref_T1M, 2);
+        $ret['MMF3M'] = $ref_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref_T3M)*100/$ref_T3M, 2);
+        $ret['MMF6M'] = $ref_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref_T6M)*100/$ref_T6M, 2);
+        $ret['MMFDM'] = $ref_T6M > 0 ? round(($ret['MMF1M']+$ret['MMF3M']+$ret['MMF6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMF1M']+$ret['MMF3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMF1M'] : -0));
 
-        $ret['MMZ1M'] = round(($ref_TJ0 - $ref2_T1M)*100/$ref2_T1M, 2);
-        $ret['MMZ3M'] = round(($ref_TJ0 - $ref2_T3M)*100/$ref2_T3M, 2);
-        $ret['MMZ6M'] = round(($ref_TJ0 - $ref2_T6M)*100/$ref2_T6M, 2);
-        $ret['MMZDM'] = round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2);
+        $ret['MMZ1M'] = $ref_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T1M)*100/$ref2_T1M, 2);
+        $ret['MMZ3M'] = $ref_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T3M)*100/$ref2_T3M, 2);
+        $ret['MMZ6M'] = $ref_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T6M)*100/$ref2_T6M, 2);
+        $ret['MMZDM'] = $ref_T6M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMZ1M'] : -0));
+
+        return $ret;
+    }
+
+    public static function getDualMomentum($lst_symbol, $last_day) {
+
+        $ret = array();
+        $ret["stocks"] = array();
+        $ret["perfs"]  = array();
+        $ret["day"] = $last_day;
+
+        $only = $lst_symbol == "ALL" ? "" : "AND s.symbol IN (".$lst_symbol.")";
+
+        $req = "SELECT * FROM stock s, quote q WHERE s.symbol = q.symbol ".$only." ORDER BY s.symbol";
+        $res = dbc::execSql($req);
+        while($row = mysqli_fetch_array($res)) {
+            $symbol = $row['symbol'];
+            $ret["stocks"][$symbol] = array_merge($row, calc::processData($symbol, $last_day));
+            $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
+        }
 
         return $ret;
     }
