@@ -149,8 +149,8 @@ while($i <= date("Ym", strtotime($b))) {
 
     $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
     $perf = round(($valo - ($invest * $nb_mois))*100/($invest * $nb_mois), 2);
-    echo "Valorisation portefeuille = ".$valo."<br />";
-    echo "Capital investit = ".$nb_mois*$invest."<br />";
+    echo "Valorisation portefeuille = ".$valo."?<br />";
+    echo "Capital investit = ".$nb_mois*$invest."?<br />";
     echo "Performance = ".$perf."%<br />";
 
 ?>
