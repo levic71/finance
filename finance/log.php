@@ -22,6 +22,7 @@ if (!is_dir("cache/")) mkdir("cache/");
           <div class="container">
             <div class="navbar-header">
               Log
+              <button onclick="window.location='log.php'">refresh</button>
               <button onclick="window.location='index.php?admin=1'">back</button>
             </div>
           </div>
@@ -32,7 +33,7 @@ if (!is_dir("cache/")) mkdir("cache/");
 
 <pre><?php
 
-echo exec( 'tail -n 100 ./finance.log');
+echo shell_exec( 'tail -n 40 ./finance.log');
 
 ?></pre>
             </div>
