@@ -50,7 +50,7 @@ while($row = mysqli_fetch_array($res)) {
 
     // Place de marche ouverte ?
     if ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2)
-        cacheData::buildCacheSymbol($row['symbol']);
+        cacheData::buildCacheSymbol($row['symbol'], true);
     else
         logger::info("CRON", $row['symbol'], "Market close, no update !");
 }
