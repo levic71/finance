@@ -16,11 +16,15 @@ function addStock(symbol, name, type, region, marketopen, marketclose, timezone,
 }
 
 function deleteStock(symbol) {
-	if (confirm('Sur ?')) {
+	if (confirm('Sur de vouloir retirer '+symbol+' ?')) {
 		ajaxCall("GET", "stock_delete.php?symbol="+symbol, 'Stock '+symbol+' deleted !', true);
 	}
 }
 
 function updateStock(symbol) {
 	ajaxCall("GET", "stock_update.php?symbol="+symbol, 'Stock '+symbol+' updated !', true);
+}
+
+function displayInfo(content) {
+	Swal.fire({ title: '', icon: 'info', html: content });
 }

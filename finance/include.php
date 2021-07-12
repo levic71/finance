@@ -8,6 +8,9 @@ header( 'content-type: text/html; charset=utf-8' );
 $dbg = true;
 $dbg_data = false;
 
+// On place la timezone à UTC pour pouvoir gerer les fuseaux horaires des places boursieres
+date_default_timezone_set("UTC");
+
 //
 // Connection DB
 //
