@@ -14,6 +14,10 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
         <title>Market Data</title>
 		<link rel="stylesheet" href="css/style.css?ver=123" />
 		<script type="text/javascript" src="js/scripts.js"></script>
+		<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
+        <style>
+.swal2-html-container ul { list-style-type: none; }
+        </style>
     </head>
     <body>
 
@@ -29,6 +33,24 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
         
         <div class="row">
             <div class="col-lg-12 table-responsive">
+<?
+
+$db = dbc::connect();
+
+$a = "2019-02-01";
+$b = date("Y-m-d");
+$lst = ["ESE.PAR", "BRE.PAR", "PUST.PAR", "OBLI.PAR"];
+$capital = 0;
+$invest = 1000; // montant investit par mois
+$nb_mois = 0;
+$actifs_achetees_nb = 0;
+$actifs_achetees_pu = 0;
+$actifs_achetees_symbol = "";
+
+echo "<h2>Simulation DM RP PEA<br />[".implode('-', $lst)."]<br />Du ".$a." au ".$b."</h2>";
+
+?>
+
 <pre><table id="lst_sim" class="table table-hover table-striped">
     <tr>
         <th>Date</th>
@@ -45,19 +67,6 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
         <th>Info</th>
     </tr>
 <?
-
-$db = dbc::connect();
-
-$a = "2019-02-01";
-$b = date("Y-m-d");
-$lst = ["ESE.PAR", "BRE.PAR", "PUST.PAR", "OBLI.PAR"];
-$capital = 0;
-$invest = 1000; // montant investit par mois
-$nb_mois = 0;
-$actifs_achetees_nb = 0;
-$actifs_achetees_pu = 0;
-$actifs_achetees_symbol = "";
-
 
 $i = date("Ym", strtotime($a));
 while($i <= date("Ym", strtotime($b))) {
@@ -110,13 +119,13 @@ while($i <= date("Ym", strtotime($b))) {
     }
 
 
-    echo "DM RP PEA [".$data["stocks"][$best_quote]["ref_day"]."] => ".$best_quote."-".$data["stocks"][$best_quote]["ref_close"];
+    $info_title =  "[".$data["stocks"][$best_quote]["ref_day"]."] => ".$best_quote;
 
-    echo "<ul>";
+    $info_content = "<ul>";
     foreach($data["perfs"] as $key => $val) {
-        echo "<li>".$key." : ".$val."</li>";
+        $info_content .= "<li>".$key." : ".$val."</li>";
     }
-    echo "</ul>";
+    $info_content .= "</ul>";
 
     if(substr($i, 4, 2) == "12")
         $i = (date("Y", strtotime($i."01")) + 1)."01";
@@ -127,15 +136,23 @@ while($i <= date("Ym", strtotime($b))) {
 
     $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
     $perf = round(($valo - ($invest * $nb_mois))*100/($invest * $nb_mois), 2);
-    echo "<td>".$valo."</td><td>".$perf."</td><td><span class=\"icon info\">An Icon</span></td>";
+    echo "<td>".$valo."</td><td>".$perf."%</td>";
+    echo "<td><span class=\"icon info\" onclick=\"	Swal.fire({ title: '".$info_title."', icon: 'info', html: '".$info_content."' });\">An Icon</span></td>";
 
     echo "</tr>";
 }
 
-$valo = $capital+($actifs_achetees_nb * $actifs_achetees_pu);
-echo "Capital = ".$valo."[".$nb_mois*$invest."]";
-
 ?></table></pre>
+
+<?
+
+    $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
+    $perf = round(($valo - ($invest * $nb_mois))*100/($invest * $nb_mois), 2);
+    echo "Valorisation portefeuille = ".$valo."<br />";
+    echo "Capital insvestit = ".$nb_mois*$invest."<br />";
+    echo "Performance = ".$perf."%<br />";
+
+?>
             </div>
         </div>
     </div>
