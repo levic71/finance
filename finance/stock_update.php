@@ -17,6 +17,10 @@ if (isset($symbol) && $symbol != "") {
                 $res = dbc::execSql($req);
             }
         }
+
+        unlink('cache/QUOTE_'.$symbol.'.json');
+        cacheData::buildCacheQuote($symbol);
+
     } catch (RuntimeException $e) {
         if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
         if ($e->getCode() == 2) logger::info("UDT", $row['symbole'], $e->getMessage());

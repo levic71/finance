@@ -20,7 +20,7 @@ if (isset($symbol) && $symbol != "") {
         $req = "INSERT INTO stock (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
         $res = dbc::execSql($req);
 
-        cacheData::buildCacheSymbol($symbol);
+        cacheData::buildCacheSymbol($symbol, true);
     }
 
 }

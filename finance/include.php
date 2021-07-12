@@ -431,12 +431,14 @@ class cacheData {
         logger::info("CRON", $symbol, $msg);
     }
 
-    public static function buildCacheSymbol($symbol) {
+    public static function buildCacheSymbol($symbol, $marketopen = false) {
         self::buildCacheOverview($symbol);
-        self::buildCacheDailyTimeSeriesAdjusted($symbol, true);
-        self::buildCacheDailyTimeSeriesAdjusted($symbol, false);
-        self::buildCacheQuote($symbol);
-        // self::buildCacheIntraday($symbol);
+        if ($marketopen) {
+            self::buildCacheDailyTimeSeriesAdjusted($symbol, true);
+            self::buildCacheDailyTimeSeriesAdjusted($symbol, false);
+            self::buildCacheQuote($symbol);
+            // self::buildCacheIntraday($symbol);
+        }
     }
 
     public static function deleteCacheSymbol($symbol) {
