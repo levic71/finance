@@ -27,6 +27,7 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
 	<button onclick="window.location='search.php'">Search</button>
 	<button onclick="window.location='simulator.php'">Simulator</button>
 	<button onclick="window.location='crontab.php'">Cron</button>
+	<button onclick="window.location='log.php'">Log</button>
 <? } ?>
             </div>
           </div>
@@ -45,7 +46,7 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
                             <th>Region</th>
                             <th>Market Hours</th>
                             <th>Time Zone</th>
-							<th>Cache</th>
+							<th>Cache Quote</th>
                             <th>Last Day Quote</th>
                             <th>Max Archive</th>
                             <th>Price</th>
