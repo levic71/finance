@@ -24,7 +24,9 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
             <div class="navbar-header">
             	World Markets
 <? if ($admin) { ?>
-				<button onclick="window.location='search.php'">search</button>
+	<button onclick="window.location='search.php'">search</button>
+	<button onclick="window.location='simulator.php'">simulator</button>
+	<button onclick="window.location='crontab.php'">cron</button>
 <? } ?>
             </div>
           </div>

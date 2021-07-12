@@ -22,6 +22,7 @@ if (!is_dir("cache/")) mkdir("cache/");
           <div class="container">
             <div class="navbar-header">
               Crontab
+              <button onclick="window.location='index.php?admin=1'">back</button>
             </div>
           </div>
         </nav>

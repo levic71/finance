@@ -55,7 +55,7 @@ if (isset($search) && $search != "") {
 ?>
             </table></pre>
             
-            <button onclick="window.location='index.php'">back</button>
+            <button onclick="window.location='index.php?admin=1'">back</button>
 
             </div>
         </div>

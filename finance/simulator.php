@@ -26,7 +26,8 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
         <nav class="navbar navbar-default">
           <div class="container">
             <div class="navbar-header">
-            	World Markets
+            	Simulator
+                <button onclick="window.location='index.php?admin=1'">back</button>
             </div>
           </div>
         </nav>
