@@ -44,7 +44,7 @@ if (isset($search) && $search != "") {
 
         if (isset($data["bestMatches"])) {
             foreach ($data["bestMatches"] as $key => $val) {
-                echo "<tr><td>" . $val["1. symbol"] . "</td><td>" . $val["2. name"] . "</td><td>" . $val["3. type"] . "</td><td>" . $val["4. region"] . "</td><td>" . $val["5. marketOpen"] . "</td><td>" . $val["6. marketClose"] . "</td><td>" . $val["7. timezone"] . "</td><td>" . $val["8. currency"] . "</td><td><button onclick=\"addStock('" . $val["1. symbol"] . "', '" . addslashes($val["2. name"]) . "', '" . $val["3. type"] . "', '" . $val["4. region"] . "', '" . $val["5. marketOpen"] . "', '" . $val["6. marketClose"] . "', escape('" . $val["7. timezone"] . "'), '" . $val["8. currency"] . "');\">add</button></td></tr>";
+                echo "<tr><td>" . $val["1. symbol"] . "</td><td>" . $val["2. name"] . "</td><td>" . $val["3. type"] . "</td><td>" . $val["4. region"] . "</td><td>" . $val["5. marketOpen"] . "</td><td>" . $val["6. marketClose"] . "</td><td>" . $val["7. timezone"] . "</td><td>" . $val["8. currency"] . "</td><td><button onclick=\"addStock('" . $val["1. symbol"] . "', '" . addslashes($val["2. name"]) . "', '" . $val["3. type"] . "', '" . $val["4. region"] . "', '" . $val["5. marketOpen"] . "', '" . $val["6. marketClose"] . "', '" . urlencode($val["7. timezone"]). "', '" . $val["8. currency"] . "');\">add</button></td></tr>";
             }
         }
     } catch (RuntimeException $e) {
@@ -55,7 +55,7 @@ if (isset($search) && $search != "") {
 ?>
             </table></pre>
             
-            <button onclick="window.location='index.php'">back</button>
+            <button onclick="window.location='index.php?admin=1'">back</button>
 
             </div>
         </div>

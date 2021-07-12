@@ -5,6 +5,8 @@ include_once "include.php";
 foreach(['symbol', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : "";
 
+$timezone = urldecode($timezone);
+
 if (isset($symbol) && $symbol != "") {
 
     $db = dbc::connect();

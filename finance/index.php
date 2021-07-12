@@ -13,7 +13,7 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
         <meta http-equiv="z-ua-compatible" content="ie=edge">
         <title>Market Data</title>
 		<link rel="stylesheet" href="css/style.css?ver=122" />
-		<script type="text/javascript" src="js/scripts.js"></script>
+		<script type="text/javascript" src="js/scripts.js?ver=122"></script>
     </head>
     <body>
 
@@ -24,7 +24,9 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
             <div class="navbar-header">
             	World Markets
 <? if ($admin) { ?>
-				<button onclick="window.location='search.php'">search</button>
+	<button onclick="window.location='search.php'">search</button>
+	<button onclick="window.location='simulator.php'">simulator</button>
+	<button onclick="window.location='crontab.php'">cron</button>
 <? } ?>
             </div>
           </div>
@@ -43,6 +45,7 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
                             <th>Region</th>
                             <th>Market Hours</th>
                             <th>Time Zone</th>
+							<th>Cache</th>
                             <th>Last Day Quote</th>
                             <th>Max Archive</th>
                             <th>Price</th>
@@ -70,6 +73,10 @@ foreach($data["stocks"] as $key => $val) {
 
 	$max_histo = calc::getMaxHistoryDate($symbol);
 
+	$cache_filename = "cache/QUOTE_".$symbol.".json";
+	$cache_timestamp = file_exists($cache_filename) ? date("Y-m-d", filemtime($cache_filename)) : "xxxx-xx-xx";
+
+
 	echo "<tr>
 		<td>".$val['symbol']."</td>
 		<td>".$val['name']."</td>
@@ -78,6 +85,7 @@ foreach($data["stocks"] as $key => $val) {
 		<td>".$val['region']."</td>
 		<td>".$val['marketopen']."-".$val['marketclose']."</td>
 		<td>".$val['timezone']."</td>
+		<td>".$cache_timestamp."</td>
 		<td>".$val['day']."</td>
 		<td>".$max_histo."</td>
 		<td>".sprintf("%.2f", $val['price'])."</td>
