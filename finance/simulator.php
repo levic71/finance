@@ -1,8 +1,13 @@
 <?
 
 include_once "include.php";
-$pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
-$admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
+
+$invest = 1000;
+$date_start = "2019-02-01";
+$date_end = date("Y-m-d");
+
+foreach(['invest', 'date_start', 'date_end'] as $key)
+    $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 ?>
 
@@ -12,8 +17,8 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
         <meta charset="utf-8">
         <meta http-equiv="z-ua-compatible" content="ie=edge">
         <title>Market Data</title>
-		<link rel="stylesheet" href="css/style.css?ver=123" />
-		<script type="text/javascript" src="js/scripts.js"></script>
+		<link rel="stylesheet" href="css/style.css?ver=1234" />
+		<script type="text/javascript" src="js/scripts.js?ver=1234"></script>
 		<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
         <style>
 .swal2-html-container ul { list-style-type: none; }
@@ -27,7 +32,8 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
           <div class="container">
             <div class="navbar-header">
             	Simulator
-                <button onclick="window.location='index.php?admin=1'">back</button>
+                <button onclick="window.location='simulator.php?invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end')">Compute</button>
+                <button onclick="window.location='index.php?admin=1'">Back</button>
             </div>
           </div>
         </nav>
@@ -38,19 +44,20 @@ $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
 
 $db = dbc::connect();
 
-$a = "2019-02-01";
-$b = date("Y-m-d");
 $lst = ["ESE.PAR", "BRE.PAR", "PUST.PAR", "OBLI.PAR"];
 $capital = 0;
-$invest = 1000; // montant investit par mois
 $nb_mois = 0;
 $actifs_achetees_nb = 0;
 $actifs_achetees_pu = 0;
 $actifs_achetees_symbol = "";
 
-echo "<h2>Simulation DM RP PEA<br />[".implode('-', $lst)."]<br />Du ".$a." au ".$b."</h2>";
-
 ?>
+
+<p><b>
+    Simulation DM RP PEA<br />[<?= implode('-', $lst) ?>]<br />
+    Investissement <input type="text" id="invest" value="<?= $invest ?>" />&euro;/mois<br />
+    Du <input type="text" id="date_start" value="<?= $date_start ?>" /> au <input type="text" id="date_end" value="<?= $date_end ?>" />
+</b></p>
 
 <pre><table id="lst_sim" class="table table-hover table-striped">
     <tr>
@@ -69,8 +76,8 @@ echo "<h2>Simulation DM RP PEA<br />[".implode('-', $lst)."]<br />Du ".$a." au "
     </tr>
 <?
 
-$i = date("Ym", strtotime($a));
-while($i <= date("Ym", strtotime($b))) {
+$i = date("Ym", strtotime($date_start));
+while($i <= date("Ym", strtotime($date_end))) {
 
     // On investit !!!
     $capital += $invest;
