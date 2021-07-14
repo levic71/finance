@@ -4,6 +4,12 @@ include_once "include.php";
 $pea = isset($_GET["pea"]) ? $_GET["pea"] : -1;
 $admin = isset($_GET["admin"]) && $_GET["admin"] == 1 ? true : false;
 
+// Gerer les cotations vides dans le calcul DM
+// Courbe historique sur detail
+// Recup data form https://marketstack.com
+// alerte si gros volume échangé
+// ratio de sharpe
+
 ?>
 
 <!doctype html>

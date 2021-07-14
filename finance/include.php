@@ -191,6 +191,7 @@ class calc
         while($row = mysqli_fetch_array($res)) {
             $symbol = $row['symbol'];
             $ret["stocks"][$symbol] = array_merge($row, calc::processData($symbol, $last_day));
+            // On isole les perfs pour pouvoir trier par performance decroissante
             $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
         }
 
