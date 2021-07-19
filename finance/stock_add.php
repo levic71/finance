@@ -3,7 +3,7 @@
 include_once "include.php";
 
 foreach(['symbol', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency'] as $key)
-    $$key = isset($_GET[$key]) ? $_GET[$key] : "";
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $timezone = urldecode($timezone);
 
@@ -17,12 +17,20 @@ if (isset($symbol) && $symbol != "") {
     $row = mysqli_fetch_array($res);
 
     if ($row['total'] == 0) {
+
+        $name = urldecode($name);
+        
         $req = "INSERT INTO stock (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
+
+        echo $req;
         $res = dbc::execSql($req);
 
         cacheData::buildCacheSymbol($symbol, true);
     }
-
 }
-
 ?>
+
+<script>
+	Swal.fire({ title: '', icon: 'info', html: "Quote <?= $symbol ?> added" });
+    go({ action: 'home_content', id: 'main', url: 'home_content.php?admin=1' });
+</script>
