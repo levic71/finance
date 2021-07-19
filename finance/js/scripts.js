@@ -10,6 +10,13 @@ function ajaxCall(method, url, msg, refresh=false) {
 	xmlhttp.send();
 }
 
+var js_debug = true;
+
+isTouch = function() { return ( (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i))  || (navigator.userAgent.match(/Android/i))); }
+isIE8 = function() { return (document.all && document.querySelector && !document.addEventListener); }
+
+myconsole = function(text) { if (js_debug) { if (typeof console.log !== 'undefined') console.log(text); else alert(text); } }
+
 // DOM functions
 el = function(id) { return document.getElementById(id); }
 cc = function(id, c) {
@@ -45,22 +52,44 @@ setCN = function(id, cn) { try { el(id).className = cn; } catch(e) { myconsole('
 addCN = function(id, cn) { try { el(id).className += (el(id).className == "" ? "" : " ")+cn; } catch(e) { myconsole('addCN:' + id + ':' + e); } }
 rmCN  = function(id, cn) { try { var tmp = el(id).className.split(' '); ncn = ""; for(var n=0;n<tmp.length;n++) { if (tmp[n] != cn) ncn += " "+tmp[n]; }; el(id).className = ncn; } catch(e) { myconsole('rmCN:' + id + ':' + e); } }
 
+go = function(args) {
+	var opt = args||{};
+	var id=opt.id||'main';
+	var action=opt.action||'';
+	var menu=opt.menu||'';
+	var confirmdel=opt.confirmdel||0;
+	var loading_area=opt.loading_area||'';
 
-function addStock(symbol, name, type, region, marketopen, marketclose, timezone, currency) {
-	url = "stock_add.php?symbol="+symbol+"&name="+name+"&type="+type+"&region="+region+"&marketopen="+marketopen+"&marketclose="+marketclose+"&timezone="+timezone+"&currency="+currency;
-	ajaxCall("GET", url, 'Stock '+symbol+' added !');
-}
+	myconsole('----> go begin : action=' + action + ' -- url=' + opt.url);
 
-function deleteStock(symbol) {
-	if (confirm('Sur de vouloir retirer '+symbol+' ?')) {
-		ajaxCall("GET", "stock_delete.php?symbol="+symbol, 'Stock '+symbol+' deleted !', true);
+	letsgo = true;
+	if (opt.confirmdel == 1) letsgo = confirm('Confirmez vous cette suppression ?');
+
+	if (letsgo) {
+		if (opt.confirmdel == 1) opt.url += '&del=1';
+		if (loading_area != '') addCN(loading_area, 'loading');
+		if (menu != '') change_wide_menu_state('wide_menu', menu);
+		jx.load(
+			opt.url,
+			function(data) {
+				myconsole('----> go jx in  : action='+action+' -- url='+opt.url);
+				addCN(id, action+'_page');
+				cc(id, data);
+				myconsole('----> go jx out : action='+action+' -- url='+opt.url);
+			},
+			'text', 'post'
+		);
 	}
+
+	myconsole('----> go end   : action=' + action + ' -- url=' + opt.url);
 }
 
-function updateStock(symbol) {
-	ajaxCall("GET", "stock_update.php?symbol="+symbol, 'Stock '+symbol+' updated !', true);
-}
-
-function displayInfo(content) {
-	Swal.fire({ title: '', icon: 'info', html: content });
+change_wide_menu_state = function(menu, item_menu) {
+	items = Dom.children(Dom.id(menu), "a");
+	for (var i = 0; i < items.length; i++) {
+		if (items[i].id == item_menu)
+			addCN(items[i].id, 'active');
+		else
+			rmCN(items[i].id, 'active');
+	}
 }

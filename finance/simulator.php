@@ -2,50 +2,18 @@
 
 include_once "include.php";
 
+$capital_init = 0;
 $invest = 1000;
 $date_start = "2019-02-01";
 $date_end = date("Y-m-d");
 
-foreach(['invest', 'date_start', 'date_end'] as $key)
-    $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
-
-?>
-
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="z-ua-compatible" content="ie=edge">
-        <title>Market Data</title>
-		<link rel="stylesheet" href="css/style.css?ver=1234" />
-		<script type="text/javascript" src="js/scripts.js?ver=1234"></script>
-		<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
-        <style>
-.swal2-html-container ul { list-style-type: none; }
-        </style>
-    </head>
-    <body>
-
-    <div class="container">
-        
-        <nav class="navbar navbar-default">
-          <div class="container">
-            <div class="navbar-header">
-            	Simulator
-                <button onclick="window.location='simulator.php?invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end')">Compute</button>
-                <button onclick="window.location='index.php?admin=1'">Back</button>
-            </div>
-          </div>
-        </nav>
-        
-        <div class="row">
-            <div class="col-lg-12 table-responsive">
-<?
+foreach(['invest', 'date_start', 'date_end', 'capital_init'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
 
 $lst = ["ESE.PAR", "BRE.PAR", "PUST.PAR", "OBLI.PAR"];
-$capital = 0;
+$capital = $capital_init;
 $nb_mois = 0;
 $actifs_achetees_nb = 0;
 $actifs_achetees_pu = 0;
@@ -55,6 +23,7 @@ $actifs_achetees_symbol = "";
 
 <p><b>
     Simulation DM RP PEA<br />[<?= implode('-', $lst) ?>]<br />
+    Capital Initial <input type="text" id="capital_init" value="<?= $capital_init ?>" />&euro;<br />
     Investissement <input type="text" id="invest" value="<?= $invest ?>" />&euro;/mois<br />
     Du <input type="text" id="date_start" value="<?= $date_start ?>" /> au <input type="text" id="date_end" value="<?= $date_end ?>" />
 </b></p>
@@ -143,7 +112,8 @@ while($i <= date("Ym", strtotime($date_end))) {
     $nb_mois++;
 
     $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
-    $perf = round(($valo - ($invest * $nb_mois))*100/($invest * $nb_mois), 2);
+    $invest_sum = $invest * $nb_mois +$capital_init;
+    $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
     echo "<td>".$valo."</td><td>".$perf."%</td>";
     echo "<td><span class=\"icon info\" onclick=\"	Swal.fire({ title: '".$info_title."', icon: 'info', html: '".$info_content."' });\">An Icon</span></td>";
 
@@ -155,15 +125,9 @@ while($i <= date("Ym", strtotime($date_end))) {
 <?
 
     $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
-    $perf = round(($valo - ($invest * $nb_mois))*100/($invest * $nb_mois), 2);
+    $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
     echo "Valorisation portefeuille = ".$valo."&euro;<br />";
-    echo "Capital investit = ".$nb_mois*$invest."&euro;<br />";
+    echo "Capital investit = ".$invest_sum."&euro;<br />";
     echo "Performance = ".$perf."%<br />";
 
 ?>
-            </div>
-        </div>
-    </div>
-    
-    </body>
-</html>

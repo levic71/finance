@@ -1,17 +1,24 @@
 <?
 
 include_once "include.php";
-$symbol = isset($_GET["symbol"]) ? $_GET["symbol"] : "";
 
-if (isset($symbol) && $symbol != "") {
+$symbol = "";
 
-    $db = dbc::connect();
+foreach(['symbol'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
-    // Recuperation des infos des assets
-    $req = "DELETE FROM stock WHERE symbol='".$symbol."'";
-    $res = dbc::execSql($req);
+if ($symbol == "") exit;
 
-    cacheData::deleteCacheSymbol($symbol);
-}
+$db = dbc::connect();
+
+// Recuperation des infos des assets
+$req = "DELETE FROM stock WHERE symbol='".$symbol."'";
+$res = dbc::execSql($req);
+
+cacheData::deleteCacheSymbol($symbol);
 
 ?>
+<script>
+	Swal.fire({ title: '', icon: 'info', html: "Stock <?= $symbol ?> deleted" });
+    go({ action: 'home_content', id: 'main', url: 'home_content.php?admin=1' });
+</script>
