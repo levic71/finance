@@ -2,7 +2,7 @@
 
 include_once "include.php";
 
-$ver = "1.2.9";
+$ver = tools::isLocalHost() ? rand() : "1.2.34";
 $pea = -1;
 $admin = 0;
 
@@ -102,11 +102,11 @@ window.onload = function() {
 	Dom.addListener(Dom.id('m1_home_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'm1_home_bt',   url: 'home_content.php?pea=<?= $pea ?>&admin=<?= $admin ?>' }); });
 	Dom.addListener(Dom.id('m1_sim_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'sim',    id: 'main', menu: 'm1_sim_bt',    url: 'simulator.php' }); });
 
-	if ($admin) {
+<? if ($admin) { ?>
 		Dom.addListener(Dom.id('m1_search_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
 		Dom.addListener(Dom.id('m1_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron',   id: 'main', menu: 'm1_cron_bt',   url: 'crontab.php' }); });
 		Dom.addListener(Dom.id('m1_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',    id: 'main', menu: 'm1_log_bt',    url: 'log.php' }); });
-	}
+<? } ?>
 
 }
 </script>
@@ -151,9 +151,9 @@ window.onload = function() {
 	<div class="pusher">
 		<div class="ui inverted vertical masthead center aligned segment">
 
-			<div class="ui container">
+			<div class="ui inverted container">
     			<div class="ui large secondary inverted pointing menu" id="wide_menu">
-					<a class="toc item"><i class="sidebar icon"></i></a>
+					<a class="toc inverted item"><i class="sidebar inverted icon"></i></a>
 					<a class="active item" id="m1_home_bt">Home</a>
 					<a class="item" id="m1_sim_bt">Simulator</a>
 <? if ($admin) { ?>

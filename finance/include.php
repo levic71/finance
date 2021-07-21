@@ -11,16 +11,28 @@ $dbg_data = false;
 // On place la timezone à UTC pour pouvoir gerer les fuseaux horaires des places boursieres
 date_default_timezone_set("UTC");
 
+
+//
+// Boite a outils
+//
+class tools {
+
+    public static function isLocalHost() {
+        return (strtolower(getenv('SERVER_NAME')) == "localhost" || strtolower(getenv('REMOTE_ADDR')) == "127.0.0.1" || strtolower(getenv('REMOTE_ADDR')) == "localhost") ? true : false;
+    }
+
+}
+
 //
 // Connection DB
 //
-class dbc
-{
+class dbc {
+
     public static $link;
 
     public static function connect()
     {
-        if (strtolower(getenv('SERVER_NAME') == "localhost" || strtolower(getenv('REMOTE_ADDR')) == "127.0.0.1" || strtolower(getenv('REMOTE_ADDR')) == "localhost"))
+        if (tools::isLocalHost())
             self::$link = mysqli_connect("localhost", "root", "root", "finance") or die("Error connexion db" . mysqli_connect_errno() . ' ; ' . mysqli_connect_error());
         else
             self::$link = mysqli_connect("jorkersfinance.mysql.db", "jorkersfinance", "Rnvubwi2021", "jorkersfinance") or die("Error connexion db" . mysqli_connect_errno() . ' ; ' . mysqli_connect_error());
@@ -40,8 +52,8 @@ class dbc
 //
 // Compute Data
 //
-class calc
-{
+class calc {
+
     public static function getDailyHistoryQuote($symbol, $day) {
 
         $ret = "0";
