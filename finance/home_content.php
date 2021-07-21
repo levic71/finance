@@ -27,43 +27,11 @@ arsort($data["perfs"]);
 	<div class="ui stackable grid container">
       	<div class="row">
         	<div class="four wide column">
-
-				<div class="ui inverted card">
-					<div class="content">
-						<div class="header">DM RP PEA</div>
-					    <div class="meta"><?= $data["day"] ?></div>
-						<div class="description">
-<?
-echo "<ul>";
-foreach($data["perfs"] as $key => $val) {
-	if ($key == "BRE.PAR" || $key == "ESE.PAR" || $key == "PUST.PAR" || $key == "OBLI.PAR") echo "<li>".$key." : ".$val."</li>";
-}
-echo "</ul>";
-?>
-						</div>
-					</div>
-				</div>
-
+				<?= uimx::perfCard($data["day"], $data["perfs"], '{ "title" : "DM RP PEA", "quotes" : { "BRE.PAR" : 1, "ESE.PAR" : 1, "PUST.PAR" : 1, "OBLI.PAR" : 1 } }') ?>
 			</div>
 
 			<div class="four wide column">
-
-			<div class="ui inverted card">
-					<div class="content">
-						<div class="header">DM+ PEA</div>
-					    <div class="meta"><?= $data["day"] ?></div>
-						<div class="description">
-						<?
-echo "<ul>";
-foreach($data["perfs"] as $key => $val) {
-	if ($key == "GWT.PAR" || $key == "PMEH.PAR" || $key == "BRE.PAR" || $key == "ESE.PAR" || $key == "PUST.PAR" || $key == "OBLI.PAR") echo "<li>".$key." : ".$val."</li>";
-}
-echo "</ul>";
-?>
-						</div>
-					</div>
-				</div>
-
+				<?= uimx::perfCard($data["day"], $data["perfs"], '{ "title" : "DM+ PEA", "quotes" : { "GWT.PAR" : 1, "PMEH.PAR" : 1, "BRE.PAR" : 1, "ESE.PAR" : 1, "PUST.PAR" : 1, "OBLI.PAR" : 1 } }') ?>
 			</div>
 
 		</div>

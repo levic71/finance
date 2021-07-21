@@ -490,4 +490,40 @@ class logger {
     }
 }
 
+
+//
+// Log
+//
+class uimx {
+    
+    public static function perfCard($day, $perfs, $strategie) {
+
+        $t = json_decode($strategie, true);
+
+?>
+    <div class="ui inverted card">
+        <div class="content">
+            <div class="header"><?= $t["title"] ?></div>
+            <div class="meta"><?= $day ?></div>
+            <div class="description">
+                <table class="ui inverted compact table">
+                    <tbody>
+<?
+                $x = 0;
+                foreach($perfs as $key => $val) {
+                    if (isset($t["quotes"][$key])) {
+                        echo "<tr ".($x == 0 ? "style=\"background: green;\"" : "")."><td>".$key."</td><td>".$val."%</td></tr>";
+                        $x++;
+                    }
+                }
+?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<?
+    }
+}
+
 ?>
