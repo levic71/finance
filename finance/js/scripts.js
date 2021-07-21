@@ -93,3 +93,12 @@ change_wide_menu_state = function(menu, item_menu) {
 			rmCN(items[i].id, 'active');
 	}
 }
+
+toogle_table = function(id_table_body, ind_row) {
+	items = Dom.children(Dom.id(id_table_body), "tr");
+
+	try {
+		items[ind_row].style.display = items[ind_row].style.display == "none" || items[ind_row].style.display == "" ? 'contents' : "none";
+	}
+	catch(e) {}
+}

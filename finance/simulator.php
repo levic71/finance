@@ -13,6 +13,7 @@ foreach(['invest', 'date_start', 'date_end', 'capital_init'] as $key)
 $db = dbc::connect();
 
 $lst = ["ESE.PAR", "BRE.PAR", "PUST.PAR", "OBLI.PAR"];
+$lst = ["ESE.PAR", "BRE.PAR", "PUST.PAR", "GWT.PAR", "PMEH.PAR", "OBLI.PAR"];
 $capital = $capital_init;
 $nb_mois = 0;
 $actifs_achetees_nb = 0;
