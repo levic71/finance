@@ -73,7 +73,7 @@ go = function(args) {
 			opt.url,
 			function(data) {
 				myconsole('----> go jx in  : action='+action+' -- url='+opt.url);
-				addCN(id, action+'_page');
+				setCN(id, 'main '+action+'_page');
 				cc(id, data);
 				myconsole('----> go jx out : action='+action+' -- url='+opt.url);
 			},

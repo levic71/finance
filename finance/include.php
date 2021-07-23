@@ -60,9 +60,17 @@ class calc {
 
         $req = "SELECT close FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day='".$day."'";
         $res = dbc::execSql($req);
-        if ($row = mysqli_fetch_array($res)) $ret = $row['close'];
+        if ($row = mysqli_fetch_array($res))
+            $ret = $row['close'];
+        else {
+            // On essaie de trouver la derniere quotation
+            $req2 = "SELECT close FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day < '".$day."' ORDER BY day DESC LIMIT 1";
+            $res2 = dbc::execSql($req2);
+            if ($row2 = mysqli_fetch_array($res2))
+                $ret = $row2['close'];
+        }
 
-        return $ret;
+        return floatval($ret);
     }
 
     public static function getMaxHistoryDate($symbol) {
@@ -179,12 +187,12 @@ class calc {
         $ret['MMF1M'] = $ref_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref_T1M)*100/$ref_T1M, 2);
         $ret['MMF3M'] = $ref_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref_T3M)*100/$ref_T3M, 2);
         $ret['MMF6M'] = $ref_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref_T6M)*100/$ref_T6M, 2);
-        $ret['MMFDM'] = $ref_T6M > 0 ? round(($ret['MMF1M']+$ret['MMF3M']+$ret['MMF6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMF1M']+$ret['MMF3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMF1M'] : -0));
+        $ret['MMFDM'] = $ref_T6M > 0 ? round(($ret['MMF1M']+$ret['MMF3M']+$ret['MMF6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMF1M']+$ret['MMF3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMF1M'] : -9999));
 
         $ret['MMZ1M'] = $ref_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T1M)*100/$ref2_T1M, 2);
         $ret['MMZ3M'] = $ref_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T3M)*100/$ref2_T3M, 2);
         $ret['MMZ6M'] = $ref_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T6M)*100/$ref2_T6M, 2);
-        $ret['MMZDM'] = $ref_T6M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMZ1M'] : -0));
+        $ret['MMZDM'] = $ref_T6M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMZ1M'] : -9999));
 
         return $ret;
     }
@@ -496,33 +504,35 @@ class logger {
 //
 class uimx {
     
-    public static function perfCard($day, $perfs, $strategie) {
+    public static function genCard($header, $meta, $desc) {
+    ?>
+        <div class="ui inverted card">
+            <div class="content">
+                <div class="header"><?= $header ?></div>
+                <div class="meta"><?= $meta ?></div>
+                <div class="description"><?= $desc ?></div>
+            </div>
+        </div>
+    <?
+}
+
+    public static function perfCard($title, $day, $perfs, $strategie) {
 
         $t = json_decode($strategie, true);
 
-?>
-    <div class="ui inverted card">
-        <div class="content">
-            <div class="header"><?= $t["title"] ?></div>
-            <div class="meta"><?= $day ?></div>
-            <div class="description">
-                <table class="ui inverted compact table">
-                    <tbody>
-<?
-                $x = 0;
-                foreach($perfs as $key => $val) {
-                    if (isset($t["quotes"][$key])) {
-                        echo "<tr ".($x == 0 ? "style=\"background: green;\"" : "")."><td>".$key."</td><td>".$val."%</td></tr>";
-                        $x++;
-                    }
-                }
-?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-<?
+        $desc = '<table class="ui inverted compact table"><tbody>';
+        
+        $x = 0;
+        foreach($perfs as $key => $val) {
+            if (isset($t["quotes"][$key])) {
+                $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.$val.'%</td></tr>';
+                $x++;
+            }
+        }
+
+        $desc .= '</tbody></table>';
+
+        uimx::genCard($title, $day, $desc);
     }
 }
 

@@ -3,21 +3,29 @@
 }
 #lst_stock td:nth-child(3) {
     text-align: left !important;
+    width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
 }
-#lst_stock td:nth-child(7), #lst_stock td:nth-child(8),#lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
+#lst_stock td:nth-child(6), td:nth-child(7), #lst_stock td:nth-child(8),#lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
     text-align: right;
 }
 .row-detail { display: none; }
 .row-detail td { text-align: left !important; background: #555; }
-#lst_sim {
-    width: 70%;
-}
 
-#lst_sim td {
+#lst_sim th, #lst_sim td {
         text-align: center;
 }
 #lst_sim td:nth-child(2), #lst_sim td:nth-child(4), #lst_sim td:nth-child(5), #lst_sim td:nth-child(6), #lst_sim td:nth-child(8), #lst_sim td:nth-child(9), #lst_sim td:nth-child(10), #lst_sim td:nth-child(11)  {
     text-align: right;
+}
+#sim_final_info td:nth-child(2) {
+    text-align: right;
+}
+.sim_page .ui.card {
+    height: 100% !important;
 }
 
 .icon,
@@ -88,4 +96,8 @@
     .icon.bad::after {
         content: "×";
         font-weight: bold;
+    }
+
+    .sim_page .ui.card, .sim_page .ui.card table {
+        width: 100% !important;
     }

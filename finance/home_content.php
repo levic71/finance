@@ -22,17 +22,20 @@ arsort($data["perfs"]);
 
 <div class="ui stripe inverted segment">
 
-	<h2>Scoring</h2>
+	<h2>Strategies</h2>
 
 	<div class="ui stackable grid container">
       	<div class="row">
-        	<div class="four wide column">
-				<?= uimx::perfCard($data["day"], $data["perfs"], '{ "title" : "DM RP PEA", "quotes" : { "BRE.PAR" : 1, "ESE.PAR" : 1, "PUST.PAR" : 1, "OBLI.PAR" : 1 } }') ?>
-			</div>
 
-			<div class="four wide column">
-				<?= uimx::perfCard($data["day"], $data["perfs"], '{ "title" : "DM+ PEA", "quotes" : { "GWT.PAR" : 1, "PMEH.PAR" : 1, "BRE.PAR" : 1, "ESE.PAR" : 1, "PUST.PAR" : 1, "OBLI.PAR" : 1 } }') ?>
+<?
+        	$req = "SELECT * FROM strategies WHERE defaut=1" ;
+        	$res = dbc::execSql($req);
+        	while($row = mysqli_fetch_array($res)) {
+?>
+        	<div class="four wide column">
+				<?= uimx::perfCard($row['title'], $data["day"], $data["perfs"], $row['data']) ?>
 			</div>
+<? } ?>
 
 		</div>
     </div>
@@ -41,9 +44,9 @@ arsort($data["perfs"]);
 	
 <div class="ui container inverted segment">
 
-	<h2>Assets List</h2>
+	<h2>Assets Followed</h2>
 
-	<table class="ui selectable inverted table" id="lst_stock">
+	<table class="ui selectable inverted single line table" id="lst_stock">
 		<thead>
 			<tr>
 				<th></th>
@@ -78,9 +81,9 @@ foreach($data["stocks"] as $key => $val) {
 
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
-	echo "<tr>";
+	echo "<tr  onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
 	echo "
-		<td><i class=\"inverted blue play icon\" onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\"></i></td>
+		<td><i class=\"inverted blue play icon\"></i></td>
 		<td><a onclick=\"go({ action: 'update', id: 'main', url: 'detail.php?symbol=".$val['symbol']."' });\">".$val['symbol']."</a></td>
 		<td>".$val['name']."</td>
 		<td>".$val['type']."</td>
