@@ -174,7 +174,7 @@ window.onload = function() {
 		</div>
 	</div>
 
-	<div id="main" clas="main"></div>
+	<div id="main" class="main"></div>
     
     </body>
 </html>
