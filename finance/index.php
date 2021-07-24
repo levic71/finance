@@ -34,6 +34,7 @@ $admin = $admin == 1 ? true : false;
 		<link rel="stylesheet" href="css/semantic.min.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/style.css?ver=<?= $ver ?>" />
 		<!-- script type="text/javascript" src="js/semantic.min.js?ver=<?= $ver ?>"></script -->
+		<script type="text/javascript" src="js/chart.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/sweetalert2.all.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/dom.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/jxs_compressed.js?ver=<?= $ver ?>"></script>

@@ -21,6 +21,25 @@ class tools {
         return (strtolower(getenv('SERVER_NAME')) == "localhost" || strtolower(getenv('REMOTE_ADDR')) == "127.0.0.1" || strtolower(getenv('REMOTE_ADDR')) == "localhost") ? true : false;
     }
 
+    public static function getMonth($strDate1, $strDate2) {
+
+        $date1 = new DateTime(date('Y-m-01', strtotime($strDate1)));
+        $date2 = new DateTime(date('Y-m-01', strtotime($strDate2)));
+        
+        if($date1 <= $date2) {
+            $arr_mois = array();
+            $arr_mois[] =  $date1->format('m');
+            while($date1 < $date2){
+                $date1->add(new DateInterval("P1M"));
+                $arr_mois[] = $date1->format('m');
+            }
+        } else {
+            echo "Erreur : Date1 est plus grand que Date2 !";
+            $arr_mois = NULL;
+        }
+    
+        return $arr_mois;
+    }
 }
 
 //
@@ -386,7 +405,7 @@ class cacheData {
             try {
                 $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
     
-                if (count($data) == 0) logger::warning("CRON", $symbol, "Array empty, manual db update needed !!!");
+                if (is_array($data) && count($data) == 0) logger::warning("CRON", $symbol, "Array empty, manual db update needed !!!");
     
                 $msg = "[Daily Time Series Adjusted ".($full ? "FULL" : "COMPACT")."] => Update DB NOk";
                 if (isset($data["Time Series (Daily)"])) {
@@ -520,7 +539,7 @@ class uimx {
 
         $t = json_decode($strategie, true);
 
-        $desc = '<table class="ui inverted compact table"><tbody>';
+        $desc = '<table class="ui inverted compact single line table"><tbody>';
         
         $x = 0;
         foreach($perfs as $key => $val) {
