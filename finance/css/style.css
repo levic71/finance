@@ -1,3 +1,6 @@
+.ui.ui.table td.positive, .ui.ui.ui.ui.table tr.positive { background: #333 !important; color: rgb(97, 194, 97) !important; }
+.ui.ui.table td.negative, .ui.ui.ui.ui.table tr.negative { background: #333 !important; color: rgb(247, 95, 90) !important; }
+
 #lst_stock td {
     text-align: center;
 }

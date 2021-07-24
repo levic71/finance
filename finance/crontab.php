@@ -6,6 +6,13 @@ if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
 
+
+?>
+
+<pre style="width: 100%; height: 500px; overflow: scroll;">
+
+<?
+
 // Parcours des actifs suivis
 $req = "SELECT * FROM stock ORDER BY symbol";
 $res = dbc::execSql($req);
@@ -32,3 +39,4 @@ while($row = mysqli_fetch_array($res)) {
 // Recuperation de la derniere cotation
 
 ?>
+</pre>

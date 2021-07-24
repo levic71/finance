@@ -65,6 +65,9 @@ $tab = '
     </tr></thead><tbody>
 ';
 
+$tab_date = array();
+$tab_valo = array();
+$tab_invt = array();
 $i = date("Ym", strtotime($date_start));
 while($i <= date("Ym", strtotime($date_end))) {
 
@@ -76,7 +79,6 @@ while($i <= date("Ym", strtotime($date_end))) {
 
     // Calcul du DM sur les valeurs selectionnees
     $data = calc::getDualMomentum("'".implode("', '", $lst)."'", $day);
-
 
     // Tri par performance decroissante en gardant l'index dui contient le symbol
     arsort($data["perfs"]);
@@ -112,7 +114,7 @@ while($i <= date("Ym", strtotime($date_end))) {
         // Calcul max drawdown
         $maxdd = min($maxdd, $perf);
 
-        $tab .= "<td>".$actifs_achetees_symbol."</td><td>".$actifs_achetees_nb."</td><td>".sprintf("%.2f", round($pu, 2)).$curr."</td><td style=\"color: ".($perf >=0 ? "green" : "red")."\">".sprintf("%.2f", $perf)."%</td>";
+        $tab .= "<td>".$actifs_achetees_symbol."</td><td>".$actifs_achetees_nb."</td><td>".sprintf("%.2f", round($pu, 2)).$curr."</td><td class=\"".($perf >=0 ? "positive" : "negative")."\">".sprintf("%.2f", $perf)."%</td>";
 
         $actifs_achetees_nb = 0;
     }
@@ -147,9 +149,13 @@ while($i <= date("Ym", strtotime($date_end))) {
     $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
     $invest_sum = $invest * $nb_mois +$capital_init;
     $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
-    $tab .= "<td>".sprintf("%.2f", $valo).$curr."</td><td style=\"color: ".($perf >=0 ? "green" : "red")."\">".sprintf("%.2f", $perf)."%</td>";
+    $tab .= "<td>".sprintf("%.2f", $valo).$curr."</td><td class=\"".($perf >=0 ? "positive" : "negative")."\">".sprintf("%.2f", $perf)."%</td>";
 
     $tab .= "</tr>";
+
+    $tab_date[] = $day;
+    $tab_valo[] = $valo;
+    $tab_invt[] = $invest_sum;
 }
 $tab .= "</tbody></table>";
 
@@ -158,19 +164,56 @@ $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
 $final_info = "<table id=\"sim_final_info\">";
 $final_info .= "<tr><td>Valorisation portefeuille</td><td>".sprintf("%.2f", $valo)." &euro;</td></tr>";
 $final_info .= "<tr><td>Capital investit</td><td>".sprintf("%.2f", $invest_sum)." &euro;</td></tr>";
-$final_info .= "<tr><td>Performance</td><td style=\"color: green\">".sprintf("%.2f", $perf)." %</td></tr>";
-$final_info .= "<tr><td>Max DD</td><td style=\"color: red\">".sprintf("%.2f", $maxdd)." %</td></tr>";
-$final_info .= "<tr><td>Duree</td><td>".sprintf("%.2f", $perf)." %</td></tr>";
+$final_info .= "<tr><td>Performance</td><td class=\"positive\">".sprintf("%.2f", $perf)." %</td></tr>";
+$final_info .= "<tr><td>Max DD</td><td class=\"negative\">".sprintf("%.2f", $maxdd)." %</td></tr>";
+$final_info .= "<tr><td>Duree</td><td>".count(tools::getMonth($date_start, $date_end))." mois</td></tr>";
 $final_info .= "</table>";
 
 ?>
             <div class="eight wide column">
-                <?= uimx::genCard('Result', implode(', ', $lst), $final_info); ?>
+                <?= uimx::genCard('', implode(', ', $lst), $final_info); ?>
             </div>
 
         </div>
     </div>
 </div>
+
+<div class="ui container inverted segment">
+	<h2>Graphe</h2>
+    <canvas id="myChart" width="400" height="100"></canvas>
+</div>
+<script>
+// Our labels along the x-axis
+var dates = [<?= '"'.implode('","', $tab_date).'"' ?>];
+// For drawing the lines
+var valos = [<?= implode(',', $tab_valo) ?>];
+var invts = [<?= implode(',', $tab_invt) ?>];
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+    labels: dates,
+    datasets: [
+        { 
+            data: invts,
+            label: "Investissement",
+            borderColor: "rgba(238, 130, 6, 0.75)",
+            backgroundColor: "rgba(238, 130, 6, 0.75)",
+            fill: true
+        },
+        { 
+            data: valos,
+            label: "Valorisation",
+            borderColor: "rgba(23, 109, 181, 0.75)",
+            backgroundColor: "rgba(23, 109, 181, 0.75)",
+            fill: true
+        }
+    ]
+  }
+});
+</script>
+
 
 <div class="ui container inverted segment">
 	<h2>Detail</h2>
