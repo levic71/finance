@@ -180,7 +180,7 @@ $final_info .= "</table>";
 
 <div class="ui container inverted segment">
 	<h2>Graphe</h2>
-    <canvas id="myChart" width="400" height="100"></canvas>
+    <canvas id="myChart"></canvas>
 </div>
 <script>
 // Our labels along the x-axis
