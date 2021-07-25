@@ -15,6 +15,9 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 #lst_stock td:nth-child(6), td:nth-child(7), #lst_stock td:nth-child(8),#lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
     text-align: right;
 }
+#lst_stock td:nth-child(2) {
+    text-align: left;
+}
 .row-detail { display: none; }
 .row-detail td { text-align: left !important; background: #555; }
 
@@ -124,8 +127,8 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 
     .ui.card table td { display: compact !important; }
 
-    #lst_stock th:nth-child(3), th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(7), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10),
-    #lst_stock td:nth-child(3), td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(7), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10)
+    #lst_stock th:nth-child(1), #lst_stock th:nth-child(3), th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(7), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10),
+    #lst_stock td:nth-child(1), #lst_stock td:nth-child(3), td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(7), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10)
     {
         display: none !important;
     }
