@@ -180,7 +180,7 @@ $final_info .= "</table>";
 
 <div class="ui container inverted segment">
 	<h2>Graphe</h2>
-    <canvas id="myChart"></canvas>
+    <canvas id="sim_canvas1" height="100"></canvas>
 </div>
 <script>
 // Our labels along the x-axis
@@ -189,7 +189,9 @@ var dates = [<?= '"'.implode('","', $tab_date).'"' ?>];
 var valos = [<?= implode(',', $tab_valo) ?>];
 var invts = [<?= implode(',', $tab_invt) ?>];
 
-var ctx = document.getElementById('myChart').getContext('2d');
+var ctx = document.getElementById('sim_canvas1').getContext('2d');
+el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 250;
+
 var myChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -199,17 +201,28 @@ var myChart = new Chart(ctx, {
             data: invts,
             label: "Investissement",
             borderColor: "rgba(238, 130, 6, 0.75)",
-            backgroundColor: "rgba(238, 130, 6, 0.75)",
+            backgroundColor: "rgba(238, 130, 6, 0.3)",
             fill: true
         },
         { 
             data: valos,
             label: "Valorisation",
             borderColor: "rgba(23, 109, 181, 0.75)",
-            backgroundColor: "rgba(23, 109, 181, 0.75)",
+            backgroundColor: "rgba(23, 109, 181, 0.3)",
             fill: true
         }
-    ]
+    ],
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
   }
 });
 </script>

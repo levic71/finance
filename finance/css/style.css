@@ -86,29 +86,9 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
         content: "i";
 }
 
-    .icon.good {
-        background-color: #393;
-    }
-
-    .icon.good::after {
-        left: 0.012em;
-        content: "?";
-    }
-
-    .icon.bad {
-        background-color: #933;
-    }
-
-    .icon.bad::after {
-        content: "×";
-        font-weight: bold;
-    }
-
-    .sim_page .ui.card, .sim_page .ui.card table {
-        width: 100% !important;
-    }
-
-
+.sim_page .ui.card, .sim_page .ui.card table {
+    width: 100% !important;
+}
     
     
 @media only screen and (max-width: 700px) {
@@ -132,6 +112,7 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
     {
         display: none !important;
     }
-    
+
+        
 }
   
