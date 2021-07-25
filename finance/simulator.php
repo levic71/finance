@@ -49,7 +49,7 @@ $infos = '
 <?
 
 $tab = '
-<table id="lst_sim" class="ui selectable inverted single line compact table"><thead>
+<table id="lst_sim" class="ui selectable inverted single line very compact table"><thead>
     <tr>
         <th>Date</th>
         <th>Cash</th>
@@ -114,7 +114,7 @@ while($i <= date("Ym", strtotime($date_end))) {
         // Calcul max drawdown
         $maxdd = min($maxdd, $perf);
 
-        $tab .= "<td>".$actifs_achetees_symbol."</td><td>".$actifs_achetees_nb."</td><td>".sprintf("%.2f", round($pu, 2)).$curr."</td><td class=\"".($perf >=0 ? "positive" : "negative")."\">".sprintf("%.2f", $perf)."%</td>";
+        $tab .= "<td>".$actifs_achetees_symbol."</td><td>".$actifs_achetees_nb."</td><td>".sprintf("%.2f", round($pu, 2)).$curr."</td><td class=\"".($perf >=0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $perf)."%</td>";
 
         $actifs_achetees_nb = 0;
     }
@@ -149,7 +149,7 @@ while($i <= date("Ym", strtotime($date_end))) {
     $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
     $invest_sum = $invest * $nb_mois +$capital_init;
     $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
-    $tab .= "<td>".sprintf("%.2f", $valo).$curr."</td><td class=\"".($perf >=0 ? "positive" : "negative")."\">".sprintf("%.2f", $perf)."%</td>";
+    $tab .= "<td>".sprintf("%.2f", $valo).$curr."</td><td class=\"".($perf >=0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $perf)."%</td>";
 
     $tab .= "</tr>";
 
@@ -164,8 +164,8 @@ $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
 $final_info = "<table id=\"sim_final_info\">";
 $final_info .= "<tr><td>Valorisation portefeuille</td><td>".sprintf("%.2f", $valo)." &euro;</td></tr>";
 $final_info .= "<tr><td>Capital investit</td><td>".sprintf("%.2f", $invest_sum)." &euro;</td></tr>";
-$final_info .= "<tr><td>Performance</td><td class=\"positive\">".sprintf("%.2f", $perf)." %</td></tr>";
-$final_info .= "<tr><td>Max DD</td><td class=\"negative\">".sprintf("%.2f", $maxdd)." %</td></tr>";
+$final_info .= "<tr><td>Performance</td><td class=\"aaf-positive\">".sprintf("%.2f", $perf)." %</td></tr>";
+$final_info .= "<tr><td>Max DD</td><td class=\"aaf-negative\">".sprintf("%.2f", $maxdd)." %</td></tr>";
 $final_info .= "<tr><td>Duree</td><td>".count(tools::getMonth($date_start, $date_end))." mois</td></tr>";
 $final_info .= "</table>";
 
