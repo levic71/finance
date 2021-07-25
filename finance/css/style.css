@@ -1,5 +1,5 @@
-.ui.ui.table td.positive, .ui.ui.ui.ui.table tr.positive { background: #333 !important; color: rgb(97, 194, 97) !important; }
-.ui.ui.table td.negative, .ui.ui.ui.ui.table tr.negative { background: #333 !important; color: rgb(247, 95, 90) !important; }
+td.aaf-positive { background: #333 !important; color: rgb(97, 194, 97) !important; }
+td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !important; }
 
 #lst_stock td {
     text-align: center;
@@ -104,3 +104,31 @@
     .sim_page .ui.card, .sim_page .ui.card table {
         width: 100% !important;
     }
+
+
+    
+    
+@media only screen and (max-width: 700px) {
+
+    .ui.fixed.menu {
+      display: none !important;
+    }
+    .secondary.pointing.menu .item,
+    .secondary.pointing.menu .menu {
+      display: none;
+    }
+    .secondary.pointing.menu .toc.item {
+      display: block;
+    }
+
+
+    .ui.card table td { display: compact !important; }
+
+    #lst_stock th:nth-child(3), th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(7), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10),
+    #lst_stock td:nth-child(3), td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(7), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10)
+    {
+        display: none !important;
+    }
+    
+}
+  

@@ -39,110 +39,39 @@ $admin = $admin == 1 ? true : false;
 		<script type="text/javascript" src="js/dom.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/jxs_compressed.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/scripts.js?ver=<?= $ver ?>"></script>
-
-<style>
-    .hidden.menu {
-      display: none;
-    }
-
-    .ui.vertical.stripe {
-      padding: 8em 0em;
-    }
-    .ui.vertical.stripe h3 {
-      font-size: 2em;
-    }
-    .ui.vertical.stripe .button + h3,
-    .ui.vertical.stripe p + h3 {
-      margin-top: 3em;
-    }
-    .ui.vertical.stripe .floated.image {
-      clear: both;
-    }
-    .ui.vertical.stripe p {
-      font-size: 1.33em;
-    }
-    .ui.vertical.stripe .horizontal.divider {
-      margin: 3em 0em;
-    }
-
-    .quote.stripe.segment {
-      padding: 0em;
-    }
-    .quote.stripe.segment .grid .column {
-      padding-top: 5em;
-      padding-bottom: 5em;
-    }
-
-    .footer.segment {
-      padding: 5em 0em;
-    }
-
-    .secondary.pointing.menu .toc.item {
-      display: none;
-    }
-
-    @media only screen and (max-width: 700px) {
-      .ui.fixed.menu {
-        display: none !important;
-      }
-      .secondary.pointing.menu .item,
-      .secondary.pointing.menu .menu {
-        display: none;
-      }
-      .secondary.pointing.menu .toc.item {
-        display: block;
-      }
-    }
-</style>
-
-<script>
+		<script>
 window.onload = function() {
 
 	go({ action: 'home_content', id: 'main', url: 'home_content.php?pea=<?= $pea ?>&admin=<?= $admin ?>' });
 
-	Dom.addListener(Dom.id('m1_home_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'm1_home_bt',   url: 'home_content.php?pea=<?= $pea ?>&admin=<?= $admin ?>' }); });
-	Dom.addListener(Dom.id('m1_sim_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'sim',    id: 'main', menu: 'm1_sim_bt',    url: 'simulator.php' }); });
+	Dom.addListener(Dom.id('m1_sidebar_bt'), Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
+	Dom.addListener(Dom.id('m1_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'm1_home_bt',   url: 'home_content.php?pea=<?= $pea ?>&admin=<?= $admin ?>' }); });
+	Dom.addListener(Dom.id('m1_sim_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'sim',    id: 'main', menu: 'm1_sim_bt',    url: 'simulator.php' }); });
+	Dom.addListener(Dom.id('m2_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'm1_home_bt',   url: 'home_content.php?pea=<?= $pea ?>&admin=<?= $admin ?>' }); });
+	Dom.addListener(Dom.id('m2_sim_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'sim',    id: 'main', menu: 'm1_sim_bt',    url: 'simulator.php' }); });
 
 <? if ($admin) { ?>
 		Dom.addListener(Dom.id('m1_search_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
 		Dom.addListener(Dom.id('m1_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron',   id: 'main', menu: 'm1_cron_bt',   url: 'crontab.php' }); });
 		Dom.addListener(Dom.id('m1_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',    id: 'main', menu: 'm1_log_bt',    url: 'log.php' }); });
+		Dom.addListener(Dom.id('m2_search_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
+		Dom.addListener(Dom.id('m2_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron',   id: 'main', menu: 'm1_cron_bt',   url: 'crontab.php' }); });
+		Dom.addListener(Dom.id('m2_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',    id: 'main', menu: 'm1_log_bt',    url: 'log.php' }); });
 <? } ?>
 
 }
-</script>
-
+		</script>
     </head>
     <body class="ui inverted segment container">
 
-	<div class="ui large top fixed hidden menu">
-		<div class="ui container">
-			<a class="active item" onclick="window.location='index.php<?= $admin ? "?admin=1" : "" ?>'">Home</a>
-			<a class="item" onclick="window.location='simulator.php'">Simulator</a>
-<? if ($admin) { ?>
-			<a class="item" onclick="window.location='search.php'">Search</a>
-			<a class="item" onclick="window.location='crontab.php'">Cron</a>
-			<a class="item" onclick="window.location='log.php'">Log</a>
-<? } ?>
-			<div class="right menu">
-				<div class="item">
-					<a class="ui button">Log in</a>
-				</div>
-				<div class="item">
-					<a class="ui primary button">Sign Up</a>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<!-- Sidebar Menu -->
-	<div class="ui vertical inverted sidebar menu">
-		<a class="active item" onclick="window.location='index.php<?= $admin ? "?admin=1" : "" ?>'">Home</a>
-		<a class="item" onclick="window.location='simulator.php'">Simulator</a>
+	<div class="ui vertical inverted sidebar menu" id="sidebar_menu">
+		<a class="active item" id="m2_home_bt">Home</a>
+		<a class="item" id="m2_sim_bt">Simulator</a>
 <? if ($admin) { ?>
-		<a class="item" onclick="window.location='search.php'">Search</a>
-		<a class="item" onclick="window.location='crontab.php'">Cron</a>
-		<a class="item" onclick="window.location='log.php'">Log</a>
+		<a class="item" id="m2_search_bt">Search</a>
+		<a class="item" id="m2_cron_bt">Cron</a>
+		<a class="item" id="m2_log_bt">Log</a>
 <? } ?>
 		<a class="item">Login</a>
 		<a class="item">Signup</a>
@@ -154,7 +83,7 @@ window.onload = function() {
 
 			<div class="ui inverted container">
     			<div class="ui large secondary inverted pointing menu" id="wide_menu">
-					<a class="toc inverted item"><i class="sidebar inverted icon"></i></a>
+					<a class="toc inverted item" id="m1_sidebar_bt"><i class="sidebar inverted icon"></i></a>
 					<a class="active item" id="m1_home_bt">Home</a>
 					<a class="item" id="m1_sim_bt">Simulator</a>
 <? if ($admin) { ?>

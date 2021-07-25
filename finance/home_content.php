@@ -46,7 +46,7 @@ arsort($data["perfs"]);
 
 	<h2>Assets Followed</h2>
 
-	<table class="ui selectable inverted single line table" id="lst_stock">
+	<table class="ui selectable inverted single line unstackable very compact table" id="lst_stock">
 		<thead>
 			<tr>
 				<th></th>

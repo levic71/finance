@@ -75,6 +75,7 @@ go = function(args) {
 				myconsole('----> go jx in  : action='+action+' -- url='+opt.url);
 				setCN(id, 'main '+action+'_page');
 				cc(id, data);
+				rmCN('sidebar_menu', 'visible');
 				myconsole('----> go jx out : action='+action+' -- url='+opt.url);
 			},
 			'text', 'post'
