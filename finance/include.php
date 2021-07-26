@@ -523,9 +523,9 @@ class logger {
 //
 class uimx {
     
-    public static function genCard($header, $meta, $desc) {
+    public static function genCard($id, $header, $meta, $desc) {
     ?>
-        <div class="ui inverted card">
+        <div class="ui inverted card" id="<?= $id ?>">
             <div class="content">
                 <div class="header"><?= $header ?></div>
                 <div class="meta"><?= $meta ?></div>
@@ -535,7 +535,7 @@ class uimx {
     <?
 }
 
-    public static function perfCard($title, $day, $perfs, $strategie) {
+    public static function perfCard($id, $title, $day, $perfs, $strategie) {
 
         $t = json_decode($strategie, true);
 
@@ -551,7 +551,7 @@ class uimx {
 
         $desc .= '</tbody></table>';
 
-        uimx::genCard($title, $day, $desc);
+        uimx::genCard($id, $title, $day, $desc);
     }
 }
 
