@@ -43,13 +43,13 @@ $infos = '
 	<div class="ui stackable grid container">
       	<div class="row">
             <div class="eight wide column">
-                <?= uimx::genCard($row['title'], '', $infos); ?>
+                <?= uimx::genCard('sim_card2', $row['title'], '', $infos); ?>
 			</div>
 
 <?
 
 $tab = '
-<table id="lst_sim" class="ui selectable inverted single line very compact table"><thead>
+<table id="lst_sim" class="ui selectable inverted single line very compact unstackable table"><thead>
     <tr>
         <th>Date</th>
         <th>Cash</th>
@@ -175,7 +175,7 @@ $final_info .= "</table>";
 
 ?>
             <div class="eight wide column">
-                <?= uimx::genCard('', implode(', ', $lst), $final_info); ?>
+                <?= uimx::genCard('sim_card1', '', implode(', ', $lst), $final_info); ?>
             </div>
 
         </div>
@@ -194,7 +194,7 @@ var valos = [<?= implode(',', $tab_valo) ?>];
 var invts = [<?= implode(',', $tab_invt) ?>];
 
 var ctx = document.getElementById('sim_canvas1').getContext('2d');
-el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 250;
+el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
 
 var myChart = new Chart(ctx, {
     type: 'line',
@@ -244,7 +244,7 @@ var toto = [<?= implode(',', $tab_perf["PUST.PAR"]) ?>];
 var toto2 = [<?= implode(',', $tab_perf["OBLI.PAR"]) ?>];
 
 var ctx = document.getElementById('sim_canvas2').getContext('2d');
-el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 250;
+el("sim_canvas2").height = document.body.offsetWidth > 700 ? 100 : 300;
 
 var myChart = new Chart(ctx, {
     type: 'line',

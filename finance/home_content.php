@@ -20,7 +20,7 @@ arsort($data["perfs"]);
 	
 ?>
 
-<div class="ui stripe inverted segment">
+<div class="ui container inverted segment">
 
 	<h2>Strategies</h2>
 
@@ -33,7 +33,7 @@ arsort($data["perfs"]);
         	while($row = mysqli_fetch_array($res)) {
 ?>
         	<div class="four wide column">
-				<?= uimx::perfCard($row['title'], $data["day"], $data["perfs"], $row['data']) ?>
+				<?= uimx::perfCard("home_card", $row['title'], $data["day"], $data["perfs"], $row['data']) ?>
 			</div>
 <? } ?>
 

@@ -2,7 +2,7 @@
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.35";
+$ver = tools::isLocalHost() ? rand() : "1.2.36";
 $pea = -1;
 $admin = 0;
 
@@ -62,7 +62,7 @@ window.onload = function() {
 }
 		</script>
     </head>
-    <body class="ui inverted segment container">
+    <body class="ui fluid inverted segment container">
 
 	<!-- Sidebar Menu -->
 	<div class="ui vertical inverted sidebar menu" id="sidebar_menu">
