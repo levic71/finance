@@ -68,6 +68,8 @@ $tab = '
 $tab_date = array();
 $tab_valo = array();
 $tab_invt = array();
+$tab_perf = array();
+
 $i = date("Ym", strtotime($date_start));
 while($i <= date("Ym", strtotime($date_end))) {
 
@@ -95,6 +97,8 @@ while($i <= date("Ym", strtotime($date_end))) {
         $info_content .= "<li>".$key." : ".($val == -9999 ? "N/A" : $val)."</li>";
         // On retire l'actif qui n'a pas de DM faute de profondeur de data
         if ($val == -9999) unset($data["perfs"][$key]);
+        // tableau des perfs par symbol
+        $tab_perf[$key][$day] = ($val == -9999 ? 0 : $val);
     }
     $info_content .= "</ul>";
 
@@ -227,6 +231,69 @@ var myChart = new Chart(ctx, {
 });
 </script>
 
+<div class="ui container inverted segment">
+	<h2>Evolution DM</h2>
+    <canvas id="sim_canvas2" height="100"></canvas>
+</div>
+
+<script>
+// For drawing the lines
+var valos = [<?= implode(',', $tab_perf["BRE.PAR"]) ?>];
+var invts = [<?= implode(',', $tab_perf["ESE.PAR"]) ?>]; 
+var toto = [<?= implode(',', $tab_perf["PUST.PAR"]) ?>];
+var toto2 = [<?= implode(',', $tab_perf["OBLI.PAR"]) ?>];
+
+var ctx = document.getElementById('sim_canvas2').getContext('2d');
+el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 250;
+
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+    labels: dates,
+    datasets: [
+        { 
+            data: invts,
+            label: "BRE.PAR",
+            borderColor: "rgba(238, 130, 6, 0.75)",
+            borderWidth: 0.5,
+            fill: false
+        },
+        { 
+            data: toto,
+            label: "PUST.PAR",
+            borderColor: "rgba(97, 194, 97, 0.75)",
+            borderWidth: 0.5,
+            fill: false
+        },
+        { 
+            data: toto2,
+            label: "OBLI.PAR",
+            borderColor: "rgba(252, 237, 34, 0.75)",
+            borderWidth: 0.5,
+            fill: false
+        },
+        { 
+            data: valos,
+            label: "ESE.PAR",
+            borderColor: "rgba(23, 109, 181, 0.75)",
+            borderWidth: 0.5,
+            fill: false
+        }
+    ],
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+  }
+});
+</script>
 
 <div class="ui container inverted segment">
 	<h2>Detail</h2>
