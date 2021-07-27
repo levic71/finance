@@ -113,6 +113,11 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
         padding: 0em 0em !important;
     }
 
+    .container {
+        margin-left: 5px !important;
+        margin-right: 5px !important;
+    }
+
     .ui.fixed.menu {
       display: none !important;
     }
