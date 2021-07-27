@@ -149,8 +149,8 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 
     #lst_sim th:nth-child(2), #lst_sim th:nth-child(3), #lst_sim th:nth-child(4), #lst_sim th:nth-child(5), #lst_sim th:nth-child(6), #lst_sim th:nth-child(7), #lst_sim th:nth-child(8), #lst_sim th:nth-child(9),
     #lst_sim td:nth-child(2), #lst_sim td:nth-child(3), #lst_sim td:nth-child(4), #lst_sim td:nth-child(5), #lst_sim td:nth-child(6), #lst_sim td:nth-child(7), #lst_sim td:nth-child(8), #lst_sim td:nth-child(9),
-    #lst_stock th:nth-child(1), #lst_stock th:nth-child(3), th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(7), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10),
-    #lst_stock td:nth-child(1), #lst_stock td:nth-child(3), td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(7), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10)
+    #lst_stock th:nth-child(1), #lst_stock th:nth-child(3), th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10),
+    #lst_stock td:nth-child(1), #lst_stock td:nth-child(3), td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10)
     {
         display: none !important;
     }

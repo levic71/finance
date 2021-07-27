@@ -80,9 +80,9 @@ foreach($data["stocks"] as $key => $val) {
 
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
-	echo "<tr  onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
+	echo "<tr onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
 	echo "
-		<td><i class=\"inverted blue play icon\"></i></td>
+		<td><i class=\"inverted blue caret square right outline icon\"></i></td>
 		<td><a onclick=\"go({ action: 'update', id: 'main', url: 'detail.php?symbol=".$val['symbol']."' });\">".$val['symbol']."</a></td>
 		<td>".$val['name']."</td>
 		<td>".$val['type']."</td>
