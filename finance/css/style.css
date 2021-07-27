@@ -93,6 +93,10 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 .sim_page .ui.card, .sim_page .ui.card table {
     width: 100% !important;
 }
+
+#sim_card2 .label:nth-child(1) {
+    width: 30%;
+}
     
     
 @media only screen and (max-width: 700px) {

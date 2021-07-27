@@ -9,7 +9,7 @@ foreach(['search'] as $key)
 
 ?>
 
-<div class="ui inverted segment">
+<div class="ui container inverted segment">
     <div class="ui search">
         <div class="ui icon input">
             <input class="search" id="search" name="search" type="text" placeholder="Quote search ..."  value="<?= isset($search) ? $search : $search ?>" />
