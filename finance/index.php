@@ -2,7 +2,7 @@
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.36";
+$ver = tools::isLocalHost() ? rand() : "1.2.37";
 $pea = -1;
 $admin = 0;
 
