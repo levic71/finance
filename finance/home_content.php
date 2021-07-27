@@ -55,7 +55,6 @@ arsort($data["perfs"]);
                 <th class="center aligned">Type</th>
 				<th class="center aligned">Last Day Quote</th>
 				<th class="right aligned">Price</th>
-				<th class="right aligned">DM Float</th>
 				<th class="right aligned">DM TKL</th>
 				<th class="right aligned">MM200</th>
 				<th class="right aligned">MM20</th>
@@ -89,7 +88,6 @@ foreach($data["stocks"] as $key => $val) {
 		<td>".$val['type']."</td>
 		<td>".$val['day']."</td>
 		<td>".sprintf("%.2f", $val['price']).$curr."</td>
-		<td>".sprintf("%.2f", $val['MMFDM'])."%</td>
 		<td>".sprintf("%.2f", $val['MMZDM'])."%</td>
 		<td>".sprintf("%.2f", $val['MM200']).$curr."</td>
 		<td>".sprintf("%.2f", $val['MM20']).$curr."</td>

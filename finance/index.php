@@ -2,7 +2,7 @@
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.37";
+$ver = tools::isLocalHost() ? rand() : "1.2.38";
 $pea = -1;
 $admin = 0;
 
@@ -73,6 +73,8 @@ window.onload = function() {
 		<a class="item" id="m2_cron_bt">Cron</a>
 		<a class="item" id="m2_log_bt">Log</a>
 <? } ?>
+		<a class="item" id="m2_faq_bt">FAQ</a>
+		<a class="item" id="m2_contact_bt">Contact</a>
 		<a class="item">Login</a>
 		<a class="item">Signup</a>
 	</div>
@@ -91,6 +93,8 @@ window.onload = function() {
 					<a class="item" id="m1_cron_bt">Cron</a>
 					<a class="item" id="m1_log_bt">Log</a>
 <? } ?>
+					<a class="item" id="m1_faq_bt">FAQ</a>
+					<a class="item" id="m1_contact_bt">Contact</a>
 					<div class="right item">
 						<div class="item">
 							<div class="ui primary button">Sign up</div>
