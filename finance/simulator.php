@@ -32,9 +32,8 @@ $infos = '
 <table>
     <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="5" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt1" class="ui green float right small button">Go</button></td></tr>
     <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Investissement</div><input type="text" id="invest" value="'.$invest.'" placeholder="0"><div class="ui basic label">&euro; par mois</div></div></td><td class="rowspanned"></td></tr>
-    <tr><td><div class="ui right icon mini inverted fluid right labeled input"><div class="ui label">Start</div><input type="text" id="date_start" value="'.$date_start.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
-    <tr><td><div class="ui right icon mini inverted fluid right labeled input"><div class="ui label">End</div><input type="text" id="date_end" value="'.$date_end.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
-    <tr><td style="text-align: right"><button id="sim_go_bt2" class="ui green float right small button">Go</button></td><td class="rowspanned"></td></tr>
+    <tr><td><div class="ui right icon mini inverted left labeled fluid input"><div class="ui label">Start</div><input type="text" id="date_start" value="'.$date_start.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
+    <tr><td><div class="ui right icon mini inverted fluid left labeled input"><div class="ui label">End</div><input type="text" id="date_end" value="'.$date_end.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
 </table>
 ';
 
@@ -47,6 +46,10 @@ $infos = '
             <div class="eight wide column">
                 <?= uimx::genCard('sim_card2', $row['title'], '', $infos); ?>
 			</div>
+
+            <div class="center aligned eight wide column" id="sim_card_bt">
+                <button id="sim_go_bt2" class="ui green float right small button">Go</button>
+            </div>
 
 <?
 
