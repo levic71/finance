@@ -100,6 +100,9 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 #sim_card2 table tr:nth-child(5) {
     display: none;
 }
+#sim_card1 table td:nth-child(2) {
+    background: #333;
+}
 
 
     
@@ -108,6 +111,11 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
     body {
         margin: 0px !important;
         padding: 0em 0em !important;
+    }
+
+    .container {
+        margin-left: 5px !important;
+        margin-right: 5px !important;
     }
 
     .ui.fixed.menu {
