@@ -16,7 +16,7 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
     display: inline-block;
     white-space: nowrap;
 }
-#lst_stock td:nth-child(6), td:nth-child(7), #lst_stock td:nth-child(8),#lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
+#lst_stock td:nth-child(6), #lst_stock td:nth-child(7), #lst_stock td:nth-child(8),#lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
     text-align: right;
 }
 #lst_stock td:nth-child(2) {
@@ -117,6 +117,10 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
       display: block;
     }
 
+
+    #home_card .content {
+        padding: 10px 1px 0px !important;
+    }
 
     .ui.card table td { display: compact !important; }
 
