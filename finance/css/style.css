@@ -97,13 +97,17 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 #sim_card2 .label:nth-child(1) {
     width: 30%;
 }
-    
+#sim_card2 table tr:nth-child(5) {
+    display: none;
+}
+
+
     
 @media only screen and (max-width: 700px) {
 
     body {
         margin: 0px !important;
-        padding: 0em 0.5em !important;
+        padding: 0em 0em !important;
     }
 
     .ui.fixed.menu {
@@ -117,9 +121,12 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
       display: block;
     }
 
-
-    #home_card .content {
+    #home_card .content, #sim_card1 .content, #sim_card2 .content {
         padding: 10px 1px 0px !important;
+    }
+
+    #sim_card2 table td:nth-child(2) {
+        display: none;
     }
 
     .ui.card table td { display: compact !important; }

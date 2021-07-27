@@ -30,10 +30,11 @@ $maxdd = 0;
 $infos = '
     
 <table>
-    <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="4" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt" class="ui green float right small button">Go</button></td></tr>
+    <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="4" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt1" class="ui green float right small button">Go</button></td></tr>
     <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Investissement</div><input type="text" id="invest" value="'.$invest.'" placeholder="0"><div class="ui basic label">&euro; par mois</div></div></td><td class="rowspanned"></td></tr>
     <tr><td><div class="ui right icon mini inverted fluid right labeled input"><div class="ui label">Start</div><input type="text" id="date_start" value="'.$date_start.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
     <tr><td><div class="ui right icon mini inverted fluid right labeled input"><div class="ui label">End</div><input type="text" id="date_end" value="'.$date_end.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
+    <tr><td style="text-align: right"><button id="sim_go_bt2" class="ui green float right small button">Go</button></td></tr>
 </table>
 ';
 
@@ -184,7 +185,7 @@ $final_info .= "</table>";
 
 ?>
             <div class="eight wide column">
-                <?= uimx::genCard('sim_card1', '', implode(', ', $lst_symbol), $final_info); ?>
+                <?= uimx::genCard('sim_card1', 'Synthese', implode(', ', $lst_symbol), $final_info); ?>
             </div>
 
         </div>
@@ -300,5 +301,6 @@ var myChart = new Chart(ctx, { type: 'line', data: data2, options: options2 } );
 </div>
 
 <script>
-	Dom.addListener(Dom.id('sim_go_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
+	Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
+	Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
 </script>
