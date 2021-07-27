@@ -6,10 +6,11 @@ if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
 
-
 ?>
 
-<pre style="width: 100%; height: 500px; overflow: scroll;">
+<div class="ui container inverted segment">
+
+    <pre style="width: 100%; height: 500px; overflow: scroll;">
 
 <?
 
@@ -39,4 +40,5 @@ while($row = mysqli_fetch_array($res)) {
 // Recuperation de la derniere cotation
 
 ?>
-</pre>
+    </pre>
+</div>

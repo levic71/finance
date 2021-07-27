@@ -16,9 +16,9 @@ $req = "SELECT * FROM strategies WHERE id=1" ;
 $res = dbc::execSql($req);
 $row = mysqli_fetch_array($res);
 
-$lst = array();
+$lst_symbol = array();
 $t = json_decode($row['data'], true);
-foreach($t['quotes'] as $key => $val)  $lst[] = $key;
+foreach($t['quotes'] as $key => $val)  $lst_symbol[] = $key;
 
 $capital = $capital_init;
 $nb_mois = 0;
@@ -28,17 +28,18 @@ $actifs_achetees_symbol = "";
 $maxdd = 0;
 
 $infos = '
-    <table>
-        <tr><td>Capital Initial</td><td><input type="text" id="capital_init" value="'.$capital_init.'" /> &euro;</td><td></td></tr>
-        <tr><td>Investissement</td><td><input type="text" id="invest" value="'.$invest.'" /> &euro; par mois</td><td></td></tr>
-        <tr><td>Du</td><td><input type="text" id="date_start" value="'.$date_start.'"></td><td></td></tr>
-        <tr><td>Au</td><td><input type="text" id="date_end" value="'.$date_end.'"></td><td><button id="sim_go_bt" class="ui green float right small button">Go</button></td></tr>
-    </table>
+    
+<table>
+    <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="4" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt" class="ui green float right small button">Go</button></td></tr>
+    <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Investissement</div><input type="text" id="invest" value="'.$invest.'" placeholder="0"><div class="ui basic label">&euro; par mois</div></div></td><td class="rowspanned"></td></tr>
+    <tr><td><div class="ui right icon mini inverted fluid right labeled input"><div class="ui label">Start</div><input type="text" id="date_start" value="'.$date_start.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
+    <tr><td><div class="ui right icon mini inverted fluid right labeled input"><div class="ui label">End</div><input type="text" id="date_end" value="'.$date_end.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
+</table>
 ';
 
 ?>
 
-<div class="ui stripe inverted segment">
+<div class="ui container inverted segment">
     <h2>Informations</h2>
 	<div class="ui stackable grid container">
       	<div class="row">
@@ -73,14 +74,20 @@ $tab_perf = array();
 $i = date("Ym", strtotime($date_start));
 while($i <= date("Ym", strtotime($date_end))) {
 
-    // On investit !!!
-    $capital += $invest;
-
     // Recuperation du dernier jour du mois 
     $day = date("Y-m-t", strtotime(substr($i, 0, 4)."-".substr($i, 4, 2)."-01"));
 
+    // Recuperation du premier jour du mois 
+    // $day = substr($i, 0, 4)."-".substr($i, 4, 2)."-01";
+
+    // Est ce qu'il s'agit d'un jour ou je dois réévaluer mon portfolio ?
+    if (true) {
+
+    // On investit !!!
+    $capital += $invest;
+
     // Calcul du DM sur les valeurs selectionnees
-    $data = calc::getDualMomentum("'".implode("', '", $lst)."'", $day);
+    $data = calc::getDualMomentum("'".implode("', '", $lst_symbol)."'", $day);
 
     // Tri par performance decroissante en gardant l'index dui contient le symbol
     arsort($data["perfs"]);
@@ -160,13 +167,15 @@ while($i <= date("Ym", strtotime($date_end))) {
     $tab_date[] = $day;
     $tab_valo[] = $valo;
     $tab_invt[] = $invest_sum;
+
+    }
 }
 $tab .= "</tbody></table>";
 
 $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
 $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
 $final_info = "<table id=\"sim_final_info\">";
-$final_info .= "<tr><td>Valorisation portefeuille</td><td>".sprintf("%.2f", $valo)." &euro;</td></tr>";
+$final_info .= "<tr><td>Valorisation</td><td>".sprintf("%.2f", $valo)." &euro;</td></tr>";
 $final_info .= "<tr><td>Capital investit</td><td>".sprintf("%.2f", $invest_sum)." &euro;</td></tr>";
 $final_info .= "<tr><td>Performance</td><td class=\"aaf-positive\">".sprintf("%.2f", $perf)." %</td></tr>";
 $final_info .= "<tr><td>Max DD</td><td class=\"aaf-negative\">".sprintf("%.2f", $maxdd)." %</td></tr>";
@@ -175,7 +184,7 @@ $final_info .= "</table>";
 
 ?>
             <div class="eight wide column">
-                <?= uimx::genCard('sim_card1', '', implode(', ', $lst), $final_info); ?>
+                <?= uimx::genCard('sim_card1', '', implode(', ', $lst_symbol), $final_info); ?>
             </div>
 
         </div>
@@ -238,61 +247,51 @@ var myChart = new Chart(ctx, {
 
 <script>
 // For drawing the lines
-var valos = [<?= implode(',', $tab_perf["BRE.PAR"]) ?>];
-var invts = [<?= implode(',', $tab_perf["ESE.PAR"]) ?>]; 
-var toto = [<?= implode(',', $tab_perf["PUST.PAR"]) ?>];
-var toto2 = [<?= implode(',', $tab_perf["OBLI.PAR"]) ?>];
+<?
+    $x = 0; 
+    foreach($lst_symbol as $key => $val) {
+        echo "var dataset_".$x." = [ ".implode(',', $tab_perf[$val])." ];";
+        $x++;
+    }
+
+    $color = [ "rgba(238, 130, 6, 0.75)", "rgba(97, 194, 97, 0.75)", "rgba(252, 237, 34, 0.75)", "rgba(23, 109, 181, 0.75)" ]
+?>
 
 var ctx = document.getElementById('sim_canvas2').getContext('2d');
 el("sim_canvas2").height = document.body.offsetWidth > 700 ? 100 : 300;
 
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
+var data2 = {
     labels: dates,
     datasets: [
-        { 
-            data: invts,
-            label: "BRE.PAR",
-            borderColor: "rgba(238, 130, 6, 0.75)",
-            borderWidth: 0.5,
-            fill: false
-        },
-        { 
-            data: toto,
-            label: "PUST.PAR",
-            borderColor: "rgba(97, 194, 97, 0.75)",
-            borderWidth: 0.5,
-            fill: false
-        },
-        { 
-            data: toto2,
-            label: "OBLI.PAR",
-            borderColor: "rgba(252, 237, 34, 0.75)",
-            borderWidth: 0.5,
-            fill: false
-        },
-        { 
-            data: valos,
-            label: "ESE.PAR",
-            borderColor: "rgba(23, 109, 181, 0.75)",
-            borderWidth: 0.5,
-            fill: false
-        }
-    ],
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        }
+<?
+    $x = 0; 
+    foreach($lst_symbol as $key => $val) {
+        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$color[$x]."\", borderWidth: 0.5, fill: false },";
+        $x++;
     }
-  }
-});
+?>
+    ]
+}
+
+var options2 = {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: {
+        xAxes: [{
+            gridLines: {
+                color: "red"
+            }
+        }],
+        yAxes: [{
+            gridLines: {
+                color: "red"
+            }
+        }]
+    }
+};
+
+var myChart = new Chart(ctx, { type: 'line', data: data2, options: options2 } );
+
 </script>
 
 <div class="ui container inverted segment">
