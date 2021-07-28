@@ -6,13 +6,23 @@ $capital_init = 0;
 $invest = 1000;
 $date_start = "2019-02-01";
 $date_end = date("Y-m-d");
+$strategie_id = 1;
 
-foreach(['invest', 'date_start', 'date_end', 'capital_init'] as $key)
+foreach(['strategie_id', 'invest', 'date_start', 'date_end', 'capital_init'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
 
-$req = "SELECT * FROM strategies WHERE id=1" ;
+$req = "SELECT count(*) total FROM strategies WHERE id=".$strategie_id;
+$res = dbc::execSql($req);
+$row = mysqli_fetch_array($res);
+
+if ($row['total'] != 1) {
+    echo '<div class="ui container inverted segment"><h2>Strategies not found !!!</h2></div>"';
+    exit(0);
+}
+
+$req = "SELECT * FROM strategies WHERE id=".$strategie_id;
 $res = dbc::execSql($req);
 $row = mysqli_fetch_array($res);
 
@@ -32,8 +42,8 @@ $infos = '
 <table>
     <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="5" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt1" class="ui green float right small button">Go</button></td></tr>
     <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Investissement</div><input type="text" id="invest" value="'.$invest.'" placeholder="0"><div class="ui basic label">&euro; par mois</div></div></td><td class="rowspanned"></td></tr>
-    <tr><td><div class="ui right icon mini inverted left labeled fluid input"><div class="ui label">Start</div><input type="text" id="date_start" value="'.$date_start.'" placeholder="0"><i class="users icon"></i></div></td><td class="rowspanned"></td></tr>
-    <tr><td><div class="ui right icon mini inverted fluid left labeled input"><div class="ui label">End</div><input type="text" id="date_end" value="'.$date_end.'" placeholder="0"><i class="red caret icon"></i></div></td><td class="rowspanned"></td></tr>
+    <tr><td><div class="ui right icon mini inverted left labeled fluid input"><div class="ui label">Start</div><input type="text" id="date_start" value="'.$date_start.'" placeholder="0"><i class="inverted black calendar alternate outline icon"></i></div></td><td class="rowspanned"></td></tr>
+    <tr><td><div class="ui right icon mini inverted fluid left labeled input"><div class="ui label">End</div><input type="text" id="date_end" value="'.$date_end.'" placeholder="0"><i class="inverted black calendar alternate outline icon"></i></div></td><td class="rowspanned"></td></tr>
 </table>
 ';
 
@@ -304,6 +314,6 @@ var myChart = new Chart(ctx, { type: 'line', data: data2, options: options2 } );
 </div>
 
 <script>
-	Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
-	Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
+	Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $strategie_id ?>&capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
+	Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $strategie_id ?>&capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
 </script>

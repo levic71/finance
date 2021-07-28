@@ -96,6 +96,7 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 
 #sim_card2 .label:nth-child(1) {
     width: 30%;
+    text-overflow: ellipsis;
 }
 #sim_card2 table tr:nth-child(5) {
     display: none;
