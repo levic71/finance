@@ -22,18 +22,20 @@ arsort($data["perfs"]);
 
 <div class="ui container inverted segment">
 
-	<h2>Strategies</h2>
+	<h2>Strategies <? if ($admin) { ?><button id="home_strategie_add" class="circular ui icon very small right floated blue button"><i class="inverted white add icon"></i></button><? } ?></h2>
 
 	<div class="ui stackable grid container">
       	<div class="row">
 
 <?
+			$tab_strat = array();
         	$req = "SELECT * FROM strategies WHERE defaut=1" ;
         	$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
+				$tab_strat[] = $row['id'];
 ?>
         	<div class="four wide column">
-				<?= uimx::perfCard("home_card", $row['title'], $data["day"], $data["perfs"], $row['data']) ?>
+				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data["day"], $data["perfs"], $row['data']) ?>
 			</div>
 <? } ?>
 
@@ -44,7 +46,7 @@ arsort($data["perfs"]);
 	
 <div class="ui container inverted segment">
 
-	<h2>Assets Followed</h2>
+	<h2>Assets Followed <? if ($admin) { ?><button id="home_symbol_search" class="circular ui icon very small right floated blue button"><i class="inverted white add icon"></i></button><? } ?></h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table" id="lst_stock">
 		<thead>
@@ -123,8 +125,10 @@ if ($admin) {
 			<tr>
 				<th></th>
 				<th colspan="16">
-					<div class="ui negative small right floated button" id="delete_bt">Delete</div>
-					<div class="ui primary small right floated button"  id="update_bt">Update</div>
+					<div class="ui right floated buttons">
+						<div class="ui small button" id="delete_bt">Delete</div>
+						<div class="ui small button"  id="update_bt">Update</div>
+					</div>
 				</th>
 			</tr>
 		</tfoot>
@@ -133,7 +137,13 @@ if ($admin) {
 </div>
 
 <script>
+<? foreach($tab_strat as $key => $val) { ?>
+	Dom.addListener(Dom.id('home_sim_bt_<?= $val ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val ?>', loading_area: 'home_sim_bt_<?= $val ?>' }); });
+<? } ?>
+<? if ($admin) { ?>
 	Dom.addListener(Dom.id('update_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'update', id: 'main', url: 'stock_update.php?symbol='+valof('row_symbol'), loading_area: 'update_bt' }); });
 	Dom.addListener(Dom.id('delete_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'delete', id: 'main', url: 'stock_delete.php?symbol='+valof('row_symbol'), loading_area: 'delete_bt', confirmdel: 1 }); });
+	Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
+<? } ?>
 	change_wide_menu_state('wide_menu', 'm1_home_bt');
 </script>

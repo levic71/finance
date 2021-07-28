@@ -535,7 +535,7 @@ class uimx {
     <?
 }
 
-    public static function perfCard($id, $title, $day, $perfs, $strategie) {
+    public static function perfCard($id, $strategie_id, $title, $day, $perfs, $strategie) {
 
         $t = json_decode($strategie, true);
 
@@ -549,7 +549,13 @@ class uimx {
             }
         }
 
-        $desc .= '</tbody></table>';
+        $desc .= '</tbody>';
+        $desc .= '<tfoot class="full-width"><tr>
+            <th colspan="2">
+                <button id="home_sim_bt_'.$strategie_id.'" class="ui right floated small grey labeled icon button"><i class="inverted chart line icon"></i> Simulator</button>
+            </th>
+        </tr></tfoot>';
+        $desc .= '</table>';
 
         uimx::genCard($id, $title, $day, $desc);
     }
