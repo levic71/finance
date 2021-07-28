@@ -268,7 +268,16 @@ var myChart = new Chart(ctx, {
         $x++;
     }
 
-    $color = [ "rgba(238, 130, 6, 0.75)", "rgba(97, 194, 97, 0.75)", "rgba(252, 237, 34, 0.75)", "rgba(23, 109, 181, 0.75)" ]
+    $color = [
+        "rgba(238, 130, 6, 0.75)",
+        "rgba(97, 194, 97, 0.75)",
+        "rgba(252, 237, 34, 0.75)",
+        "rgba(23, 109, 181, 0.75)",
+        "rgba(23, 109, 181, 0.75)",
+        "rgba(23, 109, 181, 0.75)",
+        "rgba(23, 109, 181, 0.75)",
+        "rgba(23, 109, 181, 0.75)"
+    ];
 ?>
 
 var ctx = document.getElementById('sim_canvas2').getContext('2d');
