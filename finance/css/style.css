@@ -138,6 +138,10 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
         padding: 10px 1px 0px !important;
     }
 
+    #strategie_box, #home_card {
+        width: 100% !important;
+    }
+
     #sim_card2 table td:nth-child(2) {
         display: none;
     }
