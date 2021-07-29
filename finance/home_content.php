@@ -22,7 +22,7 @@ arsort($data["perfs"]);
 
 <div class="ui container inverted segment">
 
-	<h2>Strategies <? if ($admin) { ?><button id="home_strategie_add" class="circular ui icon very small right floated blue button"><i class="inverted white add icon"></i></button><? } ?></h2>
+	<h2>Strategies <button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> New</button></h2>
 
 	<div class="ui stackable grid container">
       	<div class="row">
@@ -46,7 +46,7 @@ arsort($data["perfs"]);
 	
 <div class="ui container inverted segment">
 
-	<h2>Assets Followed <? if ($admin) { ?><button id="home_symbol_search" class="circular ui icon very small right floated blue button"><i class="inverted white add icon"></i></button><? } ?></h2>
+	<h2>Assets Followed <? if ($admin) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Add</button><? } ?></h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table" id="lst_stock">
 		<thead>
@@ -104,16 +104,34 @@ if ($admin) {
 }
 		echo "</tr>";
 
-	echo "<tr class=\"row-detail\">
+	echo '<tr class="row-detail">
 		<td></td>
-		<td colspan=\"10\">
-		currency=".$val['currency']." ::
-		region=".$val['region']." ::
-		market=".$val['marketopen']."-".$val['marketclose']." :: 
-		timezone=".$val['timezone']." :: 
-		max archive=".$max_histo." :: 
-		cache=".$cache_timestamp."
-	</td></tr>";
+		<td colspan="10" class="ui fluid">
+			<div class="ui labeled button" tabindex="0">
+				<div class="ui teal button">Currency</div>
+				<a class="ui basic teal left pointing label">'.$val['currency'].'</a>
+			</div>
+			<div class="ui labeled button" tabindex="0">
+				<div class="ui teal button">Region</div>
+				<a class="ui basic teal left pointing label">'.$val['region'].'</a>
+			</div>
+			<div class="ui labeled button" tabindex="0">
+				<div class="ui teal button">Market</div>
+				<a class="ui basic teal left pointing label">'.$val['marketopen'].'-'.$val['marketclose'].'</a>
+			</div>
+			<div class="ui labeled button" tabindex="0">
+				<div class="ui teal button">Timezone</div>
+				<a class="ui basic teal left pointing label">'.$val['timezone'].'</a>
+			</div>
+			<div class="ui labeled button" tabindex="0">
+				<div class="ui teal small button">Max history</div>
+				<a class="ui basic teal small left pointing label">'.$max_histo.'</a>
+			</div>
+			<div class="ui labeled button" tabindex="0">
+				<div class="ui teal button">Cache</div>
+				<a class="ui basic teal left pointing label">'.$cache_timestamp.'</a>
+			</div>
+	</td></tr>';
 
 	$x++;
 }

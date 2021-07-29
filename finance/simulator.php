@@ -40,7 +40,7 @@ $maxdd = 0;
 $infos = '
     
 <table>
-    <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="5" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt1" class="ui green float right small button">Go</button></td></tr>
+    <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="5" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt1" class="ui icon green float right small button"><i class="inverted play icon"></i></button></td></tr>
     <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Investissement</div><input type="text" id="invest" value="'.$invest.'" placeholder="0"><div class="ui basic label">&euro; par mois</div></div></td><td class="rowspanned"></td></tr>
     <tr><td><div class="ui right icon mini inverted left labeled fluid input"><div class="ui label">Start</div><input type="text" id="date_start" value="'.$date_start.'" placeholder="0"><i class="inverted black calendar alternate outline icon"></i></div></td><td class="rowspanned"></td></tr>
     <tr><td><div class="ui right icon mini inverted fluid left labeled input"><div class="ui label">End</div><input type="text" id="date_end" value="'.$date_end.'" placeholder="0"><i class="inverted black calendar alternate outline icon"></i></div></td><td class="rowspanned"></td></tr>
@@ -191,8 +191,8 @@ $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
 $final_info = "<table id=\"sim_final_info\">";
 $final_info .= "<tr><td>Valorisation</td><td>".sprintf("%.2f", $valo)." &euro;</td></tr>";
 $final_info .= "<tr><td>Capital investit</td><td>".sprintf("%.2f", $invest_sum)." &euro;</td></tr>";
-$final_info .= "<tr><td>Performance</td><td class=\"aaf-positive\">".sprintf("%.2f", $perf)." %</td></tr>";
-$final_info .= "<tr><td>Max DD</td><td class=\"aaf-negative\">".sprintf("%.2f", $maxdd)." %</td></tr>";
+$final_info .= "<tr><td>Performance</td><td class=\"".($perf >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $perf)." %</td></tr>";
+$final_info .= "<tr><td>Max DD</td><td class=\"".($maxdd >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $maxdd)." %</td></tr>";
 $final_info .= "<tr><td>Duree</td><td>".count(tools::getMonth($date_start, $date_end))." mois</td></tr>";
 $final_info .= "</table>";
 
@@ -272,11 +272,11 @@ var myChart = new Chart(ctx, {
         "rgba(238, 130, 6, 0.75)",
         "rgba(97, 194, 97, 0.75)",
         "rgba(252, 237, 34, 0.75)",
-        "rgba(23, 109, 181, 0.75)",
-        "rgba(23, 109, 181, 0.75)",
-        "rgba(23, 109, 181, 0.75)",
-        "rgba(23, 109, 181, 0.75)",
-        "rgba(23, 109, 181, 0.75)"
+        "rgba(23, 109, 181, 0.75)",     // Bleu
+        "rgba(255, 153, 255, 0.75)",    // Fushia
+        "rgba(153, 51, 51, 0.75)",      // Marron
+        "rgba(204, 230, 255, 0.75)",    // Cyan
+        "rgba(209, 179, 255, 0.75)"     // Violet
     ];
 ?>
 
@@ -325,4 +325,10 @@ var myChart = new Chart(ctx, { type: 'line', data: data2, options: options2 } );
 <script>
 	Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $strategie_id ?>&capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
 	Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $strategie_id ?>&capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
+    const datepicker1 = new TheDatepicker.Datepicker(el('date_start'));
+    datepicker1.options.setInputFormat("Y-m-d")
+    datepicker1.render();
+    const datepicker2 = new TheDatepicker.Datepicker(el('date_end'));
+    datepicker2.options.setInputFormat("Y-m-d")
+    datepicker2.render();
 </script>
