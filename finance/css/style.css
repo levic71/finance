@@ -98,7 +98,7 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
     width: 30%;
     text-overflow: ellipsis;
 }
-#sim_card2 table tr:nth-child(5) {
+#sim_card2 > table > tr:nth-child(5) {
     display: none;
 }
 #sim_card1 table td:nth-child(2) {
@@ -156,6 +156,13 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
         display: none !important;
     }
 
-        
+    .row-detail td:nth-child(2) > div {
+        display: flex !important;
+        margin-bottom: 5px !important;
+        width: 100% !important;
+    }
+    .row-detail td:nth-child(2) > div div, .row-detail td:nth-child(2) > div a {
+        width: 50% !important;
+    }
 }
   
