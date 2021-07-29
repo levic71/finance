@@ -24,7 +24,7 @@ arsort($data["perfs"]);
 
 	<h2>Strategies <button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> New</button></h2>
 
-	<div class="ui stackable grid container">
+	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
 
 <?
