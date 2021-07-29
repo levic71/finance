@@ -123,6 +123,10 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
         margin-right: 5px !important;
     }
 
+    .ui .card {
+        box-shadow: 0 0px 0px 0 #555, 0 0 0 0px #555 !important;
+    }
+
     .ui.fixed.menu {
       display: none !important;
     }
