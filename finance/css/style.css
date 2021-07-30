@@ -1,6 +1,11 @@
 td.aaf-positive { background: #333 !important; color: rgb(97, 194, 97) !important; }
 td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !important; }
 
+h2 { color: yellowgreen; }
+table th { color: burlywood !important; }
+
+#m1_sidebar_bt { display: none; }
+
 #home_card td:nth-child(2) {
     text-align: right;
 }
@@ -126,6 +131,11 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
     .ui .card {
         box-shadow: 0 0px 0px 0 #555, 0 0 0 0px #555 !important;
     }
+    #sidebar_menu {
+        background: linear-gradient(0deg,#ba54f5,#e14eca);
+    }
+
+    #m1_sidebar_bt { display: initial; }
 
     .ui.fixed.menu {
       display: none !important;

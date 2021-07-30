@@ -157,6 +157,7 @@ if ($admin) {
 <script>
 <? foreach($tab_strat as $key => $val) { ?>
 	Dom.addListener(Dom.id('home_sim_bt_<?= $val ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val ?>', loading_area: 'home_sim_bt_<?= $val ?>' }); });
+	Dom.addListener(Dom.id('settings_strategie_bt_<?= $val ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'settings_strategie.php?strategie_id=<?= $val ?>', loading_area: 'settings_strategie_bt_<?= $val ?>' }); });
 <? } ?>
 <? if ($admin) { ?>
 	Dom.addListener(Dom.id('update_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'update', id: 'main', url: 'stock_update.php?symbol='+valof('row_symbol'), loading_area: 'update_bt' }); });
