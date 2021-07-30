@@ -11,7 +11,6 @@ $dbg_data = false;
 // On place la timezone à UTC pour pouvoir gerer les fuseaux horaires des places boursieres
 date_default_timezone_set("UTC");
 
-
 //
 // Boite a outils
 //
@@ -244,12 +243,13 @@ class calc {
 class aafinance {
 
     public static $apikey = "ZFO6Y0QL00YIG7RH";
+    public static $apikey_local = "X6K6Z794TD321PTH";
 
     public static function getData($function, $options) {
 
         global $dbg, $dbg_data;
 
-        $url  = 'https://www.alphavantage.co/query?function='.$function.'&'.$options.'&apikey='.self::$apikey;
+        $url  = 'https://www.alphavantage.co/query?function='.$function.'&'.$options.'&apikey='.(tools::isLocalHost() ? self::$apikey_local : self::$apikey);
         $json = file_get_contents($url);
         $data = json_decode($json,true);
 
@@ -557,7 +557,7 @@ class uimx {
         </tr></tfoot>';
         $desc .= '</table>';
 
-        uimx::genCard($id, $title, $day, $desc);
+        uimx::genCard($id, $title."<i id=\"settings_strategie_bt_".$strategie_id."\" class=\"ui inverted right floated black small settings icon\"></i>", $day, $desc);
     }
 }
 

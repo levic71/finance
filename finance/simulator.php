@@ -222,13 +222,15 @@ el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
 var myChart = new Chart(ctx, {
     type: 'line',
     data: {
-    labels: dates,
-    datasets: [
+        labels: dates,
+        datasets: [
         { 
             data: invts,
             label: "Investissement",
             borderColor: "rgba(238, 130, 6, 0.75)",
             backgroundColor: "rgba(238, 130, 6, 0.3)",
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
             fill: true
         },
         { 
@@ -236,9 +238,11 @@ var myChart = new Chart(ctx, {
             label: "Valorisation",
             borderColor: "rgba(23, 109, 181, 0.75)",
             backgroundColor: "rgba(23, 109, 181, 0.3)",
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
             fill: true
         }
-    ],
+    ]},
     options: {
         responsive: true,
         maintainAspectRatio: true,
@@ -250,7 +254,6 @@ var myChart = new Chart(ctx, {
             }]
         }
     }
-  }
 });
 </script>
 
@@ -289,7 +292,7 @@ var data2 = {
 <?
     $x = 0; 
     foreach($lst_symbol as $key => $val) {
-        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$color[$x]."\", borderWidth: 0.5, fill: false },";
+        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$color[$x]."\", cubicInterpolationMode: 'monotone', tension: 0.4, borderWidth: 0.5, fill: false },";
         $x++;
     }
 ?>

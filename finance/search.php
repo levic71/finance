@@ -19,6 +19,7 @@ foreach(['search'] as $key)
     </div>
 </div>
 
+<div class="ui container inverted segment">
 <?
 
 if (isset($search) && $search != "") {
@@ -27,7 +28,7 @@ if (isset($search) && $search != "") {
         $data = aafinance::searchSymbol($search);
 
         if (isset($data["bestMatches"])) {
-            echo "<pre><table>";
+            echo "<table class=\"ui inverted table\">";
             $i = 0;
             foreach ($data["bestMatches"] as $key => $val) {
                 echo "<tr>
@@ -43,7 +44,7 @@ if (isset($search) && $search != "") {
                 </tr>";
                 $i++;
             }
-            echo "</table></pre>";
+            echo "</table>";
         }
     } catch (RuntimeException $e) {
         if ($e->getCode() == 1) logger::error("CRON", $row['symbole'], $e->getMessage());
@@ -52,6 +53,7 @@ if (isset($search) && $search != "") {
 }
 
 ?>
+</div>
 
 <script>
 	Dom.addListener(Dom.id('search_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('search') != '') go({ action: 'search', id: 'main', url: 'search.php?search='+valof('search'), loading_area: 'search_bt' }); });
