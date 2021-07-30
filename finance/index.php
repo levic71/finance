@@ -2,7 +2,7 @@
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.46";
+$ver = tools::isLocalHost() ? rand() : "1.2.47";
 $pea = -1;
 $admin = 0;
 
@@ -84,9 +84,9 @@ $admin = $admin == 1 ? true : false;
 					<a class="item" id="m1_faq_bt">FAQ</a>
 					<a class="item" id="m1_contact_bt">Contact</a>
 					<div class="right item">
-						<div class="item">
-							<div class="ui blue button" id="m1_login_bt"><i class="inverted user icon"></i>Log in</div>
-						</div>
+						<button id="m1_login_bt" class="ui blue icon button">
+  							<i class="user white inverted icon"></i>
+						</button>
 					</div>
 				</div>
 			</div>
