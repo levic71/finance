@@ -2,7 +2,7 @@
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.47";
+$ver = tools::isLocalHost() ? rand() : "1.2.48";
 $pea = -1;
 $admin = 0;
 
@@ -94,6 +94,17 @@ $admin = $admin == 1 ? true : false;
 	</div>
 
 	<div id="main" class="main"></div>
-    
+	
+	<div class="ui inverted vertical footer segment">
+		<div class="ui center aligned container">
+			<div class="ui inverted section divider"></div>
+			<div class="ui horizontal inverted small divided link list">
+				<a class="item" href="#">Contact Us</a>
+				<a class="item" href="#">Terms and Conditions</a>
+				<a class="item" href="#">FAQ</a>
+			</div>
+		</div>
+	</div>
+
     </body>
 </html>

@@ -1,6 +1,11 @@
 td.aaf-positive { background: #333 !important; color: rgb(97, 194, 97) !important; }
 td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !important; }
 
+.ui.footer.segment {
+    margin: 5em 0em 0em;
+    padding: 5em 0em;
+}
+
 h2 { color: yellowgreen; }
 table th { color: burlywood !important; }
 
