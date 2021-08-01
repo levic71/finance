@@ -38,7 +38,6 @@ $actifs_achetees_symbol = "";
 $maxdd = 0;
 
 $infos = '
-    
 <table>
     <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="5" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt1" class="ui icon green float right small button"><i class="inverted play icon"></i></button></td></tr>
     <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Investissement</div><input type="text" id="invest" value="'.$invest.'" placeholder="0"><div class="ui basic label">&euro; par mois</div></div></td><td class="rowspanned"></td></tr>

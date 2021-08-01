@@ -29,7 +29,7 @@ foreach($t['quotes'] as $key => $val)  $lst_symbol[] = $key;
 ?>
 
 <style type="text/css">
-	.column { max-width: 450px; }
+	.column { max-width: 90%; }
 </style>
 
 <div class="ui inverted middle aligned center aligned grid segment container">
@@ -39,19 +39,55 @@ foreach($t['quotes'] as $key => $val)  $lst_symbol[] = $key;
         </h2>
         <form class="ui inverted large form">
             <div class="ui inverted stacked segment">
-                <div class="field">
-                    <div class="ui left icon input">
-                        <i class="user icon"></i>
-                        <input type="text" name="email" placeholder="E-mail address">
+
+                <div class="inverted field">
+                    <div class="ui inverted labeled input">
+                        <div class="ui label">Nom</div><input type="text" id="s_name" value="<?= $row['title'] ?>" placeholder="0">
                     </div>
                 </div>
-                <div class="field">
-                    <div class="ui left icon input">
-                        <i class="lock icon"></i>
-                        <input type="password" name="password" placeholder="Password">
+
+                <div class="inverted field">
+                    <div class="ui inverted labeled input">
+                        <div class="ui label">Methode</div><input type="text" id="s_name" value="<?= $row['title'] ?>" placeholder="0">
                     </div>
                 </div>
-                <div class="ui fluid large teal submit button">Login</div>
+
+                <div class="inverted field">
+                    <div class="ui inverted right labeled input">
+                        <input placeholder="Methode" type="text">
+                        <div class="ui inverted dropdown label">
+                            <div class="text">Dropdown</div>
+                            <i class="inverted dropdown icon"></i>
+                            <div class="menu">
+                                <div class="item">Choice 1</div>
+                                <div class="item">Choice 2</div>
+                                <div class="item">Choice 3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inverted field">
+                    <div class="ui inverted labeled input">
+                        <div class="ui label">Data</div><input type="text" id="s_data" value="<?= $row['data'] ?>" placeholder="0">
+                    </div>
+                </div>
+
+<?
+
+$req3 = "SELECT * FROM stock";
+$res3 = dbc::execSql($req3);
+while($row3 = mysqli_fetch_array($res3)) {
+    echo $row3['name']."<br />";
+}
+
+?>
+
+				<div class="ui fluid buttons">
+                    <div id="strategie_cancel_bt" class="ui grey submit button">Cancel</div>
+                    <div class="ui teal submit button">Insert</div>
+                </div>
+
             </div>
             <div class="ui error message"></div>
         </form>
@@ -59,5 +95,5 @@ foreach($t['quotes'] as $key => $val)  $lst_symbol[] = $key;
 </div>
 
 <script>
-//	Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $strategie_id ?>&capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
+	Dom.addListener(Dom.id('strategie_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'strategie_cancel_bt' }); });
 </script>
