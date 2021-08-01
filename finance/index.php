@@ -43,6 +43,9 @@ $admin = $admin == 1 ? true : false;
 			Dom.addListener(Dom.id('m2_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'm2_home_bt',   url: 'home_content.php?pea=<?= $pea ?>&admin=<?= $admin ?>' }); });
 			Dom.addListener(Dom.id('m1_login_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'm1_login_bt',   url: 'login.php' }); });
 			Dom.addListener(Dom.id('m2_login_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'm2_login_bt',   url: 'login.php' }); });
+			Dom.addListener(Dom.id('footer_contact_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'footer_contact_bt',   url: 'contact.php' }); });
+			Dom.addListener(Dom.id('footer_terms_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'footer_terms_bt',   url: 'terms.php' }); });
+			Dom.addListener(Dom.id('footer_faq_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home',   id: 'main', menu: 'footer_faq_bt',   url: 'faq.php' }); });
 
 <? if ($admin) { ?>
 			Dom.addListener(Dom.id('m1_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron',   id: 'main', menu: 'm1_cron_bt',   url: 'crontab.php' }); });
@@ -64,8 +67,6 @@ $admin = $admin == 1 ? true : false;
 		<a class="item" id="m2_cron_bt"><i class="ui inverted cloud download alternate icon"></i>Cron</a>
 		<a class="item" id="m2_log_bt"><i class="ui inverted sort amount down icon"></i>Log</a>
 <? } ?>
-		<a class="item" id="m2_faq_bt"><i class="ui inverted help icon"></i>FAQ</a>
-		<a class="item" id="m2_contact_bt"><i class="ui inverted mail icon"></i>Contact</a>
 		<a class="item" id="m2_login_bt"><i class="ui inverted user icon"></i>Login</a>
 	</div>
 
@@ -81,8 +82,6 @@ $admin = $admin == 1 ? true : false;
 					<a class="item" id="m1_cron_bt">Cron</a>
 					<a class="item" id="m1_log_bt">Log</a>
 <? } ?>
-					<a class="item" id="m1_faq_bt">FAQ</a>
-					<a class="item" id="m1_contact_bt">Contact</a>
 					<div class="right item">
 						<button id="m1_login_bt" class="ui blue icon button">
   							<i class="user white inverted icon"></i>
@@ -99,9 +98,9 @@ $admin = $admin == 1 ? true : false;
 		<div class="ui center aligned container">
 			<div class="ui inverted section divider"></div>
 			<div class="ui horizontal inverted small divided link list">
-				<a class="item" href="#">Contact Us</a>
-				<a class="item" href="#">Terms and Conditions</a>
-				<a class="item" href="#">FAQ</a>
+				<a id="footer_contact_bt" class="item" href="#">Nous Contacter</a>
+				<a id="footer_terms_bt" class="item" href="#">Conditions d'utilisation</a>
+				<a id="footer_faq_bt" class="item" href="#">FAQ</a>
 			</div>
 		</div>
 	</div>
