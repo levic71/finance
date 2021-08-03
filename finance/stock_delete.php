@@ -12,7 +12,7 @@ if ($symbol == "") exit;
 $db = dbc::connect();
 
 // Recuperation des infos des assets
-$req = "DELETE FROM stock WHERE symbol='".$symbol."'";
+$req = "DELETE FROM stocks WHERE symbol='".$symbol."'";
 $res = dbc::execSql($req);
 
 cacheData::deleteCacheSymbol($symbol);

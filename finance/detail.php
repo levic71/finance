@@ -36,7 +36,7 @@ $db = dbc::connect();
                     <tbody>
 <?
 
-$req = "SELECT * FROM stock s, quote q WHERE s.symbol = q.symbol AND s.symbol='".$symbol."'";
+$req = "SELECT * FROM stocks s, quotes q WHERE s.symbol = q.symbol AND s.symbol='".$symbol."'";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
