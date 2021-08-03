@@ -38,8 +38,10 @@ valof = function(id) {
 	if (el(id)) {
 		if (el(id).type == 'checkbox')
 			ret = el(id).checked ? el(id).value : 0;
+		else if (el(id).type == 'select')
+		{ var elts = document.getElementsByName(id); for (i=0;i<elts.length;i++) if (elts[i].selected) ret = elts[i].value; }
 		else if (el(id).type == 'radio')
-			{ var elts = document.getElementsByName(id); for (i=0;i<elts.length;i++)  if (elts[i].checked) ret = elts[i].value; }
+		{ var elts = document.getElementsByName(id); for (i=0;i<elts.length;i++) if (elts[i].checked) ret = elts[i].value; }
 		else if (el(id).type == 'textarea')
 			ret = el(id).value.replace(/\n/g,'<br \/>');
 		else

@@ -22,7 +22,7 @@ arsort($data["perfs"]);
 
 <div class="ui container inverted segment">
 
-	<h2>Strategies <button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> New</button></h2>
+	<h2>Strategies <button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ajouter</button></h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
@@ -30,6 +30,7 @@ arsort($data["perfs"]);
 <?
 			$tab_strat = array();
         	$req = "SELECT * FROM strategies WHERE defaut=1" ;
+        	$req = "SELECT * FROM strategies" ;
         	$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 				$tab_strat[] = $row['id'];
@@ -46,21 +47,21 @@ arsort($data["perfs"]);
 	
 <div class="ui container inverted segment">
 
-	<h2>Assets Followed <? if ($admin) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Add</button><? } ?></h2>
+	<h2>Assets Followed <? if ($admin) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
 
-	<table class="ui selectable inverted single line unstackable very compact table" id="lst_stock">
+	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
 		<thead>
 			<tr>
 				<th></th>
-				<th>Symbol</th>
-                <th class="four wide">Name</th>
-                <th class="center aligned">Type</th>
-				<th class="center aligned">Last Day Quote</th>
-				<th class="right aligned">Price</th>
-				<th class="right aligned">DM TKL</th>
-				<th class="right aligned">MM200</th>
-				<th class="right aligned">MM20</th>
-				<th class="right aligned">MM7</th>
+				<th>Symbole</th>
+                <th class="four wide">Nom</th>
+                <th>Type</th>
+				<th>Derniere Quotation</th>
+				<th data-sortable-type="numeric">Prix</th>
+				<th data-sortable-type="numeric">DM TKL</th>
+				<th data-sortable-type="numeric">MM200</th>
+				<th data-sortable-type="numeric">MM20</th>
+				<th data-sortable-type="numeric">MM7</th>
 <? if ($admin) { ?>
     		    <th></th>
 <? } ?>
@@ -89,11 +90,11 @@ foreach($data["stocks"] as $key => $val) {
 		<td>".$val['name']."</td>
 		<td>".$val['type']."</td>
 		<td>".$val['day']."</td>
-		<td>".sprintf("%.2f", $val['price']).$curr."</td>
-		<td>".sprintf("%.2f", $val['MMZDM'])."%</td>
-		<td>".sprintf("%.2f", $val['MM200']).$curr."</td>
-		<td>".sprintf("%.2f", $val['MM20']).$curr."</td>
-		<td>".sprintf("%.2f", $val['MM7']).$curr."</td>
+		<td data-value=\"".$val['price']."\">".sprintf("%.2f", $val['price']).$curr."</td>
+		<td data-value=\"".$val['MMZDM']."\">".sprintf("%.2f", $val['MMZDM'])."%</td>
+		<td data-value=\"".$val['MM200']."\">".sprintf("%.2f", $val['MM200']).$curr."</td>
+		<td data-value=\"".$val['MM20']."\">".sprintf("%.2f", $val['MM20']).$curr."</td>
+		<td data-value=\"".$val['MM7']."\">".sprintf("%.2f", $val['MM7']).$curr."</td>
 	";
 if ($admin) {
 	echo "<td class=\"collapsing\">
@@ -102,36 +103,17 @@ if ($admin) {
 			</div>
 	</td>";
 }
-		echo "</tr>";
+	echo "</tr>";
 
-	echo '<tr class="row-detail">
-		<td></td>
-		<td colspan="10" class="ui fluid">
-			<div class="ui labeled button" tabindex="0">
-				<div class="ui teal button">Currency</div>
-				<a class="ui basic teal left pointing label">'.$val['currency'].'</a>
-			</div>
-			<div class="ui labeled button" tabindex="0">
-				<div class="ui teal button">Region</div>
-				<a class="ui basic teal left pointing label">'.$val['region'].'</a>
-			</div>
-			<div class="ui labeled button" tabindex="0">
-				<div class="ui teal button">Market</div>
-				<a class="ui basic teal left pointing label">'.$val['marketopen'].'-'.$val['marketclose'].'</a>
-			</div>
-			<div class="ui labeled button" tabindex="0">
-				<div class="ui teal button">Timezone</div>
-				<a class="ui basic teal left pointing label">'.$val['timezone'].'</a>
-			</div>
-			<div class="ui labeled button" tabindex="0">
-				<div class="ui teal small button">Max history</div>
-				<a class="ui basic teal small left pointing label">'.$max_histo.'</a>
-			</div>
-			<div class="ui labeled button" tabindex="0">
-				<div class="ui teal button">Cache</div>
-				<a class="ui basic teal left pointing label">'.$cache_timestamp.'</a>
-			</div>
-	</td></tr>';
+	$tabi = [ "Devise" => $val['currency'], "Région" => $val['region'], "Marché" => $val['marketopen'].'-'.$val['marketclose'], "Timezone" => $val['timezone'], "Max Histo" => $max_histo, "Cache" => $cache_timestamp ];
+
+	echo '<tr class="row-detail"><td></td><td colspan="10" class="ui fluid">';
+	foreach($tabi as $keyi => $vali)
+		echo '<div class="ui labeled button" tabindex="0">
+				<div class="ui teal button">'.$keyi.'</div>
+				<a class="ui basic teal left pointing label">'.$vali.'</a>
+			</div>';
+	echo '</td></tr>';
 
 	$x++;
 }
@@ -144,8 +126,8 @@ if ($admin) {
 				<th></th>
 				<th colspan="16">
 					<div class="ui right floated buttons">
-						<div class="ui small button" id="delete_bt">Delete</div>
-						<div class="ui small button"  id="update_bt">Update</div>
+						<div class="ui small black button" id="delete_bt">Supprimer</div>
+						<div class="ui small black button" id="update_bt">Modifier</div>
 					</div>
 				</th>
 			</tr>
@@ -155,9 +137,10 @@ if ($admin) {
 </div>
 
 <script>
+	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
 <? foreach($tab_strat as $key => $val) { ?>
 	Dom.addListener(Dom.id('home_sim_bt_<?= $val ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val ?>', loading_area: 'home_sim_bt_<?= $val ?>' }); });
-	Dom.addListener(Dom.id('settings_strategie_bt_<?= $val ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'settings_strategie.php?strategie_id=<?= $val ?>', loading_area: 'settings_strategie_bt_<?= $val ?>' }); });
+	Dom.addListener(Dom.id('home_strategie_<?= $val ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_upt', id: 'main', url: 'strategie.php?strategie_id=<?= $val ?>', loading_area: 'home_strategie_<?= $val ?>_bt' }); });
 <? } ?>
 <? if ($admin) { ?>
 	Dom.addListener(Dom.id('update_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'update', id: 'main', url: 'stock_update.php?symbol='+valof('row_symbol'), loading_area: 'update_bt' }); });
@@ -165,4 +148,5 @@ if ($admin) {
 	Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
 <? } ?>
 	change_wide_menu_state('wide_menu', 'm1_home_bt');
+	Sortable.initTable(el("lst_stock"));
 </script>

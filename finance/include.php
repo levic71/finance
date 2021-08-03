@@ -224,7 +224,7 @@ class calc {
 
         $only = $lst_symbol == "ALL" ? "" : "AND s.symbol IN (".$lst_symbol.")";
 
-        $req = "SELECT * FROM stock s, quote q WHERE s.symbol = q.symbol ".$only." ORDER BY s.symbol";
+        $req = "SELECT * FROM stocks s, quotes q WHERE s.symbol = q.symbol ".$only." ORDER BY s.symbol";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res)) {
             $symbol = $row['symbol'];
@@ -447,7 +447,7 @@ class cacheData {
                 $msg = "[Quote] => Update DB NOk";
                 if (isset($data["Global Quote"])) {
                     $val = $data["Global Quote"];
-                    $update = "INSERT INTO quote (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$symbol."', '".$val['02. open']."', '".$val['03. high']."', '".$val['04. low']."', '".$val['05. price']."', '".$val['06. volume']."', '".$val['07. latest trading day']."', '".$val['08. previous close']."', '".$val['09. change']."', '".$val['10. change percent']."') ON DUPLICATE KEY UPDATE open='".$val['02. open']."', high='".$val['03. high']."', low='".$val['04. low']."', price='".$val['05. price']."', volume='".$val['06. volume']."', day='".$val['07. latest trading day']."', previous='".$val['08. previous close']."', day_change='".$val['09. change']."', percent='".$val['10. change percent']."'";
+                    $update = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$symbol."', '".$val['02. open']."', '".$val['03. high']."', '".$val['04. low']."', '".$val['05. price']."', '".$val['06. volume']."', '".$val['07. latest trading day']."', '".$val['08. previous close']."', '".$val['09. change']."', '".$val['10. change percent']."') ON DUPLICATE KEY UPDATE open='".$val['02. open']."', high='".$val['03. high']."', low='".$val['04. low']."', price='".$val['05. price']."', volume='".$val['06. volume']."', day='".$val['07. latest trading day']."', previous='".$val['08. previous close']."', day_change='".$val['09. change']."', percent='".$val['10. change percent']."'";
                     $res2 = dbc::execSql($update);
                     $msg = "[Quote] => Update DB Ok";
                 }
@@ -552,12 +552,12 @@ class uimx {
         $desc .= '</tbody>';
         $desc .= '<tfoot class="full-width"><tr>
             <th colspan="2">
-                <button id="home_sim_bt_'.$strategie_id.'" class="ui right floated small grey labeled icon button"><i class="inverted chart line icon"></i> Simulator</button>
+                <button id="home_sim_bt_'.$strategie_id.'" class="ui right floated small grey labeled icon button"><i class="inverted chart line icon"></i> Backtesting</button>
             </th>
         </tr></tfoot>';
         $desc .= '</table>';
 
-        uimx::genCard($id, $title."<i id=\"settings_strategie_bt_".$strategie_id."\" class=\"ui inverted right floated black small settings icon\"></i>", $day, $desc);
+        uimx::genCard($id, $title."<i id=\"home_strategie_".$strategie_id."_bt\" class=\"ui inverted right floated black small settings icon\"></i>", $day, $desc);
     }
 }
 

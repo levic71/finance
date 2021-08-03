@@ -12,7 +12,7 @@ if (isset($symbol) && $symbol != "") {
     $db = dbc::connect();
 
     // Recuperation des infos des assets
-    $req = "SELECT count(*) total FROM stock WHERE symbol='".$symbol."'";
+    $req = "SELECT count(*) total FROM stocks WHERE symbol='".$symbol."'";
     $res = dbc::execSql($req);
     $row = mysqli_fetch_array($res);
 
@@ -20,7 +20,7 @@ if (isset($symbol) && $symbol != "") {
 
         $name = urldecode($name);
         
-        $req = "INSERT INTO stock (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
+        $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
 
         echo $req;
         $res = dbc::execSql($req);

@@ -2,7 +2,7 @@
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.48";
+$ver = tools::isLocalHost() ? rand() : "1.2.50";
 $pea = -1;
 $admin = 0;
 
@@ -24,6 +24,7 @@ $admin = $admin == 1 ? true : false;
 		<link rel="stylesheet" href="css/semantic.min.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/style.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/the-datepicker.css?ver=<?= $ver ?>" />
+		<link rel="stylesheet" href="css/sortable-theme-minimal.css?ver=<?= $ver ?>" />
 
 		<!-- script type="text/javascript" src="js/semantic.min.js?ver=<?= $ver ?>"></script -->
 		<script type="text/javascript" src="js/chart.min.js?ver=<?= $ver ?>"></script>
@@ -31,6 +32,7 @@ $admin = $admin == 1 ? true : false;
 		<script type="text/javascript" src="js/dom.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/jxs_compressed.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/the-datepicker.min.js?ver=<?= $ver ?>"></script>
+		<script type="text/javascript" src="js/sortable.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/scripts.js?ver=<?= $ver ?>"></script>
 
 		<script>
@@ -64,7 +66,8 @@ $admin = $admin == 1 ? true : false;
 	<div class="ui vertical inverted sidebar menu" id="sidebar_menu">
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
 <? if ($admin) { ?>
-		<a class="item" id="m2_cron_bt"><i class="ui inverted cloud download alternate icon"></i>Cron</a>
+	<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
+	<a class="item" id="m2_cron_bt"><i class="ui inverted cloud download alternate icon"></i>Cron</a>
 		<a class="item" id="m2_log_bt"><i class="ui inverted sort amount down icon"></i>Log</a>
 <? } ?>
 		<a class="item" id="m2_login_bt"><i class="ui inverted user icon"></i>Login</a>
@@ -79,6 +82,7 @@ $admin = $admin == 1 ? true : false;
 					<a class="toc inverted item" id="m1_sidebar_bt"><i class="sidebar inverted icon"></i></a>
 					<a class="active item" id="m1_home_bt">Home</a>
 <? if ($admin) { ?>
+					<a class="item" id="m1_users_bt">Users</a>
 					<a class="item" id="m1_cron_bt">Cron</a>
 					<a class="item" id="m1_log_bt">Log</a>
 <? } ?>
