@@ -87,16 +87,16 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 					</div>
 	                <div class="inverted field">
 						<div class="ui inverted labeled input">
-							<div class="ui inverted basic label">Methode</div>
+							<div class="ui inverted basic label">Méthode</div>
 							<select id="f_methode" class="ui selection dropdown">
 								<option value="1" <?= $row['methode'] == 1 ? "selected=\"selected\"" : "" ?>>Meilleur DM</option>
-								<option value="2" <?= $row['methode'] == 2 ? "selected=\"selected\"" : "" ?>>Par Repartition</option>
+								<option value="2" <?= $row['methode'] == 2 ? "selected=\"selected\"" : "" ?>>Par Répartition</option>
 							</select>
                     	</div>
 					</div>
 	                <div class="inverted field">
 						<div class="ui inverted labeled input">
-							<div class="ui inverted basic label">Nb assets</div>
+							<div class="ui inverted basic label">Nb actifs</div>
 							<select id="f_nb_symbol_max" class="ui selection dropdown">
 								<? foreach (range(1, 6) as $number) echo "<option value=\"".$number."\" ".($number == $nb_symbol ? "selected=\"selected\"" : "").">".$number."</option>"; ?>
 							</select>

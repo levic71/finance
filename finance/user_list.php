@@ -40,7 +40,7 @@ $db = dbc::connect();
 					<td><?= $row['date_inscription'] ?></td>
 					<td>
 						<i class="ui inverted edit icon"  onclick="go({ action: 'user', id: 'main', url: 'user.php?action=upt&item_id=<?= $row['id'] ?>' });"></i>
-						<i class="ui inverted trash icon" onclick="go({ action: 'user', id: 'main', url: 'user.php?action=upt&item_id=<?= $row['id'] ?>', confirmdel: 1 });"></i>
+						<i class="ui inverted trash icon" onclick="go({ action: 'user', id: 'main', url: 'user_action.php?action=del&item_id=<?= $row['id'] ?>', confirmdel: 1 });"></i>
 					</td>
 				<tr>
 <?
