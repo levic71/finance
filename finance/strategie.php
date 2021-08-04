@@ -6,19 +6,12 @@ session_start();
 
 include "common.php";
 
-$action = "upt";
+$action = "new";
 
 foreach(['strategie_id', 'action'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
-if ($action == "del") {
-	$libelle_action_bt = "Supprimer";
-} else if ($action == "new") {
-	$libelle_action_bt = "Ajouter";
-}
-else {
-	$libelle_action_bt = "Modifier";
-}
+$libelle_action_bt = tools::getLibelleBtAction($action);
 
 $db = dbc::connect();
 

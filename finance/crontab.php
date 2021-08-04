@@ -1,5 +1,9 @@
 <?
 
+// //////////////////////////////////////////
+// NE PAS METTRE DE SESSION SINON PB CRONTAB
+// //////////////////////////////////////////
+
 include "include.php";
 
 if (!is_dir("cache/")) mkdir("cache/");
