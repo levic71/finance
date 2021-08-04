@@ -20,6 +20,18 @@ class tools {
         return (strtolower(getenv('SERVER_NAME')) == "localhost" || strtolower(getenv('REMOTE_ADDR')) == "127.0.0.1" || strtolower(getenv('REMOTE_ADDR')) == "localhost") ? true : false;
     }
 
+    public static function do_redirect($url) {
+?>
+        <script type="text/javascript">
+        top.location.href="<?= $url ?>";
+        </script>
+        <noscript>
+        <meta http-equiv="refresh" content="0; url=<?= $url ?>" />
+        </noscript>
+<?    
+        exit(0);
+    }
+
     public static function getMonth($strDate1, $strDate2) {
 
         $date1 = new DateTime(date('Y-m-01', strtotime($strDate1)));
@@ -537,6 +549,8 @@ class uimx {
 
     public static function perfCard($id, $strategie_id, $title, $day, $perfs, $strategie) {
 
+        global $sess_context;
+
         $t = json_decode($strategie, true);
 
         $desc = '<table class="ui inverted single line very compact unstackable table"><tbody>';
@@ -557,7 +571,8 @@ class uimx {
         </tr></tfoot>';
         $desc .= '</table>';
 
-        uimx::genCard($id, $title."<i id=\"home_strategie_".$strategie_id."_bt\" class=\"ui inverted right floated black small settings icon\"></i>", $day, $desc);
+        $title = $title.($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie_id."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
+        uimx::genCard($id, $title, $day, $desc);
     }
 }
 

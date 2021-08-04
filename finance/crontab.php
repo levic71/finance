@@ -1,6 +1,10 @@
 <?
 
-include_once "include.php";
+require_once "sess_context.php";
+
+session_start();
+
+include "common.php";
 
 if (!is_dir("cache/")) mkdir("cache/");
 
@@ -11,7 +15,6 @@ $db = dbc::connect();
 <div class="ui container inverted segment">
 
     <pre style="width: 100%; height: 500px; overflow: scroll;">
-
 <?
 
 // Parcours des actifs suivis

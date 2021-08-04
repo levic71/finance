@@ -1,8 +1,11 @@
 <?
 
-include_once "include.php";
+require_once "sess_context.php";
 
-$strategie_id = 1;
+session_start();
+
+include "common.php";
+
 $action = "upt";
 
 foreach(['strategie_id', 'action'] as $key)
@@ -135,8 +138,6 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 				</div>
 
 			</div>
-
-			<div class="ui error message"></div>
 
 		</form>
     </div>

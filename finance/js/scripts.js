@@ -30,6 +30,7 @@ cc = function(id, c) {
 }
 fs = function(id) { try { el(id).focus(); } catch(e) {} }
 isHidden = function(id) { try { return (el(id).style.display == 'none' ? true : false); } catch(e) {} }
+showelt = function(id) { try { el(id).style.display = 'block'; } catch(e) {} }
 show = function(id) { try { el(id).style.display = el(id).tagName.toUpperCase() == "TABLE" ? 'inline-table' : 'initial'; } catch(e) {} }
 hide = function(id) { try { el(id).style.display = 'none'; } catch(e) {} }
 toogle = function(id) { try { if (isHidden(id)) show(id); else hide(id); } catch(e) {} }
@@ -104,4 +105,9 @@ toogle_table = function(id_table_body, ind_row) {
 		items[ind_row].style.display = items[ind_row].style.display == "none" || items[ind_row].style.display == "" ? 'contents' : "none";
 	}
 	catch(e) {}
+}
+
+check_email = function(txt) {
+	var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(txt);
 }

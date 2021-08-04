@@ -1,15 +1,13 @@
 <?
 
-include_once "include.php";
+require_once "sess_context.php";
 
-$ver = "1.2.6";
-$pea = -1;
-$admin = 0;
+session_start();
 
-foreach(['pea', 'admin'] as $key)
+include "common.php";
+
+foreach([''] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
-
-$admin = $admin == 1 ? true : false;
 
 $db = dbc::connect();
 
@@ -22,16 +20,19 @@ arsort($data["perfs"]);
 
 <div class="ui container inverted segment">
 
-	<h2>Strategies <button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ajouter</button></h2>
+	<h2>Strategies <? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
 
 <?
+			if ($sess_context->isUserConnected())
+	        	$req = "SELECT * FROM strategies WHERE user_id=".$sess_context->getUserId();
+			else 
+				$req = "SELECT * FROM strategies WHERE defaut=1";
+
 			$tab_strat = array();
-        	$req = "SELECT * FROM strategies WHERE defaut=1" ;
-        	$req = "SELECT * FROM strategies" ;
-        	$res = dbc::execSql($req);
+			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 				$tab_strat[] = $row['id'];
 ?>
@@ -47,7 +48,7 @@ arsort($data["perfs"]);
 	
 <div class="ui container inverted segment">
 
-	<h2>Assets Followed <? if ($admin) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
+	<h2>Assets Followed <? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
 		<thead>
@@ -62,7 +63,7 @@ arsort($data["perfs"]);
 				<th data-sortable-type="numeric">MM200</th>
 				<th data-sortable-type="numeric">MM20</th>
 				<th data-sortable-type="numeric">MM7</th>
-<? if ($admin) { ?>
+<? if ($sess_context->isSuperAdmin()) { ?>
     		    <th></th>
 <? } ?>
 			</tr>
@@ -96,7 +97,7 @@ foreach($data["stocks"] as $key => $val) {
 		<td data-value=\"".$val['MM20']."\">".sprintf("%.2f", $val['MM20']).$curr."</td>
 		<td data-value=\"".$val['MM7']."\">".sprintf("%.2f", $val['MM7']).$curr."</td>
 	";
-if ($admin) {
+if ($sess_context->isSuperAdmin()) {
 	echo "<td class=\"collapsing\">
 			<div class=\"ui inverted checkbox\">
 				<input type=\"radio\" name=\"row_symbol\" id=\"row_symbol\" value=\"".$val['symbol']."\" /> <label></label>
@@ -120,7 +121,7 @@ if ($admin) {
 
 ?>
 		</tbody>
-<? 	if ($admin) { ?>
+<? 	if ($sess_context->isSuperAdmin()) { ?>
 		<tfoot class="full-width">
 			<tr>
 				<th></th>
@@ -137,12 +138,16 @@ if ($admin) {
 </div>
 
 <script>
+<? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
+<? } ?>
 <? foreach($tab_strat as $key => $val) { ?>
 	Dom.addListener(Dom.id('home_sim_bt_<?= $val ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val ?>', loading_area: 'home_sim_bt_<?= $val ?>' }); });
+<? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_<?= $val ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_upt', id: 'main', url: 'strategie.php?strategie_id=<?= $val ?>', loading_area: 'home_strategie_<?= $val ?>_bt' }); });
 <? } ?>
-<? if ($admin) { ?>
+<? } ?>
+<? if ($sess_context->isSuperAdmin()) { ?>
 	Dom.addListener(Dom.id('update_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'update', id: 'main', url: 'stock_update.php?symbol='+valof('row_symbol'), loading_area: 'update_bt' }); });
 	Dom.addListener(Dom.id('delete_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'delete', id: 'main', url: 'stock_delete.php?symbol='+valof('row_symbol'), loading_area: 'delete_bt', confirmdel: 1 }); });
 	Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
