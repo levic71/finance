@@ -48,6 +48,10 @@ table th { color: burlywood !important; }
     height: 100% !important;
 }
 
+#lst_users th:nth-child(2), #lst_users td:nth-child(2), #lst_users td:nth-child(4) {
+    text-align: center;
+}
+
 .icon,
 .icon::before,
 .icon::after {

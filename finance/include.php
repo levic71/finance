@@ -3,7 +3,7 @@
 // ini_set('display_errors', false);
 ini_set('error_log', './finance.log');
 
-header( 'content-type: text/html; charset=utf-8' );
+header( 'content-type: text/html; charset=iso-8859-1' );
 
 $dbg = true;
 $dbg_data = false;
@@ -50,6 +50,10 @@ class tools {
         }
     
         return $arr_mois;
+    }
+
+    public static function getLibelleBtAction($action) {
+        return $action == "new" ? "Ajouter" : ($action == "upt" ? "Modifier" : "Supprimer");
     }
 }
 

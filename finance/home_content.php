@@ -20,7 +20,7 @@ arsort($data["perfs"]);
 
 <div class="ui container inverted segment">
 
-	<h2>Strategies <? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
+	<h2>Stratégies <? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
@@ -50,7 +50,7 @@ arsort($data["perfs"]);
 	
 <div class="ui container inverted segment">
 
-	<h2>Assets Followed <? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
+	<h2>Actifs suivis<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
 		<thead>
@@ -59,7 +59,7 @@ arsort($data["perfs"]);
 				<th>Symbole</th>
                 <th class="four wide">Nom</th>
                 <th>Type</th>
-				<th>Derniere Quotation</th>
+				<th>Dernière Quotation</th>
 				<th data-sortable-type="numeric">Prix</th>
 				<th data-sortable-type="numeric">DM TKL</th>
 				<th data-sortable-type="numeric">MM200</th>
@@ -90,7 +90,7 @@ foreach($data["stocks"] as $key => $val) {
 	echo "
 		<td><i class=\"inverted blue caret square right outline icon\"></i></td>
 		<td><a onclick=\"go({ action: 'update', id: 'main', url: 'detail.php?symbol=".$val['symbol']."' });\">".$val['symbol']."</a></td>
-		<td>".$val['name']."</td>
+		<td>".utf8_decode($val['name'])."</td>
 		<td>".$val['type']."</td>
 		<td>".$val['day']."</td>
 		<td data-value=\"".$val['price']."\">".sprintf("%.2f", $val['price']).$curr."</td>
@@ -108,7 +108,7 @@ if ($sess_context->isSuperAdmin()) {
 }
 	echo "</tr>";
 
-	$tabi = [ "Devise" => $val['currency'], "Région" => $val['region'], "Marché" => $val['marketopen'].'-'.$val['marketclose'], "Timezone" => $val['timezone'], "Max Histo" => $max_histo, "Cache" => $cache_timestamp ];
+	$tabi = [ $val['region'] => $val['currency'], "Marché" => $val['marketopen'].'-'.$val['marketclose'], "TZ" => $val['timezone'], "Max Histo" => $max_histo, "Cache" => $cache_timestamp ];
 
 	echo '<tr class="row-detail"><td></td><td colspan="10" class="ui fluid">';
 	foreach($tabi as $keyi => $vali)
