@@ -25,7 +25,6 @@ if ($action == "del" && isset($strategie_id) && $strategie_id != "") {
 
     $req = "DELETE FROM strategies WHERE id=".$strategie_id." AND user_id=".$sess_context->getUserId();
     $res = dbc::execSql($req);
-    $row = mysqli_fetch_array($res);
 
 }
 
@@ -48,5 +47,5 @@ if ($action == "upt" && isset($strategie_id) && $strategie_id != "") {
 
 <script>
 	Swal.fire({ title: '', icon: 'success', html: "Stratégie <?= $f_name.($action == "new" ? " ajoutée": ($action == "upt" ? " modifiée" : " supprimée")) ?>" });
-    go({ action: 'home_content', id: 'main', url: 'home_content.php?admin=1' });
+    go({ action: 'home_content', id: 'main', url: 'home_content.php' });
 </script>

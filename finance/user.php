@@ -68,8 +68,8 @@ else {
 						<div class="ui inverted labeled input">
 							<div class="ui inverted basic label">Activé</div>
 							<select id="f_status" class="ui selection dropdown">
-								<option value="1" <?= $row['status'] == 0 ? "selected=\"selected\"" : "" ?>>Non</option>
-								<option value="2" <?= $row['status'] == 1 ? "selected=\"selected\"" : "" ?>>Oui</option>
+								<option value="0" <?= $row['status'] == 0 ? "selected=\"selected\"" : "" ?>>Non</option>
+								<option value="1" <?= $row['status'] == 1 ? "selected=\"selected\"" : "" ?>>Oui</option>
 							</select>
                     	</div>
 					</div>
@@ -99,6 +99,13 @@ else {
 			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Saisir un email' });
 			addCN('f_email_error', 'red');
 			return;
+		}
+		rmCN('f_email_error', 'red');
+
+		if (!check_email(valof('f_email'))) {
+			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Email non conforme' });
+			addCN('f_email_error', 'red');
+			return false;
 		}
 		rmCN('f_email_error', 'red');
 

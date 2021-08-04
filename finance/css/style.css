@@ -14,6 +14,10 @@ table th { color: burlywood !important; }
     text-align: right;
 }
 
+#strategie_box .header {
+    color: burlywood !important;
+}
+
 #lst_stock td {
     text-align: center;
 }
