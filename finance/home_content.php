@@ -146,7 +146,7 @@ if ($sess_context->isSuperAdmin()) {
 <? foreach($tab_strat as $key => $val) { ?>
 	Dom.addListener(Dom.id('home_sim_bt_<?= $val ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val ?>', loading_area: 'home_sim_bt_<?= $val ?>' }); });
 <? if ($sess_context->isUserConnected()) { ?>
-	Dom.addListener(Dom.id('home_strategie_<?= $val ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_upt', id: 'main', url: 'strategie.php?strategie_id=<?= $val ?>', loading_area: 'home_strategie_<?= $val ?>_bt' }); });
+	Dom.addListener(Dom.id('home_strategie_<?= $val ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_upt', id: 'main', url: 'strategie.php?action=upt&strategie_id=<?= $val ?>', loading_area: 'home_strategie_<?= $val ?>_bt' }); });
 <? } ?>
 <? } ?>
 <? if ($sess_context->isSuperAdmin()) { ?>

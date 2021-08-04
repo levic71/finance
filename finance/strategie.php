@@ -19,12 +19,12 @@ $lst_symbol_strategie = array();
 $lst_symbol_strategie_pct = array();
 
 if ($action == "upt") {
-	$req = "SELECT count(*) total FROM strategies WHERE id=".$strategie_id;
+	$req = "SELECT count(*) total FROM strategies WHERE id=".$strategie_id.($sess_context->isSuperAdmin() ? "" : " AND user_id=".$sess_context->getUserId());
 	$res = dbc::execSql($req);
 	$row = mysqli_fetch_array($res);
 
 	if ($row['total'] != 1) {
-		echo '<div class="ui container inverted segment"><h2>Strategies not found !!!</h2></div>"';
+		echo '<div class="ui container inverted segment"><h2>Strategie not found !!!</h2></div>"';
 		exit(0);
 	}
 
