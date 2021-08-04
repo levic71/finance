@@ -26,7 +26,9 @@ arsort($data["perfs"]);
       	<div class="row">
 
 <?
-			if ($sess_context->isUserConnected())
+			if ($sess_context->isUserConnected() && $sess_context->isSuperAdmin())
+				$req = "SELECT * FROM strategies WHERE defaut= 1 OR user_id=".$sess_context->getUserId();
+			else if ($sess_context->isUserConnected())
 	        	$req = "SELECT * FROM strategies WHERE user_id=".$sess_context->getUserId();
 			else 
 				$req = "SELECT * FROM strategies WHERE defaut=1";

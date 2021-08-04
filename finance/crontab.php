@@ -1,10 +1,6 @@
 <?
 
-require_once "sess_context.php";
-
-session_start();
-
-include "common.php";
+include "include.php";
 
 if (!is_dir("cache/")) mkdir("cache/");
 
