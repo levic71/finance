@@ -1,8 +1,14 @@
 <?
 
-include_once "include.php";
+require_once "sess_context.php";
 
-$nb_lignes = 40;
+session_start();
+
+include "common.php";
+
+if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
+
+$nb_lignes = 200;
 
 foreach(['nb_lignes'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");

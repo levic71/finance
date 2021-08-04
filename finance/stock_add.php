@@ -21,8 +21,6 @@ if (isset($symbol) && $symbol != "") {
         $name = urldecode($name);
         
         $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
-
-        echo $req;
         $res = dbc::execSql($req);
 
         cacheData::buildCacheSymbol($symbol, true);
