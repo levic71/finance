@@ -80,6 +80,7 @@ foreach(['f_email'] as $key)
 			addCN('f_email_error', 'red');
 			return false;
 		}
+		rmCN('f_email_error', 'red');
 
 		if (valof('f_pwd') == "") {
 			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Saisir un mot de passe' });
