@@ -26,7 +26,7 @@ if ($action == "login") {
     $res = dbc::execSql($req);
     if ($row = mysqli_fetch_array($res)) {
         if (password_verify($f_pwd, $row['pwd'])) {
-            if ($row['status'] == 1) {
+            if ($row['status'] == 1 && $row['confirmation'] == 1) {
                 $connected = true;
                 $tab = [ "id" => $row['id'], "email" => $row['email'], "super_admin" => $row['super_admin'], "status" => $row['status'] ];
                 $sess_context->setUserConnection($tab);
