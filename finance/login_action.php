@@ -63,11 +63,11 @@ if ($action == "signup") {
 
         $mail_sujet  = "[finance.jorkers.com] - Confirmation email";
         $mail_corps  = "Bonjour,\n\nPour valider votre email, cliquez sur ce <a href=\"https://finance.jorkers.com/user_action.php?action=confirm&token=".$token."&ret=1\">lien</a>.\n\nBonne réception.\n";
-        $res = @mail($f_email, stripslashes($mail_sujet), nl2br($mail_corps), $mail_header);
+        $res = @mail($f_email, stripslashes($mail_sujet), $mail_corps, $mail_header);
 
         $mail_sujet  = "[finance.jorkers.com] - Demande de création compte";
         $mail_corps  = "Bonjour,\n\nPour invalider le compte, cliquez sur ce <a href=\"https://finance.jorkers.com/user_action.php?action=status&token=".$token."&ret=1\">lien</a>.\n\nBonne réception.\n";
-        $res = @mail(sess_context::email_admin, stripslashes($mail_sujet), nl2br($mail_corps), $mail_header);
+        $res = @mail(sess_context::email_admin, stripslashes($mail_sujet), $mail_corps, $mail_header);
     }
 }
 
