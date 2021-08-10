@@ -66,8 +66,6 @@ if ($action == "confirm" && isset($token) && $token != "") {
         $req = "UPDATE users SET confirmation=1 WHERE token='".$token."'";
         $res = dbc::execSql($req);
     }
-
-    exit(0);
 }
 
 if ($action == "status" && isset($token) && $token != "") {
@@ -94,7 +92,7 @@ if ($action == "status" && isset($token) && $token != "") {
     go({ action: 'home_content', id: 'main', url: 'user_list.php' });
 
 <? } else {
-
+exit(0);
         tools::do_redirect("index.php?action=".($action == "confirm" ? "confirm" : "status"));
 
 } ?>
