@@ -4,11 +4,38 @@ require_once "sess_context.php";
 
 session_start();
 
+foreach(['action', 'token'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+
+if ($action == "confirm" && isset($token) && $token != "") {
+
+    $req = "SELECT * FROM users WHERE token='".$token."'";
+    $res = dbc::execSql($req);
+
+    if ($row = mysqli_fetch_array($res)) {
+        $req = "UPDATE users SET confirmation=1 WHERE token='".$token."'";
+        $res = dbc::execSql($req);
+    }
+    tools::do_redirect("index.php?action=confirm");
+}
+
+if ($action == "status" && isset($token) && $token != "") {
+
+    $req = "SELECT * FROM users WHERE token='".$token."'";
+    $res = dbc::execSql($req);
+
+    if ($row = mysqli_fetch_array($res)) {
+        $req = "UPDATE users SET status=0 WHERE token='".$token.'"';
+        $res = dbc::execSql($req);
+    }
+    tools::do_redirect("index.php?action=status");
+}
+
 include "common.php";
 
 if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
-foreach(['action', 'item_id', 'f_email', 'f_status', 'token'] as $key)
+foreach(['item_id', 'f_email', 'f_status'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -57,28 +84,6 @@ if ($action == "upt" && isset($item_id) && $item_id != "") {
     }
 }
 
-if ($action == "confirm" && isset($token) && $token != "") {
-
-    $req = "SELECT * FROM users WHERE token='".$token."'";
-    $res = dbc::execSql($req);
-
-    if ($row = mysqli_fetch_array($res)) {
-        $req = "UPDATE users SET confirmation=1 WHERE token='".$token."'";
-        $res = dbc::execSql($req);
-    }
-}
-
-if ($action == "status" && isset($token) && $token != "") {
-
-    $req = "SELECT * FROM users WHERE token='".$token."'";
-    $res = dbc::execSql($req);
-
-    if ($row = mysqli_fetch_array($res)) {
-        $req = "UPDATE users SET status=0 WHERE token='".$token.'"';
-        $res = dbc::execSql($req);
-    }
-}
-
 ?>
 
 <script>
@@ -91,9 +96,5 @@ if ($action == "status" && isset($token) && $token != "") {
 <? } ?>
     go({ action: 'home_content', id: 'main', url: 'user_list.php' });
 
-<? } else {
-exit(0);
-        tools::do_redirect("index.php?action=".($action == "confirm" ? "confirm" : "status"));
-
-} ?>
+<? } ?>
 </script>
