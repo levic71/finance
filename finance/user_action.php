@@ -14,10 +14,12 @@ foreach(['action', 'token'] as $key)
 if ($action == "confirm" && isset($token) && $token != "") {
 
     $req = "SELECT * FROM users WHERE token='".$token."'";
+    echo $requete;
     $res = dbc::execSql($req);
 
     if ($row = mysqli_fetch_array($res)) {
         $req = "UPDATE users SET confirmation=1 WHERE token='".$token."'";
+        echo $requete;
         $res = dbc::execSql($req);
         tools::do_redirect("index.php?action=confirm");
     } else
