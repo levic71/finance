@@ -2,13 +2,9 @@
 
 include_once "include.php";
 
-$capital_init = 0;
-$invest = 1000;
-$date_start = "2019-02-01";
-$date_end = date("Y-m-d");
-$strategie_id = 1;
+$strategie_id = -1;
 
-foreach(['strategie_id', 'invest', 'date_start', 'date_end', 'capital_init'] as $key)
+foreach(['strategie_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -26,186 +22,363 @@ $req = "SELECT * FROM strategies WHERE id=".$strategie_id;
 $res = dbc::execSql($req);
 $row = mysqli_fetch_array($res);
 
-$lst_symbol = array();
-$t = json_decode($row['data'], true);
-foreach($t['quotes'] as $key => $val)  $lst_symbol[] = $key;
+$invest = $row['methode'] == 1 ? 1000 : 12000;
+$cycle_invest = $row['methode'] == 1 ? 1 : 12;
+$capital_init = 0;
+$date_start = "2019-02-01";
+$date_end = date("Y-m-d");
 
-$capital = $capital_init;
+foreach(['strategie_id', 'invest', 'cycle_invest', 'date_start', 'date_end', 'capital_init'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+
+$lst_symbols = array();
+$lst_decode_symbols = json_decode($row['data'], true);
+foreach($lst_decode_symbols['quotes'] as $key => $val) $lst_symbols[] = $key;
+
+// Cash disponible
+$cash = $capital_init;
+// Somme investie
+$sum_invest = $capital_init;
+
 $nb_mois = 0;
-$actifs_achetees_nb = 0;
-$actifs_achetees_pu = 0;
-$actifs_achetees_symbol = "";
+$valo_pf = 0;
+$perf_pf = 0;
 $maxdd = 0;
 
+// Tableau pour mémoriser les ordres achats/ventes
+// $ordres["2021-08-01"] = '{ "date": "2021-08-01", "symbol": "PUST.PAR", "quantity": "20", "price": "80" }';
+// $o = json_decode($ordres[0]);
+// echo $o->{"date"};
+$ordres = array();
+
+// Pour la gestion Best DM
+$actifs_achetes_nb = 0;
+$actifs_achetes_pu = 0;
+$actifs_achetes_symbol = "";
+
+// Pour la gestion Par Répartition
+$lst_actifs_achetes_pu = array();
+$lst_actifs_achetes_nb = array();
+foreach($lst_decode_symbols['quotes'] as $key => $val) {
+    $lst_actifs_achetes_pu[$key] = 0;
+    $lst_actifs_achetes_nb[$key] = 0;
+}
+
 $infos = '
-<table>
-    <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Capital Initial</div><input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0"><div class="ui basic label">&euro;</div></div></td><td rowspan="5" style="vertical-align: bottom; text-align: center"><button id="sim_go_bt1" class="ui icon green float right small button"><i class="inverted play icon"></i></button></td></tr>
-    <tr><td><div class="ui mini inverted fluid right labeled input"><div class="ui label">Investissement</div><input type="text" id="invest" value="'.$invest.'" placeholder="0"><div class="ui basic label">&euro; par mois</div></div></td><td class="rowspanned"></td></tr>
-    <tr><td><div class="ui right icon mini inverted left labeled fluid input"><div class="ui label">Start</div><input type="text" id="date_start" value="'.$date_start.'" placeholder="0"><i class="inverted black calendar alternate outline icon"></i></div></td><td class="rowspanned"></td></tr>
-    <tr><td><div class="ui right icon mini inverted fluid left labeled input"><div class="ui label">End</div><input type="text" id="date_end" value="'.$date_end.'" placeholder="0"><i class="inverted black calendar alternate outline icon"></i></div></td><td class="rowspanned"></td></tr>
-</table>
+    <input type="hidden" id="strategie_id" value="'.$strategie_id.'" />
+    <table id="sim_imput_card">
+        <tr>
+            <td>
+                <div class="ui inverted fluid right labeled input">
+                    <div class="ui label">Capital Initial</div>
+                    <input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0">
+                    <div class="ui basic label">&euro;</div>
+                </div>
+            </td>
+            <td rowspan="5" style="vertical-align: bottom; text-align: right">
+                <button id="sim_go_bt1" class="ui icon pink float right small button"><i class="inverted play icon"></i></button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="ui inverted fluid right labeled input">
+                    <div class="ui label">Investissement en &euro;</div>
+                    <input type="text" id="invest" value="'.$invest.'" placeholder="0">
+                    <div class="ui floated right label">par</div>
+                    <div class="ui inverted labeled input">
+                        <select id="cycle_invest" class="ui selection">
+                            <option value="1"  '.($cycle_invest == 1  ? "selected=\"selected\"" : "").'>mois</option>
+                            <option value="3"  '.($cycle_invest == 3  ? "selected=\"selected\"" : "").'>trimestre</option>
+                            <option value="6"  '.($cycle_invest == 6  ? "selected=\"selected\"" : "").'>semestre</option>
+                            <option value="12" '.($cycle_invest == 12 ? "selected=\"selected\"" : "").'>an</option>
+                        </select>
+                    </div>
+                </div>
+            </td>
+            <td class="rowspanned"></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="ui right icon inverted left labeled fluid input">
+                    <div class="ui label">Début</div>
+                    <input type="text" id="date_start" value="'.$date_start.'" placeholder="0">
+                    <i class="inverted black calendar alternate outline icon"></i>
+                </div>
+            </td>
+            <td class="rowspanned"></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="ui right icon inverted fluid left labeled input">
+                    <div class="ui label">Fin</div>
+                    <input type="text" id="date_end" value="'.$date_end.'" placeholder="0">
+                    <i class="inverted black calendar alternate outline icon"></i>
+                </div>
+            </td>
+            <td class="rowspanned"></td>
+        </tr>
+    </table>
 ';
 
 ?>
 
 <div class="ui container inverted segment">
     <h2>Informations</h2>
-	<div class="ui stackable grid container">
-      	<div class="row">
+    <div class="ui stackable grid container">
+          <div class="row">
             <div class="eight wide column">
-                <?= uimx::genCard('sim_card2', $row['title'], '', $infos); ?>
-			</div>
+                <?= uimx::genCard('sim_card2', $row['title'], '&nbsp;', $infos); ?>
+            </div>
 
             <div class="center aligned eight wide column" id="sim_card_bt">
-                <button id="sim_go_bt2" class="ui green float right small button">Go</button>
+                <button id="sim_go_bt2" class="ui pink float right button">Go</button>
             </div>
 
 <?
-
-$tab = '
-<table id="lst_sim" class="ui selectable inverted single line very compact unstackable table"><thead>
-    <tr>
-        <th>Date</th>
-        <th>Cash</th>
-        <th>Vente</th>
-        <th>Nb</th>
-        <th>PU</th>
-        <th>Perf</th>
-        <th>Achat</th>
-        <th>Nb</th>
-        <th>PU</th>
-        <th>Valorisation</th>
-        <th>Perf</th>
-    </tr></thead><tbody>
-';
 
 $tab_date = array();
 $tab_valo = array();
 $tab_invt = array();
 $tab_perf = array();
+$tab_detail = array();
 
 $i = date("Ym", strtotime($date_start));
 while($i <= date("Ym", strtotime($date_end))) {
 
+    // Item pour stocker dans le detail du tableau detail
+    $detail = array();
+
     // Recuperation du dernier jour du mois 
     $day = date("Y-m-t", strtotime(substr($i, 0, 4)."-".substr($i, 4, 2)."-01"));
+
+    // Recuperation du numero du mois
+    $month = date("n", strtotime(substr($i, 0, 4)."-".substr($i, 4, 2)."-01"));
 
     // Recuperation du premier jour du mois 
     // $day = substr($i, 0, 4)."-".substr($i, 4, 2)."-01";
 
-    // Est ce qu'il s'agit d'un jour ou je dois réévaluer mon portfolio ?
-    if (true) {
+    // Cycle investissement ?
+    if (fmod($month, $cycle_invest) == 0) {
 
-    // On investit !!!
-    $capital += $invest;
+        // On investit !!!
+        $cash += $invest;
+        // On investit !!!
+        $sum_invest += $invest;
 
-    // Calcul du DM sur les valeurs selectionnees
-    $data = calc::getDualMomentum("'".implode("', '", $lst_symbol)."'", $day);
+        // BEST DM
+        if ($row['methode'] == 1) {
 
-    // Tri par performance decroissante en gardant l'index dui contient le symbol
-    arsort($data["perfs"]);
+            // Calcul du DM sur les valeurs selectionnees
+            $data = calc::getDualMomentum("'".implode("', '", $lst_symbols)."'", $day);
 
-    // Recuperation de l'actif le plus performant
-    $best_quote = array_keys($data["perfs"])[0];
+            // Tri par performance decroissante en gardant l'index dui contient le symbol
+            arsort($data["perfs"]);
 
-    $curr = $data["stocks"][$best_quote]['currency'] == "EUR" ? "&euro;" : "$";
+            // Recuperation de l'actif le plus performant
+            $best_quote = array_keys($data["perfs"])[0];
 
-    $info_title =  "[".$data["stocks"][$best_quote]["ref_day"]."] => ".$best_quote;
+            $curr = $data["stocks"][$best_quote]['currency'] == "EUR" ? "&euro;" : "$";
 
-    $info_content = "<ul>";
-    foreach($data["perfs"] as $key => $val) {
-        $info_content .= "<li>".$key." : ".($val == -9999 ? "N/A" : $val)."</li>";
-        // On retire l'actif qui n'a pas de DM faute de profondeur de data
-        if ($val == -9999) unset($data["perfs"][$key]);
-        // tableau des perfs par symbol
-        $tab_perf[$key][$day] = ($val == -9999 ? 0 : $val);
+            $info_title =  "[".$data["stocks"][$best_quote]["ref_day"]."] => ".$best_quote;
+
+            $info_content = "<ul>";
+            foreach($data["perfs"] as $key => $val) {
+                $info_content .= "<li>".$key." : ".($val == -9999 ? "N/A" : $val)."</li>";
+                // On retire l'actif qui n'a pas de DM faute de profondeur de data
+                if ($val == -9999) unset($data["perfs"][$key]);
+                // tableau des perfs par symbol
+                $tab_perf[$key][$day] = ($val == -9999 ? 0 : $val);
+            }
+            $info_content .= "</ul>";
+
+            $auMoinsUnActif = count($data["perfs"]) == 0 ? false : true;
+
+            $detail["tr_onclick"] = "Swal.fire({ title: '".$info_title."', icon: 'info', html: '".$info_content."' });";
+            $detail["td_day"]     = $auMoinsUnActif ? $data["stocks"][$best_quote]["ref_day"] : $day;
+
+            // Vente anciens actifs si different du nouveau plus performant
+            if ($auMoinsUnActif && $actifs_achetes_nb > 0 && $actifs_achetes_symbol != $best_quote) {
+
+                $pu = calc::getDailyHistoryQuote($actifs_achetes_symbol, $data["stocks"][$best_quote]["ref_day"]);
+                $cash += $actifs_achetes_nb * $pu;
+
+                $perf_pf = round(($pu - $actifs_achetes_pu)*100/$actifs_achetes_pu, 2);
+
+                // Calcul max drawdown
+                $maxdd = min($maxdd, $perf_pf);
+
+                $detail["td_symbol_vendu"] = $actifs_achetes_symbol;
+                $detail["td_nb_vendu"]     = $actifs_achetes_nb;
+                $detail["td_pu_vendu"]     = sprintf("%.2f", round($pu, 2)).$curr;
+                $detail["td_perf_vendu"]   = sprintf("%.2f", $perf_pf)."%";
+                $detail["td_perf_vendu_val"] = $perf_pf;
+
+                // Memorisation ordres
+                $ordres[$detail["td_day"].":".$detail["td_symbol_vendu"]] = '{ "date": "'.$detail["td_day"].'", "action": "Vente", "symbol": "'.$detail["td_symbol_vendu"].'", "quantity": "'.abs($detail["td_nb_vendu"]).'", "price": "'.$detail["td_pu_vendu"].'" }';
+
+                $actifs_achetes_nb = 0;
+            }
+            else {
+                $detail["td_symbol_vendu"] = "-";
+                $detail["td_nb_vendu"]     = "-";
+                $detail["td_pu_vendu"]     = "-";
+                $detail["td_perf_vendu"]   = "-";
+                $detail["td_perf_vendu_val"] = "0";
+            }
+
+            // Achat nouveaux actifs
+            if ($auMoinsUnActif && $cash > 0) {
+
+                $actifs_achetes_pu = $data["stocks"][$best_quote]["ref_close"];
+
+                // achat nouveaux actifs
+                $x = floor($cash / $actifs_achetes_pu);
+                $actifs_achetes_nb = ($actifs_achetes_symbol == $best_quote) ? $actifs_achetes_nb + $x : $x;
+                $cash -= $x * $actifs_achetes_pu;
+                $actifs_achetes_symbol = $best_quote;
+
+                $detail["td_symbol_achat"] = $actifs_achetes_symbol;
+                $detail["td_nb_achat"]     = $x;
+                $detail["td_pu_achat"]     = sprintf("%.2f", round($actifs_achetes_pu, 2)).$curr;
+
+                // Memorisation ordres
+                $ordres[$detail["td_day"].":".$detail["td_symbol_achat"]] = '{ "date": "'.$detail["td_day"].'", "action": "Achat", "symbol": "'.$detail["td_symbol_achat"].'", "quantity": "'.abs($detail["td_nb_achat"]).'", "price": "'.$detail["td_pu_achat"].'" }';
+            }
+            else {
+                $detail["td_symbol_achat"] = "-";
+                $detail["td_nb_achat"]     = "-";
+                $detail["td_pu_achat"]     = "-";
+            }
+
+            $valo_pf = round($cash+($actifs_achetes_nb * $actifs_achetes_pu), 2);
+            $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
+
+            $detail["td_cash"]          = sprintf("%.2f", round($cash, 2)).$curr;
+            $detail["td_valo_pf"]       = sprintf("%.2f", $valo_pf).$curr;
+            $detail["td_perf_glob"]     = sprintf("%.2f", $perf_pf)."%";
+            $detail["td_perf_glob_val"] = $perf_pf;
+
+            $tab_detail[] = $detail;
+            $tab_date[] = $day;
+            $tab_valo[] = $valo_pf;
+            $tab_invt[] = $sum_invest;
+        }
+        // END BEST DM
+
+        // BY REPARTITION
+        if ($row['methode'] == 2) {
+
+            $curr = "&euro;";
+            $valo_pf = 0;
+
+            // Valeur de chaque actif au jour J & calcul valorisation portefeuille
+            foreach($lst_actifs_achetes_nb as $key => $val) {
+                // Recupereration de la dernière cotation du mois de chaque valeur
+                $lst_actifs_achetes_pu[$key] = calc::getLastMonthDailyHistoryQuote($key, $day);
+                $valo_pf += $lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key];
+            }
+            
+            $valo_pf_avant_invest = $valo_pf + $cash;
+            $valo_pf = 0;
+
+            $lib_ordres_achats = "";
+            $cash_ref = $cash;
+            // Combien on achete de chaque ?
+            foreach($lst_actifs_achetes_nb as $key => $val) {
+
+                // Si on n'a pas d'histo pour cet actif a cette date on passe ...
+                if ($lst_actifs_achetes_pu[$key] == 0) continue;
+
+                // Montant par actif à posséder
+                $montant = floor($valo_pf_avant_invest * $lst_decode_symbols['quotes'][$key] / 100);
+
+                // Montant à acheter
+                $montant2get = $montant - ($lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key]);
+
+                $nb_actions2buy = 0;
+                // Nombre d'actions à acheter
+                // if ($montant2get >= 0)
+                    $nb_actions2buy = floor($montant2get / $lst_actifs_achetes_pu[$key]);
+
+                // Memorisation ordres
+                $ordres[$day.":".$key] = '{ "date": "'.$day.'", "action": "'.($nb_actions2buy >= 0 ? "Achat" : "Vente").'", "symbol": "'.$key.'", "quantity": "'.abs($nb_actions2buy).'", "price": "'.$lst_actifs_achetes_pu[$key].'" }';
+
+                // if ($nb_actions2buy > 0)
+                    $lib_ordres_achats .= ($lib_ordres_achats == "" ? "" : ", ").($lst_actifs_achetes_nb[$key]+$nb_actions2buy)." [".$key."] à ".$lst_actifs_achetes_pu[$key].$curr;
+
+                // Cumul des actions acquises + achetees
+                $lst_actifs_achetes_nb[$key] += $nb_actions2buy;
+
+                // Calcul de la valorisation du portefeuille
+                $valo_pf += $lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key];
+
+                // Calcul cash restant
+                $cash -= $nb_actions2buy * $lst_actifs_achetes_pu[$key];
+            }
+
+            // Performance 
+            $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
+            
+            $detail['tr_onclick']   = "";
+            $detail['td_day']       = $day;
+            $detail['td_cash']      = sprintf("%.2f", round($cash, 2)).$curr;
+            $detail['td_ordres']    = $lib_ordres_achats;
+            $detail['td_valo_pf']   = sprintf("%.2f", round($valo_pf, 2)).$curr;
+            $detail['td_perf_glob'] = sprintf("%.2f", $perf_pf)."%";
+            $detail["td_perf_glob_val"] = $perf_pf;
+
+            // Calcul max drawdown
+            $maxdd = min($maxdd, $perf_pf);
+
+            $tab_detail[] = $detail;
+            $tab_date[] = $day;
+            $tab_valo[] = $valo_pf;
+            $tab_invt[] = $sum_invest;
+
+        }
+        // END BY REPARTITION
+
     }
-    $info_content .= "</ul>";
+    // END Cycle Investissement
 
-    $auMoinsUnActif = count($data["perfs"]) == 0 ? false : true;
-
-    $tab .= "<tr onclick=\"Swal.fire({ title: '".$info_title."', icon: 'info', html: '".$info_content."' });\">";
-    $tab .= "<td>".($auMoinsUnActif ? $data["stocks"][$best_quote]["ref_day"] : $day)."</td><td>".round($capital, 2).$curr."</td>";
-
-    // Vente anciens actifs si different du nouveau plus performant
-    if ($auMoinsUnActif && $actifs_achetees_nb > 0 && $actifs_achetees_symbol != $best_quote) {
-
-        $pu = calc::getDailyHistoryQuote($actifs_achetees_symbol, $data["stocks"][$best_quote]["ref_day"]);
-        $capital += $actifs_achetees_nb * $pu;
-
-        $perf = round(($pu - $actifs_achetees_pu)*100/$actifs_achetees_pu, 2);
-
-        // Calcul max drawdown
-        $maxdd = min($maxdd, $perf);
-
-        $tab .= "<td>".$actifs_achetees_symbol."</td><td>".$actifs_achetees_nb."</td><td>".sprintf("%.2f", round($pu, 2)).$curr."</td><td class=\"".($perf >=0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $perf)."%</td>";
-
-        $actifs_achetees_nb = 0;
-    }
-    else {
-        $tab .= "<td>-</td><td>-</td><td>-</td><td>-</td>";
-    }
-
-    // Achat nouveaux actifs
-    if ($auMoinsUnActif && $capital > 0) {
-
-        $actifs_achetees_pu = $data["stocks"][$best_quote]["ref_close"];
-
-        // achat nouveaux actifs
-        $x = floor($capital / $actifs_achetees_pu);
-        $actifs_achetees_nb = ($actifs_achetees_symbol == $best_quote) ? $actifs_achetees_nb + $x : $x;
-        $capital -= $x * $actifs_achetees_pu;
-        $actifs_achetees_symbol = $best_quote;
-
-        $tab .= "<td>".$actifs_achetees_symbol."</td><td>".$x."</td><td>".sprintf("%.2f", round($actifs_achetees_pu, 2)).$curr."</td>";
-    }
-    else {
-        $tab .= "<td>-</td><td>-</td><td>-</td>";
-    }
+    $nb_mois++;
 
     if(substr($i, 4, 2) == "12")
         $i = (date("Y", strtotime($i."01")) + 1)."01";
     else
         $i++;
 
-    $nb_mois++;
-
-    $valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
-    $invest_sum = $invest * $nb_mois +$capital_init;
-    $perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
-    $tab .= "<td>".sprintf("%.2f", $valo).$curr."</td><td class=\"".($perf >=0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $perf)."%</td>";
-
-    $tab .= "</tr>";
-
-    $tab_date[] = $day;
-    $tab_valo[] = $valo;
-    $tab_invt[] = $invest_sum;
-
-    }
 }
-$tab .= "</tbody></table>";
 
-$valo = round($capital+($actifs_achetees_nb * $actifs_achetees_pu), 2);
-$perf = $invest_sum == 0 ? 0 : round(($valo - $invest_sum)*100/$invest_sum, 2);
-$final_info = "<table id=\"sim_final_info\">";
-$final_info .= "<tr><td>Valorisation</td><td>".sprintf("%.2f", $valo)." &euro;</td></tr>";
-$final_info .= "<tr><td>Capital investit</td><td>".sprintf("%.2f", $invest_sum)." &euro;</td></tr>";
-$final_info .= "<tr><td>Performance</td><td class=\"".($perf >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $perf)." %</td></tr>";
-$final_info .= "<tr><td>Max DD</td><td class=\"".($maxdd >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $maxdd)." %</td></tr>";
-$final_info .= "<tr><td>Duree</td><td>".count(tools::getMonth($date_start, $date_end))." mois</td></tr>";
-$final_info .= "</table>";
+if ($row['methode'] == 1) {
+    $valo_pf = round($cash+($actifs_achetes_nb * $actifs_achetes_pu), 2);
+}
+$perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
+
+$final_info = '
+    <table id="sim_final_info" class="">
+        <tr><td>Valorisation</td><td>'.sprintf("%.2f", $valo_pf).' &euro;</td></tr>
+        <tr><td>Capital investit</td><td>'.sprintf("%.2f", $sum_invest).' &euro;</td></tr>
+        <tr><td>Performance</td><td class="'.($perf_pf >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf).' %</td></tr>
+        <tr><td>Max DD</td><td class="'.($maxdd >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $maxdd).' %</td></tr>
+        <tr><td>Duree</td><td>'.count(tools::getMonth($date_start, $date_end)).' mois</td></tr>
+    </table>
+';
 
 ?>
             <div class="eight wide column">
-                <?= uimx::genCard('sim_card1', 'Synthese', implode(', ', $lst_symbol), $final_info); ?>
+                <?= uimx::genCard('sim_card1', 'Synthese', implode(', ', $lst_symbols), $final_info); ?>
             </div>
 
         </div>
     </div>
 </div>
 
+
+<!-- GRAPHE 1 -->
+
 <div class="ui container inverted segment">
-	<h2>Graphe</h2>
+    <h2>Evolution du portefeuille</h2>
     <canvas id="sim_canvas1" height="100"></canvas>
 </div>
 <script>
@@ -256,8 +429,13 @@ var myChart = new Chart(ctx, {
 });
 </script>
 
+
+<!-- GRAPHE 2 -->
+
+<? if ($row['methode'] == 1) { ?>
+
 <div class="ui container inverted segment">
-	<h2>Evolution DM</h2>
+    <h2>Evolution DM</h2>
     <canvas id="sim_canvas2" height="100"></canvas>
 </div>
 
@@ -265,8 +443,8 @@ var myChart = new Chart(ctx, {
 // For drawing the lines
 <?
     $x = 0; 
-    foreach($lst_symbol as $key => $val) {
-        echo "var dataset_".$x." = [ ".implode(',', $tab_perf[$val])." ];";
+    foreach($lst_symbols as $key => $val) {
+        echo "var dataset_".$x." = [ ".(isset($tab_perf[$val]) ? implode(',', $tab_perf[$val]) : '')." ];";
         $x++;
     }
 
@@ -290,7 +468,7 @@ var data2 = {
     datasets: [
 <?
     $x = 0; 
-    foreach($lst_symbol as $key => $val) {
+    foreach($lst_symbols as $key => $val) {
         echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$color[$x]."\", cubicInterpolationMode: 'monotone', tension: 0.4, borderWidth: 0.5, fill: false },";
         $x++;
     }
@@ -319,14 +497,71 @@ var myChart = new Chart(ctx, { type: 'line', data: data2, options: options2 } );
 
 </script>
 
+<? } ?>
+
+
+<!-- TABLEAU DETAIL -->
+
 <div class="ui container inverted segment">
-	<h2>Detail</h2>
-    <?= $tab ?>
+    <h2>Détail</h2>
+    <table id="lst_sim" class="ui selectable inverted single line very compact unstackable table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Cash</th>
+
+<? if ($row['methode'] == 1)
+    echo '<th>Vente</th><th>Nb</th><th>PU</th><th>Perf</th><th>Achat</th><th>Nb</th><th>PU</th>';
+else
+    echo '<th>Ordres d\'achat</th><th></th><th></th><th></th><th></th><th></th><th></th>';
+?>
+                <th>Valorisation</th>
+                <th>Perf</th>
+            </tr>
+        </thead>
+        <tbody>
+<?
+foreach($tab_detail as $key => $val) {
+    echo "<tr onclick=\"".$val['tr_onclick']."\">";
+    if ($row['methode'] == 1) {
+        foreach(['td_day', 'td_cash', 'td_symbol_vendu', 'td_nb_vendu', 'td_pu_vendu', 'td_perf_vendu', 'td_symbol_achat', 'td_nb_achat', 'td_pu_achat', 'td_valo_pf', 'td_perf_glob'] as $ind)
+           echo "<td ".($ind == 'td_perf_vendu' || $ind == 'td_perf_glob' ? "class=\"".($val[$ind."_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\"" : "" ).">".$val[$ind]."</td>";
+    } else {
+        foreach(['td_day', 'td_cash', 'td_ordres', 'td_valo_pf', 'td_perf_glob'] as $ind)
+            echo "<td ".($ind == 'td_ordres' ? "colspan=\"7\"" : "" )." ".($ind == 'td_perf_glob' ? "class=\"".($val[$ind."_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\"" : "" ).">".$val[$ind]."</td>";
+    }
+    echo "</tr>";
+}
+?>
+        </tbody>
+    </table>
+</div>
+
+<div class="ui container inverted segment">
+    <h2>Ordres boursiers</h2>
+    <table id="lst_ordres" class="ui selectable inverted single line very compact unstackable table">
+        <thead><tr><th>Date</th><th>Action</th><th>Symbole</th><th>Quantité</th><th>Prix</th></tr></thead>
+        <tbody>
+<?
+foreach($ordres as $key => $val) {
+    $o = json_decode($val);
+    echo "<tr><td>".$o->{"date"}."</td><td>".$o->{"action"}."</td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".$o->{"price"}."</td></tr>";
+}
+?>
+        </tbody>
+    </table>
 </div>
 
 <script>
-	Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $strategie_id ?>&capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
-	Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $strategie_id ?>&capital_init='+valof('capital_init')+'&invest='+valof('invest')+'&date_start='+valof('date_start')+'&date_end='+valof('date_end'), loading_area: 'sim_go_bt' }); });
+
+    launcher = function() {
+		params = attrs(['strategie_id', 'capital_init', 'invest', 'cycle_invest', 'date_start', 'date_end' ]);
+        go({ action: 'sim', id: 'main', url: 'simulator.php?'+params, loading_area: 'sim_go_bt' });
+    }
+    
+    Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher(); });
+    Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher(); });
+
     const datepicker1 = new TheDatepicker.Datepicker(el('date_start'));
     datepicker1.options.setInputFormat("Y-m-d")
     datepicker1.render();

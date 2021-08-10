@@ -32,6 +32,31 @@ class sess_context
 		return ($sn == "localhost" || $ra == "127.0.0.1" || $ra == "localhost" ? true : false);
 	}
 
+	public static function getUserIp() {
+
+		$ipkeys = array(
+			'REMOTE_ADDR',
+			'HTTP_CLIENT_IP',
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_X_FORWARDED',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED',
+			'HTTP_X_CLUSTER_CLIENT_IP'
+		);
+
+		// Now we check each key against $_SERVER if containing such value
+		$ip = array();
+
+		foreach ($ipkeys as $keyword) {
+			if (isset($_SERVER[$keyword])) {
+				$ip[] = $_SERVER[$keyword];
+			}
+		}
+
+		$ip = ( empty($ip) ? 'Unknown' : implode(", ", $ip) );
+		return $ip;
+	}
+
 	public function getUser() {
 		return $this->user;
 	}

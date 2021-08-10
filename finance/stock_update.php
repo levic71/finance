@@ -11,6 +11,12 @@ if ($symbol == "") exit;
 
 $db = dbc::connect();
 
+?>
+
+<div class="ui container inverted segment">
+
+<?
+
 try {
 
     $data = aafinance::searchSymbol($symbol);
@@ -31,6 +37,9 @@ try {
 }
 
 ?>
+
+</div>
+
 <script>
 	Swal.fire({ title: '', icon: 'info', html: "Mise à jour quote <?= $symbol ?> OK" });
 </script>

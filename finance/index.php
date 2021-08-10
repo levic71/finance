@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.52";
+$ver = tools::isLocalHost() ? rand() : "1.2.54";
 
 foreach([''] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -55,7 +55,7 @@ foreach([''] as $key)
 		<script>
 		window.onload = function() {
 
-			go({ action: 'home_content', id: 'main', url: 'home_content.php' });
+			go({ action: 'home', id: 'main', url: 'home_content.php' });
 
 			Dom.addListener(Dom.id('m1_sidebar_bt'), Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
 			Dom.addListener(Dom.id('m1_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_home_bt', url: 'home_content.php' }); });
