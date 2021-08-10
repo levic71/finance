@@ -8,6 +8,14 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 h2 { color: yellowgreen !important; }
 table th { color: burlywood !important; }
 
+.swal2-html-container ul {
+    padding: 0px;
+}
+
+.swal2-html-container ul li {
+    list-style-type: none;
+}
+
 #m1_sidebar_bt { display: none; }
 
 #home_card td:nth-child(2) {
@@ -83,8 +91,11 @@ table th { color: burlywood !important; }
     height: 100% !important;
 }
 
-#lst_users th:nth-child(2), #lst_users td:nth-child(2), #lst_users td:nth-child(4) {
+#lst_users th, #lst_users td {
     text-align: center;
+}
+#lst_users th:nth-child(1), #lst_users td:nth-child(1) {
+    text-align: left;
 }
 
 .icon,

@@ -47,10 +47,27 @@ if ($action == "signup") {
     if ($row = mysqli_fetch_array($res))
         $doublon = true;
     else {
-        $req = "INSERT INTO users (email, pwd, super_admin, status) VALUES ('".strtolower($f_email)."', '".password_hash($f_pwd, PASSWORD_DEFAULT)."', 0, 0)";
+        $token = bin2hex(random_bytes(50));
+
+        $req = "INSERT INTO users (email, pwd, super_admin, status, token) VALUES ('".strtolower($f_email)."', '".password_hash($f_pwd, PASSWORD_DEFAULT)."', 0, 1, '".$token."')";
         $res = dbc::execSql($req);
 
-        // Envoi en prod d'un mail à l'admin ?
+        $mail_sender = "contact@jorkers.com";
+        $mail_header = "From: ".$mail_sender."\n";
+        $mail_header.= "MIME-Version: 1.0\n";
+        $mail_header.= "X-Sender: <".$mail_sender.">\n";
+        $mail_header.= "X-Mailer: PHP/".phpversion()."\n";
+        $mail_header.= "X-Priority: 1\n";
+        $mail_header.= "Return-Path: <no-reply@jorkers.com>\n";
+        $mail_header.= "Content-Type: text/html; charset=".sess_context::mail_charset."\n";
+
+        $mail_sujet  = "[finance.jorkers.com] - Confirmation email";
+        $mail_corps  = "Bonjour,\n\nPour valider votre email, cliquez sur ce <a href=\"https://finance.jorkers.com/user_action.php?action=confirm&token=".$token."\">lien</a>.\n\nBonne réception.\n";
+        $res = @mail($f_email, stripslashes($mail_sujet), nl2br(stripslashes($mail_corps)), $mail_header);
+
+        $mail_sujet  = "[finance.jorkers.com] - Demande de création compte";
+        $mail_corps  = "Bonjour,\n\nPour invalider le compte, cliquez sur ce <a href=\"https://finance.jorkers.com/user_action.php?action=status&token".$token."\">lien</a>.\n\nBonne réception.\n";
+        $res = @mail(sess_context::email_admin, stripslashes($mail_sujet), nl2br(stripslashes($mail_corps)), $mail_header);
     }
 }
 
