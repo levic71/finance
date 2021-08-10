@@ -63,7 +63,7 @@ if ($action == "confirm" && isset($token) && $token != "") {
     $res = dbc::execSql($req);
 
     if ($row = mysqli_fetch_array($res)) {
-        $req = "UPDATE users SET confirmation=1 WHERE token='".$token.'"';
+        $req = "UPDATE users SET confirmation=1 WHERE token='".$token."'";
         $res = dbc::execSql($req);
     }
 
@@ -93,14 +93,9 @@ if ($action == "status" && isset($token) && $token != "") {
 <? } ?>
     go({ action: 'home_content', id: 'main', url: 'user_list.php' });
 
-<? } else { ?>
+<? } else {
 
-<? if ($action == "confirm") { ?>
-	Swal.fire({ title: '', icon: 'success', html: "Utilisateur déactivé" });
-<? } else { ?>
-	Swal.fire({ title: '', icon: 'success', html: "Email confirmé" });
-<? } 
-    tools::do_redirect("index.php");
+        tools::do_redirect("index.php?action=".($action == "confirm" ? "confirm" : "status"));
 
 } ?>
 </script>
