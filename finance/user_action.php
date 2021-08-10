@@ -8,7 +8,7 @@ include "common.php";
 
 if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
-foreach(['action', 'item_id', 'f_email', 'f_status'] as $key)
+foreach(['action', 'item_id', 'f_email', 'f_status', 'token'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -57,13 +57,50 @@ if ($action == "upt" && isset($item_id) && $item_id != "") {
     }
 }
 
+if ($action == "confirm" && isset($token) && $token != "") {
+
+    $req = "SELECT * FROM users WHERE token='".$token."'";
+    $res = dbc::execSql($req);
+
+    if ($row = mysqli_fetch_array($res)) {
+        $req = "UPDATE users SET confirmation=1 WHERE token='".$token.'"';
+        $res = dbc::execSql($req);
+    }
+
+    exit(0);
+}
+
+if ($action == "status" && isset($token) && $token != "") {
+
+    $req = "SELECT * FROM users WHERE token='".$token."'";
+    $res = dbc::execSql($req);
+
+    if ($row = mysqli_fetch_array($res)) {
+        $req = "UPDATE users SET status=0 WHERE token='".$token.'"';
+        $res = dbc::execSql($req);
+    }
+}
+
 ?>
 
 <script>
+<? if ($action == "del" || $action == "upt" || $action == "new") { ?>
+
 <? if ($doublon) { ?>
 	Swal.fire({ title: '', icon: 'error', html: "Utilisateur '<?= $f_email."' déjà existant" ?>" });
 <? } else { ?>
 	Swal.fire({ title: '', icon: 'success', html: "Utilisateur '<?= $f_email."' ".($action == "new" ? "ajouté": ($action == "upt" ? "modifié" : "supprimé")) ?>" });
 <? } ?>
     go({ action: 'home_content', id: 'main', url: 'user_list.php' });
+
+<? } else { ?>
+
+<? if ($action == "confirm") { ?>
+	Swal.fire({ title: '', icon: 'success', html: "Utilisateur déactivé" });
+<? } else { ?>
+	Swal.fire({ title: '', icon: 'success', html: "Email confirmé" });
+<? } 
+    tools::do_redirect("index.php");
+
+} ?>
 </script>

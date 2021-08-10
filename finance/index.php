@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.54";
+$ver = tools::isLocalHost() ? rand() : "1.2.55";
 
 foreach([''] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -88,6 +88,7 @@ foreach([''] as $key)
 
 	<!-- Sidebar Menu -->
 	<div class="ui vertical inverted sidebar menu" id="sidebar_menu">
+		<a class="item" id="m2_home_bt"><i style="float: left; margin: 0;" class="ui inverted arrow left icon"></i>&nbsp;</a>
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>

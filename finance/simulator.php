@@ -22,8 +22,8 @@ $req = "SELECT * FROM strategies WHERE id=".$strategie_id;
 $res = dbc::execSql($req);
 $row = mysqli_fetch_array($res);
 
-$invest = $row['methode'] == 1 ? 1000 : 12000;
-$cycle_invest = $row['methode'] == 1 ? 1 : 12;
+$invest = $row['methode'] == 1 ? 1000 : 6000;
+$cycle_invest = $row['methode'] == 1 ? 1 : 6;
 $capital_init = 0;
 $date_start = "2019-02-01";
 $date_end = date("Y-m-d");
@@ -179,7 +179,7 @@ while($i <= date("Ym", strtotime($date_end))) {
 
             $curr = $data["stocks"][$best_quote]['currency'] == "EUR" ? "&euro;" : "$";
 
-            $info_title =  "[".$data["stocks"][$best_quote]["ref_day"]."] => ".$best_quote;
+            $info_title =  "[".$data["stocks"][$best_quote]["ref_day"]."]";
 
             $info_content = "<ul>";
             foreach($data["perfs"] as $key => $val) {

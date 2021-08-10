@@ -25,6 +25,8 @@ $db = dbc::connect();
 				<th>Email</th>
                 <th>Statut</th>
                 <th>Inscription</th>
+                <th>Confirmation</th>
+                <th>Abonnement</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -35,9 +37,11 @@ $db = dbc::connect();
         	while($row = mysqli_fetch_array($res)) {
 ?>
 				<tr>
-					<td><?= $row['email'] ?></td>
+					<td class="five wide"><?= $row['email'] ?></td>
 					<td><i class="ui inverted <?= $row['status'] == 1 ? "green check" : "red cancel" ?> icon"></i></td>
 					<td><?= $row['date_inscription'] ?></td>
+					<td><i class="ui inverted <?= $row['confirmation'] == 1 ? "green check" : "red cancel" ?> icon"></i></td>
+					<td><?= $row['abonnement'] ?></td>
 					<td>
 						<i class="ui inverted edit icon"  onclick="go({ action: 'user', id: 'main', url: 'user.php?action=upt&item_id=<?= $row['id'] ?>' });"></i>
 						<i class="ui inverted trash icon" onclick="go({ action: 'user', id: 'main', url: 'user_action.php?action=del&item_id=<?= $row['id'] ?>', confirmdel: 1 });"></i>

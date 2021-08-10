@@ -5,10 +5,12 @@ class sess_context
 	public $connected;
 	public $user;
 
-	const charset = "ISO-8859-1";
-	const xhr_charset = "ISO-8859-1";
+	const charset      = "ISO-8859-1";
+	const xhr_charset  = "ISO-8859-1";
 	const mail_charset = "ISO-8859-1";
-	const xml_charset = "ISO-8859-1";
+	const xml_charset  = "ISO-8859-1";
+
+	const email_admin = "vmlf71@gmail.com";
 
 	public function __construct()
 	{
