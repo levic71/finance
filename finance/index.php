@@ -85,7 +85,6 @@ foreach(['action'] as $key)
 <? } ?>
 <? if ($action == "confirm") { ?>
 			Swal.fire({ title: '', icon: 'success', html: "Email confirmé" });
-<? } 
 <? } ?>
 
 		}

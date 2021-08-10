@@ -87,9 +87,9 @@ if ($action == "status" && isset($token) && $token != "") {
 <? if ($action == "del" || $action == "upt" || $action == "new") { ?>
 
 <? if ($doublon) { ?>
-	Swal.fire({ title: '', icon: 'error', html: "Utilisateur '<?= $f_email."' déjà existant" ?>" });
+	Swal.fire({ title: '', icon: 'error', html: "Utilisateur '<?= $f_email ?>' déjà existant" });
 <? } else { ?>
-	Swal.fire({ title: '', icon: 'success', html: "Utilisateur '<?= $f_email."' ".($action == "new" ? "ajouté": ($action == "upt" ? "modifié" : "supprimé")) ?>" });
+	Swal.fire({ title: '', icon: 'success', html: "Utilisateur '<?= $f_email ?>' <?= $action == "new" ? "ajouté": ($action == "upt" ? "modifié" : "supprimé") ?>" });
 <? } ?>
     go({ action: 'home_content', id: 'main', url: 'user_list.php' });
 
