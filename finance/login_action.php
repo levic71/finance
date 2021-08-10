@@ -47,9 +47,9 @@ if ($action == "signup") {
     if ($row = mysqli_fetch_array($res))
         $doublon = true;
     else {
-        $token = bin2hex(random_bytes(50));
+        $user_token = bin2hex(random_bytes(30));
 
-        $req = "INSERT INTO users (email, pwd, super_admin, status, token) VALUES ('".strtolower($f_email)."', '".password_hash($f_pwd, PASSWORD_DEFAULT)."', 0, 1, '".$token."')";
+        $req = "INSERT INTO users (email, pwd, super_admin, status, token) VALUES ('".strtolower($f_email)."', '".password_hash($f_pwd, PASSWORD_DEFAULT)."', 0, 1, '".$user_token."')";
         $res = dbc::execSql($req);
 
         $mail_sender = "contact@jorkers.com";
@@ -62,12 +62,12 @@ if ($action == "signup") {
         $mail_header.= "Content-Type: text/html; charset=".sess_context::mail_charset."\n";
 
         $mail_sujet  = "[finance.jorkers.com] - Confirmation email";
-        $mail_corps  = "Bonjour,\n\nPour valider votre email, cliquez sur ce <a href=\"https://finance.jorkers.com/user_action.php?action=confirm&token=".$token."&ret=1\">lien</a>.\n\nBonne réception.\n";
-        $res = @mail($f_email, stripslashes($mail_sujet), $mail_corps, $mail_header);
+        $mail_corps  = "Bonjour,\n\nPour valider votre email, cliquez sur ce <a href=\"https://finance.jorkers.com/user_action.php?action=confirm&token=".$user_token."\">lien</a>.\n\nBonne réception.\n";
+        $res = @mail($f_email, stripslashes($mail_sujet), nl2br($mail_corps), $mail_header);
 
         $mail_sujet  = "[finance.jorkers.com] - Demande de création compte";
-        $mail_corps  = "Bonjour,\n\nPour invalider le compte, cliquez sur ce <a href=\"https://finance.jorkers.com/user_action.php?action=status&token=".$token."&ret=1\">lien</a>.\n\nBonne réception.\n";
-        $res = @mail(sess_context::email_admin, stripslashes($mail_sujet), $mail_corps, $mail_header);
+        $mail_corps  = "Bonjour,\n\nPour invalider le compte, cliquez sur ce <a href=\"https://finance.jorkers.com/user_action.php?action=status&token=".$user_token."\">lien</a>.\n\nBonne réception.\n";
+        $res = @mail(sess_context::email_admin, stripslashes($mail_sujet), nl2br($mail_corps), $mail_header);
     }
 }
 
