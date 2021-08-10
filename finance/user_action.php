@@ -30,7 +30,7 @@ if ($action == "status" && isset($token) && $token != "") {
     $res = dbc::execSql($req);
 
     if ($row = mysqli_fetch_array($res)) {
-        $req = "UPDATE users SET status=0 WHERE token='".$token.'"';
+        $req = "UPDATE users SET status=0 WHERE token='".$token."'";
         $res = dbc::execSql($req);
         tools::do_redirect("index.php?action=status");
     } else
