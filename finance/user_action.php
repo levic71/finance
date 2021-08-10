@@ -4,8 +4,12 @@ require_once "sess_context.php";
 
 session_start();
 
+include_once "include.php";
+
+$db = dbc::connect();
+
 foreach(['action', 'token'] as $key)
-    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+    $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 if ($action == "confirm" && isset($token) && $token != "") {
 
@@ -15,8 +19,9 @@ if ($action == "confirm" && isset($token) && $token != "") {
     if ($row = mysqli_fetch_array($res)) {
         $req = "UPDATE users SET confirmation=1 WHERE token='".$token."'";
         $res = dbc::execSql($req);
-    }
-    tools::do_redirect("index.php?action=confirm");
+        tools::do_redirect("index.php?action=confirm");
+    } else
+        exit(0);
 }
 
 if ($action == "status" && isset($token) && $token != "") {
@@ -27,18 +32,17 @@ if ($action == "status" && isset($token) && $token != "") {
     if ($row = mysqli_fetch_array($res)) {
         $req = "UPDATE users SET status=0 WHERE token='".$token.'"';
         $res = dbc::execSql($req);
-    }
-    tools::do_redirect("index.php?action=status");
+        tools::do_redirect("index.php?action=status");
+    } else
+        exit(0);
 }
 
-include "common.php";
+include_once "common.php";
 
 if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
 foreach(['item_id', 'f_email', 'f_status'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
-
-$db = dbc::connect();
 
 if ($action == "del" && isset($item_id) && $item_id != "") {
 
@@ -50,7 +54,6 @@ if ($action == "del" && isset($item_id) && $item_id != "") {
         $req = "DELETE FROM users WHERE id=".$item_id;
         $res = dbc::execSql($req);
     }
-
 }
 
 $doublon = false;
