@@ -25,7 +25,7 @@ include_once "include.php";
 
 $ver = tools::isLocalHost() ? rand() : "1.2.55";
 
-foreach([''] as $key)
+foreach(['confirm', 'status'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 ?>
@@ -78,6 +78,14 @@ foreach([''] as $key)
 			Dom.addListener(Dom.id('m2_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron', id: 'main', menu: 'm2_cron_bt',  url: 'crontab.php' }); });
 			Dom.addListener(Dom.id('m1_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm1_log_bt',   url: 'log.php' }); });
 			Dom.addListener(Dom.id('m2_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm2_log_bt',   url: 'log.php' }); });
+<? } ?>
+
+<? if ($status == 1) { ?>
+			Swal.fire({ title: '', icon: 'success', html: "Utilisateur déactivé" });
+<? } ?>
+<? if ($confirm == 1) { ?>
+			Swal.fire({ title: '', icon: 'success', html: "Email confirmé" });
+<? } 
 <? } ?>
 
 		}
