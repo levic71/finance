@@ -25,7 +25,7 @@ include_once "include.php";
 
 $ver = tools::isLocalHost() ? rand() : "1.2.55";
 
-foreach(['confirm', 'status'] as $key)
+foreach(['action'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 ?>
@@ -80,10 +80,10 @@ foreach(['confirm', 'status'] as $key)
 			Dom.addListener(Dom.id('m2_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm2_log_bt',   url: 'log.php' }); });
 <? } ?>
 
-<? if ($status == 1) { ?>
+<? if ($action == "status") { ?>
 			Swal.fire({ title: '', icon: 'success', html: "Utilisateur déactivé" });
 <? } ?>
-<? if ($confirm == 1) { ?>
+<? if ($action == "confirm") { ?>
 			Swal.fire({ title: '', icon: 'success', html: "Email confirmé" });
 <? } 
 <? } ?>
