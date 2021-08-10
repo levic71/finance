@@ -36,6 +36,8 @@ if ($action == "login") {
         }
     }
 
+    $req = "INSERT INTO connexions (email, ip, status) VALUES ('".strtolower($f_email)."', '".$sess_context->getUserIp()."', ".($connected ? 1 : 0).")";
+    $res = dbc::execSql($req);
 }
 
 if ($action == "signup") {

@@ -107,6 +107,11 @@ class calc {
         return floatval($ret);
     }
 
+    // Fait la meme chose mais le nom de la fonction est plus explicite
+    public static function getLastMonthDailyHistoryQuote($symbol, $day) {
+        return calc::getDailyHistoryQuote($symbol, $day);
+    }
+
     public static function getMaxHistoryDate($symbol) {
 
         $ret = "0000-00-00";
@@ -118,7 +123,7 @@ class calc {
         return $ret;
     }
 
-    public static function processData($symbol, $day) {
+    public static function processDataDM($symbol, $day) {
 
         global $dbg, $dbg_data;
 
@@ -244,7 +249,7 @@ class calc {
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res)) {
             $symbol = $row['symbol'];
-            $ret["stocks"][$symbol] = array_merge($row, calc::processData($symbol, $last_day));
+            $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $last_day));
             // On isole les perfs pour pouvoir trier par performance decroissante
             $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
         }

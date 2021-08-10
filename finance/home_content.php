@@ -50,7 +50,7 @@ arsort($data["perfs"]);
 	
 <div class="ui container inverted segment">
 
-	<h2>Actifs suivis<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
+	<h2>Actifs suivis <i class="ui inverted black very small settings icon"></i><? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
 		<thead>
@@ -88,7 +88,7 @@ foreach($data["stocks"] as $key => $val) {
 
 	echo "<tr onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
 	echo "
-		<td><i class=\"inverted blue caret square right outline icon\"></i></td>
+		<td class=\"collapsing\"><i class=\"inverted blue caret square right outline icon\"></i></td>
 		<td><a onclick=\"go({ action: 'update', id: 'main', url: 'detail.php?symbol=".$val['symbol']."' });\">".$val['symbol']."</a></td>
 		<td>".utf8_decode($val['name'])."</td>
 		<td>".$val['type']."</td>
