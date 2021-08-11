@@ -48,9 +48,9 @@ arsort($data["perfs"]);
 </div>
 
 	
-<div class="ui container inverted segment">
+<div id="stocks_box" class="ui container inverted segment">
 
-	<h2>Actifs suivis <i class="ui inverted black very small settings icon"></i><? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
+<h2  class="ui left floated">Actifs suivis <button id="lst_filter1_bt" class="mini ui grey button">PEA</button><button id="lst_filter2_bt" class="mini ui grey button">&nbsp;&nbsp;<i class="euro inverted icon"></i></button><button id="lst_filter3_bt" class="mini ui grey button">&nbsp;&nbsp;<i class="dollar inverted icon"></i></button><? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
 		<thead>
@@ -86,10 +86,10 @@ foreach($data["stocks"] as $key => $val) {
 
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
-	echo "<tr onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
+	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\" onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
 	echo "
 		<td class=\"collapsing\"><i class=\"inverted blue caret square right outline icon\"></i></td>
-		<td><a onclick=\"go({ action: 'update', id: 'main', url: 'detail.php?symbol=".$val['symbol']."' });\">".$val['symbol']."</a></td>
+		<td><a onclick=\"go({ action: 'update', id: 'main', url: 'stock_detail.php?symbol=".$val['symbol']."' });\">".$val['symbol']."</a></td>
 		<td>".utf8_decode($val['name'])."</td>
 		<td>".$val['type']."</td>
 		<td>".$val['day']."</td>
@@ -140,7 +140,35 @@ if ($sess_context->isSuperAdmin()) {
 </div>
 
 <script>
-<? if ($sess_context->isUserConnected()) { ?>
+	filterLstStocks = function() {
+		f1_on = Dom.hasClass(Dom.id('lst_filter1_bt'), 'blue');
+		f2_on = Dom.hasClass(Dom.id('lst_filter2_bt'), 'blue');
+		f3_on = Dom.hasClass(Dom.id('lst_filter3_bt'), 'blue');
+
+		tab = Dom.find("#lst_stock tbody tr");
+		for (const element of tab) Dom.css(element, {'display' : 'table-row'});
+
+		if (!(f1_on == false && f2_on == false && f3_on == false)) {
+			for (const element of tab) {
+				if ((f1_on && Dom.hasClass(element, 'PEA')) || (f2_on && Dom.hasClass(element, 'EUR')) || (f3_on && Dom.hasClass(element, 'USD')))
+					continue;
+				Dom.css(element, {'display' : 'none'});
+			}
+		}
+		tab = Dom.find("#lst_stock tbody tr.row-detail");
+		for (const element of tab) Dom.css(element, {'display' : 'none'});
+	}
+
+	filterLstAction = function(elt, fct) {
+		switchColorElement(elt, 'grey', 'blue');
+		filterLstStocks();
+	}
+
+	Dom.addListener(Dom.id('lst_filter1_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
+	Dom.addListener(Dom.id('lst_filter2_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter2_bt'); });
+	Dom.addListener(Dom.id('lst_filter3_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter3_bt'); });
+
+	<? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
 <? } ?>
 <? foreach($tab_strat as $key => $val) { ?>
@@ -150,8 +178,8 @@ if ($sess_context->isSuperAdmin()) {
 <? } ?>
 <? } ?>
 <? if ($sess_context->isSuperAdmin()) { ?>
-	Dom.addListener(Dom.id('update_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'update', id: 'main', url: 'stock_update.php?symbol='+valof('row_symbol'), loading_area: 'update_bt' }); });
-	Dom.addListener(Dom.id('delete_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'delete', id: 'main', url: 'stock_delete.php?symbol='+valof('row_symbol'), loading_area: 'delete_bt', confirmdel: 1 }); });
+	Dom.addListener(Dom.id('update_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt_cache&symbol='+valof('row_symbol'), loading_area: 'update_bt' }); });
+	Dom.addListener(Dom.id('delete_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol='+valof('row_symbol'), loading_area: 'delete_bt', confirmdel: 1 }); });
 	Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
 <? } ?>
 	change_wide_menu_state('wide_menu', 'm1_home_bt');

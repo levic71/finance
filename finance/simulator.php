@@ -1,6 +1,10 @@
 <?
 
-include_once "include.php";
+require_once "sess_context.php";
+
+session_start();
+
+include "common.php";
 
 $strategie_id = -1;
 
@@ -447,17 +451,6 @@ var myChart = new Chart(ctx, {
         echo "var dataset_".$x." = [ ".(isset($tab_perf[$val]) ? implode(',', $tab_perf[$val]) : '')." ];";
         $x++;
     }
-
-    $color = [
-        "rgba(238, 130, 6, 0.75)",
-        "rgba(97, 194, 97, 0.75)",
-        "rgba(252, 237, 34, 0.75)",
-        "rgba(23, 109, 181, 0.75)",     // Bleu
-        "rgba(255, 153, 255, 0.75)",    // Fushia
-        "rgba(153, 51, 51, 0.75)",      // Marron
-        "rgba(204, 230, 255, 0.75)",    // Cyan
-        "rgba(209, 179, 255, 0.75)"     // Violet
-    ];
 ?>
 
 var ctx = document.getElementById('sim_canvas2').getContext('2d');
@@ -469,7 +462,7 @@ var data2 = {
 <?
     $x = 0; 
     foreach($lst_symbols as $key => $val) {
-        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$color[$x]."\", cubicInterpolationMode: 'monotone', tension: 0.4, borderWidth: 0.5, fill: false },";
+        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$sess_context->getSpectreColor($x)."\", cubicInterpolationMode: 'monotone', tension: 0.4, borderWidth: 0.5, fill: false },";
         $x++;
     }
 ?>

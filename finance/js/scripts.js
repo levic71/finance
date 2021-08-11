@@ -111,3 +111,15 @@ check_email = function(txt) {
 	var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	return re.test(txt);
 }
+
+switchColorElement = function(elt, c1, c2) {
+	elt_on = Dom.hasClass(Dom.id(elt), c1);
+	if (elt_on) {
+		Dom.removeClass(Dom.id(elt), c1);
+		Dom.addClass(Dom.id(elt), c2);
+	}
+	else {
+		Dom.removeClass(Dom.id(elt), c2);
+		Dom.addClass(Dom.id(elt), c1);
+	}
+}
