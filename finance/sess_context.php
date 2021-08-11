@@ -12,6 +12,17 @@ class sess_context
 
 	const email_admin = "vmlf71@gmail.com";
 
+	public $colors_spectre = [
+        0 => "rgba(238, 130, 6, 0.75)",
+        1 => "rgba(97, 194, 97, 0.75)",
+        2 => "rgba(252, 237, 34, 0.75)",
+        3 => "rgba(23, 109, 181, 0.75)",     // Bleu
+        4 => "rgba(255, 153, 255, 0.75)",    // Fushia
+        5 => "rgba(153, 51, 51, 0.75)",      // Marron
+        6 => "rgba(204, 230, 255, 0.75)",    // Cyan
+        7 => "rgba(209, 179, 255, 0.75)"     // Violet
+    ];
+
 	public function __construct()
 	{
 		$this->connected = 0; // 0: Utilisateur non connecté 1: Utilisateur connecté
@@ -57,6 +68,10 @@ class sess_context
 
 		$ip = ( empty($ip) ? 'Unknown' : implode(", ", $ip) );
 		return $ip;
+	}
+
+	public function getSpectreColor($i) {
+		return $this->colors_spectre[$i];
 	}
 
 	public function getUser() {

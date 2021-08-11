@@ -8,6 +8,7 @@ include_once "include.php";
 
 $db = dbc::connect();
 
+// GET car on n'est pas forcement connecter avec une session
 foreach(['action', 'token'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 

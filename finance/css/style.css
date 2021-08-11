@@ -4,6 +4,12 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 .ui.footer.segment {
     padding: 0em 0em 2em;
 }
+.ui.mini.button {
+    padding: 5px 10px !important;
+}
+.ui.toggle.checkbox label:before {
+    background: #111 !important;
+}
 
 h2 { color: yellowgreen !important; }
 table th { color: burlywood !important; }
@@ -25,7 +31,16 @@ table th { color: burlywood !important; }
 .home_page .card .header, .sim_page .card .header {
     color: burlywood !important;
 }
-
+#stocks_box h2 #lst_filter1_bt, #stocks_box h2 #lst_filter2_bt, #stocks_box h2 #lst_filter3_bt  {
+    margin: 6px 10px 0px 20px;
+    position: absolute;
+}
+#stocks_box h2 #lst_filter2_bt {
+    margin-left: 70px;
+}
+#stocks_box h2 #lst_filter3_bt {
+    margin-left: 120px;
+}
 #lst_stock td {
     text-align: center;
 }
