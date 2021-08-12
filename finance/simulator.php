@@ -7,8 +7,9 @@ session_start();
 include "common.php";
 
 $strategie_id = -1;
+$f_compare_to = "SPY";
 
-foreach(['strategie_id'] as $key)
+foreach(['strategie_id', 'f_compare_to'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -29,7 +30,7 @@ $row = mysqli_fetch_array($res);
 $invest = $row['methode'] == 1 ? 1000 : 6000;
 $cycle_invest = $row['methode'] == 1 ? 1 : 6;
 $capital_init = 0;
-$date_start = "2019-02-01";
+$date_start = "0000-00-00";
 $date_end = date("Y-m-d");
 
 foreach(['strategie_id', 'invest', 'cycle_invest', 'date_start', 'date_end', 'capital_init'] as $key)
@@ -37,7 +38,11 @@ foreach(['strategie_id', 'invest', 'cycle_invest', 'date_start', 'date_end', 'ca
 
 $lst_symbols = array();
 $lst_decode_symbols = json_decode($row['data'], true);
-foreach($lst_decode_symbols['quotes'] as $key => $val) $lst_symbols[] = $key;
+foreach($lst_decode_symbols['quotes'] as $key => $val) {
+    $lst_symbols[] = $key;
+    $d = calc::getMaxDailyHistoryQuoteDate($key);
+    if ($d > $date_start) $date_start = $d;
+}
 
 // Cash disponible
 $cash = $capital_init;
@@ -74,7 +79,7 @@ $infos = '
         <tr>
             <td>
                 <div class="ui inverted fluid right labeled input">
-                    <div class="ui label">Capital Initial</div>
+                    <div class="ui label">Capital</div>
                     <input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0">
                     <div class="ui basic label">&euro;</div>
                 </div>
@@ -86,9 +91,9 @@ $infos = '
         <tr>
             <td>
                 <div class="ui inverted fluid right labeled input">
-                    <div class="ui label">Investissement en &euro;</div>
+                    <div class="ui label">Invest. en &euro;</div>
                     <input type="text" id="invest" value="'.$invest.'" placeholder="0">
-                    <div class="ui floated right label">par</div>
+                    <div id="sim_par" class="ui floated right label">par</div>
                     <div class="ui inverted labeled input">
                         <select id="cycle_invest" class="ui selection">
                             <option value="1"  '.($cycle_invest == 1  ? "selected=\"selected\"" : "").'>mois</option>
@@ -104,19 +109,27 @@ $infos = '
         <tr>
             <td>
                 <div class="ui right icon inverted left labeled fluid input">
-                    <div class="ui label">Début</div>
-                    <input type="text" id="date_start" value="'.$date_start.'" placeholder="0">
+                    <div class="ui label">Période</div>
+                    <input type="text" size="12" id="date_start" value="'.$date_start.'" placeholder="0000-00-00">
+                    <input type="text" size="12" id="date_end" value="'.$date_end.'" placeholder="0000-00-00">
                     <i class="inverted black calendar alternate outline icon"></i>
+
                 </div>
             </td>
             <td class="rowspanned"></td>
         </tr>
         <tr>
             <td>
-                <div class="ui right icon inverted fluid left labeled input">
-                    <div class="ui label">Fin</div>
-                    <input type="text" id="date_end" value="'.$date_end.'" placeholder="0">
-                    <i class="inverted black calendar alternate outline icon"></i>
+                <div class="ui inverted left labeled fluid input">
+                    <div class="ui label">Comparé à</div>
+
+                    <div class="ui inverted labeled input">
+                        <select id="f_compare_to" class="ui selection">
+                            <option value="SPY"  '.($f_compare_to == "SPY"  ? "selected=\"selected\"" : "").'>SPY</option>
+                            <option value="TLT"  '.($f_compare_to == "TLT"  ? "selected=\"selected\"" : "").'>TLT</option>
+                            <option value="SCZ"  '.($f_compare_to == "SCZ"  ? "selected=\"selected\"" : "").'>SCZ</option>
+                        </select>
+                    </div>
                 </div>
             </td>
             <td class="rowspanned"></td>
@@ -146,6 +159,14 @@ $tab_invt = array();
 $tab_perf = array();
 $tab_detail = array();
 
+// Pour le calcul du rendement comparatif
+$sym_RC = $f_compare_to;
+$cash_RC = 0;
+$nb_actions_RC = 0;
+$valo_pf_RC = 0;
+$perf_pf_RC = 0;
+$tab_valo_RC = array();
+
 $i = date("Ym", strtotime($date_start));
 while($i <= date("Ym", strtotime($date_end))) {
 
@@ -166,6 +187,8 @@ while($i <= date("Ym", strtotime($date_end))) {
 
         // On investit !!!
         $cash += $invest;
+        $cash_RC += $invest;
+
         // On investit !!!
         $sum_invest += $invest;
 
@@ -269,7 +292,7 @@ while($i <= date("Ym", strtotime($date_end))) {
         }
         // END BEST DM
 
-        // BY REPARTITION
+        // CUMUL BY REPARTITION
         if ($row['methode'] == 2) {
 
             $curr = "&euro;";
@@ -340,7 +363,23 @@ while($i <= date("Ym", strtotime($date_end))) {
             $tab_invt[] = $sum_invest;
 
         }
-        // END BY REPARTITION
+        // END CUMUL BY REPARTITION
+
+        // Calcul pour le rendement comparatif
+        if (true) {
+
+            // Recupereration de la dernière cotation du mois de chaque valeur
+            $pu_action_RC = calc::getLastMonthDailyHistoryQuote($sym_RC, $day);
+
+            // Achat actif
+            $nb_actions2buy = floor($cash_RC / $pu_action_RC);
+            $cash_RC -= $nb_actions2buy*$pu_action_RC;
+            $nb_actions_RC += $nb_actions2buy;
+
+            // Valorisation portefeuille RC
+            $tab_valo_RC[] = ($nb_actions_RC * $pu_action_RC) + $cash_RC;            
+        }
+        // End Calcul pour le rendement comparatif
 
     }
     // END Cycle Investissement
@@ -390,6 +429,7 @@ $final_info = '
 var dates = [<?= '"'.implode('","', $tab_date).'"' ?>];
 // For drawing the lines
 var valos = [<?= implode(',', $tab_valo) ?>];
+var valos_RC = [<?= implode(',', $tab_valo_RC) ?>];
 var invts = [<?= implode(',', $tab_invt) ?>];
 
 var ctx = document.getElementById('sim_canvas1').getContext('2d');
@@ -400,14 +440,25 @@ var myChart = new Chart(ctx, {
     data: {
         labels: dates,
         datasets: [
-        { 
+            { 
             data: invts,
             label: "Investissement",
             borderColor: "rgba(238, 130, 6, 0.75)",
             backgroundColor: "rgba(238, 130, 6, 0.3)",
             cubicInterpolationMode: 'monotone',
             tension: 0.4,
-            fill: true
+            borderWidth: 0.5,
+            fill: false
+        },
+        { 
+            data: valos_RC,
+            label: "<?= $sym_RC ?>",
+            borderColor: "rgba(255, 153, 255, 0.75)",
+            backgroundColor: "rgba(255, 153, 255, 0.3)",
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
+            borderWidth: 0.5,
+            fill: false
         },
         { 
             data: valos,
@@ -416,6 +467,7 @@ var myChart = new Chart(ctx, {
             backgroundColor: "rgba(23, 109, 181, 0.3)",
             cubicInterpolationMode: 'monotone',
             tension: 0.4,
+            borderWidth: 2,
             fill: true
         }
     ]},
@@ -548,7 +600,7 @@ foreach($ordres as $key => $val) {
 <script>
 
     launcher = function() {
-		params = attrs(['strategie_id', 'capital_init', 'invest', 'cycle_invest', 'date_start', 'date_end' ]);
+		params = attrs(['strategie_id', 'capital_init', 'invest', 'cycle_invest', 'date_start', 'date_end', 'f_compare_to' ]);
         go({ action: 'sim', id: 'main', url: 'simulator.php?'+params, loading_area: 'sim_go_bt' });
     }
     

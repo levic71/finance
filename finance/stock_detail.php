@@ -7,8 +7,9 @@ session_start();
 include "common.php";
 
 $symbol = "";
+$range  = 0;
 
-foreach(['symbol'] as $key)
+foreach(['symbol', 'range'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -25,7 +26,7 @@ if ($row = mysqli_fetch_array($res)) {
 <div class="ui container inverted segment">
     
     <h2 class="ui inverted left floated header"><?= utf8_decode($row['name']) ?> <div class="ui floated right label"><?= $row['symbol'] ?></div></h2>
-	
+
     <table class="ui selectable inverted single line table">
         <thead>
             <tr><?
@@ -52,6 +53,142 @@ if ($row = mysqli_fetch_array($res)) {
         </tbody>
     </table>
 </div>
+
+
+<?
+
+// GRAPHE COURS
+
+$req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day >= DATE_SUB(NOW(), INTERVAL ".($range == 0 ? 100 : $range)." YEAR) ORDER BY day ASC";
+$res2 = dbc::execSql($req2);
+
+$tab_days = array();
+$tab_vals = array();
+$tab_vols = array();
+$tab_cols = array();
+while ($row2 = mysqli_fetch_array($res2)) {
+    $tab_days[] = $row2['day'];
+    $tab_vals[] = $row2['close'];
+    $tab_vols[] = $row2['volume'];
+    $tab_cols[] = $row2['close'] >= $row2['open'] ? "rgba(97, 194, 97, 0.75)": "red";
+}
+
+?>
+
+<div class="ui container inverted segment">
+    <h2>Cours <button id="graphe_1Y_bt" class="mini ui <?= $range == 1 ? "blue" : "grey" ?> button">1Y</button><button id="graphe_3Y_bt" class="mini ui <?= $range == 3 ? "blue" : "grey" ?> button">3Y</button><button id="graphe_all_bt" class="mini ui <?= $range == 0 ? "blue" : "grey" ?> button">All</button></h2>
+    <canvas id="stock_canvas1" height="100"></canvas>
+    <canvas id="stock_canvas2" height="20"></canvas>
+</div>
+<script>
+// Our labels along the x-axis
+var days = [<?= '"'.implode('","', $tab_days).'"' ?>];
+// For drawing the lines
+var vals = [<?= implode(',', $tab_vals) ?>];
+var vols = [<?= implode(',', $tab_vols) ?>];
+var colors = [<?= '"'.implode('","', $tab_cols).'"' ?>];
+
+var ctx = document.getElementById('stock_canvas1').getContext('2d');
+el("stock_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
+
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: days,
+        datasets: [
+        { 
+            data: vals,
+            label: "Cours",
+            borderColor: "rgba(238, 130, 6, 0.75)",
+            backgroundColor: "rgba(238, 130, 6, 0.1)",
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
+            borderWidth: 0.5,
+            fill: true
+        }
+    ]},
+    options: {
+        interaction: {
+            intersect: false
+        },
+        radius: 0,
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    display: false,
+                    beginAtZero: true
+                },
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.5)',
+                    offset: true
+                },
+                padding: 100
+            },
+            y: {
+                min : 0,
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
+el("stock_canvas2").height = document.body.offsetWidth > 700 ? 50 : 100;
+
+var myChart = new Chart(ctx2, {
+    type: 'bar',
+    legend: {
+        display: false
+    },
+    data: {
+        labels: days,
+        datasets: [
+        { 
+            data: vols,
+            label: "Volume",
+            borderColor: colors,
+            backgroundColor: colors,
+            borderWidth: 0.5,
+            fill: true,
+            order : 0
+        }
+    ]},
+    options: {
+        interaction: {
+            intersect: false
+        },
+        radius: 0,
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    beginAtZero: true
+                }
+            },
+            y: {
+                ticks: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+</script>
+
 
 
 <? if ($sess_context->isSuperAdmin()) { ?>
@@ -101,6 +238,9 @@ if ($row = mysqli_fetch_array($res)) {
 
 <script>
 Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
+Dom.addListener(Dom.id('graphe_all_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_detail.php?range=0&symbol=<?= $symbol ?>', loading_area: 'graphe_all_bt' }); });
+Dom.addListener(Dom.id('graphe_3Y_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_detail.php?range=3&symbol=<?= $symbol ?>', loading_area: 'graphe_3Y_bt' }); });
+Dom.addListener(Dom.id('graphe_1Y_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_detail.php?range=1&symbol=<?= $symbol ?>', loading_area: 'graphe_1Y_bt' }); });
 </script>
 
 <? } ?>

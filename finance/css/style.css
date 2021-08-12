@@ -14,6 +14,28 @@ td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !importan
 h2 { color: yellowgreen !important; }
 table th { color: burlywood !important; }
 
+.the-datepicker__deselect-button {
+    display: none;
+}
+.the-datepicker__button {
+    color: #aaa !important;
+}
+.the-datepicker__day--selected .the-datepicker__button {
+    color: white !important;
+}
+.the-datepicker__main td.the-datepicker__day a.the-datepicker__button:hover .the-datepicker__day-content,
+.the-datepicker__main a.the-datepicker__button:hover {
+    background: rgba(0,0,0,.75) !important;
+}
+
+.the-datepicker__main {
+    background: #333 !important;
+    border: 1px solid #666 !important;
+}
+
+.the-datepicker__main select {
+    border: 1px solid #333 !important;
+}
 .swal2-html-container ul {
     padding: 0px;
 }
@@ -42,7 +64,7 @@ table th { color: burlywood !important; }
     margin-left: 120px;
 }
 #lst_stock td {
-    text-align: center;
+    text-align: center !important;
 }
 #lst_stock td:nth-child(3) {
     text-align: left !important;
@@ -172,6 +194,7 @@ table th { color: burlywood !important; }
 #sim_card2 .label:nth-child(1) {
     width: 35%;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 #sim_card2 > table > tr:nth-child(5) {
     display: none;
@@ -251,6 +274,14 @@ table th { color: burlywood !important; }
     }
     .row-detail td:nth-child(2) > div div, .row-detail td:nth-child(2) > div a {
         width: 50% !important;
+    }
+
+    #sim_par {
+        visibility: hidden;
+    }
+    #sim_par::after {
+        visibility: visible;
+        content: "/";
     }
 }
   

@@ -88,6 +88,18 @@ class dbc {
 //
 class calc {
 
+    public static function getMaxDailyHistoryQuoteDate($symbol) {
+
+        $ret = date("Y-m-d");
+
+        $req = "SELECT min(day) day FROM daily_time_series_adjusted WHERE symbol='".$symbol."'";
+        $res = dbc::execSql($req);
+        if ($row = mysqli_fetch_array($res))
+            $ret = $row['day'];
+
+        return $ret;
+    }
+
     public static function getDailyHistoryQuote($symbol, $day) {
 
         $ret = "0";
