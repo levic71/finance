@@ -55,9 +55,10 @@ foreach(['action'] as $key)
 		<script>
 		window.onload = function() {
 
-			go({ action: 'home', id: 'main', url: 'home_content.php' });
+			go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: '' });
 
 			Dom.addListener(Dom.id('m1_sidebar_bt'), Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
+			Dom.addListener(Dom.id('m2_sidebar_bt'), Dom.Event.ON_CLICK, function(event) { rmCN('sidebar_menu', 'visible'); });
 			Dom.addListener(Dom.id('m1_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_home_bt', url: 'home_content.php' }); });
 			Dom.addListener(Dom.id('m2_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_home_bt', url: 'home_content.php' }); });
 <? if (!$sess_context->isUserConnected()) { ?>
@@ -95,7 +96,7 @@ foreach(['action'] as $key)
 
 	<!-- Sidebar Menu -->
 	<div class="ui vertical inverted sidebar menu" id="sidebar_menu">
-		<a class="item" id="m2_home_bt"><i style="float: left; margin: 0;" class="ui inverted arrow left icon"></i>&nbsp;</a>
+		<a class="item" id="m2_sidebar_bt"><i style="float: left; margin: 0px;" class="ui inverted arrow left icon"></i>&nbsp;</a>
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
@@ -141,7 +142,7 @@ foreach(['action'] as $key)
 		</div>
 	</div>
 
-	<div id="main" class="main"></div>
+	<div id="main" class="ui main container inverted segment"></div>
 	
 	<div class="ui inverted vertical footer segment">
 		<div class="ui center aligned container">

@@ -89,7 +89,7 @@ foreach($data["stocks"] as $key => $val) {
 	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\" onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
 	echo "
 		<td class=\"collapsing\"><i class=\"inverted blue caret square right outline icon\"></i></td>
-		<td><a onclick=\"go({ action: 'update', id: 'main', url: 'stock_detail.php?symbol=".$val['symbol']."' });\">".$val['symbol']."</a></td>
+		<td><a onclick=\"gotoStockDetail('".$val['symbol']."');\">".$val['symbol']."</a></td>
 		<td>".utf8_decode($val['name'])."</td>
 		<td>".$val['type']."</td>
 		<td>".$val['day']."</td>
@@ -140,6 +140,17 @@ if ($sess_context->isSuperAdmin()) {
 </div>
 
 <script>
+
+	hideSubDetail = function() {
+		tab = Dom.find("#lst_stock tbody tr.row-detail");
+		for (const element of tab) Dom.css(element, {'display' : 'none'});
+	}
+
+	gotoStockDetail = function(sym) {
+		hideSubDetail();
+		go({ action: 'update', id: 'main', url: 'stock_detail.php?symbol='+sym, loading_area: 'stocks_box' });
+	}
+
 	filterLstStocks = function() {
 		f1_on = Dom.hasClass(Dom.id('lst_filter1_bt'), 'blue');
 		f2_on = Dom.hasClass(Dom.id('lst_filter2_bt'), 'blue');
@@ -155,8 +166,7 @@ if ($sess_context->isSuperAdmin()) {
 				Dom.css(element, {'display' : 'none'});
 			}
 		}
-		tab = Dom.find("#lst_stock tbody tr.row-detail");
-		for (const element of tab) Dom.css(element, {'display' : 'none'});
+		hideSubDetail();
 	}
 
 	filterLstAction = function(elt, fct) {
