@@ -99,7 +99,7 @@ var myChart = new Chart(ctx, {
         { 
             data: vals,
             label: "Cours",
-            yAxisID: 'A',
+            yAxisID: 'y1',
             borderColor: "rgba(238, 130, 6, 0.75)",
             backgroundColor: "rgba(238, 130, 6, 0.1)",
             cubicInterpolationMode: 'monotone',
@@ -111,7 +111,7 @@ var myChart = new Chart(ctx, {
             data: vols,
             type: 'bar',
             label: "Volume",
-            yAxisID: 'B',
+            yAxisID: 'y2',
             borderColor: colors,
             backgroundColor: colors,
             borderWidth: 0.5,
@@ -133,40 +133,27 @@ var myChart = new Chart(ctx, {
             }
         },
         scales: {
-            yAxes: [
-                {
-                    id: 'A',
-                    type: 'linear',
-                    position: 'left',
-                    ticks : {
-                    }
-                },
-                {
-                    id: 'B',
-                    type: 'linear',
-                    position: 'right',
-                    ticks : {
-                        max: 100000000,
-                        min: 0,
-                        stepSize: 30000000 
-                    }
-                }
-            ],
             x: {
                 ticks: {
-                    display: true,
+                    minRotation: 90,
+                    maxRotation: 90,
                     beginAtZero: true
-                },
-                grid: {
-                    color: 'rgba(0, 0, 0, 0.5)',
-                    offset: true
-                },
-                padding: 100
+                }
             },
-            y: {
-                min: 0,
-                ticks: {
-                    beginAtZero: true
+            y1: {
+                type: 'linear',
+                position: 'left',
+                ticks : {
+                }
+            },
+            y2: {
+                type: 'linear',
+                position: 'right',
+                display: false,
+                ticks : {
+                    max: 100000000,
+                    min: 0,
+                    stepSize: 20000000 
                 }
             }
         }

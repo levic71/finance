@@ -241,7 +241,7 @@ while($i <= date("Ym", strtotime($date_end))) {
                 $detail["td_perf_vendu_val"] = $perf_pf;
 
                 // Memorisation ordres
-                $ordres[$detail["td_day"].":".$detail["td_symbol_vendu"]] = '{ "date": "'.$detail["td_day"].'", "action": "Vente", "symbol": "'.$detail["td_symbol_vendu"].'", "quantity": "'.abs($detail["td_nb_vendu"]).'", "price": "'.$detail["td_pu_vendu"].'" }';
+                $ordres[$detail["td_day"].":".$detail["td_symbol_vendu"]] = '{ "date": "'.$detail["td_day"].'", "action": "Vente", "symbol": "'.$detail["td_symbol_vendu"].'", "quantity": "'.abs($detail["td_nb_vendu"]).'", "price": "'.$detail["td_pu_vendu"].'", "currency": "'.$curr.'" }';
 
                 $actifs_achetes_nb = 0;
             }
@@ -269,7 +269,7 @@ while($i <= date("Ym", strtotime($date_end))) {
                 $detail["td_pu_achat"]     = sprintf("%.2f", round($actifs_achetes_pu, 2)).$curr;
 
                 // Memorisation ordres
-                $ordres[$detail["td_day"].":".$detail["td_symbol_achat"]] = '{ "date": "'.$detail["td_day"].'", "action": "Achat", "symbol": "'.$detail["td_symbol_achat"].'", "quantity": "'.abs($detail["td_nb_achat"]).'", "price": "'.$detail["td_pu_achat"].'" }';
+                $ordres[$detail["td_day"].":".$detail["td_symbol_achat"]] = '{ "date": "'.$detail["td_day"].'", "action": "Achat", "symbol": "'.$detail["td_symbol_achat"].'", "quantity": "'.abs($detail["td_nb_achat"]).'", "price": "'.$detail["td_pu_achat"].'", "currency": "'.$curr.'" }';
             }
             else {
                 $detail["td_symbol_achat"] = "-";
@@ -328,7 +328,7 @@ while($i <= date("Ym", strtotime($date_end))) {
                     $nb_actions2buy = floor($montant2get / $lst_actifs_achetes_pu[$key]);
 
                 // Memorisation ordres
-                $ordres[$day.":".$key] = '{ "date": "'.$day.'", "action": "'.($nb_actions2buy >= 0 ? "Achat" : "Vente").'", "symbol": "'.$key.'", "quantity": "'.abs($nb_actions2buy).'", "price": "'.$lst_actifs_achetes_pu[$key].'" }';
+                $ordres[$day.":".$key] = '{ "date": "'.$day.'", "action": "'.($nb_actions2buy >= 0 ? "Achat" : "Vente").'", "symbol": "'.$key.'", "quantity": "'.abs($nb_actions2buy).'", "price": "'.$lst_actifs_achetes_pu[$key].'", "currency": "'.$curr.'" }';
 
                 // if ($nb_actions2buy > 0)
                     $lib_ordres_achats .= ($lib_ordres_achats == "" ? "" : ", ").($lst_actifs_achetes_nb[$key]+$nb_actions2buy)." [".$key."] à ".$lst_actifs_achetes_pu[$key].$curr;
@@ -593,7 +593,7 @@ foreach($tab_detail as $key => $val) {
 <?
 foreach($ordres as $key => $val) {
     $o = json_decode($val);
-    echo "<tr><td>".$o->{"date"}."</td><td>".$o->{"action"}."</td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".$o->{"price"}."</td></tr>";
+    echo "<tr class=\"".$o->{"action"}."\"><td>".$o->{"date"}."</td><td>".$o->{"action"}."</td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".sprintf("%.2f", $o->{"price"}).$o->{"currency"}."</td></tr>";
 }
 ?>
         </tbody>
