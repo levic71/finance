@@ -86,7 +86,8 @@ foreach($data["stocks"] as $key => $val) {
 
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
-	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\" onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
+//	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\" onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
+	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\">";
 	echo "
 		<td class=\"collapsing\"><i class=\"inverted blue caret square right outline icon\"></i></td>
 		<td><a onclick=\"gotoStockDetail('".$val['symbol']."');\">".$val['symbol']."</a></td>
@@ -110,6 +111,7 @@ if ($sess_context->isSuperAdmin()) {
 
 	$tabi = [ $val['region'] => $val['currency'], "Marché" => $val['marketopen'].'-'.$val['marketclose'], "TZ" => $val['timezone'], "Max Histo" => $max_histo, "Cache" => $cache_timestamp ];
 
+if (false) {
 	echo '<tr class="row-detail"><td></td><td colspan="10" class="ui fluid">';
 	foreach($tabi as $keyi => $vali)
 		echo '<div class="ui labeled button" tabindex="0">
@@ -117,6 +119,7 @@ if ($sess_context->isSuperAdmin()) {
 				<a class="ui basic teal left pointing label">'.$vali.'</a>
 			</div>';
 	echo '</td></tr>';
+}
 
 	$x++;
 }
@@ -147,7 +150,7 @@ if ($sess_context->isSuperAdmin()) {
 	}
 
 	gotoStockDetail = function(sym) {
-		hideSubDetail();
+		// hideSubDetail();
 		go({ action: 'update', id: 'main', url: 'stock_detail.php?symbol='+sym, loading_area: 'stocks_box' });
 	}
 
@@ -166,7 +169,7 @@ if ($sess_context->isSuperAdmin()) {
 				Dom.css(element, {'display' : 'none'});
 			}
 		}
-		hideSubDetail();
+		// hideSubDetail();
 	}
 
 	filterLstAction = function(elt, fct) {

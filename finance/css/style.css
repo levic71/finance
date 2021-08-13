@@ -267,6 +267,24 @@ table th { color: burlywood !important; }
         display: none !important;
     }
 
+    #lst_ordres th:nth-child(2), #lst_ordres td:nth-child(2) {
+        visibility: hidden;
+    }
+    #lst_ordres th:nth-child(2)::after, #lst_ordres td:nth-child(2)::after {
+        visibility: visible;
+        text-align: center;
+    }
+    #lst_ordres th:nth-child(2)::after {
+        content: "+/-";
+        background: #333;
+    }
+    #lst_ordres .Achat td:nth-child(2)::after {
+        content: "+";
+    }
+    #lst_ordres .Vente td:nth-child(2)::after {
+        content: "-";
+    }
+    
     .row-detail td:nth-child(2) > div {
         display: flex !important;
         margin-bottom: 5px !important;
