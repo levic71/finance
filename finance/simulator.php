@@ -410,7 +410,7 @@ $final_info = '
 
 ?>
             <div class="eight wide column">
-                <?= uimx::genCard('sim_card1', 'Synthese', implode(', ', $lst_symbols), $final_info); ?>
+                <?= uimx::genCard('sim_card1', 'Synthèse', implode(', ', $lst_symbols), $final_info); ?>
             </div>
 
         </div>
@@ -443,9 +443,10 @@ var myChart = new Chart(ctx, {
             { 
             data: invts,
             label: "Investissement",
-            borderColor: "rgba(238, 130, 6, 0.75)",
-            backgroundColor: "rgba(238, 130, 6, 0.3)",
+            borderColor: "rgba(97, 194, 97, 0.75)",
+            backgroundColor: "rgba(97, 194, 97, 0.3)",
             cubicInterpolationMode: 'monotone',
+            pointRadius: 1,
             tension: 0.4,
             borderWidth: 0.5,
             fill: false
@@ -453,9 +454,10 @@ var myChart = new Chart(ctx, {
         { 
             data: valos_RC,
             label: "<?= $sym_RC ?>",
-            borderColor: "rgba(255, 153, 255, 0.75)",
-            backgroundColor: "rgba(255, 153, 255, 0.3)",
+            borderColor: "rgba(23, 109, 181, 0.75)",
+            backgroundColor: "rgba(23, 109, 181, 0.3)",
             cubicInterpolationMode: 'monotone',
+            pointRadius: 1,
             tension: 0.4,
             borderWidth: 0.5,
             fill: false
@@ -463,11 +465,12 @@ var myChart = new Chart(ctx, {
         { 
             data: valos,
             label: "Valorisation",
-            borderColor: "rgba(23, 109, 181, 0.75)",
-            backgroundColor: "rgba(23, 109, 181, 0.3)",
+            borderColor: "rgba(238, 130, 6, 0.75)",
+            backgroundColor: "rgba(238, 130, 6, 0.05)",
             cubicInterpolationMode: 'monotone',
+            pointRadius: 1,
             tension: 0.4,
-            borderWidth: 2,
+            borderWidth: 0.5,
             fill: true
         }
     ]},

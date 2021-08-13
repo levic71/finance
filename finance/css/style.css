@@ -277,11 +277,20 @@ table th { color: burlywood !important; }
     }
 
     #sim_par {
+        border: 0px !important;
+        padding: 12px 0px 0px !important;
+        width: 30px !important;
         visibility: hidden;
+        white-space: nowrap;
     }
     #sim_par::after {
         visibility: visible;
         content: "/";
     }
+
+    .the-datepicker__main {
+        left: 0px !important;
+    }
+    
 }
   
