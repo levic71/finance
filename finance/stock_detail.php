@@ -99,13 +99,26 @@ var myChart = new Chart(ctx, {
         { 
             data: vals,
             label: "Cours",
+            yAxisID: 'A',
             borderColor: "rgba(238, 130, 6, 0.75)",
             backgroundColor: "rgba(238, 130, 6, 0.1)",
             cubicInterpolationMode: 'monotone',
             tension: 0.4,
             borderWidth: 0.5,
             fill: true
+        },
+        { 
+            data: vols,
+            type: 'bar',
+            label: "Volume",
+            yAxisID: 'B',
+            borderColor: colors,
+            backgroundColor: colors,
+            borderWidth: 0.5,
+            fill: true,
+            order : 0
         }
+
     ]},
     options: {
         interaction: {
@@ -120,9 +133,28 @@ var myChart = new Chart(ctx, {
             }
         },
         scales: {
+            yAxes: [
+                {
+                    id: 'A',
+                    type: 'linear',
+                    position: 'left',
+                    ticks : {
+                    }
+                },
+                {
+                    id: 'B',
+                    type: 'linear',
+                    position: 'right',
+                    ticks : {
+                        max: 100000000,
+                        min: 0,
+                        stepSize: 30000000 
+                    }
+                }
+            ],
             x: {
                 ticks: {
-                    display: false,
+                    display: true,
                     beginAtZero: true
                 },
                 grid: {
@@ -132,13 +164,16 @@ var myChart = new Chart(ctx, {
                 padding: 100
             },
             y: {
-                min : 0,
-                beginAtZero: true
+                min: 0,
+                ticks: {
+                    beginAtZero: true
+                }
             }
         }
     }
 });
 
+/*
 var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
 el("stock_canvas2").height = document.body.offsetWidth > 700 ? 50 : 100;
 
@@ -175,18 +210,24 @@ var myChart = new Chart(ctx2, {
         scales: {
             x: {
                 ticks: {
+                    minRotation: 90,
+                    maxRotation: 90,
                     beginAtZero: true
                 }
             },
             y: {
                 ticks: {
-                    display: false
+                    crossAlign: 'start',
+                    display: true
+                },
+                afterSetDimensions: (scale) => {
+                    scale.maxWidth = 300;
                 }
             }
         }
     }
 });
-
+*/
 </script>
 
 
