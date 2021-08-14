@@ -16,3 +16,5 @@ jorkersdb5*.zip
 .DS_Store
 finance/cache/**
 finance/finance.log
+toto/*
+node_modules

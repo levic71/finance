@@ -570,7 +570,7 @@ else
         <tbody>
 <?
 foreach($tab_detail as $key => $val) {
-    echo "<tr onclick=\"".$val['tr_onclick']."\">";
+    echo "<tr class=\"".($val[$row['methode'] == 1 ? "td_perf_vendu_val" : "td_perf_glob_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\" onclick=\"".$val['tr_onclick']."\">";
     if ($row['methode'] == 1) {
         foreach(['td_day', 'td_cash', 'td_symbol_vendu', 'td_nb_vendu', 'td_pu_vendu', 'td_perf_vendu', 'td_symbol_achat', 'td_nb_achat', 'td_pu_achat', 'td_valo_pf', 'td_perf_glob'] as $ind)
            echo "<td ".($ind == 'td_perf_vendu' || $ind == 'td_perf_glob' ? "class=\"".($val[$ind."_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\"" : "" ).">".$val[$ind]."</td>";
@@ -588,12 +588,12 @@ foreach($tab_detail as $key => $val) {
 <div class="ui container inverted segment">
     <h2>Ordres boursiers</h2>
     <table id="lst_ordres" class="ui selectable inverted single line very compact unstackable table">
-        <thead><tr><th>Date</th><th>Action</th><th>Symbole</th><th>Quantité</th><th>Prix</th></tr></thead>
+        <thead><tr><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Quantité</th><th>Prix</th></tr></thead>
         <tbody>
 <?
 foreach($ordres as $key => $val) {
     $o = json_decode($val);
-    echo "<tr class=\"".$o->{"action"}."\"><td>".$o->{"date"}."</td><td>".$o->{"action"}."</td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".sprintf("%.2f", $o->{"price"}).$o->{"currency"}."</td></tr>";
+    echo "<tr class=\"".$o->{"action"}."\"><td>".$o->{"date"}."</td><td><div>".$o->{"action"}."</div></td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".sprintf("%.2f", $o->{"price"}).$o->{"currency"}."</td></tr>";
 }
 ?>
         </tbody>

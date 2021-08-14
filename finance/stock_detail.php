@@ -21,13 +21,15 @@ if ($row = mysqli_fetch_array($res)) {
 
     $c = calc::processDataDM($row['symbol'], date("Y-m-d"));
 
+    $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
+
 ?>
 
 <div class="ui container inverted segment">
     
     <h2 class="ui inverted left floated header"><?= utf8_decode($row['name']) ?> <div class="ui floated right label"><?= $row['symbol'] ?></div></h2>
 
-    <table class="ui selectable inverted single line table">
+    <table id="detail_stock" class="ui selectable inverted single line table">
         <thead>
             <tr><?
                 foreach(['Devise', 'Type', 'Région', 'Marché', 'TZ', 'Dernière cotation', 'Prix' , 'DM flottant', 'DM TKL', 'MM200', 'MM20', 'MM7'] as $key)
@@ -36,17 +38,20 @@ if ($row = mysqli_fetch_array($res)) {
         </thead>
         <tbody>
 <?
-            echo "<tr>
-                <td>".$row['currency']."</td>
-                <td>".$row['type']."</td><td>".$row['region']."</td>
-                <td>".$row['marketopen']."-".$row['marketclose']."</td><td>".$row['timezone']."</td>
-                <td>".$row['day']."</td><td>".$row['price']."</td>
-                <td>".$c['MMFDM']."%</td>
-                <td>".$c['MMZDM']."%</td>
-                <td>".$c['MM200']."</td>
-                <td>".$c['MM20']."</td>
-                <td>".$c['MM7']."</td>
-                </tr>";
+        echo "<tr>
+                <td data-label=\"Devise\">".$row['currency']."</td>
+                <td data-label=\"Région\">".$row['type']."</td>
+                <td data-label=\"Région\">".$row['region']."</td>
+                <td data-label=\"Marché\">".$row['marketopen']."-".$row['marketclose']."</td>
+                <td data-label=\"TZ\">".$row['timezone']."</td>
+                <td data-label=\"Dernière Cotation\">".$row['day']."</td>
+                <td data-label=\"Prix\">".sprintf("%.2f", $row['price']).$curr."</td>
+                <td data-label=\"DM flottant\">".$c['MMFDM']."%</td>
+                <td data-label=\"DM TKL\">".$c['MMZDM']."%</td>
+                <td data-label=\"M200\">".sprintf("%.2f", $c['MM200']).$curr."</td>
+                <td data-label=\"MM20\">".sprintf("%.2f", $c['MM20']).$curr."</td>
+                <td data-label=\"MM7\">".sprintf("%.2f", $c['MM7']).$curr."</td>
+            </tr>";
 }
 
 ?>
@@ -226,7 +231,7 @@ var myChart = new Chart(ctx2, {
 
         <div class="ui inverted stackable two column grid container">
             <div class="wide column">
-                <table class="ui selectable inverted single line table">
+                <table id="detail2_stock" class="ui selectable inverted single line table">
                     <tbody>
                     <?  echo '
                             <tr><td>Ref date MMZ1M</td><td>'.$c["MMZ1MDate"].'</td></tr>
@@ -244,7 +249,7 @@ var myChart = new Chart(ctx2, {
             </div>
 
             <div class="wide column">
-                <table class="ui selectable inverted single line table">
+                <table id="detail3_stock" class="ui selectable inverted single line table">
                     <tbody>
                     <?
                         foreach(cacheData::$lst_cache as $key)
