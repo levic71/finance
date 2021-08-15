@@ -1,5 +1,5 @@
-td.aaf-positive { background: #333 !important; color: rgb(97, 194, 97) !important; }
-td.aaf-negative { background: #333 !important; color: rgb(247, 95, 90) !important; }
+td.aaf-positive { color: rgb(97, 194, 97) !important; }
+td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
 .ui.footer.segment {
     padding: 0em 0em 2em;
@@ -219,8 +219,13 @@ table th { color: burlywood !important; }
     display: none;
 }
 
+#lst_ordres .Vente, #lst_sim .aaf-negative {
+    background: rgba(0,0,0,0.2);
+}
+#lst_ordres .Vente:hover, #lst_sim .aaf-negative:hover {
+    background: rgba(255,255,255,.08)
+}
 
-    
 @media only screen and (max-width: 1024px) {
 
     body {
@@ -273,22 +278,29 @@ table th { color: burlywood !important; }
 
     #lst_sim th:nth-child(2), #lst_sim th:nth-child(3), #lst_sim th:nth-child(4), #lst_sim th:nth-child(5), #lst_sim th:nth-child(6), #lst_sim th:nth-child(7), #lst_sim th:nth-child(8), #lst_sim th:nth-child(9),
     #lst_sim td:nth-child(2), #lst_sim td:nth-child(3), #lst_sim td:nth-child(4), #lst_sim td:nth-child(5), #lst_sim td:nth-child(6), #lst_sim td:nth-child(7), #lst_sim td:nth-child(8), #lst_sim td:nth-child(9),
-    #lst_stock th:nth-child(1), #lst_stock th:nth-child(3), th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10),
-    #lst_stock td:nth-child(1), #lst_stock td:nth-child(3), td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10)
+    #lst_stock th:nth-child(1), #lst_stock th:nth-child(3), #lst_stock th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10),
+    #lst_stock td:nth-child(1), #lst_stock td:nth-child(3), #lst_stock td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10)
     {
-        display: none !important;
+        display: none;
     }
 
-    #lst_ordres th:nth-child(2), #lst_ordres td:nth-child(2) {
-        visibility: hidden;
+    .lst_sim_2 th {
+        text-align: center;
+    }
+    .lst_sim_2 th:nth-child(1), .lst_sim_2 th:nth-child(10), .lst_sim_2 th:nth-child(11),
+    .lst_sim_2 td:nth-child(1), .lst_sim_2 td:nth-child(4), .lst_sim_2 td:nth-child(5)
+    {
+        display: table-cell !important;
+    }
+
+    #lst_ordres th:nth-child(2) div, #lst_ordres td:nth-child(2) div {
+        display: none;
     }
     #lst_ordres th:nth-child(2)::after, #lst_ordres td:nth-child(2)::after {
-        visibility: visible;
         text-align: center;
     }
     #lst_ordres th:nth-child(2)::after {
         content: "+/-";
-        background: #333;
     }
     #lst_ordres .Achat td:nth-child(2)::after {
         content: "+";
@@ -320,6 +332,40 @@ table th { color: burlywood !important; }
 
     .the-datepicker__main {
         left: 0px !important;
+    }
+
+    #detail_stock thead {
+        display: none !important;
+    }
+    #detail_stock tr{
+        display: block;
+        margin-bottom: 40px;
+    }
+    #detail_stock td {
+        display: block;
+        text-align: right;
+    }
+    #detail_stock td:before {
+        content: attr(data-label);
+        float: left;
+        color: burlywood;
+    }
+
+    #detail2_stock td:nth-child(2), #detail3_stock td:nth-child(2) {
+        background: rgba(0,0,0,0.2);
+    }
+    #detail2_stock td, #detail3_stock td {
+        float: left;
+    }
+    #detail2_stock td {
+        width: 50% !important;
+    }
+    #detail3_stock td:nth-child(1) {
+        width: 90% !important;
+        text-overflow: ellipsis;
+    }
+    #detail3_stock td:nth-child(2) {
+        width: 10% !important;
     }
     
 }
