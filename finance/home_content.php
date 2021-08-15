@@ -18,13 +18,26 @@ arsort($data["perfs"]);
 	
 ?>
 
+<style>
+      .swiper-container {
+        width: 100%;
+        height: 100%;
+		padding: 20px;
+      }
+
+      .swiper-slide {
+		  margin: 2px;
+      }
+</style>
+
 <div class="ui container inverted segment">
 
 	<h2>Stratégies <? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
-
+			<div class="swiper-container mySwiper">
+    			<div class="swiper-wrapper">
 <?
 			if ($sess_context->isUserConnected() && $sess_context->isSuperAdmin())
 				$req = "SELECT * FROM strategies WHERE defaut= 1 OR user_id=".$sess_context->getUserId();
@@ -38,10 +51,14 @@ arsort($data["perfs"]);
         	while($row = mysqli_fetch_array($res)) {
 				$tab_strat[] = $row['id'];
 ?>
-        	<div class="four wide column">
+        	<div class="four wide column swiper-slide">
 				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data["day"], $data["perfs"], $row['data']) ?>
 			</div>
 <? } ?>
+
+    			</div>
+    			<div class="swiper-pagination"></div>
+    		</div>
 
 		</div>
     </div>
@@ -143,6 +160,33 @@ if (false) {
 </div>
 
 <script>
+
+	var swiper = new Swiper(".mySwiper", {
+        loop: false,
+        loopFillGroupWithBlank: true,
+		breakpoints: {
+			320: {
+				slidesPerView: 1,
+				slidesPerGroup: 1,
+				spaceBetween: 5
+			},
+			640: {
+				slidesPerView: 2,
+				slidesPerGroup: 2,
+				spaceBetween: 5
+			},
+			720: {
+				slidesPerView: 4,
+				slidesPerGroup: 4,
+				spaceBetween: 5
+			}
+		},
+		pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        }
+    });
+
 
 	hideSubDetail = function() {
 		tab = Dom.find("#lst_stock tbody tr.row-detail");
