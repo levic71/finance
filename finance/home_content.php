@@ -22,11 +22,11 @@ arsort($data["perfs"]);
       .swiper-container {
         width: 100%;
         height: 100%;
-		padding: 20px;
+		padding: 0px 5px;
       }
 
       .swiper-slide {
-		  margin: 2px;
+		  margin: 2px 0px;
       }
 </style>
 
@@ -168,7 +168,7 @@ if (false) {
 			320: {
 				slidesPerView: 1,
 				slidesPerGroup: 1,
-				spaceBetween: 5
+				spaceBetween: 0
 			},
 			640: {
 				slidesPerView: 2,
