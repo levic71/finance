@@ -121,7 +121,7 @@ $infos = '
         <tr>
             <td>
                 <div class="ui inverted left labeled fluid input">
-                    <div class="ui label">Comparé à</div>
+                    <div class="ui label">Comparer à</div>
 
                     <div class="ui inverted labeled input">
                         <select id="f_compare_to" class="ui selection">
@@ -552,7 +552,7 @@ var myChart = new Chart(ctx, { type: 'line', data: data2, options: options2 } );
 
 <div class="ui container inverted segment">
     <h2>Détail</h2>
-    <table id="lst_sim" class="ui selectable inverted single line very compact unstackable table">
+    <table id="lst_sim" class="ui selectable inverted single line very compact unstackable table lst_sim_<?= $row['methode'] ?>">
         <thead>
             <tr>
                 <th>Date</th>
