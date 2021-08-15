@@ -588,7 +588,7 @@ foreach($tab_detail as $key => $val) {
 <div class="ui container inverted segment">
     <h2>Ordres boursiers</h2>
     <table id="lst_ordres" class="ui selectable inverted single line very compact unstackable table">
-        <thead><tr><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Quantité</th><th>Prix</th></tr></thead>
+        <thead><tr><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Nb</th><th>Prix</th></tr></thead>
         <tbody>
 <?
 foreach($ordres as $key => $val) {
