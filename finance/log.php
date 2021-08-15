@@ -37,7 +37,7 @@ $req = "SELECT * FROM connexions ORDER BY datetime DESC LIMIT ".$nb_lignes;
 $res = dbc::execSql($req);
 
 while($row = mysqli_fetch_array($res)) {
-    echo $row['datetime']." | ".sprintf("%-40s", $row['email'])." | ".sprintf("%-20s", $row['ip'])." | ".$row['status']."<br />";
+    echo $row['datetime']." | ".sprintf("%-40s", $row['email'])." | ".sprintf("%-64s", $row['ip'])." | ".$row['status']."<br />";
 }
 
 ?>
