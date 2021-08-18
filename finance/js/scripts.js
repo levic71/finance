@@ -54,6 +54,7 @@ attrs = function(ids) {	ret = ''; for(var n=0;n<ids.length;n++) { ret += '&'+ids
 setCN = function(id, cn) { try { el(id).className = cn; } catch(e) { myconsole('setCN:' + id + ':' + e); } }
 addCN = function(id, cn) { try { el(id).className += (el(id).className == "" ? "" : " ")+cn; } catch(e) { myconsole('addCN:' + id + ':' + e); } }
 rmCN  = function(id, cn) { try { var tmp = el(id).className.split(' '); ncn = ""; for(var n=0;n<tmp.length;n++) { if (tmp[n] != cn) ncn += " "+tmp[n]; }; el(id).className = ncn; } catch(e) { myconsole('rmCN:' + id + ':' + e); } }
+isCN  = function(id, cn) { try { var tmp = el(id).className.split(' '); ret=false; for(var n=0;n<tmp.length;n++) { if (tmp[n] == cn) ret=true; }; return ret; } catch(e) { myconsole('isCN:' + id + ':' + e); } }
 
 go = function(args) {
 	var opt = args||{};
@@ -76,7 +77,7 @@ go = function(args) {
 			opt.url,
 			function(data) {
 				myconsole('----> go jx in  : action='+action+' -- url='+opt.url);
-				setCN(id, 'main '+action+'_page');
+				setCN(id, (id == 'main' ? 'ui container inverted segment main ' : '')+action+'_page');
 				cc(id, data);
 				rmCN('sidebar_menu', 'visible');
 				myconsole('----> go jx out : action='+action+' -- url='+opt.url);
