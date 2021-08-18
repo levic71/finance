@@ -258,6 +258,10 @@ table th { color: burlywood !important; }
       display: block;
     }
 
+    #main {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
     #home_card .content, #sim_card1 .content, #sim_card2 .content {
         padding: 10px 1px 0px !important;
     }
