@@ -10,9 +10,9 @@ if (!isset($_SESSION["sess_context"]))
 	$dns = explode('.', $_SERVER['SERVER_NAME']);
 
 	if ($_SERVER['SERVER_NAME'] == "localhost" || (isset($dns[0]) && $dns[0] == "www"))
-		ToolBox::do_redirect($location = 'https://'.$_SERVER['HTTP_HOST']."/jorkyball/finance/index.php");
+		tools::do_redirect($location = 'https://'.$_SERVER['HTTP_HOST']."/jorkyball/finance/index.php");
 	else
-		ToolBox::do_redirect("https://".$_SERVER['SERVER_NAME']);
+		tools::do_redirect("https://".$_SERVER['SERVER_NAME']);
 	
 	exit(0);
 }

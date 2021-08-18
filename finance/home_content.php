@@ -188,7 +188,7 @@ if (false) {
 
 	gotoStockDetail = function(sym) {
 		// hideSubDetail();
-		go({ action: 'update', id: 'main', url: 'stock_detail.php?symbol='+sym, loading_area: 'stocks_box' });
+		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+sym, loading_area: 'main' });
 	}
 
 	filterLstStocks = function() {

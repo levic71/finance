@@ -505,10 +505,16 @@ class cacheData {
     }
 
     public static function buildCacheSymbol($symbol, $marketopen = false) {
+
+        // OVERVIEW
         self::buildCacheOverview($symbol);
+
         if ($marketopen) {
+            // FULL HISTORIQUE
             self::buildCacheDailyTimeSeriesAdjusted($symbol, true);
+            // COMPACT HISTORIQUE
             self::buildCacheDailyTimeSeriesAdjusted($symbol, false);
+            // COTATION
             self::buildCacheQuote($symbol);
             // self::buildCacheIntraday($symbol);
         }

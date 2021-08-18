@@ -10,7 +10,7 @@ ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
 // Creation d'une nouvelle session
-session_cache_expire(60 * 60);
+session_cache_expire(12 * 60);
 session_start();
 
 // Initialisation session
@@ -144,7 +144,7 @@ foreach(['action'] as $key)
 		</div>
 	</div>
 
-	<div id="main" class="ui main container inverted segment"></div>
+	<div id="main" class="ui container inverted segment main"></div>
 	
 	<div class="ui inverted vertical footer segment">
 		<div class="ui center aligned container">
