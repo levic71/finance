@@ -75,16 +75,18 @@ $tab_mm7  = array();
 $tab_mm20 = array();
 $tab_mm50 = array();
 $tab_mm200 = array();
-$tab_cols = array();
+$tab_rsi14 = array();
+$tab_colors = array();
 while ($row2 = mysqli_fetch_array($res2)) {
     $tab_days[] = $row2['day'];
     $tab_vals[] = $row2['close'];
     $tab_vols[] = $row2['volume'];
-    $tab_mm7[]  = $row2['MM7'];
-    $tab_mm20[]  = $row2['MM20'];
-    $tab_mm50[]  = $row2['MM50'];
-    $tab_mm200[]  = $row2['MM200'];
-    $tab_cols[] = $row2['close'] >= $row2['open'] ? "rgba(97, 194, 97, 0.75)": "red";
+    $tab_mm7[]    = sprintf("%.2f", $row2['MM7']);
+    $tab_mm20[]   = sprintf("%.2f", $row2['MM20']);
+    $tab_mm50[]   = sprintf("%.2f", $row2['MM50']);
+    $tab_mm200[]  = sprintf("%.2f", $row2['MM200']);
+    $tab_rsi14[]  = sprintf("%.2f", $row2['RSI14']);
+    $tab_colors[] = $row2['close'] >= $row2['open'] ? 1 : 0;
 }
 
 ?>
@@ -112,7 +114,12 @@ var mm7    = [<?= implode(',', $tab_mm7) ?>];
 var mm20   = [<?= implode(',', $tab_mm20) ?>];
 var mm50   = [<?= implode(',', $tab_mm50) ?>];
 var mm200  = [<?= implode(',', $tab_mm200) ?>];
-var colors = [<?= '"'.implode('","', $tab_cols).'"' ?>];
+var rsi14  = [<?= implode(',', $tab_rsi14) ?>];
+var colors = [<?= '"'.implode('","', $tab_colors).'"' ?>];
+
+for (var i = 0; i < colors.length; i++) {
+    colors[i] = (colors[i] == 1) ? "green" : "red";
+}
 
 var ctx = document.getElementById('stock_canvas1').getContext('2d');
 el("stock_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
@@ -202,12 +209,12 @@ var myChart = new Chart(ctx, {
 });
 
 
-/*
-var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
-el("stock_canvas2").height = document.body.offsetWidth > 700 ? 50 : 100;
 
-var myChart = new Chart(ctx2, {
-    type: 'bar',
+var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
+el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 60;
+
+var myChart2 = new Chart(ctx2, {
+    type: 'line',
     legend: {
         display: false
     },
@@ -215,12 +222,14 @@ var myChart = new Chart(ctx2, {
         labels: days,
         datasets: [
         { 
-            data: vols,
-            label: "Volume",
+            data: rsi14,
+            label: "RSI14",
             borderColor: colors,
             backgroundColor: colors,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
             borderWidth: 0.5,
-            fill: true,
+            fill: false,
             order : 0
         }
     ]},
@@ -239,9 +248,7 @@ var myChart = new Chart(ctx2, {
         scales: {
             x: {
                 ticks: {
-                    minRotation: 90,
-                    maxRotation: 90,
-                    beginAtZero: true
+                    display: false
                 }
             },
             y: {
@@ -256,7 +263,7 @@ var myChart = new Chart(ctx2, {
         }
     }
 });
-*/
+
 </script>
 
 
