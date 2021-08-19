@@ -4,6 +4,11 @@
 // NE PAS METTRE DE SESSION SINON PB CRONTAB
 // //////////////////////////////////////////
 
+
+// Calculer les cours WEEKLY et MONTHLY 
+// Ajouter RSI14 DAILY/WEEKDY/MONTHLY
+// Ajouter à la crontab avec calcul sur les jours non calculé ou sur la veille
+
 include "include.php";
 
 include "Trader.php";
