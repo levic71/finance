@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.2.63";
+$ver = tools::isLocalHost() ? rand() : "1.2.64";
 
 foreach(['action'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -39,14 +39,16 @@ foreach(['action'] as $key)
         <title>Homepage Dual Momentum</title>
 
 		<link rel="stylesheet" href="css/semantic.min.css?ver=<?= $ver ?>" />
-		<link rel="stylesheet" href="css/style.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/the-datepicker.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/swiper-bundle.min.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/sortable-theme-minimal.css?ver=<?= $ver ?>" />
+		<link rel="stylesheet" href="css/prompt.css?ver=<?= $ver ?>" />
+		<link rel="stylesheet" href="css/style.css?ver=<?= $ver ?>" />
 
 		<!-- script type="text/javascript" src="js/semantic.min.js?ver=<?= $ver ?>"></script -->
 		<script type="text/javascript" src="js/chart.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/sweetalert2.all.min.js?ver=<?= $ver ?>"></script>
+		<script type="text/javascript" src="js/prompt.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/dom.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/jxs_compressed.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/the-datepicker.min.js?ver=<?= $ver ?>"></script>

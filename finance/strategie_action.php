@@ -46,6 +46,7 @@ if ($action == "upt" && isset($strategie_id) && $strategie_id != "") {
 ?>
 
 <script>
-	Swal.fire({ title: '', icon: 'success', html: "Stratégie <?= $f_name.($action == "new" ? " ajoutée": ($action == "upt" ? " modifiée" : " supprimée")) ?>" });
+    var p = loadPrompt();
+    p.success('Stratégie <?= $f_name.($action == "new" ? " ajoutée": ($action == "upt" ? " modifiée" : " supprimée")) ?>');
     go({ action: 'home_content', id: 'main', url: 'home_content.php' });
 </script>
