@@ -28,9 +28,52 @@ include "TALib/Core/MomentumIndicators.php";
 
 use LupeCode\phpTraderNative\TraderFriendly;
 
+function cumulTabVal($tab, $key, $val) { return isset($tab[$key]) ? $tab[$key] + $val : $val; }
+function currentnext(&$t) { $res = current($t); next($t); return $res; }
+function fullFillArray($t1, $t2) {
+    // On complete le tableau avec la premiere valeur du tableau
+    $val = count($t2) > 0 ? $t2[array_key_first($t2)] : 0;
+
+    if (count($t1) > count($t2)) 
+        $t2 = array_merge(array_fill(0, (count($t1) - count($t2)), $val), $t2);
+
+    return $t2;
+}
+function fullFillArrayAvg($t1, $t2) {
+    $r = count($t1)-count($t2);
+    for($i=0; $i < $r; $i++) {
+        $t2[$i] = round(array_sum(array_slice($t1, 0, $i+1))/($i+1), 8);
+    }
+    ksort($t2);
+
+    return $t2;
+}
+function ComputeMMX($data, $size) {
+    $t = TraderFriendly::simpleMovingAverage($data, $size);
+    return fullFillArrayAvg($data, $t);
+}
+function ComputeRSIX($data, $size) {
+    $t = TraderFriendly::relativeStrengthIndex($data, $size);
+    return fullFillArray($data, $t);
+}
+
+$symbol = "";
+$limited = 1;
+
+foreach(['symbol', 'limited'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+
 if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
+
+$testing  = false;  // Test, Oui/Non ?
+$testing1 = true;  // Test sur selection $testing2_sym LIKE
+$testing2 = false; // Test avec filtre sur date
+$testing2_sym = "BRE.PAR";
+
+$logging_insert = false; // On loggue les insert ?
+$exec_insert = true;     // On execute les insert ?
 
 ?>
 
@@ -39,67 +82,189 @@ $db = dbc::connect();
     <pre style="width: 100%; height: 500px; overflow: scroll;">
 <?
 
+logger::info("INDICATORS", "DAILY", "BEGIN");
+
 // Parcours des actifs suivis
-$req = "SELECT * FROM stocks WHERE symbol=\"GLE.PAR\"";
 $req = "SELECT * FROM stocks";
+if ($testing && $testing1) $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$testing2_sym."%\"";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
     logger::info("INDICATORS", $row['symbol'], "BEGIN COMPUTE INDICATORS");
 
-    $tab_day = array();
-    $tab_close = array();
-    $tab_weekly = array();
-    $tab_monthly = array();
+    $tab_daily_day     = array();
+    $tab_daily_close   = array();
+    $tab_weekly_vol    = array();
+    $tab_weekly_open   = array();
+    $tab_weekly_high   = array();
+    $tab_weekly_low    = array();
+    $tab_weekly_close  = array();
+    $tab_monthly_vol   = array();
+    $tab_monthly_open  = array();
+    $tab_monthly_high  = array();
+    $tab_monthly_low   = array();
+    $tab_monthly_close = array();
+    $tab_days_weeks_counter = array();
+    $tab_days_weeks_lastday = array();
+    $tab_days_months_counter = array();
+    $tab_days_months_lastday = array();
 
-    $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$row['symbol']."\" AND day > \"2021-07-01\"";
+    // On stocke les cours indexés avec la date pour utilisation calcul
+    $tab_daily_close_by_day = array();
+
     $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$row['symbol']."\"";
+    if ($testing && $testing2) $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$row['symbol']."\" AND day > \"2021-06-01\"";
     $res2= dbc::execSql($req2);
+
     while($row2 = mysqli_fetch_array($res2)) {
+
+        $tab_daily_close_by_day[$row2['day']] = $row2['close'];
+
+        $tab_daily_close[] = $row2['close'];
+        $tab_daily_day[]   = $row2['day'];
 
         $week  = date("Y-W", strtotime($row2['day']));
         $month = date("Y-m", strtotime($row2['day']));
 
         // Cummul weekly et monthly pour calcul RSI14 weekly et monthly
-        $tab_weekly[$week]   = isset($tab_weekly[$week])   ? $tab_weekly[$week]+$row2['close']   : 0;
-        $tab_monthly[$month] = isset($tab_monthly[$month]) ? $tab_monthly[$month]+$row2['close'] : 0;
+        $tab_weekly_vol[$week]     = cumulTabVal($tab_weekly_vol,    $week,  $row2['volume']);
+        $tab_weekly_open[$week]    = cumulTabVal($tab_weekly_open,   $week,  $row2['open']);
+        $tab_weekly_high[$week]    = cumulTabVal($tab_weekly_high,   $week,  $row2['high']);
+        $tab_weekly_low[$week]     = cumulTabVal($tab_weekly_low,    $week,  $row2['low']);
+        $tab_weekly_close[$week]   = cumulTabVal($tab_weekly_close,  $week,  $row2['close']);
+        $tab_monthly_vol[$month]   = cumulTabVal($tab_monthly_vol,   $month, $row2['volume']);
+        $tab_monthly_open[$month]  = cumulTabVal($tab_monthly_open,  $month, $row2['open']);
+        $tab_monthly_high[$month]  = cumulTabVal($tab_monthly_high,  $month, $row2['high']);
+        $tab_monthly_low[$month]   = cumulTabVal($tab_monthly_low,   $month, $row2['low']);
+        $tab_monthly_close[$month] = cumulTabVal($tab_monthly_close, $month, $row2['close']);
 
-        $tab_close[] = $row2['close'];
-        $tab_day[]   = $row2['day'];
-    
+        // On compte le nb de jours par week/month
+        $tab_days_weeks_counter[$week]   = isset($tab_days_weeks_counter[$week])   ? $tab_days_weeks_counter[$week] + 1   : 1;
+        $tab_days_months_counter[$month] = isset($tab_days_months_counter[$month]) ? $tab_days_months_counter[$month] + 1 : 1;
+
+        // on garde le dernier par week/month
+        $tab_days_weeks_lastday[$week]  = $row2['day'];
+        $tab_days_months_lastday[$month] = $row2['day'];
     }
 
-    if (count($tab_day) == 0) { logger::info("INDICATORS", $row['symbol'], "NO DATA !!!!"); continue; }
+    // Calcul des moyennes weekly/monthly en divisant par le nb de dates
+    foreach($tab_weekly_close as $key => $val) {
+        $tab_weekly_open[$key]  = round($tab_weekly_open[$key]  / $tab_days_weeks_counter[$key], 8);
+        $tab_weekly_high[$key]  = round($tab_weekly_high[$key]  / $tab_days_weeks_counter[$key], 8);
+        $tab_weekly_low[$key]   = round($tab_weekly_low[$key]   / $tab_days_weeks_counter[$key], 8);
+        $tab_weekly_close[$key] = round($tab_weekly_close[$key] / $tab_days_weeks_counter[$key], 8);
+    }
+    foreach($tab_monthly_close as $key => $val) {
+        $tab_monthly_open[$key]  = round($tab_monthly_open[$key]  / $tab_days_months_counter[$key], 8);
+        $tab_monthly_high[$key]  = round($tab_monthly_high[$key]  / $tab_days_months_counter[$key], 8);
+        $tab_monthly_low[$key]   = round($tab_monthly_low[$key]   / $tab_days_months_counter[$key], 8);
+        $tab_monthly_close[$key] = round($tab_monthly_close[$key] / $tab_days_months_counter[$key], 8);
+    }
 
-    $tab_MM7=TraderFriendly::simpleMovingAverage($tab_close, 7);
-    $tab_MM20=TraderFriendly::simpleMovingAverage($tab_close, 20);
-    $tab_MM50=TraderFriendly::simpleMovingAverage($tab_close, 50);
-    $tab_MM200=TraderFriendly::simpleMovingAverage($tab_close, 200);
-    $tab_RSI14=TraderFriendly::relativeStrengthIndex($tab_close, 14);
-    $tab_RSI14_weekly=TraderFriendly::relativeStrengthIndex($tab_weekly, 14);
-    $tab_RSI14_monthly=TraderFriendly::relativeStrengthIndex($tab_monthly, 14);
-/*     
-    var_dump($tab_MM7);
-    var_dump($tab_RSI14);
-    var_dump($tab_day);
-    var_dump($tab_close);
- */
 
-    foreach($tab_day as $key => $val) {
-        $MM7 = isset($tab_MM7[$key]) ? $key : array_key_first($tab_MM7);
-        $MM20 = isset($tab_MM20[$key]) ? $key : array_key_first($tab_MM20);
-        $MM50 = isset($tab_MM50[$key]) ? $key : array_key_first($tab_MM50);
-        $MM200 = isset($tab_MM200[$key]) ? $key : array_key_first($tab_MM200);
-        $RSI14 = isset($tab_RSI14[$key]) ? $key : array_key_first($tab_RSI14);
+    // INSERT WEEKLY AND MONTHLY DATA
+    foreach($tab_days_weeks_lastday as $key => $val) {
+        $open   = $tab_weekly_open[$key];
+        $high   = $tab_weekly_high[$key];
+        $low    = $tab_weekly_low[$key];
+        $close  = $tab_weekly_close[$key];
+        $volume = $tab_weekly_vol[$key];
 
-        $insert = "INSERT INTO indicators (symbol, day, period, MM7, MM20, MM50, MM200, RSI14) VALUES('".$row['symbol']."', '".$val."', 'DAILY', '".$tab_MM7[$MM7]."', '".$tab_MM20[$MM20]."', '".$tab_MM50[$MM50]."', '".$tab_MM200[$MM200]."', '".$tab_RSI14[$RSI14]."') ON DUPLICATE KEY UPDATE MM7='".$tab_MM7[$MM7]."', MM20='".$tab_MM20[$MM20]."', MM50='".$tab_MM50[$MM50]."', MM200='".$tab_MM200[$MM200]."', RSI14='".$tab_RSI14[$RSI14]."'";
-        $res3= dbc::execSql($insert);
-//        echo $val.":".$tab_MM7[$MM7].":".$tab_MM20[$MM20].":".$tab_MM200[$MM200].":".$tab_RSI14[$RSI14].":"."<br />";
+        $insert = "INSERT INTO weekly_time_series_adjusted (symbol, day, open, high, low, close, volume) VALUES('".$row['symbol']."', '".$val."', '".$open."', '".$high."', '".$low."', '".$close."', '".$volume."') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', volume='".$volume."'";
+
+        if ($logging_insert) logger::info("INDICATORS", $row['symbol'], $insert);
+        if ($exec_insert) $res3= dbc::execSql($insert);
+    }
+    foreach($tab_days_months_lastday as $key => $val) {
+        $open   = $tab_monthly_open[$key];
+        $high   = $tab_monthly_high[$key];
+        $low    = $tab_monthly_low[$key];
+        $close  = $tab_monthly_close[$key];
+        $volume = $tab_monthly_vol[$key];
+
+        $insert = "INSERT INTO monthly_time_series_adjusted (symbol, day, open, high, low, close, volume) VALUES('".$row['symbol']."', '".$val."', '".$open."', '".$high."', '".$low."', '".$close."', '".$volume."') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', volume='".$volume."'";
+
+        if ($logging_insert) logger::info("INDICATORS", $row['symbol'], $insert);
+        if ($exec_insert) $res3= dbc::execSql($insert);
+    }
+    // ///////////////////////
+
+
+    // DAILY
+
+    if (count($tab_daily_day) == 0) { logger::info("INDICATORS", $row['symbol'], "NO DAILY DATA !!!!"); continue; }
+
+    $tab_daily_MM7   = computeMMX($tab_daily_close, 7);
+    $tab_daily_MM20  = computeMMX($tab_daily_close, 20);
+    $tab_daily_MM50  = computeMMX($tab_daily_close, 50);
+    $tab_daily_MM200 = computeMMX($tab_daily_close, 200);
+    $tab_daily_RSI14 = computeRSIX($tab_daily_close, 14);
+
+    foreach($tab_daily_day as $key => $val) {
+        $MM7   = currentnext($tab_daily_MM7);
+        $MM20  = currentnext($tab_daily_MM20);
+        $MM50  = currentnext($tab_daily_MM50);
+        $MM200 = currentnext($tab_daily_MM200);
+        $RSI14 = currentnext($tab_daily_RSI14);
+
+        $insert = "INSERT INTO indicators (symbol, day, period, MM7, MM20, MM50, MM200, RSI14) VALUES('".$row['symbol']."', '".$val."', 'DAILY', '".$MM7."', '".$MM20."', '".$MM50."', '".$MM200."', '".$RSI14."') ON DUPLICATE KEY UPDATE MM7='".$MM7."', MM20='".$MM20."', MM50='".$MM50."', MM200='".$MM200."', RSI14='".$RSI14."'";
+
+        if ($logging_insert) logger::info("INDICATORS", $row['symbol'], $insert);
+        if ($exec_insert) $res3= dbc::execSql($insert);
+    }
+
+
+    // WEEKLY
+
+    if (count($tab_weekly_close) == 0) { logger::info("INDICATORS", $row['symbol'], "NO WEEKLY DATA !!!!"); continue; }
+
+    $tab_weekly_MM7   = computeMMX($tab_weekly_close, 7);
+    $tab_weekly_MM20  = computeMMX($tab_weekly_close, 20);
+    $tab_weekly_MM50  = computeMMX($tab_weekly_close, 50);
+    $tab_weekly_MM200 = computeMMX($tab_weekly_close, 200);
+    $tab_weekly_RSI14 = computeRSIX($tab_weekly_close, 14);
+
+    foreach($tab_weekly_close as $key => $val) {
+        $MM7   = currentnext($tab_weekly_MM7);
+        $MM20  = currentnext($tab_weekly_MM20);
+        $MM50  = currentnext($tab_weekly_MM50);
+        $MM200 = currentnext($tab_weekly_MM200);
+        $RSI14 = currentnext($tab_weekly_RSI14);
+
+        $insert = "INSERT INTO indicators (symbol, day, period, MM7, MM20, MM50, MM200, RSI14) VALUES('".$row['symbol']."', '".$tab_days_weeks_lastday[$key]."', 'WEEKLY', '".$MM7."', '".$MM20."', '".$MM50."', '".$MM200."', '".$RSI14."') ON DUPLICATE KEY UPDATE MM7='".$MM7."', MM20='".$MM20."', MM50='".$MM50."', MM200='".$MM200."', RSI14='".$RSI14."'";
+
+        if ($logging_insert) logger::info("INDICATORS", $row['symbol'],  $insert);
+        if ($exec_insert) $res3= dbc::execSql($insert);
+    }
+
+    
+    // MONTHLY
+
+    if (count($tab_weekly_close) == 0) { logger::info("INDICATORS", $row['symbol'], "NO WEEKLY DATA !!!!"); continue; }
+
+    $tab_monthly_MM7   = computeMMX($tab_monthly_close, 7);
+    $tab_monthly_MM20  = computeMMX($tab_monthly_close, 20);
+    $tab_monthly_MM50  = computeMMX($tab_monthly_close, 50);
+    $tab_monthly_MM200 = computeMMX($tab_monthly_close, 200);
+    $tab_monthly_RSI14 = computeRSIX($tab_monthly_close, 14);
+
+    foreach($tab_monthly_close as $key => $val) {
+        $MM7   = currentnext($tab_monthly_MM7);
+        $MM20  = currentnext($tab_monthly_MM20);
+        $MM50  = currentnext($tab_monthly_MM50);
+        $MM200 = currentnext($tab_monthly_MM200);
+        $RSI14 = currentnext($tab_monthly_RSI14);
+
+        $insert = "INSERT INTO indicators (symbol, day, period, MM7, MM20, MM50, MM200, RSI14) VALUES('".$row['symbol']."', '".$tab_days_months_lastday[$key]."', 'MONTHLY', '".$MM7."', '".$MM20."', '".$MM50."', '".$MM200."', '".$RSI14."') ON DUPLICATE KEY UPDATE MM7='".$MM7."', MM20='".$MM20."', MM50='".$MM50."', MM200='".$MM200."', RSI14='".$RSI14."'";
+
+        if ($logging_insert) logger::info("INDICATORS", $row['symbol'],  $insert);
+        if ($exec_insert) $res3= dbc::execSql($insert);
     }
 
     logger::info("INDICATORS", $row['symbol'], "END TRT");
 }
 
+logger::info("INDICATORS", "DAILY", "END");
 
 ?>
     </pre>
