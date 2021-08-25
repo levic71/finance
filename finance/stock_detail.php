@@ -161,27 +161,6 @@ while ($row2 = mysqli_fetch_array($res2)) {
 
 
 <script>
-<<<<<<< HEAD
-=======
-// Our labels along the x-axis
-var days = [<?= '"'.implode('","', $tab_days).'"' ?>];
-// For drawing the lines
-var vals   = [<?= implode(',', $tab_vals) ?>];
-var vols   = [<?= implode(',', $tab_vols) ?>];
-var mm7    = [<?= implode(',', $tab_mm7) ?>];
-var mm20   = [<?= implode(',', $tab_mm20) ?>];
-var mm50   = [<?= implode(',', $tab_mm50) ?>];
-var mm200  = [<?= implode(',', $tab_mm200) ?>];
-var rsi14  = [<?= implode(',', $tab_rsi14) ?>];
-var colors = [<?= '"'.implode('","', $tab_colors).'"' ?>];
-
-for (var i = 0; i < colors.length; i++) {
-    colors[i] = (colors[i] == 1) ? "green" : "red";
-}
-
-var ctx = document.getElementById('stock_canvas1').getContext('2d');
-el("stock_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
->>>>>>> d31a30383755e0b2b3f3a573b59137ac5d888160
 
 newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill) {
     var ret = {
@@ -293,7 +272,6 @@ var myChart1 = new Chart(ctx1, { type: 'line', data: { labels: days, datasets: d
 
 
 
-<<<<<<< HEAD
 var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
 el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 60;
 
@@ -301,33 +279,6 @@ var datasets2 = [];
 datasets2.push(getDatasetRSI14(rsi14));
 
 var options2 = {
-=======
-
-var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
-el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 60;
-
-var myChart2 = new Chart(ctx2, {
-    type: 'line',
-    legend: {
-        display: false
-    },
-    data: {
-        labels: days,
-        datasets: [
-        { 
-            data: rsi14,
-            label: "RSI14",
-            borderColor: colors,
-            backgroundColor: colors,
-            cubicInterpolationMode: 'monotone',
-            tension: 0.4,
-            borderWidth: 0.5,
-            fill: false,
-            order : 0
-        }
-    ]},
-    options: {
->>>>>>> d31a30383755e0b2b3f3a573b59137ac5d888160
         interaction: {
             intersect: false
         },
@@ -365,61 +316,7 @@ var myChart2 = new Chart(ctx2, {
                 }
             }
         }
-<<<<<<< HEAD
     };
-=======
-    }
-});
-
-</script>
-
-
-
-<? if ($sess_context->isSuperAdmin()) { ?>
-
-<div class="ui container inverted grid segment">
-    <div class="column">
-
-        <div class="ui inverted stackable two column grid container">
-            <div class="wide column">
-                <table id="detail2_stock" class="ui selectable inverted single line table">
-                    <tbody>
-                    <?  echo '
-                            <tr><td>Ref date MMZ1M</td><td>'.$c["MMZ1MDate"].'</td></tr>
-                            <tr><td>Ref date MMZ3M</td><td>'.$c["MMZ3MDate"].'</td></tr>
-                            <tr><td>Ref date MMZ6M</td><td>'.$c["MMZ6MDate"].'</td></tr>
-                            <tr><td>PEA</td><td>
-                                <div class="ui fitted toggle checkbox">
-                                    <input id="f_pea" type="checkbox" '.($row["pea"] == 1 ? 'checked="checked"' : '').'>
-                                    <label></label>
-                                </div>
-                            </td></tr>
-                    '; ?>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="wide column">
-                <table id="detail3_stock" class="ui selectable inverted single line table">
-                    <tbody>
-                    <?
-                        foreach(cacheData::$lst_cache as $key)
-                        echo "<tr><td>Cache ".$key."_".$symbol.".json</td><td>".(file_exists("cache/".$key."_".$symbol.".json") ? "<i class=\"ui icon inverted green check\"></i>" : "<i class=\"ui icon inverted red x\"></i>")."</td></tr>";
-                    ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<div class="ui container inverted segment">
-
-    <h2 class="ui inverted right aligned header"><button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button></h2>
-
-</div>
->>>>>>> d31a30383755e0b2b3f3a573b59137ac5d888160
 
 const horizontalLines = {
     id: 'horizontalLines',
