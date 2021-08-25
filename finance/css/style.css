@@ -8,7 +8,7 @@ td.aaf-negative { color: rgb(247, 95, 90) !important; }
     padding: 5px 10px !important;
 }
 .ui.toggle.checkbox label:before {
-    background: #111 !important;
+    background: rgb(17, 17, 17) !important;
 }
 
 h2 { color: yellowgreen !important; }

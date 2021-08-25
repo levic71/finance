@@ -49,14 +49,23 @@ while($row = mysqli_fetch_array($res)) {
 
     $tab_day = array();
     $tab_close = array();
+    $tab_weekly = array();
+    $tab_monthly = array();
 
     $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$row['symbol']."\" AND day > \"2021-07-01\"";
     $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$row['symbol']."\"";
     $res2= dbc::execSql($req2);
     while($row2 = mysqli_fetch_array($res2)) {
 
+        $week  = date("Y-W", strtotime($row2['day']));
+        $month = date("Y-m", strtotime($row2['day']));
+
+        // Cummul weekly et monthly pour calcul RSI14 weekly et monthly
+        $tab_weekly[$week]   = isset($tab_weekly[$week])   ? $tab_weekly[$week]+$row2['close']   : 0;
+        $tab_monthly[$month] = isset($tab_monthly[$month]) ? $tab_monthly[$month]+$row2['close'] : 0;
+
         $tab_close[] = $row2['close'];
-        $tab_day[] = $row2['day'];
+        $tab_day[]   = $row2['day'];
     
     }
 
@@ -67,6 +76,8 @@ while($row = mysqli_fetch_array($res)) {
     $tab_MM50=TraderFriendly::simpleMovingAverage($tab_close, 50);
     $tab_MM200=TraderFriendly::simpleMovingAverage($tab_close, 200);
     $tab_RSI14=TraderFriendly::relativeStrengthIndex($tab_close, 14);
+    $tab_RSI14_weekly=TraderFriendly::relativeStrengthIndex($tab_weekly, 14);
+    $tab_RSI14_monthly=TraderFriendly::relativeStrengthIndex($tab_monthly, 14);
 /*     
     var_dump($tab_MM7);
     var_dump($tab_RSI14);

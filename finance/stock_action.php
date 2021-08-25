@@ -92,14 +92,15 @@ if ($action == "del") {
 </div>
 
 <script>
+    var p = loadPrompt();
 	<? if ($action == "upt" || $action == "upt_cache") { ?>
-    	Swal.fire({ title: '', icon: 'info', html: 'Actif <?= $symbol ?> mis à jour' });
+        p.success('Actif <?= $symbol ?> mis à jour');
 	<? } ?>
 	<? if ($action == "del") { ?>
-        Swal.fire({ title: '', icon: 'error', html: "Actif <?= $symbol ?> supprimé" });
+        p.warm('Actif <?= $symbol ?> supprimé');
 	<? } ?>
 	<? if ($action == "add") { ?>
-	Swal.fire({ title: '', icon: 'info', html: "Actif <?= $symbol ?> ajouté" });
+        p.success('Actif <?= $symbol ?> ajouté');
 	<? } ?>
     go({ action: 'home_content', id: 'main', url: 'home_content.php' });
 </script>
