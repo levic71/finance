@@ -45,7 +45,8 @@ foreach($lst_decode_symbols['quotes'] as $key => $val) {
 }
 
 // Cash disponible
-$cash = $capital_init;
+$cash    = $capital_init;
+$cash_RC = $capital_init;
 // Somme investie
 $sum_invest = $capital_init;
 
@@ -161,7 +162,6 @@ $tab_detail = array();
 
 // Pour le calcul du rendement comparatif
 $sym_RC = $f_compare_to;
-$cash_RC = 0;
 $nb_actions_RC = 0;
 $valo_pf_RC = 0;
 $perf_pf_RC = 0;
@@ -464,7 +464,7 @@ var myChart = new Chart(ctx, {
         },
         { 
             data: valos,
-            label: "Valorisation",
+            label: "<?= $row['title'] ?>",
             borderColor: "rgba(238, 130, 6, 0.75)",
             backgroundColor: "rgba(238, 130, 6, 0.05)",
             cubicInterpolationMode: 'monotone',

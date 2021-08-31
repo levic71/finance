@@ -7,11 +7,11 @@ session_start();
 include "common.php";
 
 $symbol = "";
-$range  = 0;
 $rsi_choice = 0;
-$mmx    = 8;
+$mmx = 8;
+$display_wm = false; // Display weekly/monthly graph si superadmin user
 
-foreach(['symbol', 'range', 'mmx'] as $key)
+foreach(['symbol', 'mmx'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -64,53 +64,57 @@ if ($row = mysqli_fetch_array($res)) {
 </div>
 
 
-<?  // GRAPHE COURS
+<?
+// /////////////////////
+// GRAPHES COURS
+// //////////////////////
+function getTimeSeriesData($table_name, $period, $sym) {
 
-$req2 = "SELECT * FROM daily_time_series_adjusted dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='DAILY' AND dtsa.symbol='".$symbol."' AND dtsa.day >= DATE_SUB(NOW(), INTERVAL ".($range == 0 ? 100 : $range)." YEAR) ORDER BY dtsa.day ASC";
-$res2 = dbc::execSql($req2);
+    $req = "SELECT * FROM ".$table_name." dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='".$period."' AND dtsa.symbol='".$sym."' ORDER BY dtsa.day ASC";
+    $res = dbc::execSql($req);
+    
+    $t_rows = array();
+    $t_cols = array();
+    while ($row = mysqli_fetch_array($res)) {
+        $t_rows[] = $row;
+        $t_colrs[] = $row['close'] >= $row['open'] ? 1 : 0;
+    }
 
-$tab_days = array();
-$tab_vals = array();
-$tab_vols = array();
-$tab_mm7  = array();
-$tab_mm20 = array();
-$tab_mm50 = array();
-$tab_mm200 = array();
-$tab_rsi14 = array();
-$tab_colors = array();
-while ($row2 = mysqli_fetch_array($res2)) {
-    $tab_days[] = $row2['day'];
-    $tab_vals[] = $row2['close'];
-    $tab_vols[] = $row2['volume'];
-    $tab_mm7[]    = sprintf("%.2f", $row2['MM7']);
-    $tab_mm20[]   = sprintf("%.2f", $row2['MM20']);
-    $tab_mm50[]   = sprintf("%.2f", $row2['MM50']);
-    $tab_mm200[]  = sprintf("%.2f", $row2['MM200']);
-    $tab_rsi14[]  = sprintf("%.2f", $row2['RSI14']);
-    $tab_colors[] = $row2['close'] >= $row2['open'] ? 1 : 0;
+    return array("rows" => $t_rows, "colrs" => $t_colrs);
 }
+
+$data_daily   = getTimeSeriesData("daily_time_series_adjusted",   "DAILY",   $symbol);
+$data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $symbol);
+$data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $symbol);
 
 ?>
 
 
 <div id="canvas_area" class="ui container inverted segment">
-    <h2>Cours
-        <button id="graphe_1T_bt"    class="mini ui <?= $range == 4  ? "blue" : "grey" ?> button">1T</button>
-        <button id="graphe_1Y_bt"    class="mini ui <?= $range == 1  ? "blue" : "grey" ?> button">1Y</button>
-        <button id="graphe_3Y_bt"    class="mini ui <?= $range == 3  ? "blue" : "grey" ?> button">3Y</button>
-        <button id="graphe_all_bt"   class="mini ui <?= $range == 0  ? "blue" : "grey" ?> button">All</button>
+    <p>Cours
+        <button id="graphe_1T_bt"    class="mini ui grey button">1T</button>
+        <button id="graphe_1Y_bt"    class="mini ui grey button">1Y</button>
+        <button id="graphe_3Y_bt"    class="mini ui grey button">3Y</button>
+        <button id="graphe_all_bt"   class="mini ui blue button">All</button>
         <button id="graphe_mm7_bt"   class="mini ui <?= ($mmx & 1) == 1 ? "purple" : "grey" ?> button">MM7</button>
         <button id="graphe_mm20_bt"  class="mini ui <?= ($mmx & 2) == 2 ? "purple" : "grey" ?> button">MM20</button>
         <button id="graphe_mm50_bt"  class="mini ui <?= ($mmx & 4) == 4 ? "purple" : "grey" ?> button">MM50</button>
         <button id="graphe_mm200_bt" class="mini ui <?= ($mmx & 8) == 8 ? "purple" : "grey" ?> button">MM200</button>
-    </h2>
+    </p>
     <canvas id="stock_canvas1" height="100"></canvas>
     <canvas id="stock_canvas2" height="20"></canvas>
     <p>
+        RSI14
         <button id="graphe_D_bt"    class="mini ui <?= $rsi_choice == 0  ? "blue" : "grey" ?> button">Daily</button>
         <button id="graphe_W_bt"    class="mini ui <?= $rsi_choice == 1  ? "blue" : "grey" ?> button">Weekly</button>
         <button id="graphe_M_bt"    class="mini ui <?= $rsi_choice == 2  ? "blue" : "grey" ?> button">Monthly</button>
     </p>
+<? if ($display_wm && $sess_context->isSuperAdmin()) { ?>
+    <canvas id="stock_canvas3" height="100"></canvas>
+    <canvas id="stock_canvas4" height="20"></canvas>
+    <canvas id="stock_canvas5" height="100"></canvas>
+    <canvas id="stock_canvas6" height="20"></canvas>
+<? } ?>
 </div>
 
 
@@ -163,16 +167,17 @@ while ($row2 = mysqli_fetch_array($res2)) {
 <script>
 
 newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill) {
+    
     var ret = {
         type: mytype,
         data: mydata,
 	    label: mylabel,
         borderColor: mycolor,
-        backgroundColor: bg,
+        borderWidth: 0.5,
         yAxisID: yaxeid,
         cubicInterpolationMode: 'monotone',
         tension: 0.4,
-        borderWidth: 0.5,
+        backgroundColor: bg,
         fill: myfill
     };
 
@@ -182,30 +187,30 @@ newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill) {
 getDatasetVals  = function(vals) { return newDataset(vals, 'line', 'y1', 'Cours',  '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>', true); }
 getDatasetVols  = function(vals, cols) { return newDataset(vals, 'bar',  'y2', 'Volume', cols, cols, true); }
 getDatasetMMX   = function(vals, l, c) { return newDataset(vals, 'line', 'y1', l, c, '', false); }
-getDatasetRSI14 = function(vals) { return newDataset(vals, 'line', 'y', "RSI14", 'violet', 'violet', false); }
+getDatasetRSI14 = function(vals) { return newDataset(vals, 'line', 'y', "RSI14", 'violet', '', false); }
 
-// Our labels along the x-axis
-var ref_days = [<?= '"'.implode('","', $tab_days).'"' ?>];
+var graphe_size_days = 0;
 
-// For drawing the lines
-var ref_vals   = [<?= implode(',', $tab_vals) ?>];
-var ref_vols   = [<?= implode(',', $tab_vols) ?>];
-var ref_mm7    = [<?= implode(',', $tab_mm7) ?>];
-var ref_mm20   = [<?= implode(',', $tab_mm20) ?>];
-var ref_mm50   = [<?= implode(',', $tab_mm50) ?>];
-var ref_mm200  = [<?= implode(',', $tab_mm200) ?>];
-var ref_rsi14  = [<?= implode(',', $tab_rsi14) ?>];
-var ref_colors = [<?= '"'.implode('","', $tab_colors).'"' ?>];
+var ref_days = [<?= '"'.implode('","', array_column($data_daily["rows"], "day")).'"' ?>];
+var ref_vals   = [<?= implode(',', array_column($data_daily["rows"], "close")) ?>];
+var ref_vols   = [<?= implode(',', array_column($data_daily["rows"], "volume")) ?>];
+var ref_mm7    = [<?= implode(',', array_column($data_daily["rows"], "MM7")) ?>];
+var ref_mm20   = [<?= implode(',', array_column($data_daily["rows"], "MM20")) ?>];
+var ref_mm50   = [<?= implode(',', array_column($data_daily["rows"], "MM50")) ?>];
+var ref_mm200  = [<?= implode(',', array_column($data_daily["rows"], "MM200")) ?>];
+var ref_rsi14  = [<?= implode(',', array_column($data_daily["rows"], "RSI14")) ?>];
+var ref_colors = [<?= '"'.implode('","', $data_daily["colrs"]).'"' ?>];
 
-var days   = ref_days;
-var vals   = ref_vals;
-var vols   = ref_vols;
-var mm7    = ref_mm7;
-var mm20   = ref_mm20;
-var mm50   = ref_mm50;
-var mm200  = ref_mm200;
-var rsi14  = ref_rsi14;
-var colors = ref_colors;
+var days    = ref_days;
+var vals    = ref_vals;
+var vols    = ref_vols;
+var mm7     = ref_mm7;
+var mm20    = ref_mm20;
+var mm50    = ref_mm50;
+var mm200   = ref_mm200;
+var colors  = ref_colors;
+var d_days  = ref_days;
+var d_rsi14 = ref_rsi14;
 
 for (var i = 0; i < colors.length; i++) {
     colors[i] = (colors[i] == 1) ? "green" : "red";
@@ -241,7 +246,7 @@ var options1 = {
         scales: {
             x: {
                 grid: {
-                    borderColor: 'rgba(255, 255, 255, 0.2)'
+                    display: false
                 },
                 ticks: {
                     minRotation: 90,
@@ -251,6 +256,13 @@ var options1 = {
             y1: {
                 grid: {
                     color: 'rgba(255, 255, 255, 0.05)'
+                },
+                ticks: {
+                    align: 'end',
+                    callback: function(value, index, values) {
+                        var c = value+" \u20ac       ";
+                        return c.substring(0, 6);
+                    }
                 },
                 type: 'linear',
                 position: 'right'
@@ -262,7 +274,7 @@ var options1 = {
                 ticks : {
                     max: 100000000,
                     min: 0,
-                    stepSize: 20000000 
+                    stepSize: 20000000
                 }
             }
         }
@@ -276,7 +288,7 @@ var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
 el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 60;
 
 var datasets2 = [];
-datasets2.push(getDatasetRSI14(rsi14));
+datasets2.push(getDatasetRSI14(d_rsi14));
 
 var options2 = {
         interaction: {
@@ -293,7 +305,7 @@ var options2 = {
         scales: {
             x: {
                 grid: {
-                    borderColor: 'rgba(255, 255, 255, 0.2)'
+                    display: false
                 },
                 ticks: {
                     display: false
@@ -309,14 +321,20 @@ var options2 = {
                 beginAtZero: true,
                 ticks: {
                     stepSize: 25,
-                    display: true
+                    display: true,
+                    align: 'end',
+                    callback: function(value, index, values) {
+                        var c = value+" %       ";
+                        return c.substring(0, 6);
+                    }
                 },
                 afterSetDimensions: (scale) => {
-                    scale.maxWidth = 300;
+                    scale.maxWidth = 100;
                 }
             }
         }
     };
+
 
 const horizontalLines = {
     id: 'horizontalLines',
@@ -341,7 +359,76 @@ const horizontalLines = {
     }
 };
 
-var myChart2 = new Chart(ctx2, { type: 'line', data: { labels: days, datasets: datasets2 }, options: options2, plugins: [horizontalLines] });
+var myChart2 = new Chart(ctx2, { type: 'line', data: { labels: d_days, datasets: datasets2 }, options: options2, plugins: [horizontalLines] });
+
+var ref_w_days   = [<?= '"'.implode('","', array_column($data_weekly["rows"], "day")).'"' ?>];
+var ref_w_rsi14  = [<?= implode(',', array_column($data_weekly["rows"], "RSI14")) ?>];
+var w_days   = ref_w_days;
+var w_rsi14  = ref_w_rsi14;
+
+var ref_m_days   = [<?= '"'.implode('","', array_column($data_monthly["rows"], "day")).'"' ?>];
+var ref_m_rsi14  = [<?= implode(',', array_column($data_monthly["rows"], "RSI14")) ?>];
+var m_days   = ref_m_days;
+var m_rsi14  = ref_m_rsi14;
+
+
+
+<? if ($display_wm && $sess_context->isSuperAdmin()) { ?>
+
+var ref_w_vals   = [<?= implode(',', array_column($data_weekly["rows"], "close")) ?>];
+var ref_w_vols   = [<?= implode(',', array_column($data_weekly["rows"], "volume")) ?>];
+var ref_w_colors = [<?= '"'.implode('","', $data_weekly["colrs"]).'"' ?>];
+
+var w_vals   = ref_w_vals;
+var w_vols   = ref_w_vols;
+var w_colors = ref_w_colors;
+
+for (var i = 0; i < w_colors.length; i++) {
+    w_colors[i] = (w_colors[i] == 1) ? "green" : "red";
+}
+
+var ref_m_vals   = [<?= implode(',', array_column($data_monthly["rows"], "close")) ?>];
+var ref_m_vols   = [<?= implode(',', array_column($data_monthly["rows"], "volume")) ?>];
+var ref_m_colors = [<?= '"'.implode('","', $data_monthly["colrs"]).'"' ?>];
+
+var m_vals   = ref_m_vals;
+var m_vols   = ref_m_vols;
+var m_colors = ref_m_colors;
+
+for (var i = 0; i < m_colors.length; i++) {
+    m_colors[i] = (m_colors[i] == 1) ? "green" : "red";
+}
+
+
+var ctx3 = document.getElementById('stock_canvas3').getContext('2d');
+el("stock_canvas3").height = document.body.offsetWidth > 700 ? 100 : 300;
+var datasets3 = [];
+datasets3.push(getDatasetVals(w_vals));
+datasets3.push(getDatasetVols(w_vols, w_colors));
+var myChart3 = new Chart(ctx3, { type: 'line', data: { labels: w_days, datasets: datasets3 }, options: options1 });
+
+var ctx4 = document.getElementById('stock_canvas4').getContext('2d');
+el("stock_canvas4").height = document.body.offsetWidth > 700 ? 30 : 60;
+var datasets4 = [];
+datasets4.push(getDatasetRSI14(w_rsi14));
+var myChart4 = new Chart(ctx4, { type: 'line', data: { labels: w_days, datasets: datasets4 }, options: options2, plugins: [horizontalLines] });
+
+var ctx5 = document.getElementById('stock_canvas5').getContext('2d');
+el("stock_canvas5").height = document.body.offsetWidth > 700 ? 100 : 300;
+var datasets5 = [];
+datasets5.push(getDatasetVals(m_vals));
+datasets5.push(getDatasetVols(m_vols, m_colors));
+var myChart5 = new Chart(ctx5, { type: 'line', data: { labels: m_days, datasets: datasets5 }, options: options1 });
+
+var ctx6 = document.getElementById('stock_canvas6').getContext('2d');
+el("stock_canvas6").height = document.body.offsetWidth > 700 ? 30 : 60;
+var datasets6 = [];
+datasets6.push(getDatasetRSI14(m_rsi14));
+var myChart6 = new Chart(ctx6, { type: 'line', data: { labels: m_days, datasets: datasets6 }, options: options2, plugins: [horizontalLines] });
+
+<? } ?>
+
+
 
 toogleMMX = function(chart, bt, label, option, color, data) {
     if (isCN(bt, 'purple')) {
@@ -373,15 +460,29 @@ update_data = function(size) {
     mm20   = size == 0 ? ref_mm20   : get_slice(ref_mm20, size);
     mm50   = size == 0 ? ref_mm50   : get_slice(ref_mm50, size);
     mm200  = size == 0 ? ref_mm50   : get_slice(ref_mm200, size);
-    rsi14  = size == 0 ? ref_rsi14  : get_slice(ref_rsi14, size);
     colors = size == 0 ? ref_colors : get_slice(ref_colors, size);
+    size = size == 0 ? 0 : (isCN('graphe_W_bt', 'blue') ? Math.ceil(graphe_size_days / 5) : Math.ceil(graphe_size_days / 12));
+    d_days  = size == 0 ? ref_days   : get_slice(ref_days, size);
+    d_rsi14 = size == 0 ? ref_rsi14  : get_slice(ref_rsi14, size);
 }
 
-update_charts = function(bt, c1, c2, size) {
-    
-    ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt'].forEach((bt) => { replaceCN(bt, 'blue', 'grey'); });
+update_rsi14_data = function() {
+    size = graphe_size_days == 0 ? 0 : (isCN('graphe_W_bt', 'blue') ? Math.ceil(graphe_size_days / 5) : Math.ceil(graphe_size_days / 12));
+    d_days  = size == 0 ? ref_days    : get_slice(ref_days, size);
+    d_rsi14 = size == 0 ? ref_rsi14   : get_slice(ref_rsi14, size);
+    w_days  = size == 0 ? ref_w_days  : get_slice(ref_w_days, size);
+    w_rsi14 = size == 0 ? ref_w_rsi14 : get_slice(ref_w_rsi14, size);
+    m_days  = size == 0 ? ref_m_days  : get_slice(ref_m_days, size);
+    m_rsi14 = size == 0 ? ref_m_rsi14 : get_slice(ref_m_rsi14, size);
+}
 
+update_all_charts = function(bt, c1, c2, size) {    
 
+    // On memorize le nb de days afficher
+    graphe_size_days = size;
+
+    addCN(bt, 'loading');
+    ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt'].forEach((bt) => { replaceCN(bt, c2, c1); });
     switchCN(bt, c1, c2);
     update_data(size);
 
@@ -400,9 +501,30 @@ update_charts = function(bt, c1, c2, size) {
     // Update Chart 2
     myChart2.destroy();
     var datasets2 = [];
-    datasets2.push(getDatasetRSI14(rsi14));
-    myChart2 = new Chart(ctx2, { type: 'line', data: { labels: days, datasets: datasets2 }, options: options2, plugins: [horizontalLines] });
+    datasets2.push(getDatasetRSI14(isCN('graphe_D_bt', 'blue') ? d_rsi14 : (isCN('graphe_W_bt', 'blue') ? w_rsi14 : m_rsi14)));
+    d = isCN('graphe_D_bt', 'blue') ? d_days : (isCN('graphe_W_bt', 'blue') ? w_days : m_days);
+    myChart2 = new Chart(ctx2, { type: 'line', data: { labels: d, datasets: datasets2 }, options: options2, plugins: [horizontalLines] });
     myChart2.update();
+
+    rmCN(bt, 'loading');
+}
+
+update_rsi14_charts = function(bt, c1, c2) {
+    
+    addCN(bt, 'loading');
+    ['graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((bt) => { replaceCN(bt, c2, c1); });
+    switchCN(bt, c1, c2);
+    update_rsi14_data();
+
+    // Update Chart 2
+    myChart2.destroy();
+    var datasets2 = [];
+    datasets2.push(getDatasetRSI14(bt == 'graphe_D_bt' ? d_rsi14 : (bt == 'graphe_W_bt' ? w_rsi14: m_rsi14)));
+    var d = bt == 'graphe_D_bt' ? d_days : (bt == 'graphe_W_bt' ? w_days: m_days);
+    myChart2 = new Chart(ctx2, { type: 'line', data: { labels: d, datasets: datasets2 }, options: options2, plugins: [horizontalLines] });
+    myChart2.update();
+
+    rmCN(bt, 'loading');
 }
 
 min_slice = function(tab, size) { return (tab.length-size-1) > 0 ? (tab.length-size-1) : 0; }
@@ -418,13 +540,14 @@ Dom.addListener(Dom.id('graphe_mm20_bt'),  Dom.Event.ON_CLICK, function(event) {
 Dom.addListener(Dom.id('graphe_mm50_bt'),  Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'graphe_mm50_bt',  'MM50',  4, '<?= $sess_context->getSpectreColor(1) ?>', mm50);  });
 Dom.addListener(Dom.id('graphe_mm200_bt'), Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'graphe_mm200_bt', 'MM200', 8, '<?= $sess_context->getSpectreColor(6) ?>', mm200); });
 
-//Dom.addListener(Dom.id('graphe_all_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?range=0&mmx='+valof('mmx')+'&symbol=<?= $symbol ?>', loading_area: 'main' }); });
-//Dom.addListener(Dom.id('graphe_3Y_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?range=3&mmx='+valof('mmx')+'&symbol=<?= $symbol ?>', loading_area: 'main' }); });
-//Dom.addListener(Dom.id('graphe_1Y_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?range=1&mmx='+valof('mmx')+'&symbol=<?= $symbol ?>', loading_area: 'main' }); });
-Dom.addListener(Dom.id('graphe_all_bt'),  Dom.Event.ON_CLICK, function(event) { update_charts('graphe_all_bt', 'grey', 'blue', 0); });
-Dom.addListener(Dom.id('graphe_3Y_bt'),  Dom.Event.ON_CLICK, function(event) { update_charts('graphe_3Y_bt', 'grey', 'blue', 280*3); });
-Dom.addListener(Dom.id('graphe_1Y_bt'),  Dom.Event.ON_CLICK, function(event) { update_charts('graphe_1Y_bt', 'grey', 'blue', 280); });
-Dom.addListener(Dom.id('graphe_1T_bt'),  Dom.Event.ON_CLICK, function(event) { update_charts('graphe_1T_bt', 'grey', 'blue', 70); });
+Dom.addListener(Dom.id('graphe_all_bt'), Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_all_bt', 'grey', 'blue', 0); });
+Dom.addListener(Dom.id('graphe_3Y_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_3Y_bt',  'grey', 'blue', 280*3); });
+Dom.addListener(Dom.id('graphe_1Y_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_1Y_bt',  'grey', 'blue', 280); });
+Dom.addListener(Dom.id('graphe_1T_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_1T_bt',  'grey', 'blue', 70); });
+
+Dom.addListener(Dom.id('graphe_D_bt'),  Dom.Event.ON_CLICK, function(event) { update_rsi14_charts('graphe_D_bt', 'grey', 'blue'); });
+Dom.addListener(Dom.id('graphe_W_bt'),  Dom.Event.ON_CLICK, function(event) { update_rsi14_charts('graphe_W_bt', 'grey', 'blue'); });
+Dom.addListener(Dom.id('graphe_M_bt'),  Dom.Event.ON_CLICK, function(event) { update_rsi14_charts('graphe_M_bt', 'grey', 'blue'); });
 
 Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' }); });
 

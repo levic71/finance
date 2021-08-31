@@ -20,6 +20,7 @@ if (!is_dir("cache/")) mkdir("cache/");
 ?>
 
 <div class="ui container inverted segment">
+    <h2>Cron</h2>
     <pre style="width: 100%; height: 500px; overflow: scroll;">
 
 <? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
@@ -28,6 +29,7 @@ if (!is_dir("cache/")) mkdir("cache/");
 </div>
 
 <div class="ui container inverted segment">
+    <h2> User Connexions</h2>
     <pre style="width: 100%; height: 500px; overflow: scroll;">
 
 <? 
