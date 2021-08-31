@@ -108,6 +108,7 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
         <button id="graphe_D_bt"    class="mini ui <?= $rsi_choice == 0  ? "blue" : "grey" ?> button">Daily</button>
         <button id="graphe_W_bt"    class="mini ui <?= $rsi_choice == 1  ? "blue" : "grey" ?> button">Weekly</button>
         <button id="graphe_M_bt"    class="mini ui <?= $rsi_choice == 2  ? "blue" : "grey" ?> button">Monthly</button>
+        <button id="graphe_L_bt"    class="mini ui <?= $rsi_choice == 2  ? "blue" : "grey" ?> button"><i id="graphe_L_bt_icon" style="margin-left: 5px;" class="icon inverted unlink"></i></button>
     </p>
 <? if ($display_wm && $sess_context->isSuperAdmin()) { ?>
     <canvas id="stock_canvas3" height="100"></canvas>
@@ -531,6 +532,8 @@ min_slice = function(tab, size) { return (tab.length-size-1) > 0 ? (tab.length-s
 max_slice = function(tab) { return tab.length-1 > 0 ? tab.length-1 : 0; }
 get_slice = function(tab, size) { return tab.slice(min_slice(tab, size), max_slice(tab));}
 
+var p = loadPrompt();
+
 <? if ($sess_context->isSuperAdmin()) { ?>
 Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
 <? } ?>
@@ -548,6 +551,15 @@ Dom.addListener(Dom.id('graphe_1T_bt'),  Dom.Event.ON_CLICK, function(event) { u
 Dom.addListener(Dom.id('graphe_D_bt'),  Dom.Event.ON_CLICK, function(event) { update_rsi14_charts('graphe_D_bt', 'grey', 'blue'); });
 Dom.addListener(Dom.id('graphe_W_bt'),  Dom.Event.ON_CLICK, function(event) { update_rsi14_charts('graphe_W_bt', 'grey', 'blue'); });
 Dom.addListener(Dom.id('graphe_M_bt'),  Dom.Event.ON_CLICK, function(event) { update_rsi14_charts('graphe_M_bt', 'grey', 'blue'); });
+Dom.addListener(Dom.id('graphe_L_bt'),  Dom.Event.ON_CLICK, function(event) {
+    if (isCN('graphe_L_bt', 'grey'))
+        p.error('Les graphes sont liés (pas encore implémenté)');
+    else
+        p.inform('Les graphes ne sont plus liés');
+
+    switchCN('graphe_L_bt', 'grey', 'blue');
+    switchCN('graphe_L_bt_icon', 'unlink', 'linkify');
+});
 
 Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' }); });
 
