@@ -94,8 +94,8 @@ foreach($data["stocks"] as $key => $val) {
 //	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\" onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
 	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\">";
 	echo "
-		<td class=\"collapsing\"><i class=\"inverted blue caret square right outline icon\"></i></td>
-		<td><a onclick=\"gotoStockDetail('".$val['symbol']."');\">".$val['symbol']."</a></td>
+		<td class=\"collapsing\"><i class=\"inverted grey chevron right icon\"></i></td>
+		<td onclick=\"gotoStockDetail('".$val['symbol']."');\"><a>".$val['symbol']."</a></td>
 		<td>".utf8_decode($val['name'])."</td>
 		<td>".$val['type']."</td>
 		<td>".$val['day']."</td>
@@ -232,6 +232,9 @@ if (false) {
 	Dom.addListener(Dom.id('delete_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol='+valof('row_symbol'), loading_area: 'delete_bt', confirmdel: 1 }); });
 	Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
 <? } ?>
+
 	change_wide_menu_state('wide_menu', 'm1_home_bt');
+
 	Sortable.initTable(el("lst_stock"));
+
 </script>
