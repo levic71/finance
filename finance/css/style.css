@@ -12,7 +12,7 @@ td.aaf-negative { color: rgb(247, 95, 90) !important; }
 }
 
 h2 { color: yellowgreen !important; }
-table th { color: burlywood !important; }
+table th { color: burlywood !important; cursor: pointer !important; }
 
 #main {
     margin-top: 0px !important;
@@ -28,6 +28,12 @@ table th { color: burlywood !important; }
 }
 .swiper-pagination {
     bottom: 0px !important;
+}
+.swiper-pagination-bullet {
+    background: #aaa !important;
+}
+.swiper-pagination-bullet-active {
+    background: deepskyblue !important;
 }
 
 .the-datepicker__deselect-button {
@@ -96,6 +102,7 @@ table th { color: burlywood !important; }
 }
 #lst_stock td:nth-child(2) {
     text-align: left;
+    color: deepskyblue;
 }
 #lst_ordres td, #lst_ordres th {
     text-align: center;

@@ -1,6 +1,7 @@
 <?
 
 require_once "sess_context.php";
+include "indicators.php";
 
 session_start();
 
@@ -38,6 +39,8 @@ if ($action == "add") {
         $res = dbc::execSql($req);
 
         cacheData::buildCacheSymbol($symbol, true);
+
+        computeIndicators($symbol, 0);
     }
 }
 
@@ -56,6 +59,7 @@ if ($action == "upt_cache") {
 
         unlink('cache/QUOTE_'.$symbol.'.json');
         cacheData::buildCacheQuote($symbol);
+        computeIndicators($symbol, 1);
 
     } catch (RuntimeException $e) {
         if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
@@ -81,6 +85,9 @@ if ($action == "del") {
 
     if ($row = mysqli_fetch_array($res)) {
         $req = "DELETE FROM stocks WHERE symbol='".$symbol."'";
+        $res = dbc::execSql($req);
+
+        $req = "DELETE FROM indicators WHERE symbol='".$symbol."'";
         $res = dbc::execSql($req);
 
         cacheData::deleteCacheSymbol($symbol);

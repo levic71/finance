@@ -91,12 +91,26 @@ foreach($data["stocks"] as $key => $val) {
 
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
-//	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\" onclick=\"toogle_table('lst_stock_body', '".($x*2+1)."');\">";
+if ($sess_context->isSuperAdmin()) {
 	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\">";
+} else {
+	echo "<tr onclick=\"gotoStockDetail('".$val['symbol']."');\" class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\">";
+}
+	echo "<td class=\"collapsing\"><i class=\"inverted grey chevron right icon\"></i></td>";
+
+if ($sess_context->isSuperAdmin()) {
 	echo "
-		<td class=\"collapsing\"><i class=\"inverted grey chevron right icon\"></i></td>
-		<td onclick=\"gotoStockDetail('".$val['symbol']."');\"><a>".$val['symbol']."</a></td>
+		<td onclick=\"gotoStockDetail('".$val['symbol']."');\">".$val['symbol']."</td>
+		<td onclick=\"gotoStockDetail('".$val['symbol']."');\">".utf8_decode($val['name'])."</td>
+	";
+} else {
+	echo "
+		<td>".$val['symbol']."</td>
 		<td>".utf8_decode($val['name'])."</td>
+	";
+}
+
+	echo "
 		<td>".$val['type']."</td>
 		<td>".$val['day']."</td>
 		<td data-value=\"".$val['price']."\">".sprintf("%.2f", $val['price']).$curr."</td>
@@ -105,6 +119,7 @@ foreach($data["stocks"] as $key => $val) {
 		<td data-value=\"".$val['MM20']."\">".sprintf("%.2f", $val['MM20']).$curr."</td>
 		<td data-value=\"".$val['MM7']."\">".sprintf("%.2f", $val['MM7']).$curr."</td>
 	";
+
 if ($sess_context->isSuperAdmin()) {
 	echo "<td class=\"collapsing\">
 			<div class=\"ui inverted checkbox\">
