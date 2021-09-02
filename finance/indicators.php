@@ -258,6 +258,12 @@ function computeIndicators($filter_symbol, $filter_limited) {
 $force = 0;
 $limited = 0;
 $filter = "";
+$reset = 0;
+
+if ($reset == 1) {
+    $sql = "TRUNCATE TABLE indicators";
+    $res= dbc::execSql($sql);
+}
 
 foreach(['force', 'limited', 'filter'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
