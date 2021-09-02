@@ -17,7 +17,7 @@ foreach(['nb_lignes'] as $key)
 
 if (!is_dir("cache/")) mkdir("cache/");
 
-$logfile = "./finance.log";
+$logfile = "./finance.log"; 
 
 ?>
 
