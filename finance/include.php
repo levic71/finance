@@ -329,7 +329,6 @@ class cacheData {
 
     public static $lst_cache = ["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"];
 
-
     public static function refreshCache($filename, $timeout) {
 
         $update_cache = false;
@@ -554,6 +553,15 @@ class logger {
     public static function warning($function, $symbol, $msg) {
         self::log("WARN", $function, $symbol, $msg);
     }
+
+    public static function purgeLogFile($filename, $size_purge) {
+        $offset = filesize($filename)-$size_purge;        
+        if($offset > 0) {
+            $logsToKeep = file_get_contents($filename, false, NULL, $offset, $size_purge);
+            file_put_contents($filename, $logsToKeep);
+        }
+    }
+
 }
 
 
