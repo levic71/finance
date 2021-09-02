@@ -12,7 +12,7 @@ if (!is_dir("cache/")) mkdir("cache/");
 $db = dbc::connect();
 
 // Purge log file
-logger::purgeLogFile("./finance.log", 0);
+logger::purgeLogFile("./finance.log", 5*1048576);
 
 ?>
 
