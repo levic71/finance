@@ -84,7 +84,7 @@ function computeIndicators($filter_symbol, $filter_limited) {
 
     $offset=filesize($logfile)-5000000;
     if($offset>0){
-        $logsToKeep = file_get_contents($logfile, NULL, NULL, $offset, 5000000);
+        $logsToKeep = file_get_contents($logfile, false, NULL, $offset, 5000000);
         file_put_contents($logfile, $logsToKeep);
     }
     // Parcours des actifs suivis
