@@ -4,6 +4,8 @@ require_once "sess_context.php";
 
 session_start();
 
+// toto
+
 include "common.php";
 
 if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
