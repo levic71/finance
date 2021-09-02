@@ -11,9 +11,6 @@ if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
 
-$filename = "./finance.log";
-echo $filename . ': ' . filesize($filename) . ' bytes';
-
 ?>
 
 <div class="ui container inverted segment">
