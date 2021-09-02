@@ -15,6 +15,6 @@ mdl/index.php
 jorkersdb5*.zip
 .DS_Store
 finance/cache/**
-finance/finance.log
+finance/*.log
 toto/*
 node_modules
