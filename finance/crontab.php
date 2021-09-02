@@ -11,6 +11,9 @@ if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
 
+// Purge log file
+logger::purgeLogFile("./finance.log", 0);
+
 ?>
 
 <div class="ui container inverted segment">
