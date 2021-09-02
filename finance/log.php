@@ -17,10 +17,12 @@ foreach(['nb_lignes'] as $key)
 
 if (!is_dir("cache/")) mkdir("cache/");
 
+$logfile = "./finance.log";
+
 ?>
 
 <div class="ui container inverted segment">
-    <h2>Cron (<?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes)</h2>
+    <h2>Cron (<?= filesize($logfile) ?> bytes)</h2>
     <pre style="width: 100%; height: 500px; overflow: scroll;">
 
 <? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
