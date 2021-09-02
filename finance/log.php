@@ -18,6 +18,7 @@ foreach(['nb_lignes'] as $key)
 if (!is_dir("cache/")) mkdir("cache/");
 
 $logfile = "./finance.log";
+
 ?>
 
 <div class="ui container inverted segment">
