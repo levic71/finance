@@ -5,10 +5,14 @@
 // //////////////////////////////////////////
 
 include "include.php";
+include "indicators.php";
 
 if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
+
+$filename = "./finance.log";
+echo $filename . ': ' . filesize($filename) . ' bytes';
 
 ?>
 
@@ -36,11 +40,19 @@ while($row = mysqli_fetch_array($res)) {
         cacheData::buildCacheSymbol($row['symbol'], true);
     else
         logger::info("CRON", $row['symbol'], "Market close, no update !");
+
+    // Calcul des MMX/RSI/D/W/M
+    $req2 = "SELECT count(*) total FROM indicators WHERE symbol='".$row['symbol']."'";
+    $res2 = dbc::execSql($req2);
+    $row2 = mysqli_fetch_array($res2);
+    $limited = ($row2 && $row2['total'] == 0) ? 0 : 1;
+
+    computeIndicators($row['symbol'], $limited);
 }
 
-// Recuperation de l'historique du mois
-
 // Recuperation de la derniere cotation
+
+// Countdown of alphavantage calls
 
 ?>
     </pre>

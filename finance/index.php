@@ -63,14 +63,14 @@ foreach(['action'] as $key)
 
 			Dom.addListener(Dom.id('m1_sidebar_bt'), Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
 			Dom.addListener(Dom.id('m2_sidebar_bt'), Dom.Event.ON_CLICK, function(event) { rmCN('sidebar_menu', 'visible'); });
-			Dom.addListener(Dom.id('m1_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_home_bt', url: 'home_content.php' }); });
-			Dom.addListener(Dom.id('m2_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_home_bt', url: 'home_content.php' }); });
+			Dom.addListener(Dom.id('m1_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_home_bt', url: 'home_content.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_home_bt', url: 'home_content.php', loading_area: 'main' }); });
 <? if (!$sess_context->isUserConnected()) { ?>
-			Dom.addListener(Dom.id('m1_login_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_login_bt', url: 'login.php' }); });
-			Dom.addListener(Dom.id('m2_login_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_login_bt', url: 'login.php' }); });
+			Dom.addListener(Dom.id('m1_login_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_login_bt', url: 'login.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_login_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_login_bt', url: 'login.php', loading_area: 'main' }); });
 <? } else { ?>
-			Dom.addListener(Dom.id('m1_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_logout_bt', url: 'login_action.php?action=logout' }); });
-			Dom.addListener(Dom.id('m2_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_logout_bt', url: 'login_action.php?action=logout' }); });
+			Dom.addListener(Dom.id('m1_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_logout_bt', url: 'login_action.php?action=logout', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_logout_bt', url: 'login_action.php?action=logout', loading_area: 'main' }); });
 <? } ?>
 			Dom.addListener(Dom.id('footer_contact_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'footer_contact_bt', url: 'contact.php' }); });
 			Dom.addListener(Dom.id('footer_terms_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'footer_terms_bt',   url: 'terms.php' }); });
@@ -79,10 +79,10 @@ foreach(['action'] as $key)
 <? if ($sess_context->isSuperAdmin()) { ?>
 			Dom.addListener(Dom.id('m1_users_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'user', id: 'main', menu: 'm1_users_bt', url: 'user_list.php' }); });
 			Dom.addListener(Dom.id('m2_users_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'user', id: 'main', menu: 'm1_users_bt', url: 'user_list.php' }); });
-			Dom.addListener(Dom.id('m1_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron', id: 'main', menu: 'm1_cron_bt',  url: 'crontab.php' }); });
-			Dom.addListener(Dom.id('m2_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron', id: 'main', menu: 'm2_cron_bt',  url: 'crontab.php' }); });
-			Dom.addListener(Dom.id('m1_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm1_log_bt',   url: 'log.php' }); });
-			Dom.addListener(Dom.id('m2_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm2_log_bt',   url: 'log.php' }); });
+			Dom.addListener(Dom.id('m1_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron', id: 'main', menu: 'm1_cron_bt',  url: 'crontab.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron', id: 'main', menu: 'm2_cron_bt',  url: 'crontab.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m1_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm1_log_bt',   url: 'log.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm2_log_bt',   url: 'log.php', loading_area: 'main' }); });
 <? } ?>
 
 <? if ($action == "status") { ?>
