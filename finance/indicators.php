@@ -78,6 +78,15 @@ function isComputeDoneToday($symbol) {
 }
 
 function computeIndicators($filter_symbol, $filter_limited) {
+
+    // Purge log file
+    $logfile = "./finance.log";
+
+    $offset=filesize($logfile)-5000000;
+    if($offset>0){
+        $logsToKeep = file_get_contents($logfile, false, NULL, $offset, 5000000);
+        file_put_contents($logfile, $logsToKeep);
+    }
     // Parcours des actifs suivis
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$filter_symbol."%\"";
     $res = dbc::execSql($req);
@@ -250,8 +259,6 @@ function computeIndicators($filter_symbol, $filter_limited) {
         }
 
         logger::info("INDS", $row['symbol'], date("Ymd").":".$row['symbol'].":daily=".count($tab_daily_day).":weekly=".count($tab_days_weeks_lastday).":monthly=".count($tab_days_months_lastday));
-
-        logger::info("INDS", $row['symbol'], "END TRT");
     }
 }
 
