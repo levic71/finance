@@ -79,14 +79,6 @@ function isComputeDoneToday($symbol) {
 
 function computeIndicators($filter_symbol, $filter_limited) {
 
-    // Purge log file
-    $logfile = "./finance.log";
-
-    $offset=filesize($logfile)-5000000;
-    if($offset>0){
-        $logsToKeep = file_get_contents($logfile, false, NULL, $offset, 5000000);
-        file_put_contents($logfile, $logsToKeep);
-    }
     // Parcours des actifs suivis
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$filter_symbol."%\"";
     $res = dbc::execSql($req);
