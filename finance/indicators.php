@@ -85,7 +85,7 @@ function computeIndicators($filter_symbol, $filter_limited) {
     while($row = mysqli_fetch_array($res)) {
 
         // Si limited=1 calcul une fois par jour
-        if ($filter_limited == 1 && isComputeDoneToday($row['symbol'])) continue;
+        if (isComputeDoneToday($row['symbol'])) continue;
 
         logger::info("INDS", $row['symbol'], "BEGIN COMPUTE INDICATORS");
 

@@ -308,7 +308,11 @@ class aafinance {
         return self::getData("TIME_SERIES_INTRADAY", "symbol=".$symbol."&".$options);
     }
 
-    public static function getDailyTimeSeriesAdjusted($symbol, $options = "") {    
+    public static function getDailyTimeSeries($symbol, $options = "") {
+        return self::getData("TIME_SERIES_DAILY", "symbol=".$symbol."&".$options);
+    }
+
+    public static function getDailyTimeSeriesAdjusted($symbol, $options = "") {
         return self::getData("TIME_SERIES_DAILY_ADJUSTED", "symbol=".$symbol."&".$options);
     }
 
@@ -503,20 +507,21 @@ class cacheData {
         logger::info("CRON", $symbol, $msg);
     }
 
-    public static function buildCacheSymbol($symbol, $marketopen = false) {
+    public static function buildCacheSymbol($symbol) {
 
         // OVERVIEW
         self::buildCacheOverview($symbol);
 
-        if ($marketopen) {
-            // FULL HISTORIQUE
-            self::buildCacheDailyTimeSeriesAdjusted($symbol, true);
-            // COMPACT HISTORIQUE
-            self::buildCacheDailyTimeSeriesAdjusted($symbol, false);
-            // COTATION
-            self::buildCacheQuote($symbol);
-            // self::buildCacheIntraday($symbol);
-        }
+        // FULL HISTORIQUE
+        self::buildCacheDailyTimeSeriesAdjusted($symbol, true);
+
+        // COMPACT HISTORIQUE
+        self::buildCacheDailyTimeSeriesAdjusted($symbol, false);
+
+        // COTATION
+        self::buildCacheQuote($symbol);
+        // self::buildCacheIntraday($symbol);
+
     }
 
     public static function deleteCacheSymbol($symbol) {

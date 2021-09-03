@@ -38,7 +38,7 @@ if ($action == "add") {
         $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
         $res = dbc::execSql($req);
 
-        cacheData::buildCacheSymbol($symbol, true);
+        cacheData::buildCacheSymbol($symbol);
 
         computeIndicators($symbol, 0);
     }
@@ -59,7 +59,7 @@ if ($action == "upt_cache") {
 
         unlink('cache/QUOTE_'.$symbol.'.json');
         cacheData::buildCacheQuote($symbol);
-        computeIndicators($symbol, 1);
+        computeIndicators($symbol, 0);
 
     } catch (RuntimeException $e) {
         if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
@@ -84,11 +84,11 @@ if ($action == "del") {
     $res = dbc::execSql($req);
 
     if ($row = mysqli_fetch_array($res)) {
-        $req = "DELETE FROM stocks WHERE symbol='".$symbol."'";
-        $res = dbc::execSql($req);
 
-        $req = "DELETE FROM indicators WHERE symbol='".$symbol."'";
-        $res = dbc::execSql($req);
+        foreach(['stocks', 'daily_time_series_adjusted', 'quotes', 'indicators'] as $key) {
+            $req = "DELETE FROM ".$key." WHERE symbol='".$symbol."'";
+            $res = dbc::execSql($req);    
+        }
 
         cacheData::deleteCacheSymbol($symbol);
     }
@@ -104,10 +104,10 @@ if ($action == "del") {
         p.success('Actif <?= $symbol ?> mis à jour');
 	<? } ?>
 	<? if ($action == "del") { ?>
-        p.warm('Actif <?= $symbol ?> supprimé');
+        p.success('Actif <?= $symbol ?> supprimé');
 	<? } ?>
 	<? if ($action == "add") { ?>
         p.success('Actif <?= $symbol ?> ajouté');
 	<? } ?>
-    go({ action: 'home_content', id: 'main', url: 'home_content.php' });
+    /* go({ action: 'home_content', id: 'main', url: 'home_content.php' }); */
 </script>
