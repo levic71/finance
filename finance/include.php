@@ -291,11 +291,12 @@ class aafinance {
         }
 
         if (isset($data['Error Message'])) {
-            logger::error("ERROR", "getData", $url);
+            logger::error("ERROR", "getData", $function.":".$options);
             throw new RuntimeException($data['Error Message'], 1);
         } elseif (isset($data['Note'])) {
             throw new RuntimeException($data['Note'], 2);
         } else {
+            logger::info("ALPHAV", "getData", $function.":".$options);
             return $data;
         }
     }
