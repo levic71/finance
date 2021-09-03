@@ -77,7 +77,7 @@ function isComputeDoneToday($symbol) {
     return count($matches) > 0 ? true : false;
 }
 
-function computeIndicators($filter_symbol, $filter_limited) {
+function computeIndicators($filter_symbol, $filter_limited, $reset = 0) {
 
     // Parcours des actifs suivis
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$filter_symbol."%\"";
@@ -85,7 +85,7 @@ function computeIndicators($filter_symbol, $filter_limited) {
     while($row = mysqli_fetch_array($res)) {
 
         // Si limited=1 calcul une fois par jour
-        if (isComputeDoneToday($row['symbol'])) continue;
+        if ($reset == 0 && isComputeDoneToday($row['symbol'])) continue;
 
         logger::info("INDS", $row['symbol'], "BEGIN COMPUTE INDICATORS");
 
@@ -260,16 +260,19 @@ $limited = 0;
 $filter = "";
 $reset = 0;
 
+foreach(['force', 'limited', 'filter', 'reset'] as $key)
+    $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
+
+
+$db = dbc::connect();
+
 if ($reset == 1) {
     $sql = "TRUNCATE TABLE indicators";
     $res= dbc::execSql($sql);
 }
 
-foreach(['force', 'limited', 'filter'] as $key)
-    $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
-
 if ($force == 1) {
-    $db = dbc::connect();
-    computeIndicators($filter, $limited);
+    computeIndicators($filter, $limited, $reset);
+    echo "Done";
 }
 
