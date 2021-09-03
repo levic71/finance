@@ -37,16 +37,18 @@ while($row = mysqli_fetch_array($res)) {
 
     // Place de marche ouverte ?
     if ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2)
-        cacheData::buildCacheSymbol($row['symbol'], true);
+        cacheData::buildCacheSymbol($row['symbol']);
     else
         logger::info("CRON", $row['symbol'], "Market close, no update !");
 
-    // Calcul des MMX/RSI/D/W/M
-    $req2 = "SELECT count(*) total FROM indicators WHERE symbol='".$row['symbol']."'";
+/*     $req2 = "SELECT count(*) total FROM indicators WHERE symbol='".$row['symbol']."'";
     $res2 = dbc::execSql($req2);
     $row2 = mysqli_fetch_array($res2);
     $limited = ($row2 && $row2['total'] == 0) ? 0 : 1;
+ */
 
+    $limited = 0;
+    // Calcul des MMX/RSI/D/W/M (1 fois par jour => controle dans la fonction)
     computeIndicators($row['symbol'], $limited);
 }
 
