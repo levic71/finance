@@ -54,8 +54,6 @@ while($row = mysqli_fetch_array($res)) {
 
 // Recuperation de la derniere cotation
 
-// Countdown of alphavantage calls
-
 ?>
     </pre>
 </div>
