@@ -291,38 +291,38 @@ class aafinance {
         }
 
         if (isset($data['Error Message'])) {
-            logger::error("ERROR", "getData", $function.":".$options);
+            logger::error("ERROR", "getData", "[".$function."] [".$options."]");
             throw new RuntimeException($data['Error Message'], 1);
         } elseif (isset($data['Note'])) {
             throw new RuntimeException($data['Note'], 2);
         } else {
-            logger::info("ALPHAV", "getData", $function.":".$options);
+            logger::info("ALPHAV", "getData", "[".$function."] [".$options."]");
             return $data;
         }
     }
 
     public static function getOverview($symbol, $options = "") {    
-        return self::getData("OVERVIEW", "symbol=".$symbol."&".$options);
+        return self::getData("OVERVIEW", "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getIntraday($symbol, $options = "") {    
-        return self::getData("TIME_SERIES_INTRADAY", "symbol=".$symbol."&".$options);
+        return self::getData("TIME_SERIES_INTRADAY", "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getDailyTimeSeries($symbol, $options = "") {
-        return self::getData("TIME_SERIES_DAILY", "symbol=".$symbol."&".$options);
+        return self::getData("TIME_SERIES_DAILY", "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getDailyTimeSeriesAdjusted($symbol, $options = "") {
-        return self::getData("TIME_SERIES_DAILY_ADJUSTED", "symbol=".$symbol."&".$options);
+        return self::getData("TIME_SERIES_DAILY_ADJUSTED", "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getQuote($symbol, $options = "") {    
-        return self::getData("GLOBAL_QUOTE", "symbol=".$symbol."&".$options);
+        return self::getData("GLOBAL_QUOTE", "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function searchSymbol($str, $options = "") {    
-        return self::getData("SYMBOL_SEARCH", "keywords=".$str."&".$options);
+        return self::getData("SYMBOL_SEARCH", "keywords=".$str.($options == "" ? "" : "&").$options);
     }
 
 }
@@ -382,16 +382,12 @@ class cacheData {
                 $msg .= "CACHE refresh Ok";
     
             } catch(RuntimeException $e) {
-                $msg = "Runtime Exception ".($e->getCode() == 1 ? "ERROR" : "NOTE");
                 $f = "logger::".($e->getCode() == 1 ? "error" : "info");
-                $f("CRON", $symbol, $e->getMessage());
+                $f("ALPHAV", $symbol, ($e->getCode() == 1 ? "[ERROR] " : "[NOTE] ").$e->getMessage());
             }
         }
-        else {
-            $msg = "[Overview] => No update";
-        }
-    
-        logger::info("CRON", $symbol, $msg);
+        else
+            logger::info("CRON", $symbol, "[Overview] => No update");    
     }
 
     public static function buildCacheIntraday($symbol) {
@@ -420,16 +416,12 @@ class cacheData {
                 $msg .= ", CACHE refresh Ok";
     
             } catch(RuntimeException $e) {
-                $msg = "Runtime Exception ".($e->getCode() == 1 ? "ERROR" : "NOTE");
                 $f = "logger::".($e->getCode() == 1 ? "error" : "info");
-                $f("CRON", $symbol, $e->getMessage());
+                $f("ALPHAV", $symbol, ($e->getCode() == 1 ? "[ERROR] " : "[NOTE] ").$e->getMessage());
             }
         }
-        else {
-            $msg = "[Intraday] => No update";
-        }
-    
-        logger::info("CRON", $symbol, $msg);
+        else
+            logger::info("CRON", $symbol, "[Intraday] => No update");    
     }
 
     public static function buildCacheDailyTimeSeriesAdjusted($symbol, $full = true) {
@@ -460,17 +452,12 @@ class cacheData {
                 $msg .= ", CACHE refresh Ok";
     
             } catch(RuntimeException $e) {
-                $msg = "Runtime Exception ".($e->getCode() == 1 ? "ERROR" : "NOTE");
                 $f = "logger::".($e->getCode() == 1 ? "error" : "info");
-                $f("CRON", $symbol, $e->getMessage());
+                $f("ALPHAV", $symbol, ($e->getCode() == 1 ? "[ERROR] " : "[NOTE] ").$e->getMessage());
             }
         }
-        else {
-            $msg = "[Daily Time Series Adjusted ".($full ? "FULL" : "COMPACT")."] => No update";
-        }
-    
-        logger::info("CRON", $symbol, $msg);
-
+        else
+            logger::info("ALPHAV", $symbol, "[Daily Time Series Adjusted ".($full ? "FULL" : "COMPACT")."] => No update");
     }
 
     public static function buildCacheQuote($symbol) {
@@ -496,16 +483,12 @@ class cacheData {
                 $msg .= ", CACHE refresh Ok";
     
             } catch(RuntimeException $e) {
-                $msg = "Runtime Exception ".($e->getCode() == 1 ? "ERROR" : "NOTE");
                 $f = "logger::".($e->getCode() == 1 ? "error" : "info");
-                $f("CRON", $symbol, $e->getMessage());
+                $f("CRON", $symbol, ($e->getCode() == 1 ? "[ERROR] " : "[NOTE] ").$e->getMessage());
             }
         }
-        else {
-            $msg = "[Quote] => No update";
-        }
-    
-        logger::info("CRON", $symbol, $msg);
+        else
+            logger::info("CRON", $symbol, "[Quote] => No update");
     }
 
     public static function buildCacheSymbol($symbol) {

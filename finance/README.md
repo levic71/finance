@@ -1,8 +1,8 @@
 // TODO
 //
-// Gestion stratégie
-// Gestion connexion
-// Implementation strategie par repartition
+// Done : Gestion stratégie
+// Done : Gestion connexion
+// Done : Implementation strategie par repartition
 // 
 // Croisement MM200 et TR
 // Affichage RSI14 mensuel/weekly/daily
@@ -14,3 +14,4 @@
 // Gestion des portefeuille en base de donnees
 // Mise en cache de la page d'accueil 10' ? (infos strat portefeuille personnalisées + infos actifs globaux )
 // Calcul automatique via cron des MM, RSI, etc par actif
+// Reinjecte les données json en cache
