@@ -22,7 +22,7 @@ $logfile = "./finance.log";
 ?>
 
 <div class="ui container inverted segment">
-    <h2>Cron <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button></h2>
+    <h2>Log <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button></h2>
     <pre style="width: 100%; height: 300px; overflow: scroll;">
 
 <? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
