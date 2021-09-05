@@ -20,16 +20,8 @@ if (!is_dir("cache/")) mkdir("cache/");
 ?>
 
 <div class="ui container inverted segment">
-<<<<<<< HEAD
-    <h2>Cron (<?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes)</h2>
-    <pre style="width: 100%; height: 500px; overflow: scroll;">
-=======
-    <h2>Cron (<?= filesize($logfile) ?> bytes)</h2>
-=======
-    <h2>Cron <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button></h2>
->>>>>>> develop
+    <h2>Log <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button></h2>
     <pre style="width: 100%; height: 300px; overflow: scroll;">
->>>>>>> develop
 
 <? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
 
