@@ -78,7 +78,6 @@ if ($handle)
 <div class="ui container inverted segment">
     <h2> Alphavantage
         <button id="lst_filter1_bt" class="mini ui blue button"><?= count($matches) ?></button>
-        <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_Tentative) ?></button>
         <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_Note) ?></button>
         <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_Error) ?></button>
     </h2>

@@ -8,7 +8,7 @@
 // Affichage RSI14 mensuel/weekly/daily
 //
 // Courbe historique sur detail
-// Recup data form https://marketstack.com
+// Recup data form https://marketstack.com (35e54058aa4630dbf527d55068ccdc04)
 // alerte si gros volume échangé
 // ratio de sharpe
 // Gestion des portefeuille en base de donnees
