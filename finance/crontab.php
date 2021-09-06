@@ -39,7 +39,7 @@ while($row = mysqli_fetch_array($res)) {
     if ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2)
         cacheData::buildCacheSymbol($row['symbol']);
     else
-        logger::info("CRON", $row['symbol'], "[buildCacheSymbol] Market close => No update");
+        logger::info("CRON", $row['symbol'], "[buildCacheSymbol] [Market close] [No update]");
 
 /*     $req2 = "SELECT count(*) total FROM indicators WHERE symbol='".$row['symbol']."'";
     $res2 = dbc::execSql($req2);
