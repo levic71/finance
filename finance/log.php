@@ -47,7 +47,7 @@ if ($handle)
     <h2>Log
         <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button>
         <button id="lst_filter1_bt" class="mini ui green button"><?= count($matches) ?></button>
-        <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_Note) ?></button>
+        <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_Note) + count($matches_Tentative) ?></button>
         <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_Error) ?></button>
     </h2>
     <pre style="width: 100%; height: 300px; overflow: scroll;">
@@ -83,10 +83,10 @@ while($row = mysqli_fetch_array($res)) {
 
 <? 
 
-var_dump($matches);
-var_dump($matches_Tentative);
-var_dump($matches_Note);
-var_dump($matches_Error);
+foreach($matches as $key => $val) echo $val."<br />";
+foreach($matches_Tentative as $key => $val) echo $val."<br />";
+foreach($matches_Note as $key => $val) echo $val."<br />";
+foreach($matches_Error as $key => $val) echo $val."<br />";
 
 ?>
 
