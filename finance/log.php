@@ -83,10 +83,10 @@ while($row = mysqli_fetch_array($res)) {
 
 <? 
 
-foreach($matches as $key => $val) echo $val."<br />";
-foreach($matches_Tentative as $key => $val) echo $val."<br />";
-foreach($matches_Note as $key => $val) echo $val."<br />";
-foreach($matches_Error as $key => $val) echo $val."<br />";
+foreach($matches as $key => $val) echo $val;
+foreach($matches_Tentative as $key => $val) echo $val;
+foreach($matches_Note as $key => $val) echo $val;
+foreach($matches_Error as $key => $val) echo $val;
 
 ?>
 
