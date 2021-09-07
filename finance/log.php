@@ -18,10 +18,9 @@ foreach(['nb_lignes'] as $key)
 if (!is_dir("cache/")) mkdir("cache/");
 
 $searchthis = "ALPHAV";
-$matches = array();
-$matches_Tentative = array();
-$matches_Note = array();
-$matches_Error = array();
+$matches_info = array();
+$matches_warn = array();
+$matches_error = array();
 
 $handle = @fopen("./finance.log", "r");
 if ($handle)
@@ -29,14 +28,12 @@ if ($handle)
     while (!feof($handle))
     {
         $buffer = fgets($handle);
-        if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && !stripos($buffer, "No Update") && !stripos($buffer, "[NOTE]") && !stripos($buffer, "[ERROR]") && !stripos($buffer, "Thank you"))
-            $matches[] = $buffer;
-        if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && !stripos($buffer, "No Update") && !stripos($buffer, "[NOTE]") && !stripos($buffer, "[ERROR]") && stripos($buffer, "Thank you"))
-            $matches_Tentative[] = $buffer;
-        if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && !stripos($buffer, "No Update") && stripos($buffer, "[NOTE]"))
-            $matches_Note[] = $buffer;
-        if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && !stripos($buffer, "No Update") && stripos($buffer, "[ERROR]"))
-            $matches_Error[] = $buffer;
+        if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "[OK]") && stripos($buffer, "INFO") && stripos($buffer, "getData"))
+            $matches_info[] = $buffer;
+        else if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "WARN"))
+            $matches_warn[] = $buffer;
+        else if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "ERROR"))
+            $matches_error[] = $buffer;
     }
     fclose($handle);
 }
@@ -46,9 +43,9 @@ if ($handle)
 <div class="ui container inverted segment">
     <h2>Log
         <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button>
-        <button id="lst_filter1_bt" class="mini ui green button"><?= count($matches) ?></button>
-        <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_Note) + count($matches_Tentative) ?></button>
-        <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_Error) ?></button>
+        <button id="lst_filter1_bt" class="mini ui green button"><?= count($matches_info) ?></button>
+        <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_warn) ?></button>
+        <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_error) ?></button>
     </h2>
     <pre style="width: 100%; height: 300px; overflow: scroll;">
 
@@ -83,10 +80,12 @@ while($row = mysqli_fetch_array($res)) {
 
 <? 
 
-foreach($matches as $key => $val) echo $val;
-foreach($matches_Tentative as $key => $val) echo $val;
-foreach($matches_Note as $key => $val) echo $val;
-foreach($matches_Error as $key => $val) echo $val;
+echo "info : <br />";
+foreach($matches_info as $key => $val) echo $val;
+echo "warn : <br />";
+foreach($matches_warn as $key => $val) echo $val;
+echo "error : <br />";
+foreach($matches_error as $key => $val) echo $val;
 
 ?>
 
