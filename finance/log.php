@@ -17,38 +17,6 @@ foreach(['nb_lignes'] as $key)
 
 if (!is_dir("cache/")) mkdir("cache/");
 
-?>
-
-<div class="ui container inverted segment">
-    <h2>Log <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button></h2>
-    <pre style="width: 100%; height: 300px; overflow: scroll;">
-
-<? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
-
-    </pre>
-</div>
-
-<div class="ui container inverted segment">
-    <h2> User Connexions</h2>
-    <pre style="width: 100%; height: 300px; overflow: scroll;">
-
-<? 
-
-
-$req = "SELECT * FROM connexions ORDER BY datetime DESC LIMIT ".$nb_lignes;
-$res = dbc::execSql($req);
-
-while($row = mysqli_fetch_array($res)) {
-    echo $row['datetime']." | ".sprintf("%-40s", $row['email'])." | ".sprintf("%-64s", $row['ip'])." | ".$row['status']."<br />";
-}
-
-?>
-
-    </pre>
-</div>
-
-<? 
-
 $searchthis = "ALPHAV";
 $matches = array();
 $matches_Tentative = array();
@@ -76,11 +44,41 @@ if ($handle)
 ?>
 
 <div class="ui container inverted segment">
-    <h2> Alphavantage
-        <button id="lst_filter1_bt" class="mini ui blue button"><?= count($matches) ?></button>
+    <h2>Log
+        <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button>
+        <button id="lst_filter1_bt" class="mini ui green button"><?= count($matches) ?></button>
         <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_Note) ?></button>
         <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_Error) ?></button>
     </h2>
+    <pre style="width: 100%; height: 300px; overflow: scroll;">
+
+<? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
+
+    </pre>
+</div>
+
+<div class="ui container inverted segment">
+    <h2> User Connexions</h2>
+    <pre style="width: 100%; height: 300px; overflow: scroll;">
+
+<? 
+
+
+$req = "SELECT * FROM connexions ORDER BY datetime DESC LIMIT ".$nb_lignes;
+$res = dbc::execSql($req);
+
+while($row = mysqli_fetch_array($res)) {
+    echo $row['datetime']." | ".sprintf("%-40s", $row['email'])." | ".sprintf("%-64s", $row['ip'])." | ".$row['status']."<br />";
+}
+
+?>
+
+    </pre>
+</div>
+
+
+<div class="ui container inverted segment">
+    <h2> Alphavantage</h2>
     <pre style="width: 100%; height: 300px; overflow: scroll;">
 
 <? 
