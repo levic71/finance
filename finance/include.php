@@ -5,7 +5,7 @@ ini_set('error_log', './finance.log');
 
 header( 'content-type: text/html; charset=iso-8859-1' );
 
-$dbg = true;
+$dbg = false;
 $dbg_data = false;
 
 // On place la timezone à UTC pour pouvoir gerer les fuseaux horaires des places boursieres

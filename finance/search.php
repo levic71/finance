@@ -1,6 +1,10 @@
 <?
 
-include_once "include.php";
+require_once "sess_context.php";
+
+session_start();
+
+include "common.php";
 
 $search = "";
 
