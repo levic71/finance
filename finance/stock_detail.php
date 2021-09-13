@@ -426,7 +426,7 @@ update_data = function(size) {
     g2_days  = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days,  size);
     g2_rsi14 = getSlicedData2(interval, ref_d_rsi14, ref_w_rsi14, ref_m_rsi14, size);
 
-    return g1_ref_days.length;
+    return g1_days.length;
 }
 
 update_graphe_buttons = function(bt) {
