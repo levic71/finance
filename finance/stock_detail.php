@@ -8,6 +8,7 @@ include "common.php";
 
 $symbol = "";
 $rsi_choice = 0;
+$volume_choice = 1;
 $display_date_rsi = false; // Affiche les dates dans le graphe RSI
 
 foreach(['symbol'] as $key)
@@ -15,10 +16,16 @@ foreach(['symbol'] as $key)
 
 // Affichage par defaut des MMX
 $mmx = 8;
+// Couleurs boutons
+$bt_interval_colr = "green"; // D/W/M
+$bt_period_colr   = "blue";  // ALL/3Y/1Y/1T
+$bt_mmx_colr      = "purple";
+$bt_volume_colr   = "yellow";
+$bt_grey_colr     = "grey";
 
 $db = dbc::connect();
 
-$req = "SELECT * FROM stocks s, quotes q WHERE s.symbol = q.symbol AND s.symbol='".$symbol."'";
+$req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.symbol='".$symbol."'";
 $res = dbc::execSql($req);
 
 if ($row = mysqli_fetch_array($res)) {
@@ -50,8 +57,8 @@ if ($row = mysqli_fetch_array($res)) {
                 <td data-label=\"Région\">".$row['region']."</td>
                 <td data-label=\"Marché\">".$row['marketopen']."-".$row['marketclose']."</td>
                 <td data-label=\"TZ\">".$row['timezone']."</td>
-                <td data-label=\"Dernière Cotation\">".$row['day']."</td>
-                <td data-label=\"Prix\">".sprintf("%.2f", $row['price']).$curr."</td>
+                <td data-label=\"Dernière Cotation\">".($row['day'] == "" ? "N/A" : $row['day'])."</td>
+                <td data-label=\"Prix\">".($row['price'] == "" ? "N/A" : sprintf("%.2f", $row['price']).$curr)."</td>
                 <td data-label=\"DM flottant\">".$c['MMFDM']."%</td>
                 <td data-label=\"DM TKL\">".$c['MMZDM']."%</td>
                 <td data-label=\"M200\">".sprintf("%.2f", $c['MM200']).$curr."</td>
@@ -74,11 +81,11 @@ function getTimeSeriesData($table_name, $period, $sym) {
 
     $req = "SELECT * FROM ".$table_name." dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='".$period."' AND dtsa.symbol='".$sym."' ORDER BY dtsa.day ASC";
     $res = dbc::execSql($req);
-    
     $t_rows = array();
-    $t_cols = array();
-    while ($row = mysqli_fetch_array($res)) {
+    $t_colrs = array();
+    while ($row = mysqli_fetch_assoc($res)) {
         $t_rows[] = $row;
+        // On ne prend le adjusted_close car le adjusted_open n'existe pas
         $t_colrs[] = $row['close'] >= $row['open'] ? 1 : 0;
     }
 
@@ -94,20 +101,18 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
 
 <div id="canvas_area" class="ui container inverted segment">
     <span>
-        <button id="graphe_D_bt"    class="mini ui <?= $rsi_choice == 0  ? "blue" : "grey" ?> button">Daily</button>
-        <button id="graphe_W_bt"    class="mini ui <?= $rsi_choice == 1  ? "blue" : "grey" ?> button">Weekly</button>
-        <button id="graphe_M_bt"    class="mini ui <?= $rsi_choice == 2  ? "blue" : "grey" ?> button">Monthly</button>
-        <button class="mini ui grey button"><i id="graphe_L_bt_icon" style="margin-left: 5px;" class="icon inverted block layout"></i></button>
-        <!-- <button id="graphe_L_bt"    class="mini ui <?= $rsi_choice == 2  ? "blue" : "grey" ?> button"><i id="graphe_L_bt_icon" style="margin-left: 5px;" class="icon inverted unlink"></i></button> -->
-        <button id="graphe_all_bt"   class="mini ui blue button">All</button>
-        <button id="graphe_3Y_bt"    class="mini ui grey button">3Y</button>
-        <button id="graphe_1Y_bt"    class="mini ui grey button">1Y</button>
-        <button id="graphe_1T_bt"    class="mini ui grey button">1T</button>
-        <button class="mini ui grey button"><i id="graphe_L_bt_icon" style="margin-left: 5px;" class="icon inverted block layout"></i></button>
-        <button id="graphe_mm7_bt"   class="mini ui <?= ($mmx & 1) == 1 ? "purple" : "grey" ?> button">MM7</button>
-        <button id="graphe_mm20_bt"  class="mini ui <?= ($mmx & 2) == 2 ? "purple" : "grey" ?> button">MM20</button>
-        <button id="graphe_mm50_bt"  class="mini ui <?= ($mmx & 4) == 4 ? "purple" : "grey" ?> button">MM50</button>
-        <button id="graphe_mm200_bt" class="mini ui <?= ($mmx & 8) == 8 ? "purple" : "grey" ?> button">MM200</button>
+        <button id="graphe_D_bt"    class="mini ui <?= $rsi_choice == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">Daily</button>
+        <button id="graphe_W_bt"    class="mini ui <?= $rsi_choice == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">Weekly</button>
+        <button id="graphe_M_bt"    class="mini ui <?= $rsi_choice == 2  ? $bt_interval_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">Monthly</button>
+        <button id="graphe_all_bt"   class="mini ui <?= $bt_period_colr ?> button">All</button>
+        <button id="graphe_3Y_bt"    class="mini ui <?= $bt_grey_colr ?> button">3Y</button>
+        <button id="graphe_1Y_bt"    class="mini ui <?= $bt_grey_colr ?> button">1Y</button>
+        <button id="graphe_1T_bt"    class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;">1T</button>
+        <button id="graphe_mm7_bt"    class="mini ui <?= ($mmx & 1) == 1 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM7</button>
+        <button id="graphe_mm20_bt"   class="mini ui <?= ($mmx & 2) == 2 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM20</button>
+        <button id="graphe_mm50_bt"   class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM50</button>
+        <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">MM200</button>
+        <button id="graphe_volume_bt" class="mini ui <?= $volume_choice == 1  ? $bt_volume_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
     </span>
     <canvas id="stock_canvas1" height="100"></canvas>
     <canvas id="stock_canvas2" height="20"></canvas>
@@ -124,12 +129,12 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
                 <table id="detail2_stock" class="ui selectable inverted single line table">
                     <tbody>
                     <?  echo '
-                            <tr><td>Ref date MMZ1M</td><td>'.$c["MMZ1MDate"].'</td></tr>
-                            <tr><td>Ref date MMZ3M</td><td>'.$c["MMZ3MDate"].'</td></tr>
-                            <tr><td>Ref date MMZ6M</td><td>'.$c["MMZ6MDate"].'</td></tr>
+                            <tr><td>Ref date MMZ1M</td><td>'.(isset($c["MMZ1MDate"]) ? $c["MMZ1MDate"] : "N/A").'</td></tr>
+                            <tr><td>Ref date MMZ3M</td><td>'.(isset($c["MMZ3MDate"]) ? $c["MMZ3MDate"] : "N/A").'</td></tr>
+                            <tr><td>Ref date MMZ6M</td><td>'.(isset($c["MMZ6MDate"]) ? $c["MMZ6MDate"] : "N/A").'</td></tr>
                             <tr><td>PEA</td><td>
                                 <div class="ui fitted toggle checkbox">
-                                    <input id="f_pea" type="checkbox" '.($row["pea"] == 1 ? 'checked="checked"' : '').'>
+                                    <input id="f_pea" type="checkbox" '.(isset($row["pea"]) && $row["pea"] == 1 ? 'checked="checked"' : '').'>
                                     <label></label>
                                 </div>
                             </td></tr>
@@ -174,15 +179,19 @@ var interval_period_days = {
 
 var mmx_colors = {
     'MM7'   : '<?= $sess_context->getSpectreColor(4) ?>',
-    'MM20'  :  '<?= $sess_context->getSpectreColor(2) ?>',
-    'MM50'  :  '<?= $sess_context->getSpectreColor(1) ?>',
+    'MM20'  : '<?= $sess_context->getSpectreColor(2) ?>',
+    'MM50'  : '<?= $sess_context->getSpectreColor(1) ?>',
     'MM200' : '<?= $sess_context->getSpectreColor(6) ?>'
 };
 
 
 min_slice = function(tab, size) { return (tab.length-size-1) > 0 ? (tab.length-size-1) : 0; }
 max_slice = function(tab) { return tab.length-1 > 0 ? tab.length-1 : 0; }
-get_slice = function(tab, size) { return tab.slice(min_slice(tab, size), max_slice(tab));}
+getSlicedData = function(tab, size) { return size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));}
+getSlicedData2 = function(interval, t_d, t_w, t_m, size) {
+    tab = interval == 'D' ? t_d : (interval == 'W' ? t_w : t_m);
+    return size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));
+}
 
 newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill) {
     
@@ -203,15 +212,15 @@ newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill) {
 }
 
 getDatasetVals  = function(vals) { return newDataset(vals, 'line', 'y1', 'Cours',  '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>', true); }
-getDatasetVols  = function(vals, cols) { return newDataset(vals, 'bar',  'y2', 'Volume', cols, cols, true); }
-getDatasetMMX   = function(vals, l, c) { return newDataset(vals, 'line', 'y1', l, c, '', false); }
+getDatasetVols  = function(vals, l, c) { return newDataset(vals, 'bar',  'y2', l, c, c, true); }
+getDatasetMMX   = function(vals, l) { return newDataset(vals, 'line', 'y1', l, mmx_colors[l], '', false); }
 getDatasetRSI14 = function(vals) { return newDataset(vals, 'line', 'y', "RSI14", 'violet', '', false); }
 
 var graphe_size_days = 0;
 
 // Ref Daily data
 var ref_d_days = [<?= '"'.implode('","', array_column($data_daily["rows"], "day")).'"' ?>];
-var ref_d_vals   = [<?= implode(',', array_column($data_daily["rows"], "close"))  ?>];
+var ref_d_vals   = [<?= implode(',', array_column($data_daily["rows"], "adjusted_close"))  ?>];
 var ref_d_vols   = [<?= implode(',', array_column($data_daily["rows"], "volume")) ?>];
 var ref_d_mm7    = [<?= implode(',', array_column($data_daily["rows"], "MM7"))    ?>];
 var ref_d_mm20   = [<?= implode(',', array_column($data_daily["rows"], "MM20"))   ?>];
@@ -222,7 +231,7 @@ var ref_d_colors = [<?= '"'.implode('","', $data_daily["colrs"]).'"' ?>];
 
 // Ref Weekly Data
 var ref_w_days   = [<?= '"'.implode('","', array_column($data_weekly["rows"], "day")).'"' ?>];
-var ref_w_vals   = [<?= implode(',', array_column($data_weekly["rows"], "close"))  ?>];
+var ref_w_vals   = [<?= implode(',', array_column($data_weekly["rows"], "close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
 var ref_w_vols   = [<?= implode(',', array_column($data_weekly["rows"], "volume")) ?>];
 var ref_w_mm7    = [<?= implode(',', array_column($data_weekly["rows"], "MM7"))    ?>];
 var ref_w_mm20   = [<?= implode(',', array_column($data_weekly["rows"], "MM20"))   ?>];
@@ -232,7 +241,7 @@ var ref_w_rsi14  = [<?= implode(',', array_column($data_weekly["rows"], "RSI14")
 
 // Ref Monthly Data
 var ref_m_days   = [<?= '"'.implode('","', array_column($data_monthly["rows"], "day")).'"' ?>];
-var ref_m_vals   = [<?= implode(',', array_column($data_monthly["rows"], "close"))  ?>];
+var ref_m_vals   = [<?= implode(',', array_column($data_monthly["rows"], "close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
 var ref_m_vols   = [<?= implode(',', array_column($data_monthly["rows"], "volume")) ?>];
 var ref_m_mm7    = [<?= implode(',', array_column($data_monthly["rows"], "MM7"))    ?>];
 var ref_m_mm20   = [<?= implode(',', array_column($data_monthly["rows"], "MM20"))   ?>];
@@ -376,60 +385,61 @@ getMMXData = function(label) {
 }
 
 toogleMMX = function(chart, label) {
+    ref_colr = label.toLowerCase() == "volume" ? "<?= $bt_volume_colr ?>" : "<?= $bt_mmx_colr ?>";
     bt = 'graphe_'+label.toLowerCase()+'_bt'
     addCN(bt, 'loading');
-    if (isCN(bt, 'purple')) {
+    if (isCN(bt, ref_colr)) {
         chart.data.datasets.forEach((dataset) => {
             if (dataset.label == label) dataset.data=null;
         });
     } else {
-        dta = getMMXData(label);
-        chart.data.datasets.push(newDataset(dta, 'line', 'y1', label, mmx_colors[label], '', false));
+        if (label.toLowerCase() == "volume")
+            chart.data.datasets.push(getDatasetVols(g1_vols, 'VOLUME', g1_colors));
+        else
+            chart.data.datasets.push(getDatasetMMX(getMMXData(label), label));
     }
     chart.update();
     rmCN(bt, 'loading');
-    switchCN(bt, 'grey', 'purple');
+    switchCN(bt, '<?= $bt_grey_colr ?>', ref_colr);
 }
 
-getIntervalStatus = function() { return isCN('graphe_D_bt', 'blue') ? 'D' : (isCN('graphe_W_bt', 'blue') ? 'W' : 'M'); }
-getPeriodStatus   = function() { return isCN('graphe_all_bt', 'blue') ? "ALL" : (isCN('graphe_3Y_bt', 'blue') ? "3Y" : (isCN('graphe_1Y_bt', 'blue') ? "1Y" : "1T")); }
+getIntervalStatus = function() { return isCN('graphe_D_bt', '<?= $bt_interval_colr ?>') ? 'D' : (isCN('graphe_W_bt', '<?= $bt_interval_colr ?>') ? 'W' : 'M'); }
+getPeriodStatus   = function() { return isCN('graphe_all_bt', '<?= $bt_period_colr ?>') ? "ALL" : (isCN('graphe_3Y_bt', '<?= $bt_period_colr ?>') ? "3Y" : (isCN('graphe_1Y_bt', '<?= $bt_period_colr ?>') ? "1Y" : "1T")); }
 
 update_data = function(size) {
 
     interval = getIntervalStatus();
 
-    g1_ref_days = interval == 'D' ? ref_d_days : (interval == 'W' ? ref_w_days : ref_m_days);
-    g1_ref_vals = interval == 'D' ? ref_d_vals : (interval == 'W' ? ref_w_vals : ref_m_vals);
-    g1_ref_vols = interval == 'D' ? ref_d_vols : (interval == 'W' ? ref_w_vols : ref_m_vols);
-
-    g2_ref_days  = interval == 'D' ? ref_d_days  : (interval == 'W' ? ref_w_days  : ref_m_days);
-    g2_ref_rsi14 = interval == 'D' ? ref_d_rsi14 : (interval == 'W' ? ref_w_rsi14 : ref_m_rsi14);
-
     // Graphe 1
-    g1_days   = size == 0 ? g1_ref_days   : get_slice(g1_ref_days, size);
-    g1_vals   = size == 0 ? g1_ref_vals   : get_slice(g1_ref_vals, size);
-    g1_vols   = size == 0 ? g1_ref_vols   : get_slice(g1_ref_vols, size);
+    g1_days   = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
+    g1_vals   = getSlicedData2(interval, ref_d_vals, ref_w_vals, ref_m_vals, size);
+    g1_vols   = getSlicedData2(interval, ref_d_vols, ref_w_vols, ref_m_vols, size);
 
-    g1_mm7    = size == 0 ? ref_d_mm7    : get_slice(ref_d_mm7,  size);
-    g1_mm20   = size == 0 ? ref_d_mm20   : get_slice(ref_d_mm20, size);
-    g1_mm50   = size == 0 ? ref_d_mm50   : get_slice(ref_d_mm50, size);
-    g1_mm200  = size == 0 ? ref_d_mm50   : get_slice(ref_d_mm200, size);
-
-    g1_colors = size == 0 ? ref_d_colors : get_slice(ref_d_colors, size);
+    g1_mm7    = getSlicedData2(interval, ref_d_mm7,   ref_w_mm7,   ref_m_mm7,   size);
+    g1_mm20   = getSlicedData2(interval, ref_d_mm20,  ref_w_mm20,  ref_m_mm20,  size);
+    g1_mm50   = getSlicedData2(interval, ref_d_mm50,  ref_w_mm50,  ref_m_mm50,  size);
+    g1_mm200  = getSlicedData2(interval, ref_d_mm200, ref_w_mm200, ref_m_mm200, size);
+    
+    g1_colors = getSlicedData2(interval, ref_d_colors, ref_d_colors, ref_d_colors, size); // Couleurs peut etre a revoir !!!!
 
     // Graphe 2
-    g2_days  = size == 0 ? g2_ref_days  : get_slice(g2_ref_days,  size);
-    g2_rsi14 = size == 0 ? g2_ref_rsi14 : get_slice(g2_ref_rsi14, size);
+    g2_days  = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days,  size);
+    g2_rsi14 = getSlicedData2(interval, ref_d_rsi14, ref_w_rsi14, ref_m_rsi14, size);
 
     return g1_ref_days.length;
 }
 
-update_graphe_buttons = function(bt, c1, c2) {
+update_graphe_buttons = function(bt) {
+    c2 = '<?= $bt_grey_colr ?>';
     addCN(bt, 'loading');
-    if (bt == 'graphe_1T_bt' || bt == 'graphe_1Y_bt' || bt == 'graphe_3Y_bt' || bt == 'graphe_all_bt')
-        ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt'].forEach((bt) => { replaceCN(bt, c2, c1); });
-    if (bt == 'graphe_D_bt' || bt == 'graphe_W_bt' || bt == 'graphe_M_bt')
-        ['graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((bt) => { replaceCN(bt, c2, c1); });
+    if (bt == 'graphe_1T_bt' || bt == 'graphe_1Y_bt' || bt == 'graphe_3Y_bt' || bt == 'graphe_all_bt') {
+        c1 = '<?= $bt_period_colr ?>';
+        ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt'].forEach((bt) => { replaceCN(bt, c1, c2); });
+    }
+    if (bt == 'graphe_D_bt' || bt == 'graphe_W_bt' || bt == 'graphe_M_bt') {
+        c1 = '<?= $bt_interval_colr ?>';
+        ['graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((bt) => { replaceCN(bt, c1, c2); });
+    }
     switchCN(bt, c1, c2);
 }
 
@@ -441,10 +451,10 @@ update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
     return c;
 }
 
-update_all_charts = function(bt, c1, c2) {    
+update_all_charts = function(bt) {    
 
     // Ajustement des buttons
-    update_graphe_buttons(bt, c1, c2);
+    update_graphe_buttons(bt);
 
     // Ajustement des données
     var nb_items = update_data(interval_period_days[getIntervalStatus()][getPeriodStatus()]);
@@ -452,11 +462,11 @@ update_all_charts = function(bt, c1, c2) {
     // Update Chart 1
     var datasets1 = [];
     datasets1.push(getDatasetVals(g1_vals));
-    if (isCN('graphe_mm7_bt',   'purple')) datasets1.push(getDatasetMMX(g1_mm7,   'MM7',   '<?= $sess_context->getSpectreColor(4) ?>'));
-    if (isCN('graphe_mm20_bt',  'purple')) datasets1.push(getDatasetMMX(g1_mm20,  'MM20',  '<?= $sess_context->getSpectreColor(2) ?>'));
-    if (isCN('graphe_mm50_bt',  'purple')) datasets1.push(getDatasetMMX(g1_mm50,  'MM50',  '<?= $sess_context->getSpectreColor(1) ?>'));
-    if (isCN('graphe_mm200_bt', 'purple')) datasets1.push(getDatasetMMX(g1_mm200, 'MM200', '<?= $sess_context->getSpectreColor(6) ?>'));
-    datasets1.push(getDatasetVols(g1_vols, g1_colors));
+    if (isCN('graphe_mm7_bt',   '<?= $bt_mmx_colr ?>'))  datasets1.push(getDatasetMMX(g1_mm7,   'MM7'));
+    if (isCN('graphe_mm20_bt',  '<?= $bt_mmx_colr ?>'))  datasets1.push(getDatasetMMX(g1_mm20,  'MM20'));
+    if (isCN('graphe_mm50_bt',  '<?= $bt_mmx_colr ?>'))  datasets1.push(getDatasetMMX(g1_mm50,  'MM50'));
+    if (isCN('graphe_mm200_bt', '<?= $bt_mmx_colr ?>'))  datasets1.push(getDatasetMMX(g1_mm200, 'MM200'));
+    if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g1_vols, 'VOLUME', g1_colors));
     myChart1 = update_graph_chart(myChart1, ctx1, options1, g1_days, datasets1, [{}]);
 
     // Update Chart 2
@@ -468,7 +478,7 @@ update_all_charts = function(bt, c1, c2) {
 }
 
 // Initialisation des graphes
-update_all_charts('graphe_all_bt', 'grey', 'blue');
+update_all_charts('graphe_all_bt');
 
 var p = loadPrompt();
 
@@ -476,19 +486,20 @@ var p = loadPrompt();
 Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
 <? } ?>
 
-Dom.addListener(Dom.id('graphe_mm7_bt'),   Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM7');   });
-Dom.addListener(Dom.id('graphe_mm20_bt'),  Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM20');  });
-Dom.addListener(Dom.id('graphe_mm50_bt'),  Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM50');  });
-Dom.addListener(Dom.id('graphe_mm200_bt'), Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM200'); });
+Dom.addListener(Dom.id('graphe_mm7_bt'),    Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM7');   });
+Dom.addListener(Dom.id('graphe_mm20_bt'),   Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM20');  });
+Dom.addListener(Dom.id('graphe_mm50_bt'),   Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM50');  });
+Dom.addListener(Dom.id('graphe_mm200_bt'),  Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM200'); });
+Dom.addListener(Dom.id('graphe_volume_bt'), Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'VOLUME'); });
 
-Dom.addListener(Dom.id('graphe_all_bt'), Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_all_bt', 'grey', 'blue'); });
-Dom.addListener(Dom.id('graphe_3Y_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_3Y_bt',  'grey', 'blue'); });
-Dom.addListener(Dom.id('graphe_1Y_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_1Y_bt',  'grey', 'blue'); });
-Dom.addListener(Dom.id('graphe_1T_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_1T_bt',  'grey', 'blue'); });
+Dom.addListener(Dom.id('graphe_all_bt'), Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_all_bt'); });
+Dom.addListener(Dom.id('graphe_3Y_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_3Y_bt'); });
+Dom.addListener(Dom.id('graphe_1Y_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_1Y_bt'); });
+Dom.addListener(Dom.id('graphe_1T_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_1T_bt'); });
 
-Dom.addListener(Dom.id('graphe_D_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_D_bt', 'grey', 'blue'); });
-Dom.addListener(Dom.id('graphe_W_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_W_bt', 'grey', 'blue'); });
-Dom.addListener(Dom.id('graphe_M_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_M_bt', 'grey', 'blue'); });
+Dom.addListener(Dom.id('graphe_D_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_D_bt'); });
+Dom.addListener(Dom.id('graphe_W_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_W_bt'); });
+Dom.addListener(Dom.id('graphe_M_bt'),  Dom.Event.ON_CLICK, function(event) { update_all_charts('graphe_M_bt'); });
 /* Dom.addListener(Dom.id('graphe_L_bt'),  Dom.Event.ON_CLICK, function(event) {
     if (isCN('graphe_L_bt', 'grey'))
         p.error('Les graphes sont liés (pas encore implémenté)');

@@ -112,8 +112,8 @@ if ($sess_context->isSuperAdmin()) {
 
 	echo "
 		<td>".$val['type']."</td>
-		<td>".$val['day']."</td>
-		<td data-value=\"".$val['price']."\">".sprintf("%.2f", $val['price']).$curr."</td>
+		<td>".($val['day'] == NULL ? "N/A" : $val['day'])."</td>
+		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td data-value=\"".$val['MMZDM']."\">".sprintf("%.2f", $val['MMZDM'])."%</td>
 		<td data-value=\"".$val['MM200']."\">".sprintf("%.2f", $val['MM200']).$curr."</td>
 		<td data-value=\"".$val['MM20']."\">".sprintf("%.2f", $val['MM20']).$curr."</td>

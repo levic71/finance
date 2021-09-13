@@ -104,16 +104,16 @@ class calc {
 
         $ret = "0";
 
-        $req = "SELECT close FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day='".$day."'";
+        $req = "SELECT adjusted_close FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day='".$day."'";
         $res = dbc::execSql($req);
         if ($row = mysqli_fetch_array($res))
-            $ret = $row['close'];
+            $ret = $row['adjusted_close'];
         else {
             // On essaie de trouver la derniere quotation
-            $req2 = "SELECT close FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day < '".$day."' ORDER BY day DESC LIMIT 1";
+            $req2 = "SELECT adjusted_close FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day < '".$day."' ORDER BY day DESC LIMIT 1";
             $res2 = dbc::execSql($req2);
             if ($row2 = mysqli_fetch_array($res2))
-                $ret = $row2['close'];
+                $ret = $row2['adjusted_close'];
         }
 
         return floatval($ret);
@@ -167,9 +167,12 @@ class calc {
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res)) {
 
+            // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
+            $close_value = is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
+
             // Valeurs de reference
             if ($i == 0) {
-                $ref_TJ0 = floatval($row['close']);
+                $ref_TJ0 = floatval($close_value);
                 $ref_DAY = $row['day'];
                 $ref_DJ0 = intval(explode("-", $ref_DAY)[2]);
                 $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
@@ -198,30 +201,30 @@ class calc {
             }
 
             // Récupration cotation en mois flottant
-            if ($i == 22)  $ref_T1M = floatval($row['close']); // 22j ouvrés par mois en moy
-            if ($i == 66)  $ref_T3M = floatval($row['close']);
-            if ($i == 132) $ref_T6M = floatval($row['close']);
+            if ($i == 22)  $ref_T1M = floatval($close_value); // 22j ouvrés par mois en moy
+            if ($i == 66)  $ref_T3M = floatval($close_value);
+            if ($i == 132) $ref_T6M = floatval($close_value);
 
             // MM200, MM20, MM7
-            if ($i < 7)   $sum_MM7   += floatval($row['close']);
-            if ($i < 20)  $sum_MM20  += floatval($row['close']);
-            if ($i < 200) $sum_MM200 += floatval($row['close']);
+            if ($i < 7)   $sum_MM7   += floatval($close_value);
+            if ($i < 20)  $sum_MM20  += floatval($close_value);
+            if ($i < 200) $sum_MM200 += floatval($close_value);
 
             // Recuperation cotation en fin de mois fixe (le mois en cours pouvant etre non terminé)
             if ($ref2_T1M == 0 && substr($row['day'], 0, 7) == substr($ref_D1M, 0, 7)) {
-                $ref2_T1M = $row['close'];
+                $ref2_T1M = $close_value;
                 $ret['MMZ1MDate'] = $row['day'];
             }
             if ($ref2_T3M == 0 && substr($row['day'], 0, 7) == substr($ref_D3M, 0, 7)) {
-                $ref2_T3M = $row['close'];
+                $ref2_T3M = $close_value;
                 $ret['MMZ3MDate'] = $row['day'];
             }
             if ($ref2_T6M == 0 && substr($row['day'], 0, 7) == substr($ref_D6M, 0, 7)) {
-                $ref2_T6M = $row['close'];
+                $ref2_T6M = $close_value;
                 $ret['MMZ6MDate'] = $row['day'];
             }
 
-            if ($dbg_data) echo $row['day']." ".$row['symbol']." ".$row['close']."<br />";
+            if ($dbg_data) echo $row['day']." ".$row['symbol']." ".$close_value."<br />";
 
             $i++;
         }
@@ -256,10 +259,12 @@ class calc {
         $ret["day"] = $last_day;
 
         $only = $lst_symbol == "ALL" ? "" : "AND s.symbol IN (".$lst_symbol.")";
+        $only = $lst_symbol == "ALL" ? "" : "WHERE s.symbol IN (".$lst_symbol.")";
 
         $req = "SELECT * FROM stocks s, quotes q WHERE s.symbol = q.symbol ".$only." ORDER BY s.symbol";
+        $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ".$only." ORDER BY s.symbol";
         $res = dbc::execSql($req);
-        while($row = mysqli_fetch_array($res)) {
+        while($row = mysqli_fetch_assoc($res)) {
             $symbol = $row['symbol'];
             $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $last_day));
             // On isole les perfs pour pouvoir trier par performance decroissante
@@ -434,7 +439,7 @@ class cacheData {
                 $msg = "[Daily Time Series Adjusted ".($full ? "FULL" : "COMPACT")."] => Update DB NOk";
                 if (isset($data["Time Series (Daily)"])) {
                     foreach($data["Time Series (Daily)"] as $key => $val) {
-                        $update = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, ajusted_close, volume, dividend, split_coef) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."', '".$val['8. split coefficient']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', ajusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."', split_coef='".$val['8. split coefficient']."'";
+                        $update = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."', '".$val['8. split coefficient']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."', split_coef='".$val['8. split coefficient']."'";
                         $res2 = dbc::execSql($update);
                     }
                     $msg = "[Daily Time Series Adjusted ".($full ? "FULL" : "COMPACT")."] => Update DB Ok";

@@ -28,7 +28,10 @@ include "TALib/Core/MomentumIndicators.php";
 
 use LupeCode\phpTraderNative\TraderFriendly;
 
-function cumulTabVal($tab, $key, $val) { return isset($tab[$key]) ? $tab[$key] + $val : $val; }
+function cumulTabVal($tab, $key, $val) {
+    if (!is_numeric($val)) var_dump(debug_backtrace());
+    return isset($tab[$key]) ? $tab[$key] + $val : $val;
+}
 function currentnext(&$t) { $res = current($t); next($t); return $res; }
 function fullFillArray($t1, $t2) {
     // On complete le tableau avec la premiere valeur du tableau
@@ -117,9 +120,12 @@ function computeIndicators($filter_symbol, $filter_limited, $reset = 0) {
 
         while($row2 = mysqli_fetch_array($res2)) {
 
-            $tab_daily_close_by_day[$row2['day']] = $row2['close'];
+            // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
+            $close_value = isset($row2['adjusted_close']) && is_numeric($row2['adjusted_close']) ? $row2['adjusted_close'] : $row2['close'];
 
-            $tab_daily_close[] = $row2['close'];
+            $tab_daily_close_by_day[$row2['day']] = $close_value;
+            $tab_daily_close[] = $close_value;
+
             $tab_daily_day[]   = $row2['day'];
 
             $week  = date("Y-W", strtotime($row2['day']));
@@ -130,12 +136,12 @@ function computeIndicators($filter_symbol, $filter_limited, $reset = 0) {
             $tab_weekly_open[$week]    = cumulTabVal($tab_weekly_open,   $week,  $row2['open']);
             $tab_weekly_high[$week]    = cumulTabVal($tab_weekly_high,   $week,  $row2['high']);
             $tab_weekly_low[$week]     = cumulTabVal($tab_weekly_low,    $week,  $row2['low']);
-            $tab_weekly_close[$week]   = cumulTabVal($tab_weekly_close,  $week,  $row2['close']);
+            $tab_weekly_close[$week]   = cumulTabVal($tab_weekly_close,  $week,  $close_value);
             $tab_monthly_vol[$month]   = cumulTabVal($tab_monthly_vol,   $month, $row2['volume']);
             $tab_monthly_open[$month]  = cumulTabVal($tab_monthly_open,  $month, $row2['open']);
             $tab_monthly_high[$month]  = cumulTabVal($tab_monthly_high,  $month, $row2['high']);
             $tab_monthly_low[$month]   = cumulTabVal($tab_monthly_low,   $month, $row2['low']);
-            $tab_monthly_close[$month] = cumulTabVal($tab_monthly_close, $month, $row2['close']);
+            $tab_monthly_close[$month] = cumulTabVal($tab_monthly_close, $month, $close_value);
 
             // On compte le nb de jours par week/month
             $tab_days_weeks_counter[$week]   = isset($tab_days_weeks_counter[$week])   ? $tab_days_weeks_counter[$week] + 1   : 1;
@@ -262,7 +268,6 @@ $reset = 0;
 
 foreach(['force', 'limited', 'filter', 'reset'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
-
 
 $db = dbc::connect();
 
