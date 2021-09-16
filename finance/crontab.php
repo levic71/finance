@@ -6,6 +6,10 @@
 
 include "include.php";
 include "indicators.php";
+include "googlesheet/sheet.php";
+
+// Overwrite include value
+$dbg = true;
 
 if (!is_dir("cache/")) mkdir("cache/");
 
@@ -13,6 +17,9 @@ $db = dbc::connect();
 
 // Purge log file
 logger::purgeLogFile("./finance.log", 5*1048576);
+
+// Mise à jour des valeurs de cotations dans Google Sheet
+$values = updateGoogleSheet();
 
 ?>
 
@@ -36,10 +43,12 @@ while($row = mysqli_fetch_array($res)) {
     $dateTimestamp2 = strtotime(date("Y-m-d ".$row['marketclose']));
 
     // Place de marche ouverte ?
-    if ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2)
-        cacheData::buildCacheSymbol($row['symbol']);
+    if (tools::isLocalHost() || ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2)) {
+        cacheData::buildAllsCachesSymbol($row['symbol']);
+        if (isset($values[$row['symbol']])) echo updateQuotesWithGSData($values[$row['symbol']]);
+    }
     else
-        logger::info("CRON", $row['symbol'], "[buildCacheSymbol] [Market close] [No update]");
+        logger::info("CRON", $row['symbol'], "[buildAllsCachesSymbol] [Market close] [No update]");
 
 /*     $req2 = "SELECT count(*) total FROM indicators WHERE symbol='".$row['symbol']."'";
     $res2 = dbc::execSql($req2);
@@ -51,8 +60,6 @@ while($row = mysqli_fetch_array($res)) {
     // Calcul des MMX/RSI/D/W/M (1 fois par jour => controle dans la fonction)
     computeIndicators($row['symbol'], $limited);
 }
-
-// Recuperation de la derniere cotation
 
 ?>
     </pre>

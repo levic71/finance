@@ -2,50 +2,123 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-$client = new \Google_Client();
-$client->setApplicationName('Google Sheets and PHP');
-$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
-$client->setAccessType('offline');
-$client->setAuthConfig(__DIR__ . '/credentials.json');
+// if (!is_dir("cache/")) mkdir("cache/");
 
-$service = new Google_Service_Sheets($client);
+function updateGoogleSheet() {
 
-$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
+	$ret = array();
 
-$get_range = "actifs!B2:H20";
+	$client = new \Google_Client();
+	$client->setApplicationName('Google Sheets and PHP');
+	$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+	$client->setAccessType('offline');
+	$client->setAuthConfig(__DIR__ . '/credentials.json');
 
-//Request to get data from spreadsheet.
-$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
-$values = $response->getValues();
+	$service = new Google_Service_Sheets($client);
 
-var_dump($values);
+	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
 
-// Clear values
-$clear_range = 'actifs!A3:H1000'; 
+	// Clear values
+	$clear_range = 'actifs!A3:H1000'; 
 
-$requestBody = new Google_Service_Sheets_ClearValuesRequest();
-$response = $service->spreadsheets_values->clear($spreadsheetId, $clear_range, $requestBody);
+	$requestBody = new Google_Service_Sheets_ClearValuesRequest();
+	$response = $service->spreadsheets_values->clear($spreadsheetId, $clear_range, $requestBody);
 
-var_dump($response);
+	// Update datas
+	$update_range = "actifs!A3:K200";
+
+	$values = array();
+
+	$req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE NOT s.gf_symbol = '' ORDER BY s.symbol";
+	$res = dbc::execSql($req);
+	$i = 3;
+	while($row = mysqli_fetch_assoc($res)) {
+		$symbol = $row['symbol'];
+		$values[] = [
+			$row['symbol'],
+			$row['gf_symbol'],
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',C$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',D$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',E$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',F$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',G$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',H$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',I$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',J$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',K$2))'
+		];
+		$i++;
+	}
+
+	$body = new Google_Service_Sheets_ValueRange([
+		'values' => $values
+	]);
+
+	$params = [
+		'valueInputOption' => 'USER_ENTERED'
+	];
+
+	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
 
 
-// Update datas
-$update_range = "actifs!B18:C20";
+	// Request to get data from spreadsheet
+	$get_range = "actifs!A3:K200";
+	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+	$values = $response->getValues();
 
-$values = [
-	[ 'EPA:BNP', '=IF(ISBLANK($B18),"",GOOGLEFINANCE($B18,C$2))' ]
-];
+	if (!empty($values)) {
+		foreach($values as $key => $val) {
+			$ret[$val[0]] = $val;
+		}
+	}
 
-$body = new Google_Service_Sheets_ValueRange([
-	'values' => $values
-]);
+	return $ret;
+}
 
-$params = [
-	'valueInputOption' => 'USER_ENTERED'
-];
+function updateQuotesWithGSData($val) {
 
-$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
+	$ret = "[No Symbol found] [updateQuotesWithGSData]";
 
-var_dump($update_sheet);
+	$req = "SELECT count(*) total FROM quotes WHERE symbol='".$val[0]."'";
+	$res = dbc::execSql($req);
+	$row = mysqli_fetch_assoc($res);
+
+	if ($row['total'] == 1 && is_numeric($val[2])) {
+
+		$req = "UPDATE quotes SET price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."', day='".date("Y-m-d")."' WHERE symbol='".$val[0]."'";
+		$res = dbc::execSql($req);
+		computeIndicators($val[0], 0, 0);
+		$ret = $req;
+	}
+
+	return $ret;
+}
+
+function updateAllQuotesWithGSData($values) {
+
+	$ret = array();
+	foreach($values as $key => $val) $ret[] = updateQuotesWithGSData($val);
+	return $ret;
+}
+
+// FORCE Computing
+$force = 0;
+
+foreach(['force'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+
+
+if ($force == 1) {
+	require_once "../include.php";
+	require_once "../indicators.php";
+
+	$db = dbc::connect();
+
+	echo '<pre id="alpha_view" style="width: 100%; height: 300px; overflow: scroll;">';
+	$values = updateGoogleSheet();
+	$ret = updateAllQuotesWithGSData($values);
+	foreach($ret as $key => $val) echo $val."<br />";
+	echo "</pre>";
+}
 
 ?>

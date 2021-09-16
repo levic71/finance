@@ -81,8 +81,10 @@ function getTimeSeriesData($table_name, $period, $sym) {
 
     $req = "SELECT * FROM ".$table_name." dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='".$period."' AND dtsa.symbol='".$sym."' ORDER BY dtsa.day ASC";
     $res = dbc::execSql($req);
+
     $t_rows = array();
     $t_colrs = array();
+    
     while ($row = mysqli_fetch_assoc($res)) {
         $t_rows[] = $row;
         // On ne prend le adjusted_close car le adjusted_open n'existe pas
@@ -128,17 +130,16 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
             <div class="wide column">
                 <table id="detail2_stock" class="ui selectable inverted single line table">
                     <tbody>
-                    <?  echo '
-                            <tr><td>Ref date MMZ1M</td><td>'.(isset($c["MMZ1MDate"]) ? $c["MMZ1MDate"] : "N/A").'</td></tr>
-                            <tr><td>Ref date MMZ3M</td><td>'.(isset($c["MMZ3MDate"]) ? $c["MMZ3MDate"] : "N/A").'</td></tr>
-                            <tr><td>Ref date MMZ6M</td><td>'.(isset($c["MMZ6MDate"]) ? $c["MMZ6MDate"] : "N/A").'</td></tr>
-                            <tr><td>PEA</td><td>
-                                <div class="ui fitted toggle checkbox">
-                                    <input id="f_pea" type="checkbox" '.(isset($row["pea"]) && $row["pea"] == 1 ? 'checked="checked"' : '').'>
-                                    <label></label>
-                                </div>
-                            </td></tr>
-                    '; ?>
+                        <tr><td>Ref date MMZ1M</td><td><?= isset($c["MMZ1MDate"]) ? $c["MMZ1MDate"] : "N/A" ?></td></tr>
+                        <tr><td>Ref date MMZ3M</td><td><?= isset($c["MMZ3MDate"]) ? $c["MMZ3MDate"] : "N/A" ?></td></tr>
+                        <tr><td>Ref date MMZ6M</td><td><?= isset($c["MMZ6MDate"]) ? $c["MMZ6MDate"] : "N/A" ?></td></tr>
+                        <tr><td>GF symbole</td><td><div class="ui inverted input"><input id="f_gf_symbol" type="text" value="<?= $row["gf_symbol"] ?>"></div></td></tr>
+                        <tr><td>PEA</td><td>
+                            <div class="ui fitted toggle checkbox">
+                                <input id="f_pea" type="checkbox" <?= isset($row["pea"]) && $row["pea"] == 1 ? 'checked="checked"' : '' ?>>
+                                <label></label>
+                            </div>
+                        </td></tr>
                     </tbody>
                 </table>
             </div>
@@ -483,7 +484,7 @@ update_all_charts('graphe_all_bt');
 var p = loadPrompt();
 
 <? if ($sess_context->isSuperAdmin()) { ?>
-Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
+Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&gf_symbol='+valof('f_gf_symbol')+'&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
 <? } ?>
 
 Dom.addListener(Dom.id('graphe_mm7_bt'),    Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM7');   });

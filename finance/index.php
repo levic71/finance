@@ -79,10 +79,8 @@ foreach(['action'] as $key)
 <? if ($sess_context->isSuperAdmin()) { ?>
 			Dom.addListener(Dom.id('m1_users_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'user', id: 'main', menu: 'm1_users_bt', url: 'user_list.php' }); });
 			Dom.addListener(Dom.id('m2_users_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'user', id: 'main', menu: 'm1_users_bt', url: 'user_list.php' }); });
-			Dom.addListener(Dom.id('m1_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron', id: 'main', menu: 'm1_cron_bt',  url: 'crontab.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_cron_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'cron', id: 'main', menu: 'm2_cron_bt',  url: 'crontab.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m1_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm1_log_bt',   url: 'log.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_log_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'log',  id: 'main', menu: 'm2_log_bt',   url: 'log.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m1_admin_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'admin',  id: 'main', menu: 'm1_log_bt',   url: 'admin.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_admin_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'admin',  id: 'main', menu: 'm2_log_bt',   url: 'admin.php', loading_area: 'main' }); });
 <? } ?>
 
 <? if ($action == "status") { ?>
@@ -104,8 +102,7 @@ foreach(['action'] as $key)
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
-		<a class="item" id="m2_cron_bt"><i class="ui inverted cloud download alternate icon"></i>Cron</a>
-		<a class="item" id="m2_log_bt"><i class="ui inverted sort amount down icon"></i>Log</a>
+		<a class="item" id="m2_admin_bt"><i class="ui inverted sort amount down icon"></i>Admin</a>
 <? } ?>
 
 <? if ($sess_context->isUserConnected()) { ?>
@@ -126,8 +123,7 @@ foreach(['action'] as $key)
 					<a class="active item" id="m1_home_bt">Home</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 					<a class="item" id="m1_users_bt">Users</a>
-					<a class="item" id="m1_cron_bt">Cron</a>
-					<a class="item" id="m1_log_bt">Log</a>
+					<a class="item" id="m1_admin_bt">Admin</a>
 <? } ?>
 					<div class="right item">
 <? if ($sess_context->isUserConnected()) { ?>
@@ -156,6 +152,7 @@ foreach(['action'] as $key)
 				<a id="footer_terms_bt" class="item" href="#">Conditions d'utilisation</a>
 				<a id="footer_faq_bt" class="item" href="#">FAQ</a>
 			</div>
+			<div class="ui inverted section"><small>Historical data from Alphavantage.com - Daily Data from Google Finance (20min delay)</small></div>
 		</div>
 	</div>
 

@@ -174,6 +174,7 @@ class calc {
             if ($i == 0) {
                 $ref_TJ0 = floatval($close_value);
                 $ref_DAY = $row['day'];
+
                 $ref_DJ0 = intval(explode("-", $ref_DAY)[2]);
                 $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
                 $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
@@ -253,15 +254,15 @@ class calc {
 
     public static function getDualMomentum($lst_symbol, $last_day) {
 
+        // METTRE EN CACHE JSON le resultat du calcul du DM !!!!!
+
         $ret = array();
         $ret["stocks"] = array();
         $ret["perfs"]  = array();
         $ret["day"] = $last_day;
 
-        $only = $lst_symbol == "ALL" ? "" : "AND s.symbol IN (".$lst_symbol.")";
         $only = $lst_symbol == "ALL" ? "" : "WHERE s.symbol IN (".$lst_symbol.")";
 
-        $req = "SELECT * FROM stocks s, quotes q WHERE s.symbol = q.symbol ".$only." ORDER BY s.symbol";
         $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ".$only." ORDER BY s.symbol";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
@@ -485,7 +486,7 @@ class cacheData {
             logger::info("CRON", $symbol, "[Quote] [No update]");
     }
 
-    public static function buildCacheSymbol($symbol) {
+    public static function buildAllsCachesSymbol($symbol) {
 
         // OVERVIEW
         self::buildCacheOverview($symbol);

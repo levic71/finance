@@ -46,8 +46,9 @@ if ($handle)
         <button id="lst_filter1_bt" class="mini ui green button"><?= count($matches_info) ?></button>
         <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_warn) ?></button>
         <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_error) ?></button>
+        <button id="log_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button>
     </h2>
-    <pre style="width: 100%; height: 300px; overflow: scroll;">
+    <pre id="log_view" style="width: 100%; height: 300px; overflow: scroll;">
 
 <? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
 
@@ -55,8 +56,8 @@ if ($handle)
 </div>
 
 <div class="ui container inverted segment">
-    <h2> User Connexions</h2>
-    <pre style="width: 100%; height: 300px; overflow: scroll;">
+    <h2> User Connexions <button id="users_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button></h2>
+    <pre id="users_view" style="width: 100%; height: 300px; overflow: scroll;">
 
 <? 
 
@@ -75,8 +76,8 @@ while($row = mysqli_fetch_array($res)) {
 
 
 <div class="ui container inverted segment">
-    <h2> Alphavantage</h2>
-    <pre style="width: 100%; height: 300px; overflow: scroll;">
+    <h2> Alphavantage <button id="alpha_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button></h2>
+    <pre id="alpha_view" style="width: 100%; height: 300px; overflow: scroll;">
 
 <? 
 
@@ -92,3 +93,21 @@ foreach($matches_error as $key => $val) echo $val;
     </pre>
 </div>
 
+<div class="ui container inverted segment">
+    <h2 class="ui inverted right aligned header">
+    <button id="admin_cron_bt" class="circular ui icon very small right floated pink labelled button">Launch Cron</button>
+    <button id="admin_refresh_bt" class="circular ui icon very small right floated pink labelled button">Refresh Quotes</button>
+    </h2>
+</div>
+
+
+<script>
+hide('log_view');
+hide('users_view');
+hide('alpha_view');
+Dom.addListener(Dom.id('admin_refresh_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'admin', id: 'main', url: 'googlesheet/sheet.php?force=1', loading_area: 'main' }); });
+Dom.addListener(Dom.id('admin_cron_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'admin', id: 'main', url: 'crontab.php', loading_area: 'main' }); });
+Dom.addListener(Dom.id('log_eye_bt'), Dom.Event.ON_CLICK, function(event) { toogle('log_view'); });
+Dom.addListener(Dom.id('users_eye_bt'), Dom.Event.ON_CLICK, function(event) { toogle('users_view'); });
+Dom.addListener(Dom.id('alpha_eye_bt'), Dom.Event.ON_CLICK, function(event) { toogle('alpha_view'); });
+</script>

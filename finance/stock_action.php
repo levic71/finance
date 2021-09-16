@@ -11,7 +11,7 @@ if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
 $pea = 0;
 
-foreach(['action', 'symbol', 'pea', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency'] as $key)
+foreach(['action', 'symbol', 'pea', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'gf_symbol'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if ($symbol == "") tools::do_redirect("index.php");
@@ -38,33 +38,10 @@ if ($action == "add") {
         $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
         $res = dbc::execSql($req);
 
-        cacheData::buildCacheSymbol($symbol);
+        cacheData::buildAllsCachesSymbol($symbol);
 
         computeIndicators($symbol, 0, 1);
     }
-}
-
-if ($action == "upt_cache") {
-
-    try {
-
-        $data = aafinance::searchSymbol($symbol);
-
-        if (isset($data["bestMatches"])) {
-            foreach ($data["bestMatches"] as $key => $val) {
-                $req = "UPDATE stocks SET name='".addslashes($val["2. name"])."', type='".$val["3. type"]."', region='".$val["4. region"]."', marketopen='".$val["5. marketOpen"]."', marketclose='".$val["6. marketClose"]."', timezone='".$val["7. timezone"]."', currency='".$val["8. currency"]."' WHERE symbol='".$val["1. symbol"]."'";
-                $res = dbc::execSql($req);
-            }
-        }
-
-        unlink('cache/QUOTE_'.$symbol.'.json');
-        cacheData::buildCacheQuote($symbol);
-        computeIndicators($symbol, 0, 1);
-
-    } catch (RuntimeException $e) {
-        if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
-        if ($e->getCode() == 2) logger::info("UDT", $row['symbole'], $e->getMessage());
-    }    
 }
 
 if ($action == "upt") {
@@ -73,8 +50,30 @@ if ($action == "upt") {
     $res = dbc::execSql($req);
 
     if ($row = mysqli_fetch_array($res)) {
-        $req = "UPDATE stocks SET pea=".$pea." WHERE symbol='".$symbol."'";
+
+        $req = "UPDATE stocks SET pea=".$pea.", gf_symbol='".$gf_symbol."' WHERE symbol='".$symbol."'";
         $res = dbc::execSql($req);
+
+        try {
+
+            $data = aafinance::searchSymbol($symbol);
+
+            if (isset($data["bestMatches"])) {
+                foreach ($data["bestMatches"] as $key => $val) {
+                    $req = "UPDATE stocks SET name='".addslashes($val["2. name"])."', type='".$val["3. type"]."', region='".$val["4. region"]."', marketopen='".$val["5. marketOpen"]."', marketclose='".$val["6. marketClose"]."', timezone='".$val["7. timezone"]."', currency='".$val["8. currency"]."' WHERE symbol='".$val["1. symbol"]."'";
+                    $res = dbc::execSql($req);
+                }
+            }
+
+            unlink('cache/QUOTE_'.$symbol.'.json');
+            cacheData::buildCacheQuote($symbol);
+
+            computeIndicators($symbol, 0, 1);
+
+        } catch (RuntimeException $e) {
+            if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
+            if ($e->getCode() == 2) logger::info("UDT", $row['symbole'], $e->getMessage());
+        }
     }
 }
 
@@ -99,15 +98,17 @@ if ($action == "del") {
 </div>
 
 <script>
-    var p = loadPrompt();
-	<? if ($action == "upt" || $action == "upt_cache") { ?>
-        p.success('Actif <?= $symbol ?> mis à jour');
-	<? } ?>
-	<? if ($action == "del") { ?>
-        p.success('Actif <?= $symbol ?> supprimé');
-	<? } ?>
-	<? if ($action == "add") { ?>
-        p.success('Actif <?= $symbol ?> ajouté');
-	<? } ?>
-    /* go({ action: 'home_content', id: 'main', url: 'home_content.php' }); */
+var p = loadPrompt();
+<? if ($action == "upt") { ?>
+    go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
+    p.success('Actif <?= $symbol ?> mis à jour');
+<? } ?>
+<? if ($action == "del") { ?>
+go({ action: 'home_content', id: 'main', url: 'home_content.php' });
+p.success('Actif <?= $symbol ?> supprimé');
+<? } ?>
+<? if ($action == "add") { ?>
+    go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
+    p.success('Actif <?= $symbol ?> ajouté');
+<? } ?>
 </script>

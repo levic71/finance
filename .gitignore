@@ -18,3 +18,4 @@ finance/cache/**
 finance/*.log
 toto/*
 node_modules
+finance/googlesheet/finance.log

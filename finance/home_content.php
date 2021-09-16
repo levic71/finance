@@ -11,6 +11,7 @@ foreach([''] as $key)
 
 $db = dbc::connect();
 
+// Mise en cache a faire !!!
 $data = calc::getDualMomentum("ALL", date("Y-m-d"));
 
 // Tri décroissant des perf DM des stocks
@@ -153,7 +154,6 @@ if (false) {
 				<th colspan="16">
 					<div class="ui right floated buttons">
 						<div class="ui small black button" id="delete_bt">Supprimer</div>
-						<div class="ui small black button" id="update_bt">Modifier</div>
 					</div>
 				</th>
 			</tr>
@@ -243,7 +243,6 @@ if (false) {
 <? } ?>
 <? } ?>
 <? if ($sess_context->isSuperAdmin()) { ?>
-	Dom.addListener(Dom.id('update_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt_cache&symbol='+valof('row_symbol'), loading_area: 'update_bt' }); });
 	Dom.addListener(Dom.id('delete_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol='+valof('row_symbol'), loading_area: 'delete_bt', confirmdel: 1 }); });
 	Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
 <? } ?>
