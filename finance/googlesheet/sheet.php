@@ -8,6 +8,9 @@ function updateGoogleSheet() {
 
 	$ret = array();
 
+
+	$onglet = stristr(__DIR__, "MAMP") ? "actifs-dev" : "actifs";
+
 	$client = new \Google_Client();
 	$client->setApplicationName('Google Sheets and PHP');
 	$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
@@ -19,14 +22,13 @@ function updateGoogleSheet() {
 	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
 
 	// Clear values
-	$clear_range = 'actifs!A3:H1000'; 
+	$clear_range = $onglet.'!A3:H1000'; 
 
 	$requestBody = new Google_Service_Sheets_ClearValuesRequest();
 	$response = $service->spreadsheets_values->clear($spreadsheetId, $clear_range, $requestBody);
 
 	// Update datas
-	$update_range = "actifs!A3:K200";
-
+	$update_range = $onglet."!A3:K200";
 	$values = array();
 
 	$req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE NOT s.gf_symbol = '' ORDER BY s.symbol";
@@ -60,9 +62,21 @@ function updateGoogleSheet() {
 
 	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
 
+	// Update datas
+	$update_range = $onglet."!A1:A1";
+	$values = array();
+	$datetime = new DateTime();
+	$datetime->setTimezone(new DateTimeZone('Europe/Paris'));
+	$values[] = [ $datetime->format('Y-m-d H:i:s') ];
+
+	$body = new Google_Service_Sheets_ValueRange([
+		'values' => $values
+	]);
+	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
+	
 
 	// Request to get data from spreadsheet
-	$get_range = "actifs!A3:K200";
+	$get_range = $onglet."!A3:K200";
 	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
 	$values = $response->getValues();
 
