@@ -167,6 +167,8 @@ class calc {
         if ($row = mysqli_fetch_assoc($res)) {
             $quote_day   = $row['day'];
             $quote_price = $row['price'];
+            var_dump($row);
+            echo "<br />";
         }
 
         $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200";
