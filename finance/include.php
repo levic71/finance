@@ -165,8 +165,8 @@ class calc {
         $req = "SELECT * FROM quotes WHERE symbol='".$symbol."' AND day = '".$day."'";
         $res = dbc::execSql($req);
         if ($row = mysqli_fetch_assoc($res)) {
-            var_dump($row);
-            echo $day;
+            $quote_day   = $row['day'];
+            $quote_price = $row['price'];
         }
 
         $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200";
@@ -176,11 +176,18 @@ class calc {
             // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
             $close_value = is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
 
-            // Valeurs de reference
+            // Valeurs de reference J0
             if ($i == 0) {
-                $ref_TJ0 = floatval($close_value);
-                $ref_DAY = $row['day'];
-
+                // Si on a recupere une quotation en temps réel du jour > à la première cotation historique alors on la prend comme référence
+                // Comme la cotation est au minimum à la date de la dernière cotation historique on peut la prendre en ref par defaut
+                if (true) {
+                    $ref_TJ0 = floatval($quote_price);
+                    $ref_DAY = $quote_day;
+                }
+                else {
+                    $ref_TJ0 = floatval($close_value);
+                    $ref_DAY = $row['day'];
+                }
                 $ref_DJ0 = intval(explode("-", $ref_DAY)[2]);
                 $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
                 $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
@@ -222,10 +229,14 @@ class calc {
                 $ref2_T1M = $close_value;
                 $ret['MMZ1MDate'] = $row['day'];
             }
+
+            // Recuperation cotation en fin de 3 mois
             if ($ref2_T3M == 0 && substr($row['day'], 0, 7) == substr($ref_D3M, 0, 7)) {
                 $ref2_T3M = $close_value;
                 $ret['MMZ3MDate'] = $row['day'];
             }
+
+            // Recuperation cotation en fin de 6 mois
             if ($ref2_T6M == 0 && substr($row['day'], 0, 7) == substr($ref_D6M, 0, 7)) {
                 $ref2_T6M = $close_value;
                 $ret['MMZ6MDate'] = $row['day'];
