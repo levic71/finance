@@ -1,6 +1,9 @@
 td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
+.disclaimer div {
+    line-height: 10px;
+}
 .disclaimer small {
     color: #666;
 }

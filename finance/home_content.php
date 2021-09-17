@@ -65,11 +65,11 @@ arsort($data["perfs"]);
 				<th>Symbole</th>
                 <th class="four wide">Nom</th>
                 <th>Type</th>
-				<th>Dernière Quotation</th>
+				<th>Dernière cotation</th>
 				<th data-sortable-type="numeric">Prix</th>
-				<th data-sortable-type="numeric">DM TKL</th>
+				<th data-sortable-type="numeric">%</th>
+				<th data-sortable-type="numeric">DM</th>
 				<th data-sortable-type="numeric">MM200</th>
-				<th data-sortable-type="numeric">MM20</th>
 				<th data-sortable-type="numeric">MM7</th>
 <? if ($sess_context->isSuperAdmin()) { ?>
     		    <th></th>
@@ -115,9 +115,9 @@ if ($sess_context->isSuperAdmin()) {
 		<td>".$val['type']."</td>
 		<td>".($val['day'] == NULL ? "N/A" : $val['day'])."</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
-		<td data-value=\"".$val['MMZDM']."\">".sprintf("%.2f", $val['MMZDM'])."%</td>
+		<td class=\"".($val['ref_pct'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['ref_pct'])." %</td>
+		<td data-value=\"".$val['MMZDM']."\">".sprintf("%.2f", $val['MMZDM'])." %</td>
 		<td data-value=\"".$val['MM200']."\">".sprintf("%.2f", $val['MM200']).$curr."</td>
-		<td data-value=\"".$val['MM20']."\">".sprintf("%.2f", $val['MM20']).$curr."</td>
 		<td data-value=\"".$val['MM7']."\">".sprintf("%.2f", $val['MM7']).$curr."</td>
 	";
 

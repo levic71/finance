@@ -149,6 +149,7 @@ class calc {
         $sum_MM200 = 0;
         $ref_DAY = "";
         $ref_DJ0 = "";
+        $ref_PCT = "";
         $ref_MJ0 = "";
         $ref_YJ0 = "";
         $ref_TJ0 = 0;
@@ -167,8 +168,7 @@ class calc {
         if ($row = mysqli_fetch_assoc($res)) {
             $quote_day   = $row['day'];
             $quote_price = $row['price'];
-//            var_dump($row);
-//            echo "<br />";
+            $quote_pct   = $row['percent'];            
         }
 
         $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200";
@@ -182,13 +182,15 @@ class calc {
             if ($i == 0) {
                 // Si on a recupere une quotation en temps réel du jour > à la première cotation historique alors on la prend comme référence
                 // Comme la cotation est au minimum à la date de la dernière cotation historique on peut la prendre en ref par defaut
-                if (true) {
+                if (isset($quote_day)) {
                     $ref_TJ0 = floatval($quote_price);
                     $ref_DAY = $quote_day;
+                    $ref_PCT = $quote_pct;
                 }
                 else {
                     $ref_TJ0 = floatval($close_value);
                     $ref_DAY = $row['day'];
+                    $ref_PCT = ($row['close'] - $row['close']) / $row['open'];
                 }
                 $ref_DJ0 = intval(explode("-", $ref_DAY)[2]);
                 $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
@@ -253,6 +255,7 @@ class calc {
 
         $ret['ref_close'] = $ref_TJ0;
         $ret['ref_day'] = $ref_DAY;
+        $ret['ref_pct'] = $ref_PCT;
 
         $ret['MM7']   = round(($sum_MM7   / 7),   2);
         $ret['MM20']  = round(($sum_MM20  / 20),  2);
