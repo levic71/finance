@@ -11,6 +11,9 @@ include "googlesheet/sheet.php";
 // Overwrite include value
 $dbg = true;
 
+// Si on est samedi ou dimanche bye bye
+if (!tools::isLocalHost() && date("N") > 5) exit(0);
+
 if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();

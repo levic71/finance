@@ -1,6 +1,9 @@
 td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
+.disclaimer small {
+    color: #666;
+}
 .ui.footer.segment {
     padding: 0em 0em 2em;
 }

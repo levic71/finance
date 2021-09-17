@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.3.0";
+$ver = tools::isLocalHost() ? rand() : "1.3.1";
 
 foreach(['action'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -38,7 +38,7 @@ foreach(['action'] as $key)
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <title>Homepage Dual Momentum</title>
 
-		<link rel="stylesheet" href="css/semantic.min.css?ver=<?= $ver ?>" />
+		<link rel="stylesheet" href="css/mysemantic.min.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/the-datepicker.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/swiper-bundle.min.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/sortable-theme-minimal.css?ver=<?= $ver ?>" />
@@ -152,7 +152,11 @@ foreach(['action'] as $key)
 				<a id="footer_terms_bt" class="item" href="#">Conditions d'utilisation</a>
 				<a id="footer_faq_bt" class="item" href="#">FAQ</a>
 			</div>
-			<div class="ui inverted section"><small>Historical data from Alphavantage.com - Daily Data from Google Finance (20min delay)</small></div>
+			<div class="disclaimer">
+				<div class="ui inverted section"><small>Le site ne couvre pas le cours de toutes les actions de toutes les places boursières, le choix est à la discrétion de l'administrateur du site.</small></div>
+				<div class="ui inverted section"><small>Les chiffres fournis fournis sont à titre d'information uniquement, et non à des fins commerciales ou de conseils.</small></div>
+				<div class="ui inverted section"><small>Historical data from Alphavantage.com - Daily Data from Google Finance (20min delay)</small></div>
+			</div>
 		</div>
 	</div>
 

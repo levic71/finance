@@ -162,8 +162,14 @@ class calc {
         $ref_D3M = "0000-00-00";
         $ref_D6M = "0000-00-00";
 
+        $req = "SELECT * FROM quotes WHERE symbol='".$symbol."' AND day = '".$day."'";
+        $res = dbc::execSql($req);
+        if ($row = mysqli_fetch_assoc($res)) {
+            var_dump($row);
+            echo $day;
+        }
 
-        $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200" ;
+        $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res)) {
 

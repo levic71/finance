@@ -62,12 +62,17 @@ function updateGoogleSheet() {
 
 	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
 
+	$req = "SELECT count(*) total FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.gf_symbol = ''";
+	$res = dbc::execSql($req);
+	$row = mysqli_fetch_assoc($res);
+	$nb_empty = $row['total'];
+
 	// Update datas
-	$update_range = $onglet."!A1:A1";
+	$update_range = $onglet."!A1:B1";
 	$values = array();
 	$datetime = new DateTime();
 	$datetime->setTimezone(new DateTimeZone('Europe/Paris'));
-	$values[] = [ $datetime->format('Y-m-d H:i:s') ];
+	$values[] = [ $datetime->format('Y-m-d H:i:s'), "nb empty=".$nb_empty ];
 
 	$body = new Google_Service_Sheets_ValueRange([
 		'values' => $values
