@@ -12,10 +12,16 @@ $db = dbc::connect();
 
 $nb_lignes = 200;
 
-foreach(['nb_lignes'] as $key)
+foreach(['nb_lignes', 'action'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if (!is_dir("cache/")) mkdir("cache/");
+
+if ($action == "reset") {
+    foreach (glob("cache/TMP_*.json") as $filename) {
+        unlink($filename);
+    }
+}
 
 $searchthis = "ALPHAV";
 $matches_info = array();
@@ -97,6 +103,7 @@ foreach($matches_error as $key => $val) echo $val;
     <h2 class="ui inverted right aligned header">
     <button id="admin_cron_bt" class="circular ui icon very small right floated pink labelled button">Launch Cron</button>
     <button id="admin_refresh_bt" class="circular ui icon very small right floated pink labelled button">Refresh Quotes</button>
+    <button id="admin_reset_bt" class="circular ui icon very small right floated pink labelled button">Reset Cache</button>
     </h2>
 </div>
 
@@ -105,6 +112,7 @@ foreach($matches_error as $key => $val) echo $val;
 hide('log_view');
 hide('users_view');
 hide('alpha_view');
+Dom.addListener(Dom.id('admin_reset_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'admin', id: 'main', url: 'admin.php?action=reset', loading_area: 'main' }); });
 Dom.addListener(Dom.id('admin_refresh_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'admin', id: 'main', url: 'googlesheet/sheet.php?force=1', loading_area: 'main' }); });
 Dom.addListener(Dom.id('admin_cron_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'admin', id: 'main', url: 'crontab.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('log_eye_bt'), Dom.Event.ON_CLICK, function(event) { toogle('log_view'); });

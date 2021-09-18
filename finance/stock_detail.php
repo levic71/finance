@@ -77,21 +77,30 @@ if ($row = mysqli_fetch_array($res)) {
 // /////////////////////
 // GRAPHES COURS
 // //////////////////////
+
 function getTimeSeriesData($table_name, $period, $sym) {
 
-    $req = "SELECT * FROM ".$table_name." dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='".$period."' AND dtsa.symbol='".$sym."' ORDER BY dtsa.day ASC";
-    $res = dbc::execSql($req);
+    $ret = array( 'rows' => array(), 'colrs' => array() );
 
-    $t_rows = array();
-    $t_colrs = array();
-    
-    while ($row = mysqli_fetch_assoc($res)) {
-        $t_rows[] = $row;
-        // On ne prend le adjusted_close car le adjusted_open n'existe pas
-        $t_colrs[] = $row['close'] >= $row['open'] ? 1 : 0;
+    $file_cache = 'cache/TMP_TIMESERIES_'.$sym.'_'.$period.'.json';
+
+    if (cacheData::refreshCache($file_cache, 300)) { // Cache de 5 min
+
+        $req = "SELECT * FROM ".$table_name." dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='".$period."' AND dtsa.symbol='".$sym."' ORDER BY dtsa.day ASC";
+        $res = dbc::execSql($req);    
+        while ($row = mysqli_fetch_assoc($res)) {
+            $ret['rows'][] = $row;
+            // On ne prend le adjusted_close car le adjusted_open n'existe pas
+            $ret['colrs'][] = $row['close'] >= $row['open'] ? 1 : 0;
+        }
+
+        cacheData::writeCacheData($file_cache, $ret);
+
+    } else {
+        $ret = cacheData::readCacheData($file_cache);
     }
 
-    return array("rows" => $t_rows, "colrs" => $t_colrs);
+    return $ret;
 }
 
 $data_daily   = getTimeSeriesData("daily_time_series_adjusted",   "DAILY",   $symbol);

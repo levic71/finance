@@ -124,6 +124,27 @@ class calc {
         return calc::getDailyHistoryQuote($symbol, $day);
     }
 
+    public static function getAllMaxHistoryDate() {
+
+        $ret = array();
+
+        $file_cache = 'cache/TMP_MAX_HISTORYDATE.json';
+
+        if (cacheData::refreshCache($file_cache, 300)) {
+
+            $req = "SELECT symbol, max(day) day FROM daily_time_series_adjusted GROUP by symbol" ;
+            $res = dbc::execSql($req);
+            while ($row = mysqli_fetch_assoc($res)) $ret[$row['symbol']] = $row['day'];
+
+            cacheData::writeCacheData($file_cache, $ret);
+
+        } else {
+            $ret = cacheData::readCacheData($file_cache);
+        }
+
+        return $ret;
+    }
+
     public static function getMaxHistoryDate($symbol) {
 
         $ret = "0000-00-00";
@@ -276,22 +297,27 @@ class calc {
 
     public static function getDualMomentum($lst_symbol, $last_day) {
 
-        // METTRE EN CACHE JSON le resultat du calcul du DM !!!!!
+        $file_cache = 'cache/TMP_DUAL_MOMENTUM.json';
 
-        $ret = array();
-        $ret["stocks"] = array();
-        $ret["perfs"]  = array();
-        $ret["day"] = $last_day;
+        $ret = array( 'stocks' => array(), 'stocks' => array(), 'day' => $last_day, 'compute_time' => date("Y-d-m H:i:s") );
 
-        $only = $lst_symbol == "ALL" ? "" : "WHERE s.symbol IN (".$lst_symbol.")";
+        if (cacheData::refreshCache($file_cache, 300)) { // Cache de 5 min
 
-        $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ".$only." ORDER BY s.symbol";
-        $res = dbc::execSql($req);
-        while($row = mysqli_fetch_assoc($res)) {
-            $symbol = $row['symbol'];
-            $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $last_day));
-            // On isole les perfs pour pouvoir trier par performance decroissante
-            $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
+            $only = $lst_symbol == "ALL" ? "" : "WHERE s.symbol IN (".$lst_symbol.")";
+
+            $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ".$only." ORDER BY s.symbol";
+            $res = dbc::execSql($req);
+            while($row = mysqli_fetch_assoc($res)) {
+                $symbol = $row['symbol'];
+                $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $last_day));
+                // On isole les perfs pour pouvoir trier par performance decroissante
+                $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
+            }
+
+            cacheData::writeCacheData($file_cache, $ret);
+
+        } else {
+            $ret = cacheData::readCacheData($file_cache);
         }
 
         return $ret;
@@ -362,6 +388,14 @@ class aafinance {
 class cacheData {
 
     public static $lst_cache = ["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"];
+
+    public static function readCacheData($file) {
+        return json_decode(file_get_contents($file), true);
+    }
+
+    public static function writeCacheData($file, $data) {
+        file_put_contents($file, json_encode($data));
+    }
 
     public static function refreshCache($filename, $timeout) {
 
@@ -599,7 +633,7 @@ class uimx {
         $x = 0;
         foreach($perfs as $key => $val) {
             if (isset($t["quotes"][$key])) {
-                $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.$val.'%</td></tr>';
+                $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.sprintf("%.2f", $val).'%</td></tr>';
                 $x++;
             }
         }

@@ -11,7 +11,7 @@ foreach([''] as $key)
 
 $db = dbc::connect();
 
-// Mise en cache a faire !!!
+// récupération des DM
 $data = calc::getDualMomentum("ALL", date("Y-m-d"));
 
 // Tri décroissant des perf DM des stocks
@@ -81,11 +81,15 @@ arsort($data["perfs"]);
 
 $x = 0;
 
+// GET MAX HISTO FOR ALL SYMBOL && METTRE EN CACHE
+$max_histo_tab = calc::getAllMaxHistoryDate();
+
 foreach($data["stocks"] as $key => $val) {
 
 	$symbol = $key;
 
-	$max_histo = calc::getMaxHistoryDate($symbol);
+//	$max_histo = calc::getMaxHistoryDate($symbol);
+	$max_histo = isset($max_histo_tab[$symbol]) ? $max_histo_tab[$symbol] : "0000-00-00";
 
 	$cache_filename = "cache/QUOTE_".$symbol.".json";
 	$cache_timestamp = file_exists($cache_filename) ? date("Y-m-d", filemtime($cache_filename)) : "xxxx-xx-xx";
