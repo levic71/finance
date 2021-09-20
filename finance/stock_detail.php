@@ -30,7 +30,15 @@ $res = dbc::execSql($req);
 
 if ($row = mysqli_fetch_array($res)) {
 
-    $c = calc::processDataDM($row['symbol'], date("Y-m-d"));
+    $file_cache = 'cache/TMP_DM_'.$row['symbol'].'.json';
+
+    // On met en cache uniquement le DM du jour pour acces plus rapide
+    if (cacheData::refreshCache($file_cache, 300)) { // Cache de 5 min
+        $c = calc::processDataDM($row['symbol'], date("Y-m-d"));
+        cacheData::writeCacheData($file_cache, $c);
+    } else {
+        $c = cacheData::readCacheData($file_cache);
+    }
 
     $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
@@ -45,7 +53,7 @@ if ($row = mysqli_fetch_array($res)) {
     <table id="detail_stock" class="ui selectable inverted single line table">
         <thead>
             <tr><?
-                foreach(['Devise', 'Type', 'Région', 'Marché', 'TZ', 'Dernière cotation', 'Prix' , 'DM flottant', 'DM TKL', 'MM200', 'MM20', 'MM7'] as $key)
+                foreach(['Devise', 'Type', 'Région', 'Marché', 'TZ', 'Dernière cotation', 'Prix' , '%', 'DM', 'MM200', 'MM7'] as $key)
                     echo "<th>".$key."</th>";
             ?></tr>
         </thead>
@@ -59,10 +67,9 @@ if ($row = mysqli_fetch_array($res)) {
                 <td data-label=\"TZ\">".$row['timezone']."</td>
                 <td data-label=\"Dernière Cotation\">".($row['day'] == "" ? "N/A" : $row['day'])."</td>
                 <td data-label=\"Prix\">".($row['price'] == "" ? "N/A" : sprintf("%.2f", $row['price']).$curr)."</td>
-                <td data-label=\"DM flottant\">".$c['MMFDM']."%</td>
-                <td data-label=\"DM TKL\">".$c['MMZDM']."%</td>
+                <td data-label=\"%\" class=\"".($row['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $row['percent'])." %</td>
+                <td data-label=\"DM\">".$c['MMZDM']."%</td>
                 <td data-label=\"M200\">".sprintf("%.2f", $c['MM200']).$curr."</td>
-                <td data-label=\"MM20\">".sprintf("%.2f", $c['MM20']).$curr."</td>
                 <td data-label=\"MM7\">".sprintf("%.2f", $c['MM7']).$curr."</td>
             </tr>";
 }
