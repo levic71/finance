@@ -21,8 +21,10 @@ $db = dbc::connect();
 // Purge log file
 logger::purgeLogFile("./finance.log", 5*1048576);
 
+$values = array();
+
 // Mise à jour des valeurs de cotations dans Google Sheet
-$values = updateGoogleSheet();
+if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
 ?>
 

@@ -16,6 +16,10 @@ date_default_timezone_set("UTC");
 //
 class tools {
 
+    public static function useGoogleFinanceService() {
+        return true;
+    }
+
     public static function isLocalHost() {
         return (strtolower(getenv('SERVER_NAME')) == "localhost" || strtolower(getenv('REMOTE_ADDR')) == "127.0.0.1" || strtolower(getenv('REMOTE_ADDR')) == "localhost") ? true : false;
     }

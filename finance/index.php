@@ -155,7 +155,7 @@ foreach(['action'] as $key)
 			<div class="disclaimer">
 				<div class="ui inverted section"><small>Le site ne couvre pas le cours de toutes les actions de toutes les places boursières, le choix est à la discrétion de l'administrateur du site.</small></div>
 				<div class="ui inverted section"><small>Les chiffres fournis fournis sont à titre d'information uniquement, et non à des fins commerciales ou de conseils.</small></div>
-				<div class="ui inverted section"><small>Historical data from Alphavantage.com - Daily Data from Google Finance (20min delay)</small></div>
+				<div class="ui inverted section"><small>Historical data from Alphavantage.com <? if (tools::useGoogleFinanceService()) { ?> - Daily Data from Google Finance (20min delay)<? } ?></small></div>
 			</div>
 		</div>
 	</div>
