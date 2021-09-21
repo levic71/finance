@@ -33,7 +33,7 @@ if ($row = mysqli_fetch_array($res)) {
     $file_cache = 'cache/TMP_DM_'.$row['symbol'].'.json';
 
     // On met en cache uniquement le DM du jour pour acces plus rapide
-    if (cacheData::refreshCache($file_cache, 300)) { // Cache de 5 min
+    if (cacheData::refreshCache($file_cache, 600)) { // Cache de 5 min
         $c = calc::processDataDM($row['symbol'], date("Y-m-d"));
         cacheData::writeCacheData($file_cache, $c);
     } else {
@@ -91,7 +91,7 @@ function getTimeSeriesData($table_name, $period, $sym) {
 
     $file_cache = 'cache/TMP_TIMESERIES_'.$sym.'_'.$period.'.json';
 
-    if (cacheData::refreshCache($file_cache, 300)) { // Cache de 5 min
+    if (cacheData::refreshCache($file_cache, 600)) { // Cache de 5 min
 
         $req = "SELECT * FROM ".$table_name." dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='".$period."' AND dtsa.symbol='".$sym."' ORDER BY dtsa.day ASC";
         $res = dbc::execSql($req);    

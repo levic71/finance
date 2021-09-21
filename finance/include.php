@@ -130,7 +130,7 @@ class calc {
 
         $file_cache = 'cache/TMP_MAX_HISTORYDATE.json';
 
-        if (cacheData::refreshCache($file_cache, 300)) {
+        if (cacheData::refreshCache($file_cache, 600)) {
 
             $req = "SELECT symbol, max(day) day FROM daily_time_series_adjusted GROUP by symbol" ;
             $res = dbc::execSql($req);
@@ -301,7 +301,7 @@ class calc {
 
         $ret = array( 'stocks' => array(), 'stocks' => array(), 'day' => $last_day, 'compute_time' => date("Y-d-m H:i:s") );
 
-        if (cacheData::refreshCache($file_cache, 300)) { // Cache de 5 min
+        if (cacheData::refreshCache($file_cache, 600)) { // Cache de 10 min
 
             $only = $lst_symbol == "ALL" ? "" : "WHERE s.symbol IN (".$lst_symbol.")";
 
