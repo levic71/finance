@@ -28,7 +28,7 @@ $db = dbc::connect();
 $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.symbol='".$symbol."'";
 $res = dbc::execSql($req);
 
-if ($row = mysqli_fetch_array($res)) {
+if ($row = mysqli_fetch_assoc($res)) {
 
     $file_cache = 'cache/TMP_DM_'.$row['symbol'].'.json';
 
@@ -68,7 +68,7 @@ if ($row = mysqli_fetch_array($res)) {
                 <td data-label=\"Dernière Cotation\">".($row['day'] == "" ? "N/A" : $row['day'])."</td>
                 <td data-label=\"Prix\">".($row['price'] == "" ? "N/A" : sprintf("%.2f", $row['price']).$curr)."</td>
                 <td data-label=\"%\" class=\"".($row['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $row['percent'])." %</td>
-                <td data-label=\"DM\">".$c['MMZDM']."%</td>
+                <td data-label=\"DM\" class=\"".($c['MMZDM'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".$c['MMZDM']."%</td>
                 <td data-label=\"M200\">".sprintf("%.2f", $c['MM200']).$curr."</td>
                 <td data-label=\"MM7\">".sprintf("%.2f", $c['MM7']).$curr."</td>
             </tr>";
@@ -111,6 +111,14 @@ function getTimeSeriesData($table_name, $period, $sym) {
 }
 
 $data_daily   = getTimeSeriesData("daily_time_series_adjusted",   "DAILY",   $symbol);
+
+// On ajoute la cotation du jour
+$data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "open" => $row["open"], "high" => $row["high"], "low" => $row["low"], "close" => $row["price"], "adjusted_close" => $row["price"], "volume" => $row["volume"], "period" => "DAILY", "DM" => $c['MMZDM'], "MM7" => $c['MM7'], "MM20" => $c['MM20'], "MM50" => $c["MM50"], "MM200" => $c['MM200'], "RSI14" => $c["RSI14"] );
+$data_daily["rows"][]  = $data_daily_today;
+$data_daily["colrs"][] = 1;
+
+$pretty($c);
+
 $data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $symbol);
 $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $symbol);
 
@@ -189,7 +197,7 @@ var myChart2 = null;
 
 // 1y=280d, 55w, 12m
 var interval_period_days = {
-    'D' : { 'ALL' : 0, '3Y' : 840, '1Y' : 280, '1T' : 70 },
+    'D' : { 'ALL' : 0, '3Y' : 840, '1Y' : 280, '1T' : 10 },
     'W' : { 'ALL' : 0, '3Y' : 165, '1Y' : 55,  '1T' : 14 },
     'M' : { 'ALL' : 0, '3Y' : 36,  '1Y' : 12,  '1T' : 3 }
 };
@@ -203,7 +211,7 @@ var mmx_colors = {
 
 
 min_slice = function(tab, size) { return (tab.length-size-1) > 0 ? (tab.length-size-1) : 0; }
-max_slice = function(tab) { return tab.length-1 > 0 ? tab.length-1 : 0; }
+max_slice = function(tab) { return tab.length > 0 ? tab.length : 0; }
 getSlicedData = function(tab, size) { return size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));}
 getSlicedData2 = function(interval, t_d, t_w, t_m, size) {
     tab = interval == 'D' ? t_d : (interval == 'W' ? t_w : t_m);

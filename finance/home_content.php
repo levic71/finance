@@ -120,7 +120,7 @@ if ($sess_context->isSuperAdmin()) {
 		<td>".($val['day'] == NULL ? "N/A" : $val['day'])."</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td class=\"".($val['ref_pct'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['ref_pct'])." %</td>
-		<td data-value=\"".$val['MMZDM']."\">".sprintf("%.2f", $val['MMZDM'])." %</td>
+		<td class=\"".($val['MMZDM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['MMZDM']."\">".sprintf("%.2f", $val['MMZDM'])." %</td>
 		<td data-value=\"".$val['MM200']."\">".sprintf("%.2f", $val['MM200']).$curr."</td>
 		<td data-value=\"".$val['MM7']."\">".sprintf("%.2f", $val['MM7']).$curr."</td>
 	";
