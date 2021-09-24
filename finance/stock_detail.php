@@ -117,8 +117,6 @@ $data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "ope
 $data_daily["rows"][]  = $data_daily_today;
 $data_daily["colrs"][] = 1;
 
-$pretty($c);
-
 $data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $symbol);
 $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $symbol);
 
