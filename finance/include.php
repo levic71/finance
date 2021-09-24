@@ -7,17 +7,73 @@ header( 'content-type: text/html; charset=iso-8859-1' );
 
 $dbg = false;
 $dbg_data = false;
+$force_no_cache = true;
 
 // On place la timezone à UTC pour pouvoir gerer les fuseaux horaires des places boursieres
 date_default_timezone_set("UTC");
-
-// Fonction pour un affichage plus sympa des tableaux
-$pretty = function($v='',$c="&nbsp;&nbsp;&nbsp;&nbsp;",$in=-1,$k=null)use(&$pretty){$r='';if(in_array(gettype($v),array('object','array'))){$r.=($in!=-1?str_repeat($c,$in):'').(is_null($k)?'':"$k: ").'<br>';foreach($v as $sk=>$vl){$r.=$pretty($vl,$c,$in+1,$sk).'<br>';}}else{$r.=($in!=-1?str_repeat($c,$in):'').(is_null($k)?'':"$k: ").(is_null($v)?'&lt;NULL&gt;':"<strong>$v</strong>");}return$r;};
 
 //
 // Boite a outils
 //
 class tools {
+
+    public static function pretty($data) {
+
+        $json = json_encode($data, JSON_PRETTY_PRINT);
+        $result = '';
+        $level = 0;
+        $in_quotes = false;
+        $in_escape = false;
+        $ends_line_level = NULL;
+        $json_length = strlen( $json );
+    
+        for( $i = 0; $i < $json_length; $i++ ) {
+            $char = $json[$i];
+            $new_line_level = NULL;
+            $post = "";
+            if( $ends_line_level !== NULL ) {
+                $new_line_level = $ends_line_level;
+                $ends_line_level = NULL;
+            }
+            if ( $in_escape ) {
+                $in_escape = false;
+            } else if( $char === '"' ) {
+                $in_quotes = !$in_quotes;
+            } else if( ! $in_quotes ) {
+                switch( $char ) {
+                    case '}': case ']':
+                        $level--;
+                        $ends_line_level = NULL;
+                        $new_line_level = $level;
+                        break;
+    
+                    case '{': case '[':
+                        $level++;
+                    case ',':
+                        $ends_line_level = $level;
+                        break;
+    
+                    case ':':
+                        $post = " ";
+                        break;
+    
+                    case " ": case "\t": case "\n": case "\r":
+                        $char = "";
+                        $ends_line_level = $new_line_level;
+                        $new_line_level = NULL;
+                        break;
+                }
+            } else if ( $char === '\\' ) {
+                $in_escape = true;
+            }
+            if( $new_line_level !== NULL ) {
+                $result .= "\n".str_repeat( "\t", $new_line_level );
+            }
+            $result .= $char.$post;
+        }
+    
+        echo "<br /><pre>".$result."</pre>";
+    }
 
     public static function useGoogleFinanceService() {
         return true;
@@ -177,7 +233,6 @@ class calc {
         $sum_MM50  = 0;
         $sum_MM200 = 0;
         $ref_DAY = "";
-        $ref_DJ0 = "";
         $ref_PCT = "";
         $ref_MJ0 = "";
         $ref_YJ0 = "";
@@ -202,9 +257,10 @@ class calc {
 
         $tab_close = array();
 
+        // On parcours les cotations en commencant la plus rescente et on remonte le temps
         $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200";
         $res = dbc::execSql($req);
-        while($row = mysqli_fetch_array($res)) {
+        while($row = mysqli_fetch_assoc($res)) {
 
             // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
             $close_value = is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
@@ -213,9 +269,9 @@ class calc {
 
             // Valeurs de reference J0
             if ($i == 0) {
-                // Si on a recupere une quotation en temps réel du jour > à la première cotation historique alors on la prend comme référence
+                // Si day is today && Si on a recupere une quotation en temps réel du jour > à la première cotation historique alors on la prend comme référence
                 // Comme la cotation est au minimum à la date de la dernière cotation historique on peut la prendre en ref par defaut
-                if (isset($quote_day)) {
+                if ($day == date("Y-m-d") && isset($quote_day)) {
                     $ref_TJ0 = floatval($quote_price);
                     $ref_DAY = $quote_day;
                     $ref_PCT = $quote_pct;
@@ -225,7 +281,6 @@ class calc {
                     $ref_DAY = $row['day'];
                     $ref_PCT = ($row['close'] - $row['close']) / $row['open'];
                 }
-                $ref_DJ0 = intval(explode("-", $ref_DAY)[2]);
                 $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
                 $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
 
@@ -235,21 +290,19 @@ class calc {
                 // Recuperation dernier jour ouvre J0-3M
                 $m = $ref_MJ0 - 2;
                 $y = $ref_YJ0;
-                if ($m <= 0) {
-                    $m += 12;
-                    $y -= 1;
-                }
+                if ($m <= 0) { $m += 12; $y -= 1; }
                 $ref_D3M = date('Y-m-d', strtotime($y.'-'.$m.'-01'.' -1 day'));
 
                 // Recuperation dernier jour ouvre J0-6M
                 $m = $ref_MJ0 - 5;
                 $y = $ref_YJ0;
-                if ($m <= 0) {
-                    $m += 12;
-                    $y -= 1;
-                }
+                if ($m <= 0) { $m += 12; $y -= 1; }
                 $ref_D6M = date('Y-m-t', strtotime($y.'-'.$m.'-01'.' -1 day'));
             }
+
+            // $ref_  pour le calcul DM mois flottant MMF
+            // $ref2_ pour le calcul DM mois fixe MMZ (DM TKL)
+            // MM = momemtum
 
             // Récupration cotation en mois flottant
             if ($i == 22)  $ref_T1M = floatval($close_value); // 22j ouvrés par mois en moy
@@ -301,10 +354,10 @@ class calc {
         $ret['MMF6M'] = $ref_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref_T6M)*100/$ref_T6M, 2);
         $ret['MMFDM'] = $ref_T6M > 0 ? round(($ret['MMF1M']+$ret['MMF3M']+$ret['MMF6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMF1M']+$ret['MMF3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMF1M'] : -9999));
 
-        $ret['MMZ1M'] = $ref_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T1M)*100/$ref2_T1M, 2);
-        $ret['MMZ3M'] = $ref_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T3M)*100/$ref2_T3M, 2);
-        $ret['MMZ6M'] = $ref_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T6M)*100/$ref2_T6M, 2);
-        $ret['MMZDM'] = $ref_T6M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMZ1M'] : -9999));
+        $ret['MMZ1M'] = $ref2_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T1M)*100/$ref2_T1M, 2);
+        $ret['MMZ3M'] = $ref2_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T3M)*100/$ref2_T3M, 2);
+        $ret['MMZ6M'] = $ref2_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T6M)*100/$ref2_T6M, 2);
+        $ret['MMZDM'] = $ref2_T6M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2) : ($ref2_T3M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M'])/2, 2) : ($ref2_T1M > 0 ? $ret['MMZ1M'] : -9999));
 
 //        $rsi14_tab = computeRSIX($tab_close, 14);
 //        $ret["RSI14"] = $rsi14_tab[length($rsi14_tab)];
@@ -313,21 +366,36 @@ class calc {
         return $ret;
     }
 
-    public static function getDualMomentum($lst_symbol, $last_day) {
+    public static function getFilteredDualMomentum($lst_symbols, $day) {
 
-        $file_cache = 'cache/TMP_DUAL_MOMENTUM.json';
+        $stocks = array();
+        $perfs  = array();
 
-        $ret = array( 'stocks' => array(), 'stocks' => array(), 'day' => $last_day, 'compute_time' => date("Y-d-m H:i:s") );
+        $data = self::getDualMomentum($day);
+
+        foreach($data["stocks"] as $key => $val) {
+            if (!in_array($key, $lst_symbols)) {
+                unset($data["stocks"][$key]);
+                unset($data["perfs"][$key]);
+            }
+        }
+
+        return $data;
+    }
+
+    public static function getDualMomentum($day) {
+
+        $file_cache = 'cache/TMP_DUAL_MOMENTUM_'.$day.'.json';
+
+        $ret = array( 'stocks' => array(), 'perfs' => array(), 'day' => $day, 'compute_time' => date("Y-d-m H:i:s") );
 
         if (cacheData::refreshCache($file_cache, 600)) { // Cache de 10 min
 
-            $only = $lst_symbol == "ALL" ? "" : "WHERE s.symbol IN (".$lst_symbol.")";
-
-            $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ".$only." ORDER BY s.symbol";
+            $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ORDER BY s.symbol";
             $res = dbc::execSql($req);
             while($row = mysqli_fetch_assoc($res)) {
                 $symbol = $row['symbol'];
-                $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $last_day));
+                $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $day));
                 // On isole les perfs pour pouvoir trier par performance decroissante
                 $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
             }
@@ -417,7 +485,9 @@ class cacheData {
 
     public static function refreshCache($filename, $timeout) {
 
-        $update_cache = false;
+        global $force_no_cache;
+
+        $update_cache = $force_no_cache ? true : false;
 
         if (file_exists($filename)) {
             $fp = fopen($filename, "r");

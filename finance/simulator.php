@@ -16,7 +16,7 @@ $db = dbc::connect();
 
 $req = "SELECT count(*) total FROM strategies WHERE id=".$strategie_id;
 $res = dbc::execSql($req);
-$row = mysqli_fetch_array($res);
+$row = mysqli_fetch_assoc($res);
 
 if ($row['total'] != 1) {
     echo '<div class="ui container inverted segment"><h2>Strategies not found !!!</h2></div>"';
@@ -25,7 +25,7 @@ if ($row['total'] != 1) {
 
 $req = "SELECT * FROM strategies WHERE id=".$strategie_id;
 $res = dbc::execSql($req);
-$row = mysqli_fetch_array($res);
+$row = mysqli_fetch_assoc($res);
 
 $invest = $row['methode'] == 1 ? 1000 : 6000;
 $cycle_invest = $row['methode'] == 1 ? 1 : 6;
@@ -196,99 +196,101 @@ while($i <= date("Ym", strtotime($date_end))) {
         if ($row['methode'] == 1) {
 
             // Calcul du DM sur les valeurs selectionnees
-            $data = calc::getDualMomentum("'".implode("', '", $lst_symbols)."'", $day);
+            $data = calc::getFilteredDualMomentum($lst_symbols, $day);
 
-            // Tri par performance decroissante en gardant l'index dui contient le symbol
+            // Tri par performance decroissante en gardant l'index qui contient le symbol
             arsort($data["perfs"]);
 
             // Recuperation de l'actif le plus performant
-            $best_quote = array_keys($data["perfs"])[0];
+            if (count(array_keys($data["perfs"])) != 0) {
+                $best_quote = array_keys($data["perfs"])[0];
 
-            $curr = $data["stocks"][$best_quote]['currency'] == "EUR" ? "&euro;" : "$";
+                $curr = $data["stocks"][$best_quote]['currency'] == "EUR" ? "&euro;" : "$";
 
-            $info_title =  "[".$data["stocks"][$best_quote]["ref_day"]."]";
+                $info_title =  "[".$data["stocks"][$best_quote]["ref_day"]."]";
 
-            $info_content = "<ul>";
-            foreach($data["perfs"] as $key => $val) {
-                $info_content .= "<li>".$key." : ".($val == -9999 ? "N/A" : $val)."</li>";
-                // On retire l'actif qui n'a pas de DM faute de profondeur de data
-                if ($val == -9999) unset($data["perfs"][$key]);
-                // tableau des perfs par symbol
-                $tab_perf[$key][$day] = ($val == -9999 ? 0 : $val);
+                $info_content = "<ul>";
+                foreach($data["perfs"] as $key => $val) {
+                    $info_content .= "<li>".$key." : ".($val == -9999 ? "N/A" : $val)."</li>";
+                    // On retire l'actif qui n'a pas de DM faute de profondeur de data
+                    if ($val == -9999) unset($data["perfs"][$key]);
+                    // tableau des perfs par symbol
+                    $tab_perf[$key][$day] = ($val == -9999 ? 0 : $val);
+                }
+                $info_content .= "</ul>";
+
+                $auMoinsUnActif = count($data["perfs"]) == 0 ? false : true;
+
+                $detail["tr_onclick"] = "Swal.fire({ title: '".$info_title."', icon: 'info', html: '".$info_content."' });";
+                $detail["td_day"]     = $auMoinsUnActif ? $data["stocks"][$best_quote]["ref_day"] : $day;
+
+                // Vente anciens actifs si different du nouveau plus performant
+                if ($auMoinsUnActif && $actifs_achetes_nb > 0 && $actifs_achetes_symbol != $best_quote) {
+
+                    $pu = calc::getDailyHistoryQuote($actifs_achetes_symbol, $data["stocks"][$best_quote]["ref_day"]);
+                    $cash += $actifs_achetes_nb * $pu;
+
+                    $perf_pf = round(($pu - $actifs_achetes_pu)*100/$actifs_achetes_pu, 2);
+
+                    // Calcul max drawdown
+                    $maxdd = min($maxdd, $perf_pf);
+
+                    $detail["td_symbol_vendu"] = $actifs_achetes_symbol;
+                    $detail["td_nb_vendu"]     = $actifs_achetes_nb;
+                    $detail["td_pu_vendu"]     = sprintf("%.2f", round($pu, 2)).$curr;
+                    $detail["td_perf_vendu"]   = sprintf("%.2f", $perf_pf)."%";
+                    $detail["td_perf_vendu_val"] = $perf_pf;
+
+                    // Memorisation ordres
+                    $ordres[$detail["td_day"].":".$detail["td_symbol_vendu"]] = '{ "date": "'.$detail["td_day"].'", "action": "Vente", "symbol": "'.$detail["td_symbol_vendu"].'", "quantity": "'.abs($detail["td_nb_vendu"]).'", "price": "'.$detail["td_pu_vendu"].'", "currency": "'.$curr.'" }';
+
+                    $actifs_achetes_nb = 0;
+                }
+                else {
+                    $detail["td_symbol_vendu"] = "-";
+                    $detail["td_nb_vendu"]     = "-";
+                    $detail["td_pu_vendu"]     = "-";
+                    $detail["td_perf_vendu"]   = "-";
+                    $detail["td_perf_vendu_val"] = "0";
+                }
+
+                // Achat nouveaux actifs
+                if ($auMoinsUnActif && $cash > 0) {
+
+                    $actifs_achetes_pu = $data["stocks"][$best_quote]["ref_close"];
+
+                    // achat nouveaux actifs
+                    $x = floor($cash / $actifs_achetes_pu);
+                    $actifs_achetes_nb = ($actifs_achetes_symbol == $best_quote) ? $actifs_achetes_nb + $x : $x;
+                    $cash -= $x * $actifs_achetes_pu;
+                    $actifs_achetes_symbol = $best_quote;
+
+                    $detail["td_symbol_achat"] = $actifs_achetes_symbol;
+                    $detail["td_nb_achat"]     = $x;
+                    $detail["td_pu_achat"]     = sprintf("%.2f", round($actifs_achetes_pu, 2)).$curr;
+
+                    // Memorisation ordres
+                    $ordres[$detail["td_day"].":".$detail["td_symbol_achat"]] = '{ "date": "'.$detail["td_day"].'", "action": "Achat", "symbol": "'.$detail["td_symbol_achat"].'", "quantity": "'.abs($detail["td_nb_achat"]).'", "price": "'.$detail["td_pu_achat"].'", "currency": "'.$curr.'" }';
+                }
+                else {
+                    $detail["td_symbol_achat"] = "-";
+                    $detail["td_nb_achat"]     = "-";
+                    $detail["td_pu_achat"]     = "-";
+                }
+
+                $valo_pf = round($cash+($actifs_achetes_nb * $actifs_achetes_pu), 2);
+                $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
+
+                $detail["td_cash"]          = sprintf("%.2f", round($cash, 2)).$curr;
+                $detail["td_valo_pf"]       = sprintf("%.2f", $valo_pf).$curr;
+                $detail["td_perf_glob"]     = sprintf("%.2f", $perf_pf)."%";
+                $detail["td_perf_glob_val"] = $perf_pf;
+
+                $tab_detail[] = $detail;
+                $tab_date[] = $day;
+                $tab_valo[] = $valo_pf;
+                $tab_invt[] = $sum_invest;
             }
-            $info_content .= "</ul>";
-
-            $auMoinsUnActif = count($data["perfs"]) == 0 ? false : true;
-
-            $detail["tr_onclick"] = "Swal.fire({ title: '".$info_title."', icon: 'info', html: '".$info_content."' });";
-            $detail["td_day"]     = $auMoinsUnActif ? $data["stocks"][$best_quote]["ref_day"] : $day;
-
-            // Vente anciens actifs si different du nouveau plus performant
-            if ($auMoinsUnActif && $actifs_achetes_nb > 0 && $actifs_achetes_symbol != $best_quote) {
-
-                $pu = calc::getDailyHistoryQuote($actifs_achetes_symbol, $data["stocks"][$best_quote]["ref_day"]);
-                $cash += $actifs_achetes_nb * $pu;
-
-                $perf_pf = round(($pu - $actifs_achetes_pu)*100/$actifs_achetes_pu, 2);
-
-                // Calcul max drawdown
-                $maxdd = min($maxdd, $perf_pf);
-
-                $detail["td_symbol_vendu"] = $actifs_achetes_symbol;
-                $detail["td_nb_vendu"]     = $actifs_achetes_nb;
-                $detail["td_pu_vendu"]     = sprintf("%.2f", round($pu, 2)).$curr;
-                $detail["td_perf_vendu"]   = sprintf("%.2f", $perf_pf)."%";
-                $detail["td_perf_vendu_val"] = $perf_pf;
-
-                // Memorisation ordres
-                $ordres[$detail["td_day"].":".$detail["td_symbol_vendu"]] = '{ "date": "'.$detail["td_day"].'", "action": "Vente", "symbol": "'.$detail["td_symbol_vendu"].'", "quantity": "'.abs($detail["td_nb_vendu"]).'", "price": "'.$detail["td_pu_vendu"].'", "currency": "'.$curr.'" }';
-
-                $actifs_achetes_nb = 0;
-            }
-            else {
-                $detail["td_symbol_vendu"] = "-";
-                $detail["td_nb_vendu"]     = "-";
-                $detail["td_pu_vendu"]     = "-";
-                $detail["td_perf_vendu"]   = "-";
-                $detail["td_perf_vendu_val"] = "0";
-            }
-
-            // Achat nouveaux actifs
-            if ($auMoinsUnActif && $cash > 0) {
-
-                $actifs_achetes_pu = $data["stocks"][$best_quote]["ref_close"];
-
-                // achat nouveaux actifs
-                $x = floor($cash / $actifs_achetes_pu);
-                $actifs_achetes_nb = ($actifs_achetes_symbol == $best_quote) ? $actifs_achetes_nb + $x : $x;
-                $cash -= $x * $actifs_achetes_pu;
-                $actifs_achetes_symbol = $best_quote;
-
-                $detail["td_symbol_achat"] = $actifs_achetes_symbol;
-                $detail["td_nb_achat"]     = $x;
-                $detail["td_pu_achat"]     = sprintf("%.2f", round($actifs_achetes_pu, 2)).$curr;
-
-                // Memorisation ordres
-                $ordres[$detail["td_day"].":".$detail["td_symbol_achat"]] = '{ "date": "'.$detail["td_day"].'", "action": "Achat", "symbol": "'.$detail["td_symbol_achat"].'", "quantity": "'.abs($detail["td_nb_achat"]).'", "price": "'.$detail["td_pu_achat"].'", "currency": "'.$curr.'" }';
-            }
-            else {
-                $detail["td_symbol_achat"] = "-";
-                $detail["td_nb_achat"]     = "-";
-                $detail["td_pu_achat"]     = "-";
-            }
-
-            $valo_pf = round($cash+($actifs_achetes_nb * $actifs_achetes_pu), 2);
-            $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
-
-            $detail["td_cash"]          = sprintf("%.2f", round($cash, 2)).$curr;
-            $detail["td_valo_pf"]       = sprintf("%.2f", $valo_pf).$curr;
-            $detail["td_perf_glob"]     = sprintf("%.2f", $perf_pf)."%";
-            $detail["td_perf_glob_val"] = $perf_pf;
-
-            $tab_detail[] = $detail;
-            $tab_date[] = $day;
-            $tab_valo[] = $valo_pf;
-            $tab_invt[] = $sum_invest;
         }
         // END BEST DM
 

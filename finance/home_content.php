@@ -12,7 +12,7 @@ foreach([''] as $key)
 $db = dbc::connect();
 
 // récupération des DM
-$data = calc::getDualMomentum("ALL", date("Y-m-d"));
+$data = calc::getDualMomentum(date("Y-m-d"));
 
 // Tri décroissant des perf DM des stocks
 arsort($data["perfs"]);

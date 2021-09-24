@@ -37,8 +37,13 @@ if ($action == "new") {
 
 if ($action == "upt" && isset($strategie_id) && $strategie_id != "") {
 
+    // Verification si strategie commune (user_id=-1)
+    $req = "SELECT * FROM strategies WHERE id=".$strategie_id;
+    $res = dbc::execSql($req);
+    if ($row = mysqli_fetch_assoc($res)) $user_id = $row['user_id'];
+
     // Recuperation des infos des assets
-    $req = "UPDATE strategies SET title='".$f_name."', data='".$data."', methode='".$f_methode."' WHERE id=".$strategie_id." AND user_id=".$sess_context->getUserId();
+    $req = "UPDATE strategies SET title='".$f_name."', data='".$data."', methode='".$f_methode."' WHERE id=".$strategie_id." AND user_id=".(isset($user_id) && $user_id == -1 ? -1 : $sess_context->getUserId());
     $res = dbc::execSql($req);
 
 }
@@ -48,5 +53,5 @@ if ($action == "upt" && isset($strategie_id) && $strategie_id != "") {
 <script>
     var p = loadPrompt();
     p.success('Stratégie <?= $f_name.($action == "new" ? " ajoutée": ($action == "upt" ? " modifiée" : " supprimée")) ?>');
-    go({ action: 'home_content', id: 'main', url: 'home_content.php' });
+    // go({ action: 'home_content', id: 'main', url: 'home_content.php' });
 </script>
