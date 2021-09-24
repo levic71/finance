@@ -390,7 +390,7 @@ const horizontalLines = {
         ctx.beginPath();
         ctx.setLineDash([3, 3]);
         h = (height/2) + top;
-        console.log('h:'+height+'y:'+y+'b:'+bottom+'t:'+top);
+        // console.log('h:'+height+'y:'+y+'b:'+bottom+'t:'+top);
         ctx.moveTo(left, h);
         ctx.lineTo(right, h);
         ctx.stroke();

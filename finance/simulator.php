@@ -510,8 +510,26 @@ var myChart = new Chart(ctx, {
     }
 ?>
 
-var ctx = document.getElementById('sim_canvas2').getContext('2d');
+var ctx2 = document.getElementById('sim_canvas2').getContext('2d');
 el("sim_canvas2").height = document.body.offsetWidth > 700 ? 100 : 300;
+
+const horizontalLines = {
+    id: 'horizontalLines',
+    beforeDraw(chart, args, options) {
+        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
+        // Attention, l'origine du graphe est en haut a gauche et donc le top en bas et le bottom en haut
+        ctx.beginPath();
+        ctx.setLineDash([3, 3]);
+        h = (height/2) + top;
+        ctx.moveTo(left, h);
+        ctx.lineTo(right, h);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.restore();
+    }
+};
 
 var data2 = {
     labels: dates,
@@ -543,7 +561,7 @@ var options2 = {
     }
 };
 
-var myChart = new Chart(ctx, { type: 'line', data: data2, options: options2 } );
+var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options2, plugins: [horizontalLines] } );
 
 </script>
 
