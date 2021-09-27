@@ -9,7 +9,7 @@ include "indicators.php";
 include "googlesheet/sheet.php";
 
 // Overwrite include value
-$dbg = true;
+$dbg = false;
 
 // Si on est samedi ou dimanche bye bye
 if (!tools::isLocalHost() && date("N") > 5) exit(0);

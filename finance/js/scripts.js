@@ -1,19 +1,7 @@
-function ajaxCall(method, url, msg, refresh=false) {
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			alert(msg)
-			if (refresh) window.location.reload();
-		}
-	};
-	xmlhttp.open(method, url, true);
-	xmlhttp.send();
-}
-
 var js_debug = true;
 
 isTouch = function() { return ( (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i))  || (navigator.userAgent.match(/Android/i))); }
-isIE8 = function() { return (document.all && document.querySelector && !document.addEventListener); }
+isIE8   = function() { return (document.all && document.querySelector && !document.addEventListener); }
 
 myconsole = function(text) { if (js_debug) { if (typeof console.log !== 'undefined') console.log(text); else alert(text); } }
 
@@ -28,13 +16,13 @@ cc = function(id, c) {
 		for(var i=0; i < allJs.length; i++) { if (allJs[i].src && allJs[i].src != "") includeJs(allJs[i].src); else if (allJs[i].innerHTML && allJs[i].innerHTML != "") window.eval(allJs[i].innerHTML); }
 	} catch(e) { if (isIE8()) alert('IE8 mal support?, utiliser de pr?f?rence FF, IE9 ou Chrome'); else if (typeof allJs != "undefined" && typeof allJs[i] != "undefined") myconsole('cc: JKX caught error: (' + e.name + '): ' + e.message + '\n' + allJs[i].innerHTML ); else myconsole("cc: js error"+ e); }
 }
-fs = function(id) { try { el(id).focus(); } catch(e) {} }
+fs       = function(id) { try { el(id).focus(); } catch(e) {} }
 isHidden = function(id) { try { return (el(id).style.display == 'none' ? true : false); } catch(e) {} }
-showelt = function(id) { try { el(id).style.display = 'block'; } catch(e) {} }
-show = function(id) { try { el(id).style.display = el(id).tagName.toUpperCase() == "TABLE" ? 'inline-table' : 'initial'; } catch(e) {} }
-hide = function(id) { try { el(id).style.display = 'none'; } catch(e) {} }
-toogle = function(id) { try { if (isHidden(id)) show(id); else hide(id); } catch(e) {} }
-valof = function(id) {
+showelt  = function(id) { try { el(id).style.display = 'block'; } catch(e) {} }
+show     = function(id) { try { el(id).style.display = el(id).tagName.toUpperCase() == "TABLE" ? 'inline-table' : 'initial'; } catch(e) {} }
+hide     = function(id) { try { el(id).style.display = 'none'; } catch(e) {} }
+toogle   = function(id) { try { if (isHidden(id)) show(id); else hide(id); } catch(e) {} }
+valof    = function(id) {
 	ret = '';
 	if (el(id)) {
 		if (el(id).type == 'checkbox')
@@ -54,9 +42,9 @@ attrs = function(ids) {	ret = ''; for(var n=0;n<ids.length;n++) { ret += '&'+ids
 setCN = function(id, cn) { try { el(id).className = cn; } catch(e) { myconsole('setCN:' + id + ':' + e); } }
 addCN = function(id, cn) { try { el(id).className += (el(id).className == "" ? "" : " ")+cn; } catch(e) { myconsole('addCN:' + id + ':' + e); } }
 rmCN  = function(id, cn) { try { var tmp = el(id).className.split(' '); ncn = ""; for(var n=0;n<tmp.length;n++) { if (tmp[n] != cn) ncn += " "+tmp[n]; }; el(id).className = ncn; } catch(e) { myconsole('rmCN:' + id + ':' + e); } }
-replaceCN = function(id, cn1, cn2) { try { el(id).className = el(id).className.replace(cn1, cn2); } catch(e) { myconsole('replaceCN:' + id + ':' + e); } }
-switchCN= function(id, cn1, cn2) { try { el(id).className = isCN(id, cn1) ? el(id).className.replace(cn1, cn2) : el(id).className.replace(cn2, cn1); } catch(e) { myconsole('switchCN:' + id + ':' + e); } }
 isCN  = function(id, cn) { try { var tmp = el(id).className.split(' '); ret=false; for(var n=0;n<tmp.length;n++) { if (tmp[n] == cn) ret=true; }; return ret; } catch(e) { myconsole('isCN:' + id + ':' + e); } }
+replaceCN = function(id, cn1, cn2) { try { el(id).className = el(id).className.replace(cn1, cn2); } catch(e) { myconsole('replaceCN:' + id + ':' + e); } }
+switchCN  = function(id, cn1, cn2) { try { el(id).className = isCN(id, cn1) ? el(id).className.replace(cn1, cn2) : el(id).className.replace(cn2, cn1); } catch(e) { myconsole('switchCN:' + id + ':' + e); } }
 
 
 go = function(args) {
@@ -104,11 +92,11 @@ change_wide_menu_state = function(menu, item_menu) {
 
 toogle_table = function(id_table_body, ind_row) {
 	items = Dom.children(Dom.id(id_table_body), "tr");
-
-	try {
-		items[ind_row].style.display = items[ind_row].style.display == "none" || items[ind_row].style.display == "" ? 'contents' : "none";
-	}
+	try { items[ind_row].style.display = items[ind_row].style.display == "none" || items[ind_row].style.display == "" ? 'contents' : "none"; }
 	catch(e) {}
+}
+toogle_table2 = function(id_row) {
+	el(id_row).style.display = el(id_row).style.display == "none" || el(id_row).style.display == "" ? 'contents' : "none";
 }
 
 check_email = function(txt) {

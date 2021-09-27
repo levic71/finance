@@ -41,7 +41,7 @@ arsort($data["perfs"]);
 				$tab_strat[] = $row['id'];
 ?>
         	<div class="four wide column swiper-slide">
-				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data["day"], $data["perfs"], $row['data']) ?>
+				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data["day"], $data["perfs"], $row['data'], $row['methode']) ?>
 			</div>
 <? } ?>
 

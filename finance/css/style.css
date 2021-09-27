@@ -144,13 +144,19 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: #111;
     color: rgba(255, 255, 255, 0.9);
 }
-#sim_final_info td {
+#sim_final_info tr th, #sim_final_info tr td {
+    padding: 0px 10px;
+    text-align: center;
+}
+#sim_final_info tr th {
     padding: 5px 10px !important;
+    background: darkolivegreen;
+    color: white !important;
 }
 #sim_final_info td:nth-child(1) {
-    background: #111;
+    text-align: left;
 }
-#sim_final_info td:nth-child(2) {
+#sim_final_info td:nth-child(2), #sim_final_info td:nth-child(3) {
     text-align: right;
 }
 .sim_page .ui.card {
@@ -184,7 +190,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
         top: 0.15em;
         width: 1em;
         height: 1em;
-
         overflow: hidden;
         border: none;
         border-radius: 0.5em;
@@ -220,6 +225,14 @@ table th { color: burlywood !important; cursor: pointer !important; }
     width: 100% !important;
 }
 
+#sim_card2 .header {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#sim_card2 .description {
+    background: #333;
+}
 #sim_card2 .label:nth-child(1) {
     width: 35%;
     text-overflow: ellipsis;
@@ -227,9 +240,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 #sim_card2 > table > tr:nth-child(5) {
     display: none;
-}
-#sim_card1 table td:nth-child(2) {
-    background: #333;
 }
 
 #sim_card_bt {
@@ -242,6 +252,9 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_ordres .Vente:hover, #lst_sim .aaf-negative:hover {
     background: rgba(255,255,255,.08)
 }
+
+
+
 
 @media only screen and (max-width: 1024px) {
 

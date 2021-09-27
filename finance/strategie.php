@@ -90,7 +90,7 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 							<div class="ui inverted basic label">Méthode</div>
 							<select id="f_methode" class="ui selection dropdown">
 								<option value="1" <?= $row['methode'] == 1 ? "selected=\"selected\"" : "" ?>>Meilleur DM</option>
-								<option value="2" <?= $row['methode'] == 2 ? "selected=\"selected\"" : "" ?>>Par Répartition</option>
+								<option value="2" <?= $row['methode'] == 2 ? "selected=\"selected\"" : "" ?>>DCA</option>
 							</select>
                     	</div>
 					</div>

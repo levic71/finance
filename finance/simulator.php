@@ -32,8 +32,11 @@ $cycle_invest = $row['methode'] == 1 ? 1 : 6;
 $capital_init = 0;
 $date_start = "0000-00-00";
 $date_end = date("Y-m-d");
+$f_retrait = 0;
+$f_montant_retrait = 0;
+$f_delai_retrait = 0;
 
-foreach(['strategie_id', 'invest', 'cycle_invest', 'date_start', 'date_end', 'capital_init'] as $key)
+foreach(['f_retrait', 'f_montant_retrait', 'f_delai_retrait', 'strategie_id', 'invest', 'cycle_invest', 'date_start', 'date_end', 'capital_init'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $lst_symbols = array();
@@ -53,6 +56,8 @@ $sum_invest = $capital_init;
 $nb_mois = 0;
 $valo_pf = 0;
 $perf_pf = 0;
+$maxdd_min = 999999999999;
+$maxdd_max = 0;
 $maxdd = 0;
 
 // Tableau pour mémoriser les ordres achats/ventes
@@ -74,81 +79,117 @@ foreach($lst_decode_symbols['quotes'] as $key => $val) {
     $lst_actifs_achetes_nb[$key] = 0;
 }
 
-$infos = '
-    <input type="hidden" id="strategie_id" value="'.$strategie_id.'" />
-    <table id="sim_imput_card">
-        <tr>
-            <td>
-                <div class="ui inverted fluid right labeled input">
-                    <div class="ui label">Capital</div>
-                    <input type="text" id="capital_init" value="'.$capital_init.'" placeholder="0">
-                    <div class="ui basic label">&euro;</div>
+$infos1 = '
+<table id="sim_imput_card">
+    <tr>
+        <td>
+            <div class="ui inverted fluid right labeled input">
+                <div class="ui label">Capital</div>
+                <input type="text" id="capital_init" value="'.$capital_init.'" size="8" placeholder="0">
+                <div class="ui basic label">&euro;</div>
+            </div>
+        </td>
+        <td rowspan="5" style="vertical-align: bottom; text-align: right">
+            <button id="sim_go_bt1" class="ui icon pink float right small button"><i class="inverted play icon"></i></button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="ui inverted fluid right labeled input">
+                <div class="ui label">Invest. en &euro;</div>
+                <input type="text" id="invest" value="'.$invest.'" placeholder="0" size="10">
+                <div id="sim_par" class="ui floated right label" style="margin-left: 5px;">par</div>
+                <div class="ui inverted labeled input">
+                    <select id="cycle_invest" class="ui selection">
+                        <option value="1"  '.($cycle_invest == 1  ? "selected=\"selected\"" : "").'>mois</option>
+                        <option value="3"  '.($cycle_invest == 3  ? "selected=\"selected\"" : "").'>trimestre</option>
+                        <option value="6"  '.($cycle_invest == 6  ? "selected=\"selected\"" : "").'>semestre</option>
+                        <option value="12" '.($cycle_invest == 12 ? "selected=\"selected\"" : "").'>an</option>
+                    </select>
                 </div>
-            </td>
-            <td rowspan="5" style="vertical-align: bottom; text-align: right">
-                <button id="sim_go_bt1" class="ui icon pink float right small button"><i class="inverted play icon"></i></button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="ui inverted fluid right labeled input">
-                    <div class="ui label">Invest. en &euro;</div>
-                    <input type="text" id="invest" value="'.$invest.'" placeholder="0">
-                    <div id="sim_par" class="ui floated right label">par</div>
-                    <div class="ui inverted labeled input">
-                        <select id="cycle_invest" class="ui selection">
-                            <option value="1"  '.($cycle_invest == 1  ? "selected=\"selected\"" : "").'>mois</option>
-                            <option value="3"  '.($cycle_invest == 3  ? "selected=\"selected\"" : "").'>trimestre</option>
-                            <option value="6"  '.($cycle_invest == 6  ? "selected=\"selected\"" : "").'>semestre</option>
-                            <option value="12" '.($cycle_invest == 12 ? "selected=\"selected\"" : "").'>an</option>
-                        </select>
-                    </div>
-                </div>
-            </td>
-            <td class="rowspanned"></td>
-        </tr>
-        <tr>
-            <td>
-                <div class="ui right icon inverted left labeled fluid input">
-                    <div class="ui label">Période</div>
-                    <input type="text" size="12" id="date_start" value="'.$date_start.'" placeholder="0000-00-00">
-                    <input type="text" size="12" id="date_end" value="'.$date_end.'" placeholder="0000-00-00">
-                    <i class="inverted black calendar alternate outline icon"></i>
+            </div>
+        </td>
+        <td class="rowspanned"></td>
+    </tr>
+    <tr>
+        <td>
+            <div class="ui right icon inverted left labeled fluid input">
+                <div class="ui label">Période</div>
+                <input type="text" size="10" id="date_start" value="'.$date_start.'" placeholder="0000-00-00">
+                <input type="text" size="10" id="date_end" value="'.$date_end.'" placeholder="0000-00-00" style="margin-left: 10px">
+                <i class="inverted black calendar alternate outline icon"></i>
 
-                </div>
-            </td>
-            <td class="rowspanned"></td>
-        </tr>
-        <tr>
-            <td>
-                <div class="ui inverted left labeled fluid input">
-                    <div class="ui label">Comparer à</div>
+            </div>
+        </td>
+        <td class="rowspanned"></td>
+    </tr>
+</table>
+';
 
-                    <div class="ui inverted labeled input">
-                        <select id="f_compare_to" class="ui selection">
-                            <option value="SPY"  '.($f_compare_to == "SPY"  ? "selected=\"selected\"" : "").'>SPY</option>
-                            <option value="TLT"  '.($f_compare_to == "TLT"  ? "selected=\"selected\"" : "").'>TLT</option>
-                            <option value="SCZ"  '.($f_compare_to == "SCZ"  ? "selected=\"selected\"" : "").'>SCZ</option>
-                        </select>
-                    </div>
+$infos2 = '
+<table id="sim_imput_card">
+    <tr>
+        <td>
+            <div class="ui inverted left labeled fluid input">
+                <div class="ui label">Benchmark</div>
+
+                <div class="ui inverted labeled input">
+                    <select id="f_compare_to" class="ui selection">
+                        <option value="SPY"  '.($f_compare_to == "SPY"  ? "selected=\"selected\"" : "").'>SPY</option>
+                        <option value="TLT"  '.($f_compare_to == "TLT"  ? "selected=\"selected\"" : "").'>TLT</option>
+                        <option value="SCZ"  '.($f_compare_to == "SCZ"  ? "selected=\"selected\"" : "").'>SCZ</option>
+                    </select>
                 </div>
-            </td>
-            <td class="rowspanned"></td>
-        </tr>
-    </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="ui inverted left labeled fluid input">
+                <div class="ui label">Retrait progressif</div>
+                <div class="ui fitted toggle checkbox" style="padding: 8px 0px;">
+                    <input id="f_retrait" type="checkbox" '.($f_retrait == 1 ? 'checked="checked"' : '').' />
+                    <label></label>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="ui inverted left labeled fluid input">
+                <div id="retrait_option1" style="width: 100%">
+                    <div class="ui label">Montant</div>
+                    <div class="ui inverted labeled input">
+                        <input type="text" id="f_montant_retrait" value="'.$f_montant_retrait.'" placeholder="0" size="6">
+                    </div>
+                    <div class="ui label">Délai</div>
+                    <div class="ui inverted labeled input">
+                        <input type="text" id="f_delai_retrait" value="'.$f_delai_retrait.'" placeholder="0" size="3">
+                    </div>
+                    <div class="ui basic label">An(s)</div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
 ';
 
 ?>
+
+<input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
 
 <div class="ui container inverted segment">
     <h2>Informations</h2>
     <div class="ui stackable grid container">
           <div class="row">
+          <div class="eight wide column">
+                <?= uimx::genCard('sim_card2', '<i style="margin-right: 10px;" class="inverted '.($row['methode'] == 2 ? 'cubes' : 'diamond').' blurely line icon"></i>'.$row['title'], '', $infos1); ?>
+            </div>
             <div class="eight wide column">
-                <?= uimx::genCard('sim_card2', $row['title'], '&nbsp;', $infos); ?>
+                <?= uimx::genCard('sim_card2', implode(', ', $lst_symbols), '', $infos2); ?>
             </div>
 
-            <div class="center aligned eight wide column" id="sim_card_bt">
+            <div class="center aligned sixteen wide column" id="sim_card_bt">
                 <button id="sim_go_bt2" class="ui pink float right button">Go</button>
             </div>
 
@@ -166,6 +207,10 @@ $nb_actions_RC = 0;
 $valo_pf_RC = 0;
 $perf_pf_RC = 0;
 $tab_valo_RC = array();
+$maxdd_RC_min = 99999999999999;
+$maxdd_RC_max = 0;
+$maxdd_RC = 0;
+
 
 $i = date("Ym", strtotime($date_start));
 while($i <= date("Ym", strtotime($date_end))) {
@@ -182,7 +227,18 @@ while($i <= date("Ym", strtotime($date_end))) {
     // Recuperation du premier jour du mois 
     // $day = substr($i, 0, 4)."-".substr($i, 4, 2)."-01";
 
+    // Retrait programmé ?
+    $retrait_programme = false;
+    if ($f_retrait == 1) {
+        if ($i >=  date("Ym", strtotime((intval(substr($date_start, 0, 4)) + $f_delai_retrait)."-".substr($date_start, 5, 2)."-01"))) {
+            $retrait_programme = true;
+        }
+
+    }
+
+    // /////////////////////////////////////////////
     // Cycle investissement ?
+    // /////////////////////////////////////////////
     if (fmod($month, $cycle_invest) == 0) {
 
         // On investit !!!
@@ -192,7 +248,9 @@ while($i <= date("Ym", strtotime($date_end))) {
         // On investit !!!
         $sum_invest += $invest;
 
+        // //////////////////////////////////////////////////////////////
         // BEST DM
+        // //////////////////////////////////////////////////////////////
         if ($row['methode'] == 1) {
 
             // Calcul du DM sur les valeurs selectionnees
@@ -233,7 +291,8 @@ while($i <= date("Ym", strtotime($date_end))) {
                     $perf_pf = round(($pu - $actifs_achetes_pu)*100/$actifs_achetes_pu, 2);
 
                     // Calcul max drawdown
-                    $maxdd = min($maxdd, $perf_pf);
+                    $maxdd_min = min($maxdd_min, $valo_pf);
+                    $maxdd_max = max($maxdd_max, $valo_pf);
 
                     $detail["td_symbol_vendu"] = $actifs_achetes_symbol;
                     $detail["td_nb_vendu"]     = $actifs_achetes_nb;
@@ -252,6 +311,11 @@ while($i <= date("Ym", strtotime($date_end))) {
                     $detail["td_pu_vendu"]     = "-";
                     $detail["td_perf_vendu"]   = "-";
                     $detail["td_perf_vendu_val"] = "0";
+                }
+
+                // Retrait programmé ?
+                if ($retrait_programme) {
+                    echo $i."<br />";
                 }
 
                 // Achat nouveaux actifs
@@ -294,7 +358,9 @@ while($i <= date("Ym", strtotime($date_end))) {
         }
         // END BEST DM
 
-        // CUMUL BY REPARTITION
+        // //////////////////////////////////////////////////////////////
+        // DCA
+        // //////////////////////////////////////////////////////////////
         if ($row['methode'] == 2) {
 
             $curr = "&euro;";
@@ -310,6 +376,11 @@ while($i <= date("Ym", strtotime($date_end))) {
             $valo_pf_avant_invest = $valo_pf + $cash;
             $valo_pf = 0;
 
+            // Retrait programmé ?
+            if ($retrait_programme) {
+                echo $i."<br />";
+            }
+            
             $lib_ordres_achats = "";
             $cash_ref = $cash;
             // Combien on achete de chaque ?
@@ -357,7 +428,8 @@ while($i <= date("Ym", strtotime($date_end))) {
             $detail["td_perf_glob_val"] = $perf_pf;
 
             // Calcul max drawdown
-            $maxdd = min($maxdd, $perf_pf);
+            $maxdd_min = min($maxdd_min, $valo_pf);
+            $maxdd_max = max($maxdd_max, $valo_pf);
 
             $tab_detail[] = $detail;
             $tab_date[] = $day;
@@ -365,29 +437,42 @@ while($i <= date("Ym", strtotime($date_end))) {
             $tab_invt[] = $sum_invest;
 
         }
-        // END CUMUL BY REPARTITION
+        // END DCA
 
+        // Calcul Max Drawdown
+        // pas vraiment maxDD mais en attendant de mettre les DM en bases pour pouvoir calculer la valo du portefeuille sur toutes les journées
+        // $maxdd = max($maxdd, $maxdd_max == 0 ? 0 : ($maxdd_max - $maxdd_min)/$maxdd_max);
+        $maxdd = min($maxdd, $perf_pf);
+
+
+        // //////////////////////////////////////////////////////////////////
         // Calcul pour le rendement comparatif
-        if (true) {
 
-            // Recupereration de la dernière cotation du mois de chaque valeur
-            $pu_action_RC = calc::getLastMonthDailyHistoryQuote($sym_RC, $day);
+        // Recupereration de la dernière cotation du mois de chaque valeur
+        $pu_action_RC = calc::getLastMonthDailyHistoryQuote($sym_RC, $day);
 
-            // Achat actif
-            $nb_actions2buy = floor($cash_RC / $pu_action_RC);
-            $cash_RC -= $nb_actions2buy*$pu_action_RC;
-            $nb_actions_RC += $nb_actions2buy;
+        // Achat actif
+        $nb_actions2buy = floor($cash_RC / $pu_action_RC);
+        $cash_RC -= $nb_actions2buy*$pu_action_RC;
+        $nb_actions_RC += $nb_actions2buy;
 
-            // Valorisation portefeuille RC
-            $tab_valo_RC[] = ($nb_actions_RC * $pu_action_RC) + $cash_RC;            
-        }
+        // Valorisation portefeuille RC
+        $valo_pf_RC = ($nb_actions_RC * $pu_action_RC) + $cash_RC;
+        $tab_valo_RC[] = $valo_pf_RC;
+
+        // Performance 
+        $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC - $sum_invest)*100/$sum_invest, 2);
+
+        $maxdd_RC = min($maxdd_RC, $perf_pf_RC);
+
         // End Calcul pour le rendement comparatif
-
+        // ////////////////////////////////////////////////////////////////////
     }
     // END Cycle Investissement
 
     $nb_mois++;
 
+    // Compteur de mois
     if(substr($i, 4, 2) == "12")
         $i = (date("Y", strtotime($i."01")) + 1)."01";
     else
@@ -401,18 +486,40 @@ if ($row['methode'] == 1) {
 $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
 
 $final_info = '
-    <table id="sim_final_info" class="">
-        <tr><td>Valorisation</td><td>'.sprintf("%.2f", $valo_pf).' &euro;</td></tr>
-        <tr><td>Capital investit</td><td>'.sprintf("%.2f", $sum_invest).' &euro;</td></tr>
-        <tr><td>Performance</td><td class="'.($perf_pf >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf).' %</td></tr>
-        <tr><td>Max DD</td><td class="'.($maxdd >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $maxdd).' %</td></tr>
-        <tr><td>Duree</td><td>'.count(tools::getMonth($date_start, $date_end)).' mois</td></tr>
+    <table id="sim_final_info">
+    <tr>
+        <th>Portfolio</th>
+        <th>Valorisation</th>
+        <th>Capital investit</th>
+        <th>Performance</th>
+        <th>Max DD</th>
+        <th>Retrait</th>
+        <th>Duree</th>
+    </tr>
+    <tr>
+        <td>'.$row['title'].'</td>
+        <td>'.sprintf("%.2f", $valo_pf).' &euro;</td>
+        <td>'.sprintf("%.2f", $sum_invest).' &euro;</td>
+        <td class="'.($perf_pf >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf).' %</td>
+        <td class="'.($maxdd >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $maxdd).' %</td>
+        <td>0&euro;</td>
+        <td>'.count(tools::getMonth($date_start, $date_end)).' mois</td>
+    </tr>
+    <tr>
+        <td>Benchmark</td>
+        <td>'.sprintf("%.2f", $valo_pf_RC).' &euro;</td>
+        <td>'.sprintf("%.2f", $sum_invest).' &euro;</td>
+        <td class="'.($perf_pf >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf_RC).' %</td>
+        <td class="'.($maxdd_RC >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $maxdd_RC).' %</td>
+        <td>0&euro;</td>
+        <td>'.count(tools::getMonth($date_start, $date_end)).' mois</td>
+    </tr>
     </table>
 ';
 
 ?>
-            <div class="eight wide column">
-                <?= uimx::genCard('sim_card1', 'Synthèse', implode(', ', $lst_symbols), $final_info); ?>
+            <div class="sixteen wide column" style="margin-top: 15px;">
+                <?= uimx::genCard('sim_card1', 'Synthèse', '', $final_info); ?>
             </div>
 
         </div>
@@ -623,12 +730,18 @@ foreach($ordres as $key => $val) {
 <script>
 
     launcher = function() {
-		params = attrs(['strategie_id', 'capital_init', 'invest', 'cycle_invest', 'date_start', 'date_end', 'f_compare_to' ]);
-        go({ action: 'sim', id: 'main', url: 'simulator.php?'+params, loading_area: 'sim_go_bt' });
+		params = attrs(['f_delai_retrait', 'f_montant_retrait', 'strategie_id', 'capital_init', 'invest', 'cycle_invest', 'date_start', 'date_end', 'f_compare_to' ]);
+        go({ action: 'sim', id: 'main', url: 'simulator.php?'+params+'&f_retrait='+(valof('f_retrait') == 0 ? 0 : 1), loading_area: 'sim_go_bt' });
     }
     
     Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher(); });
     Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher(); });
+    Dom.addListener(Dom.id('f_retrait'),  Dom.Event.ON_CHANGE, function(event) { toogle('retrait_option1'); });
+
+    hide('retrait_option1');
+    <? if ($f_retrait == 1) { ?>
+    toogle('retrait_option1');
+    <? } ?>
 
     const datepicker1 = new TheDatepicker.Datepicker(el('date_start'));
     datepicker1.options.setInputFormat("Y-m-d")

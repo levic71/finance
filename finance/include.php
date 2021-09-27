@@ -710,7 +710,7 @@ class uimx {
     <?
 }
 
-    public static function perfCard($id, $strategie_id, $title, $day, $perfs, $strategie) {
+    public static function perfCard($id, $strategie_id, $title, $day, $perfs, $strategie, $methode) {
 
         global $sess_context;
 
@@ -729,7 +729,7 @@ class uimx {
         $desc .= '</tbody>';
         $desc .= '<tfoot class="full-width"><tr>
             <th colspan="2">
-                <button id="home_sim_bt_'.$strategie_id.'" class="ui right floated small grey labeled icon button"><i class="inverted chart line icon"></i> Backtesting</button>
+                <button id="home_sim_bt_'.$strategie_id.'" class="ui right floated small grey labeled icon button"><i class="inverted '.($methode == 2 ? 'cubes' : 'diamond').' icon"></i> Backtesting</button>
             </th>
         </tr></tfoot>';
         $desc .= '</table>';
