@@ -62,17 +62,12 @@ function updateGoogleSheet() {
 
 	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
 
-	$req = "SELECT count(*) total FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.gf_symbol = ''";
-	$res = dbc::execSql($req);
-	$row = mysqli_fetch_assoc($res);
-	$nb_empty = $row['total'];
-
 	// Update datas
-	$update_range = $onglet."!A1:B1";
+	$update_range = $onglet."!A1:A1";
 	$values = array();
 	$datetime = new DateTime();
 	$datetime->setTimezone(new DateTimeZone('Europe/Paris'));
-	$values[] = [ $datetime->format('Y-m-d H:i:s'), "nb empty=".$nb_empty ];
+	$values[] = [ $datetime->format('Y-m-d H:i:s') ];
 
 	$body = new Google_Service_Sheets_ValueRange([
 		'values' => $values
@@ -132,12 +127,11 @@ if ($force == 1) {
 	require_once "../indicators.php";
 
 	$db = dbc::connect();
-
-	echo '<pre id="alpha_view" style="width: 100%; height: 300px; overflow: scroll;">';
 	$values = updateGoogleSheet();
 	$ret = updateAllQuotesWithGSData($values);
-	foreach($ret as $key => $val) echo $val."<br />";
-	echo "</pre>";
+
+	foreach($ret as $key => $val) logger::info("SHEET", 'QUOTE', $val);
+
 }
 
 ?>
