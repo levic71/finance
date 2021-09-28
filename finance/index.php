@@ -61,17 +61,19 @@ foreach(['action'] as $key)
 
 			go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: '' });
 
-			Dom.addListener(Dom.id('m1_sidebar_bt'), Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
-			Dom.addListener(Dom.id('m2_sidebar_bt'), Dom.Event.ON_CLICK, function(event) { rmCN('sidebar_menu', 'visible'); });
-			Dom.addListener(Dom.id('m1_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_home_bt', url: 'home_content.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_home_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_home_bt', url: 'home_content.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m1_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
+			Dom.addListener(Dom.id('m2_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { rmCN('sidebar_menu', 'visible'); });
+			Dom.addListener(Dom.id('m1_home_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_home_bt', url: 'home_content.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_home_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_home_bt', url: 'home_content.php', loading_area: 'main' }); });
 			// Dom.addListener(Dom.id('m1_pft_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'pft', id: 'main', menu: 'm1_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
 			// Dom.addListener(Dom.id('m2_pft_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'pft', id: 'main', menu: 'm2_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m1_pft_bt'),    Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
-			Dom.addListener(Dom.id('m2_pft_bt'),    Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "bientot ..." }); });
+			Dom.addListener(Dom.id('m1_pft_bt'),      Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
+			Dom.addListener(Dom.id('m2_pft_bt'),      Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
+			Dom.addListener(Dom.id('m1_palmares_bt'), Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
+			Dom.addListener(Dom.id('m2_palmares_bt'), Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
 <? if (!$sess_context->isUserConnected()) { ?>
-			Dom.addListener(Dom.id('m1_login_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_login_bt', url: 'login.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_login_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_login_bt', url: 'login.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m1_login_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_login_bt', url: 'login.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_login_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_login_bt', url: 'login.php', loading_area: 'main' }); });
 <? } else { ?>
 			Dom.addListener(Dom.id('m1_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_logout_bt', url: 'login_action.php?action=logout', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m2_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_logout_bt', url: 'login_action.php?action=logout', loading_area: 'main' }); });
@@ -104,6 +106,7 @@ foreach(['action'] as $key)
 	<div class="ui vertical inverted sidebar menu" id="sidebar_menu">
 		<a class="item" id="m2_sidebar_bt"><i style="float: left; margin: 0px;" class="ui inverted arrow left icon"></i>&nbsp;</a>
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
+		<a class="item" id="m2_palmares_bt"><i class="ui inverted trophy icon"></i>Palmarès</a>
 		<a class="item" id="m2_pft_bt"><i class="ui inverted briefcase icon"></i>Portfolio</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
@@ -126,6 +129,7 @@ foreach(['action'] as $key)
     			<div class="ui large secondary inverted pointing menu" id="wide_menu">
 					<a class="toc inverted item" id="m1_sidebar_bt"><i class="sidebar inverted icon"></i></a>
 					<a class="active item" id="m1_home_bt">Home</a>
+					<a class="item" id="m1_palmares_bt">Palmarès</a>
 					<a class="item" id="m1_pft_bt">Portfolio</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 					<a class="item" id="m1_users_bt">Users</a>

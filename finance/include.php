@@ -151,6 +151,38 @@ class dbc {
 //
 class calc {
 
+
+    public static function getAchatActifsDCAInvest($day, $lst_decode_symbols, $lst_actifs_achetes_pu, $invest_montant) {
+
+        $ret = array();
+
+        $ret['invest'] = $invest_montant;
+        $ret['buy'] = array();
+        $ret['valo_achats'] = 0;
+
+        foreach($lst_decode_symbols as $key => $val) {
+
+            // Si on n'a pas d'histo pour cet actif a cette date on passe ...
+            if ($lst_actifs_achetes_pu[$key] == 0) continue;
+
+            // Montant par actif à posséder
+            $montant2get = floor(intval($invest_montant) * $lst_decode_symbols[$key] / 100);
+
+            // Nombre d'actions à acheter
+            $nb_actions2buy = 0;
+            // if ($montant2get >= 0)
+            $nb_actions2buy = floor($montant2get / $lst_actifs_achetes_pu[$key]);
+
+            $ret['buy'][] = array("day" => $day, "sym" => $key, "nb" => $nb_actions2buy, "pu" => $lst_actifs_achetes_pu[$key]);
+
+            // Calcul de la valorisation des achats
+            $ret['valo_achats'] += $nb_actions2buy * $lst_actifs_achetes_pu[$key];
+        }
+
+        return $ret;
+
+    }
+
     public static function getMaxDailyHistoryQuoteDate($symbol) {
 
         $ret = date("Y-m-d");

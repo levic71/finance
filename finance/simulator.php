@@ -33,8 +33,8 @@ $capital_init = 0;
 $date_start = "0000-00-00";
 $date_end = date("Y-m-d");
 $f_retrait = 0;
-$f_montant_retrait = 0;
-$f_delai_retrait = 0;
+$f_montant_retrait = 500;
+$f_delai_retrait = 1;
 
 foreach(['f_retrait', 'f_montant_retrait', 'f_delai_retrait', 'strategie_id', 'invest', 'cycle_invest', 'date_start', 'date_end', 'capital_init'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -59,6 +59,7 @@ $perf_pf = 0;
 $maxdd_min = 999999999999;
 $maxdd_max = 0;
 $maxdd = 0;
+$retrait_cumule = 0;
 
 // Tableau pour mémoriser les ordres achats/ventes
 // $ordres["2021-08-01"] = '{ "date": "2021-08-01", "symbol": "PUST.PAR", "quantity": "20", "price": "80" }';
@@ -233,7 +234,6 @@ while($i <= date("Ym", strtotime($date_end))) {
         if ($i >=  date("Ym", strtotime((intval(substr($date_start, 0, 4)) + $f_delai_retrait)."-".substr($date_start, 5, 2)."-01"))) {
             $retrait_programme = true;
         }
-
     }
 
     // /////////////////////////////////////////////
@@ -282,10 +282,11 @@ while($i <= date("Ym", strtotime($date_end))) {
                 $detail["tr_onclick"] = "Swal.fire({ title: '".$info_title."', icon: 'info', html: '".$info_content."' });";
                 $detail["td_day"]     = $auMoinsUnActif ? $data["stocks"][$best_quote]["ref_day"] : $day;
 
+                $pu = calc::getDailyHistoryQuote($actifs_achetes_symbol, $data["stocks"][$best_quote]["ref_day"]);
+
                 // Vente anciens actifs si different du nouveau plus performant
                 if ($auMoinsUnActif && $actifs_achetes_nb > 0 && $actifs_achetes_symbol != $best_quote) {
 
-                    $pu = calc::getDailyHistoryQuote($actifs_achetes_symbol, $data["stocks"][$best_quote]["ref_day"]);
                     $cash += $actifs_achetes_nb * $pu;
 
                     $perf_pf = round(($pu - $actifs_achetes_pu)*100/$actifs_achetes_pu, 2);
@@ -313,9 +314,31 @@ while($i <= date("Ym", strtotime($date_end))) {
                     $detail["td_perf_vendu_val"] = "0";
                 }
 
-                // Retrait programmé ?
+                // Retrait programmé
                 if ($retrait_programme) {
-                    echo $i."<br />";
+
+                    // Retrait de l'invest precedent ajouté
+                    $cash       -= $invest;
+                    $sum_invest -= $invest;
+
+                    // Ajustement retrait cumulé
+                    $retrait_cumule += intval($f_montant_retrait);
+
+                    // On ampule le cash du retrait
+                    if ($cash <= intval($f_montant_retrait)) {
+
+                        if ($auMoinsUnActif && ($actifs_achetes_nb * $pu) > intval($f_montant_retrait)) {
+
+                            // Calcul nb actifs a vendre
+                            $nb_actifs_a_vendre = floor(intval($f_montant_retrait) / $pu);
+
+                            // Ajustement du nb d'actifs detenu
+                            $actifs_achetes_nb -= $nb_actifs_a_vendre;
+
+                        }
+
+                    }
+                    
                 }
 
                 // Achat nouveaux actifs
@@ -343,7 +366,7 @@ while($i <= date("Ym", strtotime($date_end))) {
                 }
 
                 $valo_pf = round($cash+($actifs_achetes_nb * $actifs_achetes_pu), 2);
-                $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
+                $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_cumule - $sum_invest)*100/$sum_invest, 2);
 
                 $detail["td_cash"]          = sprintf("%.2f", round($cash, 2)).$curr;
                 $detail["td_valo_pf"]       = sprintf("%.2f", $valo_pf).$curr;
@@ -364,65 +387,72 @@ while($i <= date("Ym", strtotime($date_end))) {
         if ($row['methode'] == 2) {
 
             $curr = "&euro;";
-            $valo_pf = 0;
+            $recap_actifs_portefeuille = "";
 
-            // Valeur de chaque actif au jour J & calcul valorisation portefeuille
-            foreach($lst_actifs_achetes_nb as $key => $val) {
-                // Recupereration de la dernière cotation du mois de chaque valeur
+            // Recupereration de la dernière cotation du mois de chaque valeur
+            foreach($lst_actifs_achetes_nb as $key => $val)
                 $lst_actifs_achetes_pu[$key] = calc::getLastMonthDailyHistoryQuote($key, $day);
-                $valo_pf += $lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key];
-            }
-            
-            $valo_pf_avant_invest = $valo_pf + $cash;
-            $valo_pf = 0;
 
             // Retrait programmé ?
             if ($retrait_programme) {
-                echo $i."<br />";
+
+                // Retrait de l'invest precedent ajouté
+                $sum_invest -= $invest;
+
+                // Ajustement retrait cumulé
+                $retrait_cumule += intval($f_montant_retrait);
+
+                // Il faut determiner combien de chaque action il faut vendre et les retirer du portfolio pour un montant de f_montant_retrait
+                $panier = calc::getAchatActifsDCAInvest($day, $lst_decode_symbols['quotes'], $lst_actifs_achetes_pu, $f_montant_retrait);
+
+                // Intégration des ventes au portefeuille
+                foreach($panier["buy"] as $key => $val) {
+                    $symbol = $val['sym'];
+
+                    // Memorisation ordres
+                    $ordres[$day.":".$symbol] = '{ "date": "'.$day.'", "action": "Vente", "symbol": "'.$symbol.'", "quantity": "'.abs($val['nb']).'", "price": "'.$val['pu'].'", "currency": "'.$curr.'" }';
+
+                    // Ajustement du nb d'actif detenu
+                    $lst_actifs_achetes_nb[$symbol] -= $val['nb'] > $lst_actifs_achetes_nb[$symbol] ? $lst_actifs_achetes_nb[$symbol] : $val['nb'];
+                }
+
+            } else {
+
+                // Combien on achete de chaque actif en DCA
+                $panier = calc::getAchatActifsDCAInvest($day, $lst_decode_symbols['quotes'], $lst_actifs_achetes_pu, $cash);
+
+                // Intégration des achats au portefeuille
+                foreach($panier["buy"] as $key => $val) {
+                    $symbol = $val['sym'];
+
+                    // Memorisation ordres
+                    $ordres[$day.":".$symbol] = '{ "date": "'.$day.'", "action": "'.($val['nb'] >= 0 ? "Achat" : "Vente").'", "symbol": "'.$symbol.'", "quantity": "'.abs($val['nb']).'", "price": "'.$val['pu'].'", "currency": "'.$curr.'" }';
+
+                    // Cumul des actions acquises + achetees
+                    $lst_actifs_achetes_nb[$symbol] += $val['nb'];
+
+                    // Calcul cash restant
+                    $cash -= $val['nb'] * $val['pu'];
+                }
             }
-            
-            $lib_ordres_achats = "";
-            $cash_ref = $cash;
-            // Combien on achete de chaque ?
-            foreach($lst_actifs_achetes_nb as $key => $val) {
 
-                // Si on n'a pas d'histo pour cet actif a cette date on passe ...
-                if ($lst_actifs_achetes_pu[$key] == 0) continue;
-
-                // Montant par actif à posséder
-                $montant = floor($valo_pf_avant_invest * $lst_decode_symbols['quotes'][$key] / 100);
-
-                // Montant à acheter
-                $montant2get = $montant - ($lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key]);
-
-                $nb_actions2buy = 0;
-                // Nombre d'actions à acheter
-                // if ($montant2get >= 0)
-                    $nb_actions2buy = floor($montant2get / $lst_actifs_achetes_pu[$key]);
-
-                // Memorisation ordres
-                $ordres[$day.":".$key] = '{ "date": "'.$day.'", "action": "'.($nb_actions2buy >= 0 ? "Achat" : "Vente").'", "symbol": "'.$key.'", "quantity": "'.abs($nb_actions2buy).'", "price": "'.$lst_actifs_achetes_pu[$key].'", "currency": "'.$curr.'" }';
-
-                // if ($nb_actions2buy > 0)
-                    $lib_ordres_achats .= ($lib_ordres_achats == "" ? "" : ", ").($lst_actifs_achetes_nb[$key]+$nb_actions2buy)." [".$key."] à ".$lst_actifs_achetes_pu[$key].$curr;
-
-                // Cumul des actions acquises + achetees
-                $lst_actifs_achetes_nb[$key] += $nb_actions2buy;
-
+            $valo_pf = 0;
+            foreach($lst_decode_symbols['quotes'] as $key => $val) { 
                 // Calcul de la valorisation du portefeuille
                 $valo_pf += $lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key];
 
-                // Calcul cash restant
-                $cash -= $nb_actions2buy * $lst_actifs_achetes_pu[$key];
+                // Recap actifs dans portefeuille
+                // if ($nb_actions2buy > 0)
+                $recap_actifs_portefeuille .= ($recap_actifs_portefeuille == "" ? "" : ", ").$lst_actifs_achetes_nb[$key]." [".$key."] à ".$lst_actifs_achetes_pu[$key].$curr;
             }
 
             // Performance 
-            $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
+            $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_cumule - $sum_invest)*100/$sum_invest, 2);
             
             $detail['tr_onclick']   = "";
             $detail['td_day']       = $day;
             $detail['td_cash']      = sprintf("%.2f", round($cash, 2)).$curr;
-            $detail['td_ordres']    = $lib_ordres_achats;
+            $detail['td_ordres']    = $recap_actifs_portefeuille;
             $detail['td_valo_pf']   = sprintf("%.2f", round($valo_pf, 2)).$curr;
             $detail['td_perf_glob'] = sprintf("%.2f", $perf_pf)."%";
             $detail["td_perf_glob_val"] = $perf_pf;
@@ -452,16 +482,28 @@ while($i <= date("Ym", strtotime($date_end))) {
         $pu_action_RC = calc::getLastMonthDailyHistoryQuote($sym_RC, $day);
 
         // Achat actif
-        $nb_actions2buy = floor($cash_RC / $pu_action_RC);
-        $cash_RC -= $nb_actions2buy*$pu_action_RC;
-        $nb_actions_RC += $nb_actions2buy;
+        if ($retrait_programme) {
+            // Retrait de l'invest precedent ajouté
+            $cash_RC -= $invest;
+            // Vente actifs pour retrait
+            $nb_actions2sell = floor($f_montant_retrait / $pu_action_RC);
+            // Ajustement du nb d'actifs en possession
+            $nb_actions_RC -= $nb_actions2sell > $nb_actions_RC ? $nb_actions_RC : $nb_actions2sell;
+        } else {
+            // Achat nouveaux actifs
+            $nb_actions2buy = floor($cash_RC / $pu_action_RC);
+            // Ajustement du cash dispo
+            $cash_RC -= $nb_actions2buy*$pu_action_RC;
+            // Ajustement du nb d'actifs en possession
+            $nb_actions_RC += $nb_actions2buy;
+        }
 
         // Valorisation portefeuille RC
         $valo_pf_RC = ($nb_actions_RC * $pu_action_RC) + $cash_RC;
         $tab_valo_RC[] = $valo_pf_RC;
 
         // Performance 
-        $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC - $sum_invest)*100/$sum_invest, 2);
+        $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC + $retrait_cumule - $sum_invest)*100/$sum_invest, 2);
 
         $maxdd_RC = min($maxdd_RC, $perf_pf_RC);
 
@@ -483,7 +525,8 @@ while($i <= date("Ym", strtotime($date_end))) {
 if ($row['methode'] == 1) {
     $valo_pf = round($cash+($actifs_achetes_nb * $actifs_achetes_pu), 2);
 }
-$perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf - $sum_invest)*100/$sum_invest, 2);
+
+$perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_cumule - $sum_invest)*100/$sum_invest, 2);
 
 $final_info = '
     <table id="sim_final_info">
@@ -502,16 +545,16 @@ $final_info = '
         <td>'.sprintf("%.2f", $sum_invest).' &euro;</td>
         <td class="'.($perf_pf >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf).' %</td>
         <td class="'.($maxdd >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $maxdd).' %</td>
-        <td>0&euro;</td>
+        <td>'.sprintf("%.2f", $retrait_cumule).' &euro;</td>
         <td>'.count(tools::getMonth($date_start, $date_end)).' mois</td>
     </tr>
     <tr>
         <td>Benchmark</td>
         <td>'.sprintf("%.2f", $valo_pf_RC).' &euro;</td>
         <td>'.sprintf("%.2f", $sum_invest).' &euro;</td>
-        <td class="'.($perf_pf >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf_RC).' %</td>
+        <td class="'.($perf_pf_RC >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf_RC).' %</td>
         <td class="'.($maxdd_RC >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $maxdd_RC).' %</td>
-        <td>0&euro;</td>
+        <td>'.sprintf("%.2f", $retrait_cumule).' &euro;</td>
         <td>'.count(tools::getMonth($date_start, $date_end)).' mois</td>
     </tr>
     </table>
@@ -688,7 +731,7 @@ var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options2, p
 <? if ($row['methode'] == 1)
     echo '<th>Vente</th><th>Nb</th><th>PU</th><th>Perf</th><th>Achat</th><th>Nb</th><th>PU</th>';
 else
-    echo '<th>Ordres d\'achat</th><th></th><th></th><th></th><th></th><th></th><th></th>';
+    echo '<th>Actifs en portefeuille</th><th></th><th></th><th></th><th></th><th></th><th></th>';
 ?>
                 <th>Valorisation</th>
                 <th>Perf</th>
