@@ -34,11 +34,11 @@ if ($handle)
     while (!feof($handle))
     {
         $buffer = fgets($handle);
-        if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "[OK]") && stripos($buffer, "INFO") && stripos($buffer, "getData"))
+        if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "[OK]") && stripos($buffer, "INFO") && stripos($buffer, "getData") && !stripos($buffer, "[No update]"))
             $matches_info[] = $buffer;
-        else if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "WARN"))
+        else if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "WARN") && !stripos($buffer, "[No update]"))
             $matches_warn[] = $buffer;
-        else if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "ERROR"))
+        else if(stripos($buffer, date("d-M-Y")) && stripos($buffer, $searchthis) && stripos($buffer, "ERROR") && !stripos($buffer, "[No update]"))
             $matches_error[] = $buffer;
     }
     fclose($handle);
