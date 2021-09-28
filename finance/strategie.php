@@ -98,14 +98,14 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 						<div class="ui inverted labeled input">
 							<div class="ui inverted basic label">Nb actifs</div>
 							<select id="f_nb_symbol_max" class="ui selection dropdown">
-								<? foreach (range(1, 6) as $number) echo "<option value=\"".$number."\" ".($number == $nb_symbol ? "selected=\"selected\"" : "").">".$number."</option>"; ?>
+								<? foreach (range(1, 7) as $number) echo "<option value=\"".$number."\" ".($number == $nb_symbol ? "selected=\"selected\"" : "").">".$number."</option>"; ?>
 							</select>
                     	</div>
 					</div>
                 </div>
 
 				<div id="symbol_area" class="wide column <?= $row['methode'] == 1 ? "bestof" : "" ?>">
-<? foreach (range(1, 6) as $number) { ?>
+<? foreach (range(1, 7) as $number) { ?>
 					<div id="symbol_choice_<?= $number ?>" class="inverted field <?= $number > $nb_symbol ? "hide" : "" ?>">
 						<div class="ui inverted labeled input">
 							<div id="f_symbol_choice_<?= $number ?>_error" class="ui inverted basic label"><?= $number ?></div>
@@ -139,8 +139,8 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 <script>
 	Dom.addListener(Dom.id('f_methode'), Dom.Event.ON_CHANGE, function(event) { rmCN('symbol_area', 'bestof'); if (this.value == 1) addCN('symbol_area', 'bestof'); });
 	Dom.addListener(Dom.id('f_nb_symbol_max'), Dom.Event.ON_CHANGE, function(event) {
-		for(i = 1; i <= 6; i++) { rmCN('symbol_choice_'+i, 'hide'); }
-		for(i = parseInt(this.value)+1; i <= 6; i++) { addCN('symbol_choice_'+i, 'hide'); }
+		for(i = 1; i <= 7; i++) { rmCN('symbol_choice_'+i, 'hide'); }
+		for(i = parseInt(this.value)+1; i <= 7; i++) { addCN('symbol_choice_'+i, 'hide'); }
 	});
 	Dom.addListener(Dom.id('strategie_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'strategie_cancel_bt' }); });
 	Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
@@ -178,7 +178,7 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 			return;
 		}
 
-		params = '?action=<?= $action ?>&'+attrs(['strategie_id', 'f_name', 'f_methode', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6']);
+		params = '?action=<?= $action ?>&'+attrs(['strategie_id', 'f_name', 'f_methode', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']);
 		go({ action: 'home', id: 'main', url: 'strategie_action.php'+params, loading_area: 'strategie_<?= $libelle_action_bt ?>_bt' });
 	});
 	Dom.addListener(Dom.id('strategie_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'strategie_action.php?action=del&strategie_id=<?= $strategie_id ?>', loading_area: 'strategie_delete_bt', confirmdel: 1 }); });
