@@ -58,7 +58,6 @@ while($row = mysqli_fetch_array($res)) {
         // Mise à jour de la cote de l'actif avec la donnée GSheet
         if (isset($values[$row['symbol']])) {
             $ret = updateQuotesWithGSData($values[$row['symbol']]);
-            logger::info("GSHEET", $row['symbol'], $ret);
         } else {
             // Calcul des MMX/RSI/D/W/M (1 fois par jour => controle dans la fonction) (fct incluse dans updateQuotesWithGSData)
             computeIndicators($row['symbol'], 0, 1);
