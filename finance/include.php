@@ -450,7 +450,7 @@ class aafinance {
     public static $apikey = "ZFO6Y0QL00YIG7RH";
     public static $apikey_local = "X6K6Z794TD321PTH";
 
-    public static function getData($function, $options) {
+    public static function getData($function, $symbol, $options) {
 
         global $dbg, $dbg_data;
 
@@ -463,39 +463,41 @@ class aafinance {
         }
 
         if (isset($data['Error Message'])) {
-            logger::error("ALPHAV", "getData", "[".$function."] [".$options."] [".$data['Error Message']."]");
-            throw new RuntimeException($data['Error Message'], 1);
+            logger::error("ALPHAV", $symbol, "[".$function."] [".$options."] [".$data['Error Message']."]");
+//            throw new RuntimeException($data['Error Message'], 1);
         } elseif (isset($data['Note'])) {
-            logger::warning("ALPHAV", "getData", "[".$function."] [".$options."] [".$data['Note']."]");
-            throw new RuntimeException($data['Note'], 2);
+            logger::warning("ALPHAV", $symbol, "[".$function."] [".$options."] [".$data['Note']."]");
+//            throw new RuntimeException($data['Note'], 2);
         } else {
-            logger::info("ALPHAV", "getData", "[".$function."] [".$options."] [OK]");
-            return $data;
+            logger::info("ALPHAV", $symbol, "[".$function."] [".$options."] [OK]");
+//            return $data;
         }
+
+        return $data;
     }
 
     public static function getOverview($symbol, $options = "") {    
-        return self::getData("OVERVIEW", "symbol=".$symbol.($options == "" ? "" : "&").$options);
+        return self::getData("OVERVIEW", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getIntraday($symbol, $options = "") {    
-        return self::getData("TIME_SERIES_INTRADAY", "symbol=".$symbol.($options == "" ? "" : "&").$options);
+        return self::getData("TIME_SERIES_INTRADAY", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getDailyTimeSeries($symbol, $options = "") {
-        return self::getData("TIME_SERIES_DAILY", "symbol=".$symbol.($options == "" ? "" : "&").$options);
+        return self::getData("TIME_SERIES_DAILY", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getDailyTimeSeriesAdjusted($symbol, $options = "") {
-        return self::getData("TIME_SERIES_DAILY_ADJUSTED", "symbol=".$symbol.($options == "" ? "" : "&").$options);
+        return self::getData("TIME_SERIES_DAILY_ADJUSTED", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getQuote($symbol, $options = "") {    
-        return self::getData("GLOBAL_QUOTE", "symbol=".$symbol.($options == "" ? "" : "&").$options);
+        return self::getData("GLOBAL_QUOTE", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function searchSymbol($str, $options = "") {    
-        return self::getData("SYMBOL_SEARCH", "keywords=".$str.($options == "" ? "" : "&").$options);
+        return self::getData("SYMBOL_SEARCH", $str, "keywords=".$str.($options == "" ? "" : "&").$options);
     }
 
 }
@@ -551,28 +553,23 @@ class cacheData {
 
     public static function buildCacheOverview($symbol) {
 
-        $msg = "";
         $file_cache = 'cache/OVERVIEW_'.$symbol.'.json';
-        if (self::refreshCache($file_cache, -1)) {
+        if (self::refreshCache($file_cache, 600)) {
             try {
                 $data = aafinance::getOverview($symbol);
         
-                $msg = "[Overview] => ";
                 $fp = fopen($file_cache, 'w');
                 fwrite($fp, json_encode($data));
                 fclose($fp);
-    
-                $msg .= "CACHE refresh Ok";
-    
+        
             } catch(RuntimeException $e) { }
         }
         else
-            logger::info("CRON", $symbol, "[Overview] [No update]");    
+            logger::info("CACHE", $symbol, "[OVERVIEW] [No update]");    
     }
 
     public static function buildCacheIntraday($symbol) {
 
-        $msg = "";
         $file_cache = 'cache/INTRADAY_'.$symbol.'.json';
         if (self::refreshCache($file_cache, 600)) {
             try {
@@ -580,102 +577,83 @@ class cacheData {
 
                 // Delete old entries for symbol before insert new ones ?
         
-                $msg = "[Intraday] => Update DB NOk";
                 if (isset($data["Time Series (60min)"])) {
                     foreach($data["Time Series (60min)"] as $key => $val) {
                         $update = "INSERT INTO intraday (symbol, day, open, high, low, close, volume) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. volume']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', volume='".$val['5. volume']."'";
                         $res2 = dbc::execSql($update);
                     }
-                    $msg = "[Intraday] => Update DB Ok";
                 }
     
                 $fp = fopen($file_cache, 'w');
                 fwrite($fp, json_encode($data));
                 fclose($fp);
     
-                $msg .= ", CACHE refresh Ok";
-    
             } catch(RuntimeException $e) { }
         }
         else
-            logger::info("CRON", $symbol, "[Intraday] [No update]");    
+            logger::info("CACHE", $symbol, "[INTRADAY] [No update]");    
     }
 
     public static function buildCacheDailyTimeSeriesAdjusted($symbol, $full = true) {
 
-        $msg = "";
-        $extension = $full ? 'FULL' : "COMPACT";
-        $file_cache = 'cache/DAILY_TIME_SERIES_ADJUSTED_'.$extension.'_'.$symbol.'.json';
+        $file_cache = 'cache/DAILY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
 
-        if ($full ? self::refreshCache($file_cache, -1) : self::refreshOnceADayCache($file_cache)) {
+        if (self::refreshOnceADayCache($file_cache)) {
             try {
                 $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
     
-                if (is_array($data) && count($data) == 0) logger::warning("CRON", $symbol, "Array empty, manual db update needed !!!");
+                if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
-                $msg = "[Daily Time Series Adjusted ".($full ? "FULL" : "COMPACT")."] => Update DB NOk";
                 if (isset($data["Time Series (Daily)"])) {
                     foreach($data["Time Series (Daily)"] as $key => $val) {
                         $update = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."', '".$val['8. split coefficient']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."', split_coef='".$val['8. split coefficient']."'";
                         $res2 = dbc::execSql($update);
                     }
-                    $msg = "[Daily Time Series Adjusted ".($full ? "FULL" : "COMPACT")."] => Update DB Ok";
                 }
     
                 $fp = fopen($file_cache, 'w');
                 fwrite($fp, json_encode($data));
                 fclose($fp);
-    
-                $msg .= ", CACHE refresh Ok";
-    
+        
             } catch(RuntimeException $e) { }
         }
         else
-            logger::info("ALPHAV", $symbol, "[Daily Time Series Adjusted ".($full ? "FULL" : "COMPACT")."] [No update]");
+            logger::info("CACHE", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
     }
 
     public static function buildCacheQuote($symbol) {
 
-        $msg = "";
         $file_cache = 'cache/QUOTE_'.$symbol.'.json';
         if (self::refreshOnceADayCache($file_cache)) {
             try {
                 $data = aafinance::getQuote($symbol);
         
-                $msg = "[Quote] => Update DB NOk";
                 if (isset($data["Global Quote"])) {
                     $val = $data["Global Quote"];
                     $update = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$symbol."', '".$val['02. open']."', '".$val['03. high']."', '".$val['04. low']."', '".$val['05. price']."', '".$val['06. volume']."', '".$val['07. latest trading day']."', '".$val['08. previous close']."', '".$val['09. change']."', '".$val['10. change percent']."') ON DUPLICATE KEY UPDATE open='".$val['02. open']."', high='".$val['03. high']."', low='".$val['04. low']."', price='".$val['05. price']."', volume='".$val['06. volume']."', day='".$val['07. latest trading day']."', previous='".$val['08. previous close']."', day_change='".$val['09. change']."', percent='".$val['10. change percent']."'";
                     $res2 = dbc::execSql($update);
-                    $msg = "[Quote] => Update DB Ok";
                 }
     
                 $fp = fopen($file_cache, 'w');
                 fwrite($fp, json_encode($data));
                 fclose($fp);
-    
-                $msg .= ", CACHE refresh Ok";
-    
+        
             } catch(RuntimeException $e) { }
         }
         else
-            logger::info("CRON", $symbol, "[Quote] [No update]");
+            logger::info("CACHE", $symbol, "[GLOBAL_QUOTE] [No update]");
     }
 
-    public static function buildAllsCachesSymbol($symbol) {
+    public static function buildAllsCachesSymbol($symbol, $full = false) {
 
         // OVERVIEW
         self::buildCacheOverview($symbol);
 
-        // FULL HISTORIQUE
-        self::buildCacheDailyTimeSeriesAdjusted($symbol, true);
-
-        // COMPACT HISTORIQUE
-        self::buildCacheDailyTimeSeriesAdjusted($symbol, false);
+        // HISTORIQUE
+        self::buildCacheDailyTimeSeriesAdjusted($symbol, $full);
 
         // COTATION
         self::buildCacheQuote($symbol);
-        // self::buildCacheIntraday($symbol);
 
     }
 

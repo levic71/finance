@@ -102,6 +102,19 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 							</select>
                     	</div>
 					</div>
+	                <div class="inverted field">
+						<table><tr>
+						<td><div class="ui inverted labeled input">
+							<div class="ui inverted basic label">Par défaut</div>
+                    	</div></td>
+						<td><div class="ui inverted labeled checkbox">
+                            <div class="ui fitted toggle checkbox">
+                                <input id="f_common" type="checkbox" <?= $row["defaut"] == 1 ? 'checked="checked"' : '' ?>>
+                                <label></label>
+                            </div>
+                    	</div></td>
+						</tr></table>
+					</div>
                 </div>
 
 				<div id="symbol_area" class="wide column <?= $row['methode'] == 1 ? "bestof" : "" ?>">
@@ -178,7 +191,7 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 			return;
 		}
 
-		params = '?action=<?= $action ?>&'+attrs(['strategie_id', 'f_name', 'f_methode', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']);
+		params = '?action=<?= $action ?>&'+attrs(['strategie_id', 'f_name', 'f_methode', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
 		go({ action: 'home', id: 'main', url: 'strategie_action.php'+params, loading_area: 'strategie_<?= $libelle_action_bt ?>_bt' });
 	});
 	Dom.addListener(Dom.id('strategie_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'strategie_action.php?action=del&strategie_id=<?= $strategie_id ?>', loading_area: 'strategie_delete_bt', confirmdel: 1 }); });

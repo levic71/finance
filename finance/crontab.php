@@ -33,6 +33,8 @@ if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
     <pre style="width: 100%; height: 500px; overflow: scroll;">
 <?
 
+logger::info("CRON", "BEGIN", "###########################################################");
+
 // Parcours des actifs suivis
 $req = "SELECT * FROM stocks ORDER BY symbol";
 $res = dbc::execSql($req);
@@ -47,24 +49,30 @@ while($row = mysqli_fetch_array($res)) {
     $dateTimestamp1 = strtotime(date("Y-m-d ".$row['marketopen']));
     $dateTimestamp2 = strtotime(date("Y-m-d ".$row['marketclose']));
 
-    // Place de marche ouverte ?
+    // Market Open ?
     if (tools::isLocalHost() || ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2)) {
+
+        // Mise a jour des caches
         cacheData::buildAllsCachesSymbol($row['symbol']);
-        if (isset($values[$row['symbol']])) echo updateQuotesWithGSData($values[$row['symbol']]);
+
+        // Mise à jour de la cote de l'actif avec la donnée GSheet
+        if (isset($values[$row['symbol']])) {
+            $ret = updateQuotesWithGSData($values[$row['symbol']]);
+            logger::info("GSHEET", $row['symbol'], $ret);
+        } else {
+            // Calcul des MMX/RSI/D/W/M (1 fois par jour => controle dans la fonction) (fct incluse dans updateQuotesWithGSData)
+            computeIndicators($row['symbol'], 0, 1);
+        }
     }
     else
         logger::info("CRON", $row['symbol'], "[buildAllsCachesSymbol] [Market close] [No update]");
 
-/*     $req2 = "SELECT count(*) total FROM indicators WHERE symbol='".$row['symbol']."'";
-    $res2 = dbc::execSql($req2);
-    $row2 = mysqli_fetch_array($res2);
-    $limited = ($row2 && $row2['total'] == 0) ? 0 : 1;
- */
+        logger::info("CRON", "---------", "---------------------------------------------------------");
 
-    $limited = 0;
-    // Calcul des MMX/RSI/D/W/M (1 fois par jour => controle dans la fonction)
-    computeIndicators($row['symbol'], $limited);
 }
+
+logger::info("CRON", "END", "###########################################################");
+
 
 ?>
     </pre>

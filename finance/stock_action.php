@@ -38,9 +38,9 @@ if ($action == "add") {
         $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
         $res = dbc::execSql($req);
 
-        cacheData::buildAllsCachesSymbol($symbol);
+        cacheData::buildAllsCachesSymbol($symbol, true);
 
-        computeIndicators($symbol, 0, 1);
+        computeIndicators($symbol, 0, 0);
     }
 }
 
@@ -68,7 +68,7 @@ if ($action == "upt") {
             unlink('cache/QUOTE_'.$symbol.'.json');
             cacheData::buildCacheQuote($symbol);
 
-            computeIndicators($symbol, 0, 1);
+            computeIndicators($symbol, 0, 0);
 
         } catch (RuntimeException $e) {
             if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());

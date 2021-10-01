@@ -80,17 +80,18 @@ function isComputeDoneToday($symbol) {
     return count($matches) > 0 ? true : false;
 }
 
-function computeIndicators($filter_symbol, $filter_limited, $reset = 0) {
+// //////////////////////////////////////////////////////////////
+// Calcul MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
+// //////////////////////////////////////////////////////////////
+function computeIndicators($filter_symbol, $filter_limited, $crontab_call = 0) {
 
     // Parcours des actifs suivis
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$filter_symbol."%\"";
     $res = dbc::execSql($req);
     while($row = mysqli_fetch_array($res)) {
 
-        // Si limited=1 calcul une fois par jour
-        if ($reset == 0 && isComputeDoneToday($row['symbol'])) continue;
-
-        logger::info("INDS", $row['symbol'], "BEGIN COMPUTE INDICATORS");
+        // Si reset=0 calcul une fois par jour
+        if ($crontab_call == 1 && isComputeDoneToday($row['symbol'])) continue;
 
         $tab_daily_day     = array();
         $tab_daily_close   = array();
@@ -112,12 +113,8 @@ function computeIndicators($filter_symbol, $filter_limited, $reset = 0) {
         // On stocke les cours indexés avec la date pour utilisation calcul
         $tab_daily_close_by_day = array();
 
-        if ($filter_limited == 0)
-            $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$row['symbol']."\"";
-        else
-            $req2 = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$row['symbol']."\" ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC";
+        $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$row['symbol']."\"".($filter_limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
         $res2= dbc::execSql($req2);
-
         while($row2 = mysqli_fetch_array($res2)) {
 
             // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
@@ -256,7 +253,7 @@ function computeIndicators($filter_symbol, $filter_limited, $reset = 0) {
             $res3= dbc::execSql($insert);
         }
 
-        logger::info("INDS", $row['symbol'], date("Ymd").":".$row['symbol'].":daily=".count($tab_daily_day).":weekly=".count($tab_days_weeks_lastday).":monthly=".count($tab_days_months_lastday));
+        logger::info("INDIC", $row['symbol'], "[daily=".count($tab_daily_day)."] [weekly=".count($tab_days_weeks_lastday)."] [monthly=".count($tab_days_months_lastday)."]");
     }
 }
 
@@ -265,8 +262,9 @@ $force = 0;
 $limited = 0;
 $filter = "";
 $reset = 0;
+$crontab_call = 0;
 
-foreach(['force', 'limited', 'filter', 'reset'] as $key)
+foreach(['force', 'reset', 'limited', 'filter', 'crontab_call'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -277,7 +275,7 @@ if ($reset == 1) {
 }
 
 if ($force == 1) {
-    computeIndicators($filter, $limited, $reset);
+    computeIndicators($filter, $limited, $crontab_call);
     echo "Done";
 }
 
