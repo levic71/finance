@@ -7,7 +7,6 @@ header( 'content-type: text/html; charset=iso-8859-1' );
 
 $dbg = false;
 $dbg_data = false;
-$force_no_cache = true;
 
 // On place la timezone à UTC pour pouvoir gerer les fuseaux horaires des places boursieres
 date_default_timezone_set("UTC");
@@ -462,15 +461,15 @@ class aafinance {
             print("<pre>".$json."</pre>");
         }
 
+        $data['status'] = 0;
         if (isset($data['Error Message'])) {
+            $data['status'] = 2;
             logger::error("ALPHAV", $symbol, "[".$function."] [".$options."] [".$data['Error Message']."]");
-//            throw new RuntimeException($data['Error Message'], 1);
         } elseif (isset($data['Note'])) {
+            $data['status'] = 1;
             logger::warning("ALPHAV", $symbol, "[".$function."] [".$options."] [".$data['Note']."]");
-//            throw new RuntimeException($data['Note'], 2);
         } else {
             logger::info("ALPHAV", $symbol, "[".$function."] [".$options."] [OK]");
-//            return $data;
         }
 
         return $data;
@@ -517,13 +516,19 @@ class cacheData {
         file_put_contents($file, json_encode($data));
     }
 
+    public static function writeData($file, $data) {
+        $fp = fopen($file, 'w');
+        fwrite($fp, json_encode($data));
+        fclose($fp);
+    }
+
     public static function refreshCache($filename, $timeout) {
 
-        global $force_no_cache;
 
-        $update_cache = $force_no_cache ? true : false;
+        $update_cache = false;
 
         if (file_exists($filename)) {
+
             $fp = fopen($filename, "r");
             $fstat = fstat($fp);
             fclose($fp);
@@ -554,18 +559,14 @@ class cacheData {
     public static function buildCacheOverview($symbol) {
 
         $file_cache = 'cache/OVERVIEW_'.$symbol.'.json';
-        if (self::refreshCache($file_cache, 600)) {
-            try {
-                $data = aafinance::getOverview($symbol);
-        
-                $fp = fopen($file_cache, 'w');
-                fwrite($fp, json_encode($data));
-                fclose($fp);
-        
-            } catch(RuntimeException $e) { }
+
+        if (self::refreshOnceADayCache($file_cache)) {
+            $data = aafinance::getOverview($symbol);
+            if ($data['status'] == 0) cacheData::writeData($file_cache, $data);
         }
         else
-            logger::info("CACHE", $symbol, "[OVERVIEW] [No update]");    
+            logger::info("CACHE", $symbol, "[OVERVIEW] [No update]");
+
     }
 
     public static function buildCacheIntraday($symbol) {

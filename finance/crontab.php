@@ -67,7 +67,7 @@ while($row = mysqli_fetch_array($res)) {
     else
         logger::info("CRON", $row['symbol'], "[buildAllsCachesSymbol] [Market close] [No update]");
 
-        logger::info("CRON", "---------", "---------------------------------------------------------");
+    logger::info("CRON", "---------", "---------------------------------------------------------");
 
 }
 
