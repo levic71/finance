@@ -109,12 +109,15 @@ foreach($matches_error as $key => $val) echo $val;
 
 
 <script>
-hide('log_view');
-hide('users_view');
-hide('alpha_view');
-Dom.addListener(Dom.id('admin_reset_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'admin', id: 'main', url: 'admin.php?action=reset', loading_area: 'main' }); });
-Dom.addListener(Dom.id('admin_refresh_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'admin', id: 'main', url: 'googlesheet/sheet.php?force=1', loading_area: 'main' }); });
-Dom.addListener(Dom.id('admin_cron_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'admin', id: 'main', url: 'crontab.php', loading_area: 'main' }); });
+hideAllView = function() {
+    hide('log_view');
+    hide('users_view');
+    hide('alpha_view');
+}
+hideAllView();
+Dom.addListener(Dom.id('admin_reset_bt'), Dom.Event.ON_CLICK, function(event) { hideAllView(); go({ action: 'admin', id: 'main', url: 'admin.php?action=reset', loading_area: 'main' }); });
+Dom.addListener(Dom.id('admin_refresh_bt'), Dom.Event.ON_CLICK, function(event) { hideAllView(); go({ action: 'admin', id: 'main', url: 'googlesheet/sheet.php?force=1', loading_area: 'main' }); });
+Dom.addListener(Dom.id('admin_cron_bt'), Dom.Event.ON_CLICK, function(event) { hideAllView(); go({ action: 'admin', id: 'main', url: 'crontab.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('log_eye_bt'), Dom.Event.ON_CLICK, function(event) { toogle('log_view'); });
 Dom.addListener(Dom.id('users_eye_bt'), Dom.Event.ON_CLICK, function(event) { toogle('users_view'); });
 Dom.addListener(Dom.id('alpha_eye_bt'), Dom.Event.ON_CLICK, function(event) { toogle('alpha_view'); });

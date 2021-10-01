@@ -105,13 +105,10 @@ function updateQuotesWithGSData($val) {
 	if ($row['total'] == 1 && is_numeric($val[2])) {
 
 		$req = "UPDATE quotes SET price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."', day='".date("Y-m-d")."' WHERE symbol='".$symbol."'";
-		$ret = "[price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."']";
+		$ret = "[QUOTES] [price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."']";
 		$res = dbc::execSql($req);
 
 		logger::info("GSHEET", $symbol, $ret);
-
-		// Est-ce qu'on est obligé de mettre à jour toutes les 10' ?
-		computeIndicators($symbol, 0, 0);
 	}
 
 	return $ret;

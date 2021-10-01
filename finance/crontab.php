@@ -30,7 +30,6 @@ if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
 <div class="ui container inverted segment">
 
-    <pre style="width: 100%; height: 500px; overflow: scroll;">
 <?
 
 logger::info("CRON", "BEGIN", "###########################################################");
@@ -56,12 +55,17 @@ while($row = mysqli_fetch_array($res)) {
         cacheData::buildAllsCachesSymbol($row['symbol']);
 
         // Mise à jour de la cote de l'actif avec la donnée GSheet
-        if (isset($values[$row['symbol']])) {
+        if (isset($values[$row['symbol']]))
             $ret = updateQuotesWithGSData($values[$row['symbol']]);
-        } else {
-            // Calcul des MMX/RSI/D/W/M (1 fois par jour => controle dans la fonction) (fct incluse dans updateQuotesWithGSData)
+        else
+            logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data] [No update]");
+
+
+        // Calcul des MMX/RSI/D/W/M (1 fois par jour)
+        if (!cacheData::isComputeIndicatorsDoneToday($row['symbol']))
             computeIndicators($row['symbol'], 0, 1);
-        }
+        else
+            logger::info("INDIC", $row['symbol'], "[computeIndicators] [Cache] [No computing]");
     }
     else
         logger::info("CRON", $row['symbol'], "[buildAllsCachesSymbol] [Market close] [No update]");
@@ -72,7 +76,8 @@ while($row = mysqli_fetch_array($res)) {
 
 logger::info("CRON", "END", "###########################################################");
 
+echo "Done.";
 
 ?>
-    </pre>
+
 </div>

@@ -508,6 +508,27 @@ class cacheData {
 
     public static $lst_cache = ["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"];
 
+    public static function isComputeIndicatorsDoneToday($symbol) {
+
+        $searchthis = date("d-M-Y").".*".$symbol.".*daily=";
+        $matches = array();
+    
+        $handle = @fopen("./finance.log", "r");
+        fseek($handle, -81920, SEEK_END); // +/- 900 lignes 
+        if ($handle)
+        {
+            while (!feof($handle))
+            {
+                $buffer = fgets($handle);
+                if (preg_match("/".$searchthis."/i", $buffer))
+                    $matches[] = $buffer;
+            }
+            fclose($handle);
+        }
+
+        return count($matches) > 0 ? true : false;
+    }
+    
     public static function readCacheData($file) {
         return json_decode(file_get_contents($file), true);
     }

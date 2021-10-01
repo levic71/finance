@@ -59,39 +59,16 @@ function ComputeRSIX($data, $size) {
     $t = TraderFriendly::relativeStrengthIndex($data, $size);
     return fullFillArray($data, $t);
 }
-function isComputeDoneToday($symbol) {
-
-    $searchthis = date("Ymd").":".$symbol.":daily=";
-    $matches = array();
-
-    $handle = @fopen("./finance.log", "r");
-    fseek($handle, -81920, SEEK_END); // +/- 900 lignes 
-    if ($handle)
-    {
-        while (!feof($handle))
-        {
-            $buffer = fgets($handle);
-            if(strpos($buffer, $searchthis) !== FALSE)
-                $matches[] = $buffer;
-        }
-        fclose($handle);
-    }
-
-    return count($matches) > 0 ? true : false;
-}
 
 // //////////////////////////////////////////////////////////////
 // Calcul MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
 // //////////////////////////////////////////////////////////////
-function computeIndicators($filter_symbol, $filter_limited, $crontab_call = 0) {
+function computeIndicators($filter_symbol, $filter_limited) {
 
     // Parcours des actifs suivis
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$filter_symbol."%\"";
     $res = dbc::execSql($req);
     while($row = mysqli_fetch_array($res)) {
-
-        // Si reset=0 calcul une fois par jour
-        if ($crontab_call == 1 && isComputeDoneToday($row['symbol'])) continue;
 
         $tab_daily_day     = array();
         $tab_daily_close   = array();
