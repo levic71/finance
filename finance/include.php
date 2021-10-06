@@ -616,12 +616,11 @@ class cacheData {
                         $update = "INSERT INTO intraday (symbol, day, open, high, low, close, volume) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. volume']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', volume='".$val['5. volume']."'";
                         $res2 = dbc::execSql($update);
                     }
-                }
     
-                $fp = fopen($file_cache, 'w');
-                fwrite($fp, json_encode($data));
-                fclose($fp);
-    
+                    $fp = fopen($file_cache, 'w');
+                    fwrite($fp, json_encode($data));
+                    fclose($fp);
+                }    
             } catch(RuntimeException $e) { }
         }
         else
@@ -646,14 +645,13 @@ class cacheData {
                         $update = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."', '".$val['8. split coefficient']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."', split_coef='".$val['8. split coefficient']."'";
                         $res2 = dbc::execSql($update);
                     }
-
-                    $ret = true;
-                }
     
-                $fp = fopen($file_cache, 'w');
-                fwrite($fp, json_encode($data));
-                fclose($fp);
-        
+                    $fp = fopen($file_cache, 'w');
+                    fwrite($fp, json_encode($data));
+                    fclose($fp);
+    
+                    $ret = true;
+                }        
             } catch(RuntimeException $e) { }
         }
         else
@@ -684,13 +682,12 @@ class cacheData {
                         $res2 = dbc::execSql($update);
                     }
 
+                    $fp = fopen($file_cache, 'w');
+                    fwrite($fp, json_encode($data));
+                    fclose($fp);
+
                     $ret = true;
                 }
-    
-                $fp = fopen($file_cache, 'w');
-                fwrite($fp, json_encode($data));
-                fclose($fp);
-        
             } catch(RuntimeException $e) { }
         }
         else
@@ -721,13 +718,12 @@ class cacheData {
                         $res2 = dbc::execSql($update);
                     }
 
-                    $ret = true;
-                }
+                    $fp = fopen($file_cache, 'w');
+                    fwrite($fp, json_encode($data));
+                    fclose($fp);
     
-                $fp = fopen($file_cache, 'w');
-                fwrite($fp, json_encode($data));
-                fclose($fp);
-        
+                    $ret = true;
+                }        
             } catch(RuntimeException $e) { }
         }
         else
@@ -749,14 +745,13 @@ class cacheData {
                     $val = $data["Global Quote"];
                     $update = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$symbol."', '".$val['02. open']."', '".$val['03. high']."', '".$val['04. low']."', '".$val['05. price']."', '".$val['06. volume']."', '".$val['07. latest trading day']."', '".$val['08. previous close']."', '".$val['09. change']."', '".$val['10. change percent']."') ON DUPLICATE KEY UPDATE open='".$val['02. open']."', high='".$val['03. high']."', low='".$val['04. low']."', price='".$val['05. price']."', volume='".$val['06. volume']."', day='".$val['07. latest trading day']."', previous='".$val['08. previous close']."', day_change='".$val['09. change']."', percent='".$val['10. change percent']."'";
                     $res2 = dbc::execSql($update);
-
-                    $ret = true;
-                }
     
-                $fp = fopen($file_cache, 'w');
-                fwrite($fp, json_encode($data));
-                fclose($fp);
-        
+                    $fp = fopen($file_cache, 'w');
+                    fwrite($fp, json_encode($data));
+                    fclose($fp);
+    
+                    $ret = true;
+                }        
             } catch(RuntimeException $e) { }
         }
         else
