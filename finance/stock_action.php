@@ -40,7 +40,7 @@ if ($action == "add") {
 
         cacheData::buildAllsCachesSymbol($symbol, true);
 
-        computeIndicators($symbol, 0, 0);
+        computeIndicators($symbol, 0);
     }
 }
 
@@ -68,7 +68,7 @@ if ($action == "upt") {
             unlink('cache/QUOTE_'.$symbol.'.json');
             cacheData::buildCacheQuote($symbol);
 
-            computeIndicators($symbol, 0, 0);
+            computeIndicators($symbol, 0);
 
         } catch (RuntimeException $e) {
             if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
@@ -84,7 +84,7 @@ if ($action == "del") {
 
     if ($row = mysqli_fetch_array($res)) {
 
-        foreach(['stocks', 'daily_time_series_adjusted', 'quotes', 'indicators'] as $key) {
+        foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted', 'stocks', 'quotes', 'indicators'] as $key) {
             $req = "DELETE FROM ".$key." WHERE symbol='".$symbol."'";
             $res = dbc::execSql($req);    
         }

@@ -97,7 +97,7 @@ function getTimeSeriesData($table_name, $period, $sym) {
         $res = dbc::execSql($req);    
         while ($row = mysqli_fetch_assoc($res)) {
             $ret['rows'][] = $row;
-            // On ne prend le adjusted_close car le adjusted_open n'existe pas
+            // Pour le choix de la couleur on ne prend pas le adjusted_close car le adjusted_open n'existe pas
             $ret['colrs'][] = $row['close'] >= $row['open'] ? 1 : 0;
         }
 
@@ -254,7 +254,7 @@ var ref_d_colors = [<?= '"'.implode('","', $data_daily["colrs"]).'"' ?>];
 
 // Ref Weekly Data
 var ref_w_days   = [<?= '"'.implode('","', array_column($data_weekly["rows"], "day")).'"' ?>];
-var ref_w_vals   = [<?= implode(',', array_column($data_weekly["rows"], "close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
+var ref_w_vals   = [<?= implode(',', array_column($data_weekly["rows"], "adjusted_close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
 var ref_w_vols   = [<?= implode(',', array_column($data_weekly["rows"], "volume")) ?>];
 var ref_w_mm7    = [<?= implode(',', array_column($data_weekly["rows"], "MM7"))    ?>];
 var ref_w_mm20   = [<?= implode(',', array_column($data_weekly["rows"], "MM20"))   ?>];
@@ -264,7 +264,7 @@ var ref_w_rsi14  = [<?= implode(',', array_column($data_weekly["rows"], "RSI14")
 
 // Ref Monthly Data
 var ref_m_days   = [<?= '"'.implode('","', array_column($data_monthly["rows"], "day")).'"' ?>];
-var ref_m_vals   = [<?= implode(',', array_column($data_monthly["rows"], "close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
+var ref_m_vals   = [<?= implode(',', array_column($data_monthly["rows"], "adjusted_close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
 var ref_m_vols   = [<?= implode(',', array_column($data_monthly["rows"], "volume")) ?>];
 var ref_m_mm7    = [<?= implode(',', array_column($data_monthly["rows"], "MM7"))    ?>];
 var ref_m_mm20   = [<?= implode(',', array_column($data_monthly["rows"], "MM20"))   ?>];

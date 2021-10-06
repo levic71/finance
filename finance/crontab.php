@@ -11,9 +11,6 @@ include "googlesheet/sheet.php";
 // Overwrite include value
 $dbg = false;
 
-// Si on est samedi ou dimanche bye bye
-if (!tools::isLocalHost() && date("N") > 5) exit(0);
-
 if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
@@ -23,18 +20,18 @@ logger::purgeLogFile("./finance.log", 5*1048576);
 
 $values = array();
 
+// ////////////////////////////////////////////////////////
 // Mise à jour des valeurs de cotations dans Google Sheet
+// ////////////////////////////////////////////////////////
 if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
-?>
-
-<div class="ui container inverted segment">
-
-<?
+?> <div class="ui container inverted segment"><?
 
 logger::info("CRON", "BEGIN", "###########################################################");
 
+// ////////////////////////////////////////////////////////
 // Parcours des actifs suivis
+// ////////////////////////////////////////////////////////
 $req = "SELECT * FROM stocks ORDER BY symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
@@ -48,24 +45,31 @@ while($row = mysqli_fetch_array($res)) {
     $dateTimestamp1 = strtotime(date("Y-m-d ".$row['marketopen']));
     $dateTimestamp2 = strtotime(date("Y-m-d ".$row['marketclose']));
 
-    // Market Open ?
-    if (tools::isLocalHost() || ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2)) {
+    // Market Open ? (marketclose + 30')
+    if (tools::isLocalHost() || ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < ($dateTimestamp2 + (30*60)))) {
 
+        // //////////////////////////////////////
         // Mise a jour des caches
-        cacheData::buildAllsCachesSymbol($row['symbol']);
+        // //////////////////////////////////////
+        $ret = cacheData::buildAllsCachesSymbol($row['symbol'], false);
 
+        // /////////////////////////////////////////////////////////
         // Mise à jour de la cote de l'actif avec la donnée GSheet
+        // /////////////////////////////////////////////////////////
         if (isset($values[$row['symbol']]))
-            $ret = updateQuotesWithGSData($values[$row['symbol']]);
+            $ret['gsheet'] = updateQuotesWithGSData($values[$row['symbol']]);
         else
             logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data] [No update]");
 
-
-        // Calcul des MMX/RSI/D/W/M (1 fois par jour)
-        if (!cacheData::isComputeIndicatorsDoneToday($row['symbol']))
-            computeIndicators($row['symbol'], 0, 1);
-        else
-            logger::info("INDIC", $row['symbol'], "[computeIndicators] [Cache] [No computing]");
+        if ($ret['weekly'] || $ret['monthly']) {
+            // ///////////////////////////////////////////////
+            // Calcul des MMX/RSI/D/W/M (1 fois par jour)
+            // ///////////////////////////////////////////////
+            if (!cacheData::isComputeIndicatorsDoneToday($row['symbol']))
+                computeIndicators($row['symbol'], 0);
+            else
+                logger::info("INDIC", $row['symbol'], "[computeIndicators] [Cache] [No computing]");
+        }
     }
     else
         logger::info("CRON", $row['symbol'], "[buildAllsCachesSymbol] [Market close] [No update]");
