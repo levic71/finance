@@ -21,6 +21,7 @@
 // Recuperer les montants frais EFT + capitalisation + volume xchange par jour
 // Arrondie 2/3 chiffres après virgules ou en k en fct min max pour dimuner la taille des data envoyées
 // Creer une stack d'execution tache CRON en base de données pour dépiler les actions a réaliser pour n'en ratée aucune et éviter les doublons
+// Pause crontab avec lock en gestion admin
 
 // Idées
 // Backlog collective (avec pondération donation)

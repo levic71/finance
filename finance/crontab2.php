@@ -26,8 +26,6 @@ logger::purgeLogFile("./finance.log", 5*1048576);
 
 logger::info("DIRECT", "---------", "---------------------------------------------------------");
 
-resetData("");
-
 // Parcours des actifs suivis
 $req = "SELECT * FROM stocks ORDER BY symbol";
 $res = dbc::execSql($req);
