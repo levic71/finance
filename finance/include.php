@@ -667,7 +667,7 @@ class cacheData {
         $file_cache = 'cache/WEEKLY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
 
         // Si on n'est pas samedi
-        // if (date("N") != 6 && !$full) return false;
+        if (date("N") != 6 && !$full) return false;
 
         if (self::refreshOnceADayCache($file_cache)) {
             try {
@@ -703,7 +703,7 @@ class cacheData {
         $file_cache = 'cache/MONTHLY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
 
         // Si on n'est pas dimanche
-        // if (date("N") != 7 && !$full) return false;
+        if (date("N") != 7 && !$full) return false;
 
         if (self::refreshOnceADayCache($file_cache)) {
             try {
