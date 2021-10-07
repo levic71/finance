@@ -8,6 +8,7 @@
 // Done : Calcul automatique via cron des MM, RSI, etc par actif
 // Done : Courbe historique sur detail
 
+// Palmares des meilleures stratégies / Niveau de risque
 // Comparaison entre stratégie choisie et investissement réel => Déviation et rattrapage prochain invest 
 // Croisement MM200 et TR
 // alerte si gros volume échangé

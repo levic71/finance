@@ -212,7 +212,9 @@ $maxdd_RC_min = 99999999999999;
 $maxdd_RC_max = 0;
 $maxdd_RC = 0;
 
-
+// /////////////////////////////////////////////////////////////
+// On boucle sur les mois depuis date_start jusqu'a date_end
+// /////////////////////////////////////////////////////////////
 $i = date("Ym", strtotime($date_start));
 while($i <= date("Ym", strtotime($date_end))) {
 

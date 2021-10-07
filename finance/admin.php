@@ -101,8 +101,8 @@ foreach($matches_error as $key => $val) echo $val;
 
 <div class="ui container inverted segment">
     <h2 class="ui inverted right aligned header">
-    <button id="admin_cron_bt" class="circular ui icon very small right floated pink labelled button">Launch Cron</button>
-    <button id="admin_refresh_bt" class="circular ui icon very small right floated pink labelled button">Refresh Quotes</button>
+    <button id="admin_cron_bt" class="circular ui icon very small right floated pink labelled button">Cron</button>
+    <button id="admin_refresh_bt" class="circular ui icon very small right floated pink labelled button">Refresh GSheet</button>
     <button id="admin_reset_bt" class="circular ui icon very small right floated pink labelled button">Reset Cache</button>
     </h2>
 </div>
