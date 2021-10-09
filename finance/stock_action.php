@@ -38,7 +38,7 @@ if ($action == "add") {
         $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
         $res = dbc::execSql($req);
 
-        cacheData::buildAllsCachesSymbol($symbol, true);
+        cacheData::buildAllCachesSymbol($symbol, true);
 
         computeIndicators($symbol, 0);
     }
