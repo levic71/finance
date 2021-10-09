@@ -534,6 +534,30 @@ class cacheData {
 
     public static $lst_cache = ["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"];
 
+    public static function isMarketOpen($timezone, $market_open, $market_close) {
+
+        $ret = false;
+
+        // Si on est en local on est ouvert
+        if (tools::isLocalHost()) return true;
+
+        // Si on n'est pas en semaine
+        if (date("N") >= 6) return false;
+
+        // Ajustement heure par rapport UTC (On ajoute 15 min pour etre sur d'avoir la premiere cotation)
+        $my_date_time=time();
+        $my_new_date_time=$my_date_time+((3600*(intval(substr($timezone, 3))) + 15*60));
+        $my_new_date=date("Y-m-d H:i:s", $my_new_date_time);
+
+        $dateTimestamp0 = strtotime(date($my_new_date));
+        $dateTimestamp1 = strtotime(date("Y-m-d ".$market_open));
+        $dateTimestamp2 = strtotime(date("Y-m-d ".$market_close));
+
+        if ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < ($dateTimestamp2 + (30*60))) $ret = true;
+
+        return $ret;
+    }
+
     public static function isComputeIndicatorsDoneToday($symbol) {
 
         $searchthis = date("d-M-Y").".*".$symbol.".*daily=";
@@ -570,7 +594,6 @@ class cacheData {
     }
 
     public static function refreshCache($filename, $timeout) {
-
 
         $update_cache = false;
 
