@@ -51,7 +51,7 @@ while($row = mysqli_fetch_array($res)) {
         // //////////////////////////////////////
         // Mise a jour des caches
         // //////////////////////////////////////
-        $ret = cacheData::buildAllsCachesSymbol($row['symbol'], false);
+        $ret = cacheData::buildAllCachesSymbol($row['symbol'], false);
 
         // /////////////////////////////////////////////////////////
         // Mise à jour de la cote de l'actif avec la donnée GSheet
@@ -72,7 +72,7 @@ while($row = mysqli_fetch_array($res)) {
         }
     }
     else
-        logger::info("CRON", $row['symbol'], "[buildAllsCachesSymbol] [Market close] [No update]");
+        logger::info("CRON", $row['symbol'], "[buildAllCachesSymbol] [Market close] [No update]");
 
     logger::info("CRON", "---------", "---------------------------------------------------------");
 

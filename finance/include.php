@@ -250,7 +250,7 @@ class calc {
         return $ret;
     }
 
-    public static function processDataDM($symbol, $day) {
+    public static function processDataDM($symbol, $day, $data) {
 
         global $dbg, $dbg_data;
 
@@ -278,20 +278,12 @@ class calc {
         $ref_D3M = "0000-00-00";
         $ref_D6M = "0000-00-00";
 
-        $req = "SELECT * FROM quotes WHERE symbol='".$symbol."'";
-        $res = dbc::execSql($req);
-        if ($row = mysqli_fetch_assoc($res)) {
-            $quote_day   = $row['day'];
-            $quote_price = $row['price'];
-            $quote_pct   = $row['percent'];            
-        }
+        $quote = $data['quote'];
 
         $tab_close = array();
 
         // On parcours les cotations en commencant la plus rescente et on remonte le temps
-        $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200";
-        $res = dbc::execSql($req);
-        while($row = mysqli_fetch_assoc($res)) {
+        foreach($data['data'] as $key => $row) {
 
             // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
             $close_value = is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
@@ -302,15 +294,15 @@ class calc {
             if ($i == 0) {
                 // Si day is today && Si on a recupere une quotation en temps réel du jour > à la première cotation historique alors on la prend comme référence
                 // Comme la cotation est au minimum à la date de la dernière cotation historique on peut la prendre en ref par defaut
-                if ($day == date("Y-m-d") && isset($quote_day)) {
-                    $ref_TJ0 = floatval($quote_price);
-                    $ref_DAY = $quote_day;
-                    $ref_PCT = $quote_pct;
+                if ($day == date("Y-m-d") && isset($quote['day'])) {
+                    $ref_TJ0 = floatval($quote['price']);
+                    $ref_DAY = $quote['day'];
+                    $ref_PCT = $quote['percent'];
                 }
                 else {
                     $ref_TJ0 = floatval($close_value);
                     $ref_DAY = $row['day'];
-                    $ref_PCT = ($row['close'] - $row['close']) / $row['open'];
+                    $ref_PCT = ($row['close'] - $row['open']) * 100 / $row['open'];
                 }
                 $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
                 $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
@@ -371,10 +363,13 @@ class calc {
 
         if ($dbg_data) echo $symbol." => ref_D6M = ".$ref_D6M.", ref2_T6M = ".$ref2_T6M."<br />";
 
+        // Vraiment utile ? On ne peut pas le recuperer de la DB ?
         $ret['ref_close'] = $ref_TJ0;
         $ret['ref_day'] = $ref_DAY;
         $ret['ref_pct'] = $ref_PCT;
 
+
+        // A QUOI CA SERT DE CALCULER MMX ??? On le fait dans Indicators !!!
         $ret['MM7']   = round(($sum_MM7   / 7),   2);
         $ret['MM20']  = round(($sum_MM20  / 20),  2);
         $ret['MM50']  = round(($sum_MM50  / 50),  2);
@@ -397,6 +392,27 @@ class calc {
         return $ret;
     }
 
+    public static function getDualMomentumData($symbol, $day) {
+
+        $quote = array();
+        $data = array();
+    
+        // On regarde s'il y a une cotation du jour
+        $req = "SELECT * FROM quotes WHERE symbol='".$symbol."' AND day='".$day."'";
+        $res = dbc::execSql($req);
+        if ($row = mysqli_fetch_assoc($res))
+            $quote = $row;
+
+        // On parcours les cotations en commencant la plus rescente et on remonte le temps
+        $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200";
+        $res = dbc::execSql($req);
+        while($row = mysqli_fetch_assoc($res)) {
+            $data[] = $row;
+        }
+
+        return (array("quote" => $quote, "data" => $data));
+    }
+
     public static function getDualMomentum($day) {
 
         $file_cache = 'cache/TMP_DUAL_MOMENTUM_'.$day.'.json';
@@ -409,7 +425,8 @@ class calc {
             $res = dbc::execSql($req);
             while($row = mysqli_fetch_assoc($res)) {
                 $symbol = $row['symbol'];
-                $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $day));
+                $data   = calc::getDualMomentumData($symbol, $day);
+                $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $day, $data));
                 // On isole les perfs pour pouvoir trier par performance decroissante
                 $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
             }
@@ -631,6 +648,9 @@ class cacheData {
 
         $ret = false;
 
+        // Si on n'est pas en semaine
+        if (date("N") >= 6 && !$full) return false;
+
         $file_cache = 'cache/DAILY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
 
         if (self::refreshOnceADayCache($file_cache)) {
@@ -760,7 +780,7 @@ class cacheData {
         return $ret;
     }
 
-    public static function buildAllsCachesSymbol($symbol, $full = false) {
+    public static function buildAllCachesSymbol($symbol, $full = false) {
 
         $ret = array("overview" => false, "daily" => false, "weekly" => false, "monthly" => false, "quote" => false);
 
