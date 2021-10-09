@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set("Europe/Paris");
+
 // ini_set('display_errors', false);
 ini_set('error_log', './finance.log');
 
@@ -538,9 +540,6 @@ class cacheData {
 
         $ret = false;
 
-        // Si on est en local on est ouvert
-        if (tools::isLocalHost()) return true;
-
         // Si on n'est pas en semaine
         if (date("N") >= 6) return false;
 
@@ -558,9 +557,9 @@ class cacheData {
         return $ret;
     }
 
-    public static function isComputeIndicatorsDoneToday($symbol) {
+    public static function findPatternInLog($pattern) {
 
-        $searchthis = date("d-M-Y").".*".$symbol.".*daily=";
+        // $searchthis = date("d-M-Y").".*".$symbol.".*".$period."=";
         $matches = array();
     
         $handle = @fopen("./finance.log", "r");
@@ -570,7 +569,7 @@ class cacheData {
             while (!feof($handle))
             {
                 $buffer = fgets($handle);
-                if (preg_match("/".$searchthis."/i", $buffer))
+                if (preg_match("/".$pattern."/i", $buffer))
                     $matches[] = $buffer;
             }
             fclose($handle);
@@ -803,26 +802,31 @@ class cacheData {
         return $ret;
     }
 
-    public static function buildAllCachesSymbol($symbol, $full = false) {
+    public static function buildCachesSymbol($symbol, $full = false, $options) {
 
-        $ret = array("overview" => false, "daily" => false, "weekly" => false, "monthly" => false, "quote" => false);
+        $ret = array();
 
-        // ASSET OVERVIEW
-        $ret["overview"] = self::buildCacheOverview($symbol);
+        foreach($options as $key => $val) $ret[$val] = false;
 
-        // DAILY HISTORIQUE
-        $ret["daily"] = self::buildCacheDailyTimeSeriesAdjusted($symbol, $full);
-
-        // WEEKLY HISTORIQUE
-        $ret["weekly"] = self::buildCacheWeeklyTimeSeriesAdjusted($symbol, $full);
-
-        // MONTHLY HISTORIQUE
-        $ret["monthly"] = self::buildCacheMonthlyTimeSeriesAdjusted($symbol, $full);
-
-        // ASSET COTATION
-        $ret["quote"] = self::buildCacheQuote($symbol);
+        if (isset($options['overview'])) $ret["overview"] = self::buildCacheOverview($symbol);
+        if (isset($options['daily']))    $ret["daily"]    = self::buildCacheDailyTimeSeriesAdjusted($symbol, $full);
+        if (isset($options['weekly']))   $ret["weekly"]   = self::buildCacheWeeklyTimeSeriesAdjusted($symbol, $full);
+        if (isset($options['monthly']))  $ret["monthly"]  = self::buildCacheMonthlyTimeSeriesAdjusted($symbol, $full);
+        if (isset($options['quote']))    $ret["quote"]    = self::buildCacheQuote($symbol);
 
         return $ret;
+    }
+
+    public static function buildAllCachesSymbol($symbol, $full = false) {
+        return cacheData::buildCachesSymbol($symbol, $full, array("overview" => 1, "daily" => 1, "weekly" => 1, "monthly" => 1, "quote" => 1));
+    }
+
+    public static function buildDailyCachesSymbol($symbol, $full = false) {
+        return cacheData::buildCachesSymbol($symbol, $full, array("overview" => 1, "daily" => 1, "quote" => 1));
+    }
+
+    public static function buildWeekendCachesSymbol($symbol, $full = false) {
+        return cacheData::buildCachesSymbol($symbol, $full, array("weekly" => 1, "monthly" => 1));
     }
 
     public static function deleteCacheSymbol($symbol) {

@@ -41,7 +41,7 @@ while($row = mysqli_fetch_array($res)) {
         // //////////////////////////////////////
         // Mise a jour des caches
         // //////////////////////////////////////
-        $ret = cacheData::buildAllCachesSymbol($row['symbol'], false);
+        $ret = cacheData::buildDailyCachesSymbol($row['symbol'], false);
 
         // /////////////////////////////////////////////////////////
         // Mise à jour de la cote de l'actif avec la donnée GSheet
@@ -51,18 +51,25 @@ while($row = mysqli_fetch_array($res)) {
         else
             logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data] [No update]");
 
-        if ($ret['weekly'] || $ret['monthly']) {
-            // ///////////////////////////////////////////////
-            // Calcul des MMX/RSI/D/W/M (1 fois par jour)
-            // ///////////////////////////////////////////////
-            if (!cacheData::isComputeIndicatorsDoneToday($row['symbol']))
-                computeIndicators($row['symbol'], 0);
-            else
-                logger::info("INDIC", $row['symbol'], "[computeIndicators] [Cache] [No computing]");
-        }
+        if ($ret['daily'])
+            computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
+        else
+            logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
+
+    } else {
+
+        $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], false);
+
+        if ($ret['weekly'])
+            computePeriodIndicatorsSymbol($row['symbol'], 0, "WEEKLY");
+        else
+            logger::info("INDIC", $row['symbol'], "[computeWeeklyIndicators] [Cache] [No computing]");
+
+        if ($ret['monthly'])
+            computePeriodIndicatorsSymbol($row['symbol'], 0, "MONTHLY");
+        else
+            logger::info("INDIC", $row['symbol'], "[computeMonthlyIndicators] [Cache] [No computing]");
     }
-    else
-        logger::info("CRON", $row['symbol'], "[buildAllCachesSymbol] [Market close] [No update]");
 
     logger::info("CRON", "---------", "---------------------------------------------------------");
 

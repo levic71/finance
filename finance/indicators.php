@@ -202,7 +202,9 @@ function computePeriodIndicatorsSymbol($symbol, $filter_limited, $period) {
     logger::info("INDIC", $symbol, "[".$period."] [count=".count($data['day'])."]");
 }
 
-
+// //////////////////////////////////////////////////////////////
+// Calcul MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
+// //////////////////////////////////////////////////////////////
 function computeIndicatorsSymbol($symbol, $filter_limited, $aggregate = false) {
 
     if ($aggregate) aggregateWeeklyMonthlySymbol($symbol, $filter_limited);
@@ -212,9 +214,6 @@ function computeIndicatorsSymbol($symbol, $filter_limited, $aggregate = false) {
 
 }
 
-// //////////////////////////////////////////////////////////////
-// Calcul MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
-// //////////////////////////////////////////////////////////////
 function computeIndicators($filter_symbol, $filter_limited) {
 
     // Selection du/des actif(s) à prendre en charge

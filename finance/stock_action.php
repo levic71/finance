@@ -40,7 +40,7 @@ if ($action == "add") {
 
         cacheData::buildAllCachesSymbol($symbol, true);
 
-        computeIndicators($symbol, 0);
+        computeIndicatorsSymbol($symbol, 0);
     }
 }
 
@@ -68,7 +68,7 @@ if ($action == "upt") {
             unlink('cache/QUOTE_'.$symbol.'.json');
             cacheData::buildCacheQuote($symbol);
 
-            computeIndicators($symbol, 0);
+            computeIndicatorsSymbol($symbol, 0);
 
         } catch (RuntimeException $e) {
             if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
