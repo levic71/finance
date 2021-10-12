@@ -252,11 +252,12 @@ class calc {
         return $ret;
     }
 
-    public static function processDataDM($symbol, $day, $data) {
+    // ////////////////////////////////////////////////////////////
+    // Calcul du DM d'un actif d'une journee
+    // ////////////////////////////////////////////////////////////
+    public static function processDataDM($day, $data) {
 
         global $dbg, $dbg_data;
-
-        if ($dbg_data) echo $symbol.", ".$day."<br />";
 
         $ret = array();
 
@@ -358,12 +359,8 @@ class calc {
                 $ret['MMZ6MDate'] = $row['day'];
             }
 
-            if ($dbg_data) echo $row['day']." ".$row['symbol']." ".$close_value."<br />";
-
             $i++;
         }
-
-        if ($dbg_data) echo $symbol." => ref_D6M = ".$ref_D6M.", ref2_T6M = ".$ref2_T6M."<br />";
 
         // Vraiment utile ? On ne peut pas le recuperer de la DB ?
         $ret['ref_close'] = $ref_TJ0;
@@ -387,6 +384,7 @@ class calc {
         $ret['MMZ6M'] = $ref2_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T6M)*100/$ref2_T6M, 2);
         $ret['MMZDM'] = $ref2_T6M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2) : ($ref2_T3M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M'])/2, 2) : ($ref2_T1M > 0 ? $ret['MMZ1M'] : -9999));
 
+// PAS FORCEMENT UTILE JE CROIS !!!!
 //        $rsi14_tab = computeRSIX($tab_close, 14);
 //        $ret["RSI14"] = $rsi14_tab[length($rsi14_tab)];
         $ret["RSI14"] = 50;
@@ -394,6 +392,9 @@ class calc {
         return $ret;
     }
 
+    // //////////////////////////////////////////////////////////////////
+    // Reccuperation des data pour le calcul du DM d'un actif d'un jour
+    // //////////////////////////////////////////////////////////////////
     public static function getDualMomentumData($symbol, $day) {
 
         $quote = array();
@@ -415,6 +416,9 @@ class calc {
         return (array("quote" => $quote, "data" => $data));
     }
 
+    // ////////////////////////////////////////////////////
+    // DM de tous les actifs d'un jour
+    // ////////////////////////////////////////////////////
     public static function getDualMomentum($day) {
 
         $file_cache = 'cache/TMP_DUAL_MOMENTUM_'.$day.'.json';
@@ -428,7 +432,7 @@ class calc {
             while($row = mysqli_fetch_assoc($res)) {
                 $symbol = $row['symbol'];
                 $data   = calc::getDualMomentumData($symbol, $day);
-                $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($symbol, $day, $data));
+                $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($day, $data));
                 // On isole les perfs pour pouvoir trier par performance decroissante
                 $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
             }
@@ -717,6 +721,7 @@ class cacheData {
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
+                $data = array();
                 $key = "Weekly Adjusted Time Series";
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {

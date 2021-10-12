@@ -8,7 +8,8 @@
 // Done : Calcul automatique via cron des MM, RSI, etc par actif
 // Done : Courbe historique sur detail
 
-// Palmares des meilleures stratégies / Niveau de risque
+// Recupérer les données indicators + DM de la page stock_detail dans DB et ne plus les calculer !!!
+// Palmares des meilleures stratégies par methode (DCA/DM) + Niveau de risque
 // Comparaison entre stratégie choisie et investissement réel => Déviation et rattrapage prochain invest 
 // Croisement MM200 et TR
 // alerte si gros volume échangé
@@ -27,5 +28,6 @@
 // Idées
 // Backlog collective (avec pondération donation)
 // Priorisation des demandes
+// Rajouter les données : frais de gestion, capitalisation, volume moy echange, dividende ...
 
 

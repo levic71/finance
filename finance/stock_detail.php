@@ -34,7 +34,7 @@ if ($row = mysqli_fetch_assoc($res)) {
 
     // On met en cache uniquement le DM du jour pour acces plus rapide
     if (cacheData::refreshCache($file_cache, 600)) { // Cache de 5 min
-        $c = calc::processDataDM($row['symbol'], date("Y-m-d"));
+        $c = calc::processDataDM(date("Y-m-d"), calc::getDualMomentumData($row['symbol'], date("Y-m-d")));
         cacheData::writeCacheData($file_cache, $c);
     } else {
         $c = cacheData::readCacheData($file_cache);

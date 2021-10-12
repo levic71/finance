@@ -34,7 +34,7 @@ function cumulTabVal($tab, $key, $val) {
 }
 function currentnext(&$t) { $res = current($t); next($t); return $res; }
 function fullFillArray($t1, $t2) {
-    // On complete le tableau avec la premiere valeur du tableau
+    // On complete le tableau t2 avec la premiere valeur du tableau t2 pour qu'il ait la meme longueur que le tableau t1
     $val = count($t2) > 0 ? $t2[array_key_first($t2)] : 0;
 
     if (count($t1) > count($t2)) 
@@ -59,15 +59,36 @@ function ComputeRSIX($data, $size) {
     $t = TraderFriendly::relativeStrengthIndex($data, $size);
     return fullFillArray($data, $t);
 }
+function ComputeDMX($data, $size) {
 
-function insertIntoTimeSeries($symbol, $tab_data, $table) {
+    $t = TraderFriendly::momentum(array_column($data, "close"), $size);
 
-    foreach($tab_data['lastday'] as $key => $val) {
-        $open   = $tab_data["open"][$key];
-        $high   = $tab_data["high"][$key];
-        $low    = $tab_data["low"][$key];
-        $close  = $tab_data["close"][$key];
-        $volume = $tab_data["volume"][$key];
+// Pas sur que ce soit bon, a revoir si on veut reprendre l'ancienne methode
+/*     $tab = array();
+    $x = array_reverse($data);
+
+    while(count($x) > $size) {
+        $removed = array_shift($x);
+        $item = current($data);
+        $tab[] = calc::processDataDM($item['day'], array("quote" => array(), "data" => $x));
+    }
+
+    $t2 = fullFillArray($data, array_column($tab, "MMZDM"));
+    tools::pretty($t2);
+
+    tools::pretty(fullFillArray($data, $t));
+ */
+    return fullFillArray($data, $t);
+}
+
+function insertIntoTimeSeries($symbol, $data, $table) {
+
+    foreach($data['lastday'] as $key => $val) {
+        $open   = $data["open"][$key];
+        $high   = $data["high"][$key];
+        $low    = $data["low"][$key];
+        $close  = $data["close"][$key];
+        $volume = $data["volume"][$key];
 
         $req = "INSERT INTO ".$table." (symbol, day, open, high, low, close, volume) VALUES('".$symbol."', '".$val."', '".$open."', '".$high."', '".$low."', '".$close."', '".$volume."') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', volume='".$volume."'";
         $res = dbc::execSql($req);
@@ -79,8 +100,8 @@ function insertIntoTimeSeries($symbol, $tab_data, $table) {
 
 function insertIntoIndicators($symbol, $data, $period) {
 
-    $tab_days  = $data['day'];
-    $tab_close = $data['close'];
+    $tab_days  = array_column($data, "day");
+    $tab_close = array_column($data, "close");
 
     if (count($tab_days) == 0) { logger::info("INDS", $symbol, "NO ".$period." DATA !!!!"); return; }
 
@@ -89,9 +110,7 @@ function insertIntoIndicators($symbol, $data, $period) {
     $tab_MM50  = computeMMX($tab_close, 50);
     $tab_MM200 = computeMMX($tab_close, 200);
     $tab_RSI14 = computeRSIX($tab_close, 14);
-
-    // En Daily calculer le DM pour le stocker en DB
-
+    $tab_DM132 = computeDMX($data, 132);
 
     foreach($tab_days as $key => $val) {
         $MM7   = currentnext($tab_MM7);
@@ -99,8 +118,9 @@ function insertIntoIndicators($symbol, $data, $period) {
         $MM50  = currentnext($tab_MM50);
         $MM200 = currentnext($tab_MM200);
         $RSI14 = currentnext($tab_RSI14);
+        $DM    = currentnext($tab_DM132);
 
-        $req = "INSERT INTO indicators (symbol, day, period, MM7, MM20, MM50, MM200, RSI14) VALUES('".$symbol."', '".$val."', '".$period."', '".$MM7."', '".$MM20."', '".$MM50."', '".$MM200."', '".$RSI14."') ON DUPLICATE KEY UPDATE MM7='".$MM7."', MM20='".$MM20."', MM50='".$MM50."', MM200='".$MM200."', RSI14='".$RSI14."'";
+        $req = "INSERT INTO indicators (symbol, day, period, DM, MM7, MM20, MM50, MM200, RSI14) VALUES('".$symbol."', '".$val."', '".$period."', '".$DM."', '".$MM7."', '".$MM20."', '".$MM50."', '".$MM200."', '".$RSI14."') ON DUPLICATE KEY UPDATE DM='".$DM."', MM7='".$MM7."', MM20='".$MM20."', MM50='".$MM50."', MM200='".$MM200."', RSI14='".$RSI14."'";
         $res = dbc::execSql($req);
     }
 
@@ -141,7 +161,7 @@ function aggregateWeeklyMonthlySymbol($symbol, $filter_limited) {
 
     $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($filter_limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
     $res= dbc::execSql($req);
-    while($row = mysqli_fetch_array($res)) {
+    while($row = mysqli_fetch_assoc($res)) {
 
         // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
         $row['close'] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
@@ -183,23 +203,21 @@ function computePeriodIndicatorsSymbol($symbol, $filter_limited, $period) {
 
     $table = strtolower($period)."_time_series_adjusted";
 
-    $data   = [ "day" => array(), "close" => array() ];
+    $data = array();
 
     $req = "SELECT * FROM ".$table." WHERE symbol=\"".$symbol."\"".($filter_limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
     $res= dbc::execSql($req);
-    while($row = mysqli_fetch_array($res)) {
+    while($row = mysqli_fetch_assoc($res)) {
 
         // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
         $row['close'] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
-
-        $data['close'][] = $row['close'];
-        $data['day'][]   = $row['day'];
+        $data[] = $row;
     }
 
     // INSERT ALL INDICATORS
     insertIntoIndicators($symbol, $data, $period);
     
-    logger::info("INDIC", $symbol, "[".$period."] [count=".count($data['day'])."]");
+    logger::info("INDIC", $symbol, "[".$period."] [count=".count($data)."]");
 }
 
 // //////////////////////////////////////////////////////////////
@@ -219,7 +237,7 @@ function computeIndicators($filter_symbol, $filter_limited) {
     // Selection du/des actif(s) à prendre en charge
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$filter_symbol."%\"";
     $res = dbc::execSql($req);
-    while($row = mysqli_fetch_array($res))
+    while($row = mysqli_fetch_assoc($res))
         computeIndicatorsSymbol($row['symbol'], $filter_limited);
 
 }
