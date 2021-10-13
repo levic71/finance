@@ -61,10 +61,16 @@ function ComputeRSIX($data, $size) {
 }
 function ComputeDMX($data, $size) {
 
-    $t = TraderFriendly::momentum(array_column($data, "close"), $size);
+// METHODE TraderFriendly
+//
+//    $t = TraderFriendly::momentum(array_column($data, "close"), $size);
+//    return fullFillArray($data, $t);
 
-// Pas sur que ce soit bon, a revoir si on veut reprendre l'ancienne methode
-/*     $tab = array();
+// METHODE VFE
+//
+    $tab = array();
+
+    // Tri date descendante pour le calcul avec ma methode
     $x = array_reverse($data);
 
     while(count($x) > $size) {
@@ -73,12 +79,12 @@ function ComputeDMX($data, $size) {
         $tab[] = calc::processDataDM($item['day'], array("quote" => array(), "data" => $x));
     }
 
-    $t2 = fullFillArray($data, array_column($tab, "MMZDM"));
-    tools::pretty($t2);
+    // Tri date ascendente pour revenir en nominal
+    $z = array_reverse($tab);
 
-    tools::pretty(fullFillArray($data, $t));
- */
-    return fullFillArray($data, $t);
+    // foreach($z as $key => $val) echo $val['ref_day'].":".$val['MMZDM']."<br />";
+
+    return fullFillArray($data, array_column($z, "MMZDM"));
 }
 
 function insertIntoTimeSeries($symbol, $data, $table) {

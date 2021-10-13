@@ -643,7 +643,7 @@ var myChart = new Chart(ctx, {
 </script>
 
 
-<!-- GRAPHE 2 -->
+<!-- GRAPHE 2 : EVOLUTION DM -->
 
 <? if ($row['methode'] == 1) { ?>
 
@@ -683,9 +683,36 @@ const horizontalLines = {
     }
 };
 
+<?
+/*     $toto = array();
+    $req4 = "SELECT * FROM daily_time_series_adjusted dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='DAILY' AND dtsa.symbol='ESE.PAR' ORDER BY dtsa.day ASC";
+    $res4 = dbc::execSql($req4);    
+    while ($row4 = mysqli_fetch_assoc($res4)) {
+        $mmday = date("Ym", strtotime($row4['day']));
+        $toto[$mmday] = $row4;
+    }
+    $tutu = array();
+    $req4 = "SELECT * FROM daily_time_series_adjusted dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='DAILY' AND dtsa.symbol='OBLI.PAR' ORDER BY dtsa.day ASC";
+    $res4 = dbc::execSql($req4);    
+    while ($row4 = mysqli_fetch_assoc($res4)) {
+        $mmday = date("Ym", strtotime($row4['day']));
+        $tutu[$mmday] = $row4;
+    }
+ */
+?>
+
+// var dataset_x = [ \<\?= // implode(',', array_slice(array_column($toto, "DM"), count($toto) - count($tab_date), count($tab_date) )) ?> ];
+// var dataset_z = [ \<\?= // implode(',', array_slice(array_column($tutu, "DM"), count($tutu) - count($tab_date), count($tab_date) )) ?> ];
+
 var data2 = {
     labels: dates,
     datasets: [
+//        {
+//            data: dataset_x, label: "test", borderColor: "pink", cubicInterpolationMode: 'monotone', tension: 0.4, borderWidth: 0.5, fill: false
+//        },
+//        {
+//            data: dataset_z, label: "test2", borderColor: "pink", cubicInterpolationMode: 'monotone', tension: 0.4, borderWidth: 0.5, fill: false
+//        },
 <?
     $x = 0; 
     foreach($lst_symbols as $key => $val) {
@@ -771,6 +798,8 @@ foreach($ordres as $key => $val) {
         </tbody>
     </table>
 </div>
+
+<? tools::pretty($toto); ?>
 
 <script>
 

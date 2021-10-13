@@ -8,6 +8,8 @@ include "include.php";
 include "indicators.php";
 include "googlesheet/sheet.php";
 
+ini_set('max_execution_time', '300'); //300 seconds = 5 minutes
+
 // Overwrite include value
 $dbg = false;
 
@@ -25,6 +27,10 @@ $values = array();
 // ////////////////////////////////////////////////////////
 if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
+// Updates all quotes whith GS
+// updateAllQuotesWithGSData($values);
+// exit(0);
+
 ?> <div class="ui container inverted segment"><?
 
 logger::info("CRON", "BEGIN", "###########################################################");
@@ -36,6 +42,18 @@ $req = "SELECT * FROM stocks ORDER BY symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
+    // Recompute all indicators
+    // computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
+    // continue;
+
+/*     if ($row['symbol'] == "BRE.PAR" || $row['symbol'] == "PUST.PAR" || $row['symbol'] == "ESE.PAR" || $row['symbol'] == "OBLI.PAR") 
+    {
+        computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
+        continue;
+    }
+    else
+        continue;
+ */
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
         // //////////////////////////////////////

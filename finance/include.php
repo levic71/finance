@@ -362,9 +362,10 @@ class calc {
             $i++;
         }
 
+        $ret['ref_day'] = $ref_DAY;
+
         // Vraiment utile ? On ne peut pas le recuperer de la DB ?
         $ret['ref_close'] = $ref_TJ0;
-        $ret['ref_day'] = $ref_DAY;
         $ret['ref_pct'] = $ref_PCT;
 
 
