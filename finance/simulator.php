@@ -799,8 +799,6 @@ foreach($ordres as $key => $val) {
     </table>
 </div>
 
-<? tools::pretty($toto); ?>
-
 <script>
 
     launcher = function() {

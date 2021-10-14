@@ -64,15 +64,22 @@ while($row = mysqli_fetch_array($res)) {
         // /////////////////////////////////////////////////////////
         // Mise à jour de la cote de l'actif avec la donnée GSheet
         // /////////////////////////////////////////////////////////
-        if (isset($values[$row['symbol']]))
+        if (isset($values[$row['symbol']])) {
             $ret['gsheet'] = updateQuotesWithGSData($values[$row['symbol']]);
+        }
         else
-            logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data] [No update]");
+            logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data found] [No update]");
 
         if ($ret['daily'])
             computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
-        else
+        else {
+
+            // Maj du DM du jour
+            // if (isset($ret['gsheet']) && strstr($ret['sheet'], "QUOTES"))  calc::processDataDM($item['day'], array("quote" => array(), "data" => $x));
+
             logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
+
+        }
 
     } else {
 
