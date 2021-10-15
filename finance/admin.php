@@ -54,7 +54,7 @@ if ($handle)
         <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_error) ?></button>
         <button id="log_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button>
     </h2>
-    <pre id="log_view" style="overflow-x: hidden;">
+    <pre id="log_view" style="width: 100%; overflow-x: hidden;">
 
 <? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
 
@@ -63,7 +63,7 @@ if ($handle)
 
 <div class="ui container inverted segment">
     <h2> User Connexions <button id="users_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button></h2>
-    <pre id="users_view" style="overflow-x: hidden;">
+    <pre id="users_view" style="width: 100%; overflow-x: hidden;">
 
 <? 
 
@@ -83,7 +83,7 @@ while($row = mysqli_fetch_array($res)) {
 
 <div class="ui container inverted segment">
     <h2> Alphavantage <button id="alpha_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button></h2>
-    <pre id="alpha_view" style="overflow-x: hidden;">
+    <pre id="alpha_view" style="width: 100%; overflow-x: hidden;">
 
 <? 
 
