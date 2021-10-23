@@ -21,7 +21,7 @@ if ($symbol == "") tools::do_redirect("index.php");
 $db = dbc::connect();
 
 
-function updateSymbolData($symbol) {
+function updateSymbolData($symbol, $force = 0) {
 
     if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
@@ -30,8 +30,12 @@ function updateSymbolData($symbol) {
     $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
     // Recalcul des indicateurs en fct maj cache
-    foreach(['daily', 'weekly', 'monthly'] as $key) if ($ret[$key]) $periods[] = strtoupper($key);
-    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => 0, "periods" => $periods));
+    if ($force == 0)
+        foreach(['daily', 'weekly', 'monthly'] as $key) if ($ret[$key]) $periods[] = strtoupper($key);
+    else
+        foreach(['daily', 'weekly', 'monthly'] as $key) $periods[] = strtoupper($key);
+
+    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => 1, "periods" => $periods));
 
     // Mise à jour de la cote de l'actif avec la donnée GSheet
     if (isset($values[$symbol])) {
@@ -69,7 +73,19 @@ if ($action == "add") {
     }
 }
 
-if ($action == "upt") {
+if ($action == "indic") {
+
+    logger::info("STOCK", "UPDATE", "###########################################################");
+
+    $req = "SELECT * FROM stocks WHERE symbol='".$symbol."'";
+    $res = dbc::execSql($req);
+
+    if ($row = mysqli_fetch_array($res)) {
+        updateSymbolData($symbol);
+    }
+}
+
+if ($action == "upt" || $action == "sync") {
 
     logger::info("STOCK", "UPDATE", "###########################################################");
 
@@ -81,22 +97,24 @@ if ($action == "upt") {
         $req = "UPDATE stocks SET pea=".$pea.", gf_symbol='".$gf_symbol."' WHERE symbol='".$symbol."'";
         $res = dbc::execSql($req);
 
-        try {
+        if ($action == "sync") {
+            try {
 
-            $data = aafinance::searchSymbol($symbol);
+                $data = aafinance::searchSymbol($symbol);
 
-            if (isset($data["bestMatches"])) {
-                foreach ($data["bestMatches"] as $key => $val) {
-                    $req = "UPDATE stocks SET name='".addslashes($val["2. name"])."', type='".$val["3. type"]."', region='".$val["4. region"]."', marketopen='".$val["5. marketOpen"]."', marketclose='".$val["6. marketClose"]."', timezone='".$val["7. timezone"]."', currency='".$val["8. currency"]."' WHERE symbol='".$val["1. symbol"]."'";
-                    $res = dbc::execSql($req);
+                if (isset($data["bestMatches"])) {
+                    foreach ($data["bestMatches"] as $key => $val) {
+                        $req = "UPDATE stocks SET name='".addslashes($val["2. name"])."', type='".$val["3. type"]."', region='".$val["4. region"]."', marketopen='".$val["5. marketOpen"]."', marketclose='".$val["6. marketClose"]."', timezone='".$val["7. timezone"]."', currency='".$val["8. currency"]."' WHERE symbol='".$val["1. symbol"]."'";
+                        $res = dbc::execSql($req);
+                    }
                 }
+
+                updateSymbolData($symbol);
+
+            } catch (RuntimeException $e) {
+                if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
+                if ($e->getCode() == 2) logger::info("UDT", $row['symbole'], $e->getMessage());
             }
-
-            updateSymbolData($symbol);
-
-        } catch (RuntimeException $e) {
-            if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
-            if ($e->getCode() == 2) logger::info("UDT", $row['symbole'], $e->getMessage());
         }
     }
 }
@@ -123,7 +141,7 @@ if ($action == "del") {
 
 <script>
 var p = loadPrompt();
-<? if ($action == "upt") { ?>
+<? if ($action == "upt" || $action == "indic" || $action == "sync") { ?>
     go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
     p.success('Actif <?= $symbol ?> mis à jour');
 <? } ?>

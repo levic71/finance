@@ -61,13 +61,6 @@ function ComputeRSIX($data, $size) {
 }
 function ComputeDMX($data, $size) {
 
-// METHODE TraderFriendly
-//
-//    $t = TraderFriendly::momentum(array_column($data, "close"), $size);
-//    return fullFillArray($data, $t);
-
-// METHODE VFE
-//
     $tab = array();
 
     // Tri date descendante pour le calcul avec ma methode
@@ -110,11 +103,14 @@ function insertIntoTimeSeries($symbol, $data, $table) {
 }
 
 function insertIntoIndicators($symbol, $day, $period, $item) {
-    $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM200, RSI14) VALUES('".$symbol."', '".$day."', '".$period."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM200"]."', '".$item["RSI14"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."'";
+    $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM200, RSI14) VALUES('".$symbol."', '".$day."', '".strtoupper($period)."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM200"]."', '".$item["RSI14"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."'";
     $res = dbc::execSql($req);
 }
 
-function computeAndInsertIntoIndicators($symbol, $data, $period, $all = true) {
+// Si all=0 on insert tout, sinon on insert le nb indiqué
+function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
+
+    $ret = 0;
 
     $tab_days  = array_column($data, "day");
     $tab_close = array_column($data, "close");
@@ -129,25 +125,25 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = true) {
     $tab_DM132 = computeDMX($data, 132);
 
     // On ne retient que le dernier calcul
-    if (!$all) {
-        $tab_days  = array_slice($tab_days,  count($tab_days)-1);
-        $tab_close = array_slice($tab_close, count($tab_close)-1);
-        $tab_MM7   = array_slice($tab_MM7,   count($tab_MM7)-1);
-        $tab_MM20  = array_slice($tab_MM20,  count($tab_MM20)-1);
-        $tab_MM50  = array_slice($tab_MM50,  count($tab_MM50)-1);
-        $tab_MM200 = array_slice($tab_MM200, count($tab_MM200)-1);
-        $tab_RSI14 = array_slice($tab_RSI14, count($tab_RSI14)-1);
-        $tab_DM132['DM']   = array_slice($tab_DM132['DM'],   count($tab_DM132['DM'])-1);
-        $tab_DM132['DMD1'] = array_slice($tab_DM132['DMD1'], count($tab_DM132['DMD1'])-1);
-        $tab_DM132['DMD2'] = array_slice($tab_DM132['DMD2'], count($tab_DM132['DMD2'])-1);
-        $tab_DM132['DMD3'] = array_slice($tab_DM132['DMD3'], count($tab_DM132['DMD3'])-1);
+    if ($all > 0) {
+        $tab_days  = array_slice($tab_days,  count($tab_days)  - $all);
+        $tab_close = array_slice($tab_close, count($tab_close) - $all);
+        $tab_MM7   = array_slice($tab_MM7,   count($tab_MM7)   - $all);
+        $tab_MM20  = array_slice($tab_MM20,  count($tab_MM20)  - $all);
+        $tab_MM50  = array_slice($tab_MM50,  count($tab_MM50)  - $all);
+        $tab_MM200 = array_slice($tab_MM200, count($tab_MM200) - $all);
+        $tab_RSI14 = array_slice($tab_RSI14, count($tab_RSI14) - $all);
+        $tab_DM132['DM']   = array_slice($tab_DM132['DM'],   count($tab_DM132['DM'])   - $all);
+        $tab_DM132['DMD1'] = array_slice($tab_DM132['DMD1'], count($tab_DM132['DMD1']) - $all);
+        $tab_DM132['DMD2'] = array_slice($tab_DM132['DMD2'], count($tab_DM132['DMD2']) - $all);
+        $tab_DM132['DMD3'] = array_slice($tab_DM132['DMD3'], count($tab_DM132['DMD3']) - $all);
     }
-/* 
+/*  
     tools::pretty($tab_days);
     tools::pretty($tab_close);
     tools::pretty($tab_DM132['DM']);
     exit(0);
- */
+  */
     $item = array();
     foreach($tab_days as $key => $val) {
         $item["MM7"]   = currentnext($tab_MM7);
@@ -160,16 +156,20 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = true) {
         $item["DMD2"]  = currentnext($tab_DM132['DMD2']);
         $item["DMD3"]  = currentnext($tab_DM132['DMD3']);
 
-        insertIntoIndicators($symbol, $val, $period, $item, true);
+        insertIntoIndicators($symbol, $val, $period, $item);
+
+        $ret++;
     }
+
+    return $ret;
 }
 
-function computeAndInsertAllIndicators($symbol, $data, $period) {
-    computeAndInsertIntoIndicators($symbol, $data, $period, true);
+function computeAndInsertAllIndicators($symbol, $data, $period, $all = 0) {
+    return computeAndInsertIntoIndicators($symbol, $data, $period, $all);
 }
 
 function computeAndInsertLastIndicator($symbol, $data, $period) {
-    computeAndInsertIntoIndicators($symbol, $data, $period, false);
+    return computeAndInsertIntoIndicators($symbol, $data, $period, 1);
 }
 
 function calculMoyenne($tab_data) {
@@ -185,18 +185,6 @@ function calculMoyenne($tab_data) {
 
 }
 
-/* function cumulValuesAndRSI($tab_data, $ind, $row) {
-
-    $tab_data["volume"][$ind] = cumulTabVal($tab_data["volume"], $ind,  $row['volume']);
-    $tab_data["open"][$ind]   = cumulTabVal($tab_data["open"],  $ind,   $row['open']);
-    $tab_data["high"][$ind]   = cumulTabVal($tab_data["high"],  $ind,   $row['high']);
-    $tab_data["low"][$ind]    = cumulTabVal($tab_data["low"],   $ind,   $row['low']);
-    $tab_data["close"][$ind]  = cumulTabVal($tab_data["close"], $ind,   $row['close_value']);
-
-    return $tab_data;
-}
- */
-
 // //////////////////////////////////////////////////////////////
 // Cumul des Daily en Weekly/Monthly
 // //////////////////////////////////////////////////////////////
@@ -205,6 +193,7 @@ function aggregateWeeklyMonthlySymbol($symbol, $limited) {
     $tab_weekly  = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array() ];
     $tab_monthly = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array() ];
 
+    // Requete a revoir sur le subq
     $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
     $res= dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
@@ -251,19 +240,22 @@ function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
 
     $data = array();
 
-    $req = "SELECT * FROM ".$table." WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
+    if ($limited == 0)
+        $req = "SELECT * FROM ".$table." WHERE symbol='".$symbol."'";
+    else
+        $req = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC";
+
     $res= dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
-
         // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
         $row['close'] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
         $data[] = $row;
     }
 
-    // INSERT ALL INDICATORS
-    computeAndInsertAllIndicators($symbol, $data, $period);
+    // INSERT INDICATORS
+    $ret = computeAndInsertAllIndicators($symbol, $data, $period, $limited == 1 ? 30 : 0);
     
-    logger::info("INDIC", $symbol, "[".$period."] [count=".count($data)."]");
+    logger::info("INDIC", $symbol, "[".$period."] [insert=".$ret.", data=".count($data)."]");
 }
 
 // //////////////////////////////////////////////////////////////
@@ -297,9 +289,9 @@ function computeQuoteIndicatorsSymbol($symbol) {
 //        tools::pretty($data); exit(0);
 
         // INSERT ALL INDICATORS
-        computeAndInsertLastIndicator($symbol, $data, "daily");
+        $ret = computeAndInsertLastIndicator($symbol, $data, "DAILY");
         
-        logger::info("INDIC", $symbol, "[QUOTES] [count=1]");
+        logger::info("INDIC", $symbol, "[QUOTES] [insert=".$ret.", data=".count($data)."]");
     }
 }
 

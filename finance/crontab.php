@@ -44,14 +44,12 @@ while($row = mysqli_fetch_array($res)) {
 
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
-        // //////////////////////////////////////
-        // Mise a jour des caches
-        // //////////////////////////////////////
+        // Mise a jour des caches : full = false => compact (aucun impact sur le calcul des indicateurs) 
         $ret = cacheData::buildDailyCachesSymbol($row['symbol'], false);
 
         // Mise à jour des data daily
         if ($ret['daily'])
-            computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
+            computePeriodIndicatorsSymbol($row['symbol'], 1, "DAILY");
         else
             logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
 
@@ -67,15 +65,16 @@ while($row = mysqli_fetch_array($res)) {
 
     } else {
 
+        // Mise a jour des caches : full = false => compact (aucun impact sur le calcul des indicateurs) 
         $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], false);
 
         if ($ret['weekly'])
-            computePeriodIndicatorsSymbol($row['symbol'], 0, "WEEKLY");
+            computePeriodIndicatorsSymbol($row['symbol'], 1, "WEEKLY");
         else
             logger::info("INDIC", $row['symbol'], "[computeWeeklyIndicators] [Cache] [No computing]");
 
         if ($ret['monthly'])
-            computePeriodIndicatorsSymbol($row['symbol'], 0, "MONTHLY");
+            computePeriodIndicatorsSymbol($row['symbol'], 1, "MONTHLY");
         else
             logger::info("INDIC", $row['symbol'], "[computeMonthlyIndicators] [Cache] [No computing]");
     }

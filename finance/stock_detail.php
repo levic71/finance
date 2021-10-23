@@ -149,10 +149,8 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
 
 <?
 
-    if ($sess_context->isSuperAdmin()) {
-
+if ($sess_context->isSuperAdmin()) {
         $infos = calc::getDirectDM($data);
-    
 ?>
 
 <div class="ui container inverted grid segment">
@@ -187,8 +185,10 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
 
 <div class="ui container inverted segment">
     <h2 class="ui inverted right aligned header">
-        <button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
-        <button id="stock_back_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white reply icon"></i> Back</button>
+        <button id="stock_edit_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
+        <button id="stock_sync_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white spinner icon"></i> Modifier & Sync</button>
+        <button id="stock_indic_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white settings icon"></i> Rebuild Indicators</button>
+        <button id="stock_back_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white reply icon"></i> Back</button>
     </h2>
 </div>
 
@@ -513,7 +513,9 @@ update_all_charts('graphe_all_bt');
 var p = loadPrompt();
 
 <? if ($sess_context->isSuperAdmin()) { ?>
-Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&gf_symbol='+valof('f_gf_symbol')+'&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
+Dom.addListener(Dom.id('stock_edit_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&gf_symbol='+valof('f_gf_symbol')+'&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
+Dom.addListener(Dom.id('stock_sync_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>&gf_symbol='+valof('f_gf_symbol')+'&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_sync_bt' }); });
+Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>', loading_area: 'stock_indic_bt' }); });
 <? } ?>
 Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'main' }); });
 

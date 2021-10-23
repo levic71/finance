@@ -718,7 +718,7 @@ var data2 = {
 <?
     $x = 0; 
     foreach($lst_symbols as $key => $val) {
-        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$sess_context->getSpectreColor($x)."\", cubicInterpolationMode: 'monotone', tension: 0.4, borderWidth: 0.5, fill: false },";
+        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$sess_context->getSpectreColor($x)."\", cubicInterpolationMode: 'monotone', pointRadius: 1, tension: 0.4, borderWidth: 0.5, fill: false },";
         $x++;
     }
 ?>
