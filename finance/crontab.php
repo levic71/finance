@@ -42,18 +42,6 @@ $req = "SELECT * FROM stocks ORDER BY symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
-    // Recompute all indicators
-    // computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
-    // continue;
-
-/*     if ($row['symbol'] == "BRE.PAR" || $row['symbol'] == "PUST.PAR" || $row['symbol'] == "ESE.PAR" || $row['symbol'] == "OBLI.PAR") 
-    {
-        computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
-        continue;
-    }
-    else
-        continue;
- */
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
         // //////////////////////////////////////
@@ -61,25 +49,21 @@ while($row = mysqli_fetch_array($res)) {
         // //////////////////////////////////////
         $ret = cacheData::buildDailyCachesSymbol($row['symbol'], false);
 
-        // /////////////////////////////////////////////////////////
+        // Mise à jour des data daily
+        if ($ret['daily'])
+            computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
+        else
+            logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
+
         // Mise à jour de la cote de l'actif avec la donnée GSheet
-        // /////////////////////////////////////////////////////////
         if (isset($values[$row['symbol']])) {
             $ret['gsheet'] = updateQuotesWithGSData($values[$row['symbol']]);
+
+            // Mise a jour des indicateurs du jour (avec quotes)
+            computeQuoteIndicatorsSymbol($row['symbol']);
         }
         else
             logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data found] [No update]");
-
-        if ($ret['daily'])
-            computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
-        else {
-
-            // Maj du DM du jour
-            // if (isset($ret['gsheet']) && strstr($ret['sheet'], "QUOTES"))  calc::processDataDM($item['day'], array("quote" => array(), "data" => $x));
-
-            logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
-
-        }
 
     } else {
 

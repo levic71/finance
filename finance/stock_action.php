@@ -2,7 +2,9 @@
 
 require_once "sess_context.php";
 include "indicators.php";
+include "googlesheet/sheet.php";
 
+ini_set('max_execution_time', '300'); //300 seconds = 5 minutes
 session_start();
 
 include "common.php";
@@ -18,13 +20,38 @@ if ($symbol == "") tools::do_redirect("index.php");
 
 $db = dbc::connect();
 
-?>
 
-<div class="ui container inverted segment">
+function updateSymbolData($symbol) {
 
-<?
+    if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
+
+    $periods = array();
+
+    $ret = cacheData::buildAllCachesSymbol($symbol, true);
+
+    // Recalcul des indicateurs en fct maj cache
+    foreach(['daily', 'weekly', 'monthly'] as $key) if ($ret[$key]) $periods[] = strtoupper($key);
+    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => 0, "periods" => $periods));
+
+    // Mise à jour de la cote de l'actif avec la donnée GSheet
+    if (isset($values[$symbol])) {
+        $ret['gsheet'] = updateQuotesWithGSData($values[$symbol]);
+
+        // Mise a jour des indicateurs du jour (avec quotes)
+        computeQuoteIndicatorsSymbol($symbol);
+    }
+
+    // On supprime les fichiers cache tmp
+    cacheData::deleteTMPFiles();
+
+}
+
+
+?><div class="ui container inverted segment"><?
 
 if ($action == "add") {
+
+    logger::info("STOCK", "ADD", "###########################################################");
 
     // Recuperation des infos des assets
     $req = "SELECT count(*) total FROM stocks WHERE symbol='".$symbol."'";
@@ -38,13 +65,13 @@ if ($action == "add") {
         $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
         $res = dbc::execSql($req);
 
-        cacheData::buildAllCachesSymbol($symbol, true);
-
-        computeIndicatorsSymbol($symbol, 0);
+        updateSymbolData($symbol);
     }
 }
 
 if ($action == "upt") {
+
+    logger::info("STOCK", "UPDATE", "###########################################################");
 
     $req = "SELECT * FROM stocks WHERE symbol='".$symbol."'";
     $res = dbc::execSql($req);
@@ -65,10 +92,7 @@ if ($action == "upt") {
                 }
             }
 
-            unlink('cache/QUOTE_'.$symbol.'.json');
-            cacheData::buildCacheQuote($symbol);
-
-            computeIndicatorsSymbol($symbol, 0);
+            updateSymbolData($symbol);
 
         } catch (RuntimeException $e) {
             if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());

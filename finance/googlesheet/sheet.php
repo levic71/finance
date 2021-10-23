@@ -8,7 +8,6 @@ function updateGoogleSheet() {
 
 	$ret = array();
 
-
 	$onglet = stristr(__DIR__, "MAMP") ? "actifs-dev" : "actifs";
 
 	$client = new \Google_Client();
@@ -90,8 +89,6 @@ function updateGoogleSheet() {
 }
 
 
-
-
 function updateQuotesWithGSData($val) {
 
 	$symbol = $val[0];
@@ -104,8 +101,13 @@ function updateQuotesWithGSData($val) {
 
 	if ($row['total'] == 1 && is_numeric($val[2])) {
 
-		$req = "UPDATE quotes SET price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."', day='".date("Y-m-d")."' WHERE symbol='".$symbol."'";
-		// $ret = "[QUOTES] [price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."']";
+		// Si maj forcée le weekend
+		if (date("N") > 5)
+			$day = date("Y-m-d", strtotime(date("Y-m-d"). ' - '.(date('N') - 5).' days'));
+		else
+			$day = date("Y-m-d");
+
+		$req = "UPDATE quotes SET price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."', day='".$day."' WHERE symbol='".$symbol."'";
 		$ret = "[QUOTES] [price='".$val[2]."', open='".$val[3]."', volume='".$val[6]."', percent='".$val[10]."', ... ]";
 		$res = dbc::execSql($req);
 
@@ -118,7 +120,12 @@ function updateQuotesWithGSData($val) {
 function updateAllQuotesWithGSData($values) {
 
 	$ret = array();
-	foreach($values as $key => $val) $ret[] = updateQuotesWithGSData($val);
+	foreach($values as $key => $val) {
+
+		$ret[] = updateQuotesWithGSData($val);
+
+		computeQuoteIndicatorsSymbol($val[0]);
+	}
 	return $ret;
 }
 
@@ -133,11 +140,19 @@ if ($force == 1) {
 	require_once "../include.php";
 	require_once "../indicators.php";
 
+	// Le fichier de log est dans le repertoire au dessus
+	ini_set('error_log', '../finance.log');
+
 	$db = dbc::connect();
-	$values = updateGoogleSheet();
+
+	if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
+
 	$ret = updateAllQuotesWithGSData($values);
 
 	foreach($ret as $key => $val) logger::info("SHEET", 'QUOTE', $val);
+
+	// On supprime les fichiers cache tmp
+	cacheData::deleteTMPFiles();
 
 }
 

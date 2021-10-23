@@ -27,20 +27,10 @@ $db = dbc::connect();
 
 $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.symbol='".$symbol."'";
 $res = dbc::execSql($req);
+$row = mysqli_fetch_assoc($res);
 
-if ($row = mysqli_fetch_assoc($res)) {
-
-    $file_cache = 'cache/TMP_DM_'.$row['symbol'].'.json';
-
-    // On met en cache uniquement le DM du jour pour acces plus rapide
-    if (cacheData::refreshCache($file_cache, 600)) { // Cache de 5 min
-        $c = calc::processDataDM(date("Y-m-d"), calc::getDualMomentumData($row['symbol'], date("Y-m-d")));
-        cacheData::writeCacheData($file_cache, $c);
-    } else {
-        $c = cacheData::readCacheData($file_cache);
-    }
-
-    $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
+$data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
+$curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
 ?>
 
@@ -58,24 +48,38 @@ if ($row = mysqli_fetch_assoc($res)) {
             ?></tr>
         </thead>
         <tbody>
-<?
-        echo "<tr>
-                <td data-label=\"Devise\">".$row['currency']."</td>
-                <td data-label=\"Région\">".$row['type']."</td>
-                <td data-label=\"Région\">".$row['region']."</td>
-                <td data-label=\"Marché\">".$row['marketopen']."-".$row['marketclose']."</td>
-                <td data-label=\"TZ\">".$row['timezone']."</td>
-                <td data-label=\"Dernière Cotation\">".($row['day'] == "" ? "N/A" : $row['day'])."</td>
-                <td data-label=\"Prix\">".($row['price'] == "" ? "N/A" : sprintf("%.2f", $row['price']).$curr)."</td>
-                <td data-label=\"%\" class=\"".($row['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $row['percent'])." %</td>
-                <td data-label=\"DM\" class=\"".($c['MMZDM'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".$c['MMZDM']."%</td>
-                <td data-label=\"M200\">".sprintf("%.2f", $c['MM200']).$curr."</td>
-                <td data-label=\"MM7\">".sprintf("%.2f", $c['MM7']).$curr."</td>
-            </tr>";
-}
-
-?>
+            <tr>
+                <td data-label="Devise"><?= $row['currency'] ?></td>
+                <td data-label="Région"><?= $row['type'] ?></td>
+                <td data-label="Région"><?= $row['region'] ?></td>
+                <td data-label="Marché"><?= $row['marketopen']."-".$row['marketclose'] ?></td>
+                <td data-label="TZ"><?= $row['timezone'] ?></td>
+                <td data-label="Dernière Cotation"><?= ($row['day'] == "" ? "N/A" : $row['day']) ?></td>
+                <td data-label="Prix"><?= $row['price'] == "" ? "N/A" : sprintf("%.2f", $row['price']).$curr ?></td>
+                <td data-label="%" class="<?= ($row['percent'] >= 0 ? "aaf-positive" : "aaf-negative") ?>"><?= sprintf("%.2f", $row['percent'])?>%</td>
+                <td data-label="DM" class="<?= ($data['DM'] >= 0 ? "aaf-positive" : "aaf-negative") ?>"><?= $data['DM'] ?>%</td>
+                <td data-label="M200"><?= sprintf("%.2f", $data['MM200']).$curr ?></td>
+                <td data-label="MM7"><?= sprintf("%.2f", $data['MM7']).$curr ?></td>
+            </tr>
         </tbody>
+    </table>
+
+    <table id="detail_stock2" class="ui selectable inverted single line table">
+        <tbody>
+            <tr>
+                <td>Eligible au PEA</td>
+                <td>
+                    <div class="ui fitted toggle checkbox">
+                        <input id="f_pea" type="checkbox" <?= isset($row["pea"]) && $row["pea"] == 1 ? 'checked="checked"' : '' ?>>
+                        <label></label>
+                    </div>
+                </td>
+                <td>GF symbole</td>
+                <td>
+                    <div class="ui inverted input"><input id="f_gf_symbol" type="text" value="<?= $row["gf_symbol"] ?>"></div>
+                </td>
+            </tr>
+        </tbody>        
     </table>
 </div>
 
@@ -113,7 +117,7 @@ function getTimeSeriesData($table_name, $period, $sym) {
 $data_daily   = getTimeSeriesData("daily_time_series_adjusted",   "DAILY",   $symbol);
 
 // On ajoute la cotation du jour
-$data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "open" => $row["open"], "high" => $row["high"], "low" => $row["low"], "close" => $row["price"], "adjusted_close" => $row["price"], "volume" => $row["volume"], "period" => "DAILY", "DM" => $c['MMZDM'], "MM7" => $c['MM7'], "MM20" => $c['MM20'], "MM50" => $c["MM50"], "MM200" => $c['MM200'], "RSI14" => $c["RSI14"] );
+$data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "open" => $row["open"], "high" => $row["high"], "low" => $row["low"], "close" => $row["price"], "adjusted_close" => $row["price"], "volume" => $row["volume"], "period" => "DAILY", "DM" => $data['DM'], "MM7" => $data['MM7'], "MM20" => $data['MM20'], "MM50" => $data["MM50"], "MM200" => $data['MM200'], "RSI14" => $data["RSI14"] );
 $data_daily["rows"][]  = $data_daily_today;
 $data_daily["colrs"][] = 1;
 
@@ -143,7 +147,13 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
 </div>
 
 
-<? if ($sess_context->isSuperAdmin()) { ?>
+<?
+
+    if ($sess_context->isSuperAdmin()) {
+
+        $infos = calc::getDirectDM($data);
+    
+?>
 
 <div class="ui container inverted grid segment">
     <div class="column">
@@ -152,16 +162,10 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
             <div class="wide column">
                 <table id="detail2_stock" class="ui selectable inverted single line table">
                     <tbody>
-                        <tr><td>Ref date MMZ1M</td><td><?= isset($c["MMZ1MDate"]) ? $c["MMZ1MDate"] : "N/A" ?></td></tr>
-                        <tr><td>Ref date MMZ3M</td><td><?= isset($c["MMZ3MDate"]) ? $c["MMZ3MDate"] : "N/A" ?></td></tr>
-                        <tr><td>Ref date MMZ6M</td><td><?= isset($c["MMZ6MDate"]) ? $c["MMZ6MDate"] : "N/A" ?></td></tr>
-                        <tr><td>GF symbole</td><td><div class="ui inverted input"><input id="f_gf_symbol" type="text" value="<?= $row["gf_symbol"] ?>"></div></td></tr>
-                        <tr><td>PEA</td><td>
-                            <div class="ui fitted toggle checkbox">
-                                <input id="f_pea" type="checkbox" <?= isset($row["pea"]) && $row["pea"] == 1 ? 'checked="checked"' : '' ?>>
-                                <label></label>
-                            </div>
-                        </td></tr>
+                        <tr><td>Price</td><td><?= $data["day"] ?> [<?= $infos['price']?>] [<?= $infos['dm']?>%]</td></tr>
+                        <tr><td>DMD1</td><td><?= isset($data["DMD1"]) ? $data["DMD1"] : "N/A" ?> [<?= $infos['close']['DMD1']?>] [<?= $infos['perf']['DMD1']?>%]</td></tr>
+                        <tr><td>DMD2</td><td><?= isset($data["DMD2"]) ? $data["DMD2"] : "N/A" ?> [<?= $infos['close']['DMD2']?>] [<?= $infos['perf']['DMD2']?>%]</td></tr>
+                        <tr><td>DMD3</td><td><?= isset($data["DMD3"]) ? $data["DMD3"] : "N/A" ?> [<?= $infos['close']['DMD3']?>] [<?= $infos['perf']['DMD3']?>%]</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -182,7 +186,10 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
 </div>
 
 <div class="ui container inverted segment">
-    <h2 class="ui inverted right aligned header"><button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button></h2>
+    <h2 class="ui inverted right aligned header">
+        <button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
+        <button id="stock_back_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white reply icon"></i> Back</button>
+    </h2>
 </div>
 
 <? } ?>
@@ -508,6 +515,7 @@ var p = loadPrompt();
 <? if ($sess_context->isSuperAdmin()) { ?>
 Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&gf_symbol='+valof('f_gf_symbol')+'&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
 <? } ?>
+Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'main' }); });
 
 Dom.addListener(Dom.id('graphe_mm7_bt'),    Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM7');   });
 Dom.addListener(Dom.id('graphe_mm20_bt'),   Dom.Event.ON_CLICK, function(event) { toogleMMX(myChart1, 'MM20');  });

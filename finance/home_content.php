@@ -11,11 +11,11 @@ foreach([''] as $key)
 
 $db = dbc::connect();
 
-// récupération des DM
-$data = calc::getDualMomentum(date("Y-m-d"));
+// Recuperation des DM en BD
+$data2 = calc::getIndicatorsLastQuote();
 
 // Tri décroissant des perf DM des stocks
-arsort($data["perfs"]);
+arsort($data2["perfs"]);
 	
 ?>
 
@@ -41,7 +41,7 @@ arsort($data["perfs"]);
 				$tab_strat[] = $row['id'];
 ?>
         	<div class="four wide column swiper-slide">
-				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data["day"], $data["perfs"], $row['data'], $row['methode']) ?>
+				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data2["day"], $data2["perfs"], $row['data'], $row['methode']) ?>
 			</div>
 <? } ?>
 
@@ -84,7 +84,7 @@ $x = 0;
 // GET MAX HISTO FOR ALL SYMBOL && METTRE EN CACHE
 $max_histo_tab = calc::getAllMaxHistoryDate();
 
-foreach($data["stocks"] as $key => $val) {
+foreach($data2["stocks"] as $key => $val) {
 
 	$symbol = $key;
 
@@ -119,8 +119,8 @@ if ($sess_context->isSuperAdmin()) {
 		<td>".$val['type']."</td>
 		<td>".($val['day'] == NULL ? "N/A" : $val['day'])."</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
-		<td class=\"".($val['ref_pct'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['ref_pct'])." %</td>
-		<td class=\"".($val['MMZDM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['MMZDM']."\">".sprintf("%.2f", $val['MMZDM'])." %</td>
+		<td class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
+		<td class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['DM']."\">".sprintf("%.2f", $val['DM'])." %</td>
 		<td data-value=\"".$val['MM200']."\">".sprintf("%.2f", $val['MM200']).$curr."</td>
 		<td data-value=\"".$val['MM7']."\">".sprintf("%.2f", $val['MM7']).$curr."</td>
 	";

@@ -73,18 +73,24 @@ function ComputeDMX($data, $size) {
     // Tri date descendante pour le calcul avec ma methode
     $x = array_reverse($data);
 
-    while(count($x) > $size) {
-        $removed = array_shift($x);
+    while(count($x) >= $size) {
         $item = current($data);
         $tab[] = calc::processDataDM($item['day'], array("quote" => array(), "data" => $x));
+        array_shift($x);
     }
+
 
     // Tri date ascendente pour revenir en nominal
     $z = array_reverse($tab);
 
-    // foreach($z as $key => $val) echo $val['ref_day'].":".$val['MMZDM']."<br />";
+/*     foreach($z as $key => $val) tools::pretty($val); */
 
-    return fullFillArray($data, array_column($z, "MMZDM"));
+    return array(
+        "DM"   => fullFillArray($data, array_column($z, "MMZDM")),
+        "DMD1" => fullFillArray($data, array_column($z, "MMZ1MDate")),
+        "DMD2" => fullFillArray($data, array_column($z, "MMZ3MDate")),
+        "DMD3" => fullFillArray($data, array_column($z, "MMZ6MDate"))
+    );
 }
 
 function insertIntoTimeSeries($symbol, $data, $table) {
@@ -100,11 +106,15 @@ function insertIntoTimeSeries($symbol, $data, $table) {
         $res = dbc::execSql($req);
     }
 
-    return $res;
-    
+    return $res;  
 }
 
-function insertIntoIndicators($symbol, $data, $period) {
+function insertIntoIndicators($symbol, $day, $period, $item) {
+    $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM200, RSI14) VALUES('".$symbol."', '".$day."', '".$period."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM200"]."', '".$item["RSI14"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."'";
+    $res = dbc::execSql($req);
+}
+
+function computeAndInsertIntoIndicators($symbol, $data, $period, $all = true) {
 
     $tab_days  = array_column($data, "day");
     $tab_close = array_column($data, "close");
@@ -118,18 +128,48 @@ function insertIntoIndicators($symbol, $data, $period) {
     $tab_RSI14 = computeRSIX($tab_close, 14);
     $tab_DM132 = computeDMX($data, 132);
 
-    foreach($tab_days as $key => $val) {
-        $MM7   = currentnext($tab_MM7);
-        $MM20  = currentnext($tab_MM20);
-        $MM50  = currentnext($tab_MM50);
-        $MM200 = currentnext($tab_MM200);
-        $RSI14 = currentnext($tab_RSI14);
-        $DM    = currentnext($tab_DM132);
-
-        $req = "INSERT INTO indicators (symbol, day, period, DM, MM7, MM20, MM50, MM200, RSI14) VALUES('".$symbol."', '".$val."', '".$period."', '".$DM."', '".$MM7."', '".$MM20."', '".$MM50."', '".$MM200."', '".$RSI14."') ON DUPLICATE KEY UPDATE DM='".$DM."', MM7='".$MM7."', MM20='".$MM20."', MM50='".$MM50."', MM200='".$MM200."', RSI14='".$RSI14."'";
-        $res = dbc::execSql($req);
+    // On ne retient que le dernier calcul
+    if (!$all) {
+        $tab_days  = array_slice($tab_days,  count($tab_days)-1);
+        $tab_close = array_slice($tab_close, count($tab_close)-1);
+        $tab_MM7   = array_slice($tab_MM7,   count($tab_MM7)-1);
+        $tab_MM20  = array_slice($tab_MM20,  count($tab_MM20)-1);
+        $tab_MM50  = array_slice($tab_MM50,  count($tab_MM50)-1);
+        $tab_MM200 = array_slice($tab_MM200, count($tab_MM200)-1);
+        $tab_RSI14 = array_slice($tab_RSI14, count($tab_RSI14)-1);
+        $tab_DM132['DM']   = array_slice($tab_DM132['DM'],   count($tab_DM132['DM'])-1);
+        $tab_DM132['DMD1'] = array_slice($tab_DM132['DMD1'], count($tab_DM132['DMD1'])-1);
+        $tab_DM132['DMD2'] = array_slice($tab_DM132['DMD2'], count($tab_DM132['DMD2'])-1);
+        $tab_DM132['DMD3'] = array_slice($tab_DM132['DMD3'], count($tab_DM132['DMD3'])-1);
     }
+/* 
+    tools::pretty($tab_days);
+    tools::pretty($tab_close);
+    tools::pretty($tab_DM132['DM']);
+    exit(0);
+ */
+    $item = array();
+    foreach($tab_days as $key => $val) {
+        $item["MM7"]   = currentnext($tab_MM7);
+        $item["MM20"]  = currentnext($tab_MM20);
+        $item["MM50"]  = currentnext($tab_MM50);
+        $item["MM200"] = currentnext($tab_MM200);
+        $item["RSI14"] = currentnext($tab_RSI14);
+        $item["DM"]    = currentnext($tab_DM132['DM']);
+        $item["DMD1"]  = currentnext($tab_DM132['DMD1']);
+        $item["DMD2"]  = currentnext($tab_DM132['DMD2']);
+        $item["DMD3"]  = currentnext($tab_DM132['DMD3']);
 
+        insertIntoIndicators($symbol, $val, $period, $item, true);
+    }
+}
+
+function computeAndInsertAllIndicators($symbol, $data, $period) {
+    computeAndInsertIntoIndicators($symbol, $data, $period, true);
+}
+
+function computeAndInsertLastIndicator($symbol, $data, $period) {
+    computeAndInsertIntoIndicators($symbol, $data, $period, false);
 }
 
 function calculMoyenne($tab_data) {
@@ -160,12 +200,12 @@ function calculMoyenne($tab_data) {
 // //////////////////////////////////////////////////////////////
 // Cumul des Daily en Weekly/Monthly
 // //////////////////////////////////////////////////////////////
-function aggregateWeeklyMonthlySymbol($symbol, $filter_limited) {
+function aggregateWeeklyMonthlySymbol($symbol, $limited) {
 
     $tab_weekly  = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array() ];
     $tab_monthly = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array() ];
 
-    $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($filter_limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
+    $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
     $res= dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
 
@@ -203,15 +243,15 @@ function aggregateWeeklyMonthlySymbol($symbol, $filter_limited) {
 }
 
 // //////////////////////////////////////////////////////////////
-// Calcul MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
+// Calcul DM, MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
 // //////////////////////////////////////////////////////////////
-function computePeriodIndicatorsSymbol($symbol, $filter_limited, $period) {
+function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
 
     $table = strtolower($period)."_time_series_adjusted";
 
     $data = array();
 
-    $req = "SELECT * FROM ".$table." WHERE symbol=\"".$symbol."\"".($filter_limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
+    $req = "SELECT * FROM ".$table." WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
     $res= dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
 
@@ -221,30 +261,71 @@ function computePeriodIndicatorsSymbol($symbol, $filter_limited, $period) {
     }
 
     // INSERT ALL INDICATORS
-    insertIntoIndicators($symbol, $data, $period);
+    computeAndInsertAllIndicators($symbol, $data, $period);
     
     logger::info("INDIC", $symbol, "[".$period."] [count=".count($data)."]");
 }
 
 // //////////////////////////////////////////////////////////////
+// Calcul DM, MM7, MM20, MM50, MM200, RSI14 du jour (table quotes)
+// //////////////////////////////////////////////////////////////
+function computeQuoteIndicatorsSymbol($symbol) {
+
+    $data = array();
+
+    $req2 = "SELECT * FROM quotes WHERE symbol=\"".$symbol."\"";
+    $res2 = dbc::execSql($req2);
+
+    if ($row2 = mysqli_fetch_assoc($res2)) {
+
+        // price -> close et adjusted_close
+        $row2['close'] = $row2['price'];
+        $row2['adjusted_close'] = $row2['price'];
+
+        $req = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\" ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC";
+        $res = dbc::execSql($req);
+        while($row = mysqli_fetch_assoc($res)) {
+
+            // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
+            $row['close'] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
+            $data[] = $row;
+        }
+
+        // On ajoute la last quote
+        $data[] = $row2;
+
+//        tools::pretty($data); exit(0);
+
+        // INSERT ALL INDICATORS
+        computeAndInsertLastIndicator($symbol, $data, "daily");
+        
+        logger::info("INDIC", $symbol, "[QUOTES] [count=1]");
+    }
+}
+
+// //////////////////////////////////////////////////////////////
 // Calcul MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
 // //////////////////////////////////////////////////////////////
-function computeIndicatorsSymbol($symbol, $filter_limited, $aggregate = false) {
+function computeIndicatorsForSymbolWithOptions($symbol, $options = array("aggregate" => false, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY'])) {
 
-    if ($aggregate) aggregateWeeklyMonthlySymbol($symbol, $filter_limited);
+    if ($options['aggregate']) aggregateWeeklyMonthlySymbol($symbol, $options['limited']);
 
-    foreach(['DAILY', 'WEEKLY', 'MONTHLY'] as $key)
-        computePeriodIndicatorsSymbol($symbol, $filter_limited, $key);
+    foreach($options['periods'] as $key)
+        computePeriodIndicatorsSymbol($symbol, $options['limited'], $key);
 
 }
 
-function computeIndicators($filter_symbol, $filter_limited) {
+function computeAllIndicatorsForSymbol($symbol, $limited, $aggregate = false) {
+    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => $aggregate, "limited" => $limited, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
+}
+
+function computeAllIndicatorsForAllSymbols($filter_symbol, $limited) {
 
     // Selection du/des actif(s) à prendre en charge
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$filter_symbol."%\"";
     $res = dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res))
-        computeIndicatorsSymbol($row['symbol'], $filter_limited);
+        computeAllIndicatorsForSymbol($row['symbol'], $limited);
 
 }
 
@@ -274,7 +355,7 @@ if ($force == 1) {
 
     logger::info("DIRECT", "---------", "---------------------------------------------------------");
 
-    computeIndicators($filter, $limited);
+    computeAllIndicatorsForAllSymbols($filter, $limited);
 
     logger::info("DIRECT", "---------", "---------------------------------------------------------");
 

@@ -18,9 +18,7 @@ foreach(['nb_lignes', 'action'] as $key)
 if (!is_dir("cache/")) mkdir("cache/");
 
 if ($action == "reset") {
-    foreach (glob("cache/TMP_*.json") as $filename) {
-        unlink($filename);
-    }
+    cacheData::deleteTMPFiles();
 }
 
 $searchthis = "ALPHAV";

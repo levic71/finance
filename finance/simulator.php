@@ -256,7 +256,7 @@ while($i <= date("Ym", strtotime($date_end))) {
         if ($row['methode'] == 1) {
 
             // Calcul du DM sur les valeurs selectionnees
-            $data = calc::getFilteredDualMomentum($lst_symbols, $day);
+            $data = calc::getLastDayMonthQuoteIndicators($lst_symbols, $day);
 
             // Tri par performance decroissante en gardant l'index qui contient le symbol
             arsort($data["perfs"]);
@@ -278,20 +278,20 @@ while($i <= date("Ym", strtotime($date_end))) {
                     $tab_perf[$key][$day] = ($val == -9999 ? 0 : $val);
                 }
                 $info_content .= "</ul>";
-
-                $auMoinsUnActif = count($data["perfs"]) == 0 ? false : true;
+                
+                $auMoinsUnActif = count($data["perfs"]) > 0 ? true : false;
 
                 $detail["tr_onclick"] = "Swal.fire({ title: '".$info_title."', icon: 'info', html: '".$info_content."' });";
                 $detail["td_day"]     = $auMoinsUnActif ? $data["stocks"][$best_quote]["ref_day"] : $day;
 
-                $pu = calc::getDailyHistoryQuote($actifs_achetes_symbol, $data["stocks"][$best_quote]["ref_day"]);
+                $pu = $actifs_achetes_symbol == "" ? 0 : calc::getDailyHistoryQuote($actifs_achetes_symbol, $data["stocks"][$best_quote]["ref_day"]);
 
                 // Vente anciens actifs si different du nouveau plus performant
                 if ($auMoinsUnActif && $actifs_achetes_nb > 0 && $actifs_achetes_symbol != $best_quote) {
 
                     $cash += $actifs_achetes_nb * $pu;
 
-                    $perf_pf = round(($pu - $actifs_achetes_pu)*100/$actifs_achetes_pu, 2);
+                    $perf_pf = $actifs_achetes_pu == 0 ? 0 : round(($pu - $actifs_achetes_pu)*100/$actifs_achetes_pu, 2);
 
                     // Calcul max drawdown
                     $maxdd_min = min($maxdd_min, $valo_pf);
@@ -318,7 +318,7 @@ while($i <= date("Ym", strtotime($date_end))) {
 
                 // Retrait programmé
                 if ($retrait_programme) {
-
+                
                     // Retrait de l'invest precedent ajouté
                     $cash       -= $invest;
                     $sum_invest -= $invest;
@@ -521,6 +521,8 @@ while($i <= date("Ym", strtotime($date_end))) {
         $i = (date("Y", strtotime($i."01")) + 1)."01";
     else
         $i++;
+
+    // if ($nb_mois == 4) exit(0);
 
 }
 

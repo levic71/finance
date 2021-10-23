@@ -152,7 +152,6 @@ class dbc {
 //
 class calc {
 
-
     public static function getAchatActifsDCAInvest($day, $lst_decode_symbols, $lst_actifs_achetes_pu, $invest_montant) {
 
         $ret = array();
@@ -262,10 +261,6 @@ class calc {
         $ret = array();
 
         $i = 0;
-        $sum_MM7   = 0;
-        $sum_MM20  = 0;
-        $sum_MM50  = 0;
-        $sum_MM200 = 0;
         $ref_DAY = "";
         $ref_PCT = "";
         $ref_MJ0 = "";
@@ -335,27 +330,24 @@ class calc {
             if ($i == 66)  $ref_T3M = floatval($close_value);
             if ($i == 132) $ref_T6M = floatval($close_value);
 
-            // MM200, MM50, MM20, MM7
-            if ($i < 7)   $sum_MM7   += floatval($close_value);
-            if ($i < 20)  $sum_MM20  += floatval($close_value);
-            if ($i < 50)  $sum_MM50  += floatval($close_value);
-            if ($i < 200) $sum_MM200 += floatval($close_value);
-
             // Recuperation cotation en fin de mois fixe (le mois en cours pouvant etre non terminé)
             if ($ref2_T1M == 0 && substr($row['day'], 0, 7) == substr($ref_D1M, 0, 7)) {
                 $ref2_T1M = $close_value;
+                $ret['MMZ1MPrice'] = $close_value;
                 $ret['MMZ1MDate'] = $row['day'];
             }
 
             // Recuperation cotation en fin de 3 mois
             if ($ref2_T3M == 0 && substr($row['day'], 0, 7) == substr($ref_D3M, 0, 7)) {
                 $ref2_T3M = $close_value;
+                $ret['MMZ3MPrice'] = $close_value;
                 $ret['MMZ3MDate'] = $row['day'];
             }
 
             // Recuperation cotation en fin de 6 mois
             if ($ref2_T6M == 0 && substr($row['day'], 0, 7) == substr($ref_D6M, 0, 7)) {
                 $ref2_T6M = $close_value;
+                $ret['MMZ6MPrice'] = $close_value;
                 $ret['MMZ6MDate'] = $row['day'];
             }
 
@@ -370,25 +362,40 @@ class calc {
 
 
         // A QUOI CA SERT DE CALCULER MMX ??? On le fait dans Indicators !!!
-        $ret['MM7']   = round(($sum_MM7   / 7),   2);
-        $ret['MM20']  = round(($sum_MM20  / 20),  2);
-        $ret['MM50']  = round(($sum_MM50  / 50),  2);
-        $ret['MM200'] = round(($sum_MM200 / 200), 2);
-
+/*
         $ret['MMF1M'] = $ref_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref_T1M)*100/$ref_T1M, 2);
         $ret['MMF3M'] = $ref_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref_T3M)*100/$ref_T3M, 2);
         $ret['MMF6M'] = $ref_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref_T6M)*100/$ref_T6M, 2);
         $ret['MMFDM'] = $ref_T6M > 0 ? round(($ret['MMF1M']+$ret['MMF3M']+$ret['MMF6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMF1M']+$ret['MMF3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMF1M'] : -9999));
-
+*/
         $ret['MMZ1M'] = $ref2_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T1M)*100/$ref2_T1M, 2);
         $ret['MMZ3M'] = $ref2_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T3M)*100/$ref2_T3M, 2);
         $ret['MMZ6M'] = $ref2_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T6M)*100/$ref2_T6M, 2);
         $ret['MMZDM'] = $ref2_T6M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2) : ($ref2_T3M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M'])/2, 2) : ($ref2_T1M > 0 ? $ret['MMZ1M'] : -9999));
+ 
+        return $ret;
+    }
 
-// PAS FORCEMENT UTILE JE CROIS !!!!
-//        $rsi14_tab = computeRSIX($tab_close, 14);
-//        $ret["RSI14"] = $rsi14_tab[length($rsi14_tab)];
-        $ret["RSI14"] = 50;
+    public static function getDirectDM($data) {
+
+        $ret = array();
+
+        $price = $data['price'];
+        $perf  = array();
+        $close = array();
+
+        foreach(['DMD1', 'DMD2', 'DMD3'] as $key) {
+            $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$data['symbol']."' AND day='".$data[$key]."'";
+            $res = dbc::execSql($req);
+            $row = mysqli_fetch_assoc($res);
+            $close[$key] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
+            $perf[$key]  = round($close[$key] != 0 ? (($price - $close[$key]) * 100) / $close[$key] : 0, 2); 
+        }
+
+        $ret['price'] = $price;
+        $ret['close'] = $close;
+        $ret['perf']  = $perf;
+        $ret['dm']    = round(($perf['DMD1'] + $perf['DMD2'] + $perf['DMD3']) / 3, 2);
 
         return $ret;
     }
@@ -447,21 +454,110 @@ class calc {
         return $ret;
     }
 
-    public static function getFilteredDualMomentum($lst_symbols, $day) {
+    public static function getSymbolIndicators($symbol, $day) {
 
-        $stocks = array();
-        $perfs  = array();
+        $ret = array( 'stocks' => array(), 'perfs' => array(), 'day' => $day, 'compute_time' => date("Y-d-m H:i:s") );
 
-        $data = self::getDualMomentum($day);
+        $req = "SELECT * FROM indicators i, stocks s, daily_time_series_adjusted d WHERE i.symbol = '".$symbol."' AND i.period='DAILY' AND i.day='".$day."' AND s.symbol=i.symbol AND d.symbol=i.symbol AND d.day='".$day."'";
+        $res = dbc::execSql($req);
 
-        foreach($data["stocks"] as $key => $val) {
-            if (!in_array($key, $lst_symbols)) {
-                unset($data["stocks"][$key]);
-                unset($data["perfs"][$key]);
+        if ($row = mysqli_fetch_assoc($res)) {
+
+            // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
+            $row['price'] = is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
+            $row['ref_close'] = $row['price'];
+            $row['ref_day'] = $day;
+
+        } else {
+
+            // Qd day == today alors cad row=null on regarde dans quote et plus dans daily....
+            $req = "SELECT * FROM stocks s, quotes q LEFT JOIN indicators i1 ON q.symbol=i1.symbol WHERE s.symbol = q.symbol AND i1.symbol='".$symbol."' and i1.day='".$day."' AND i1.period='DAILY'";
+            $res = dbc::execSql($req);
+
+            if ($row = mysqli_fetch_assoc($res)) {
+                $row['ref_close'] = $row['price'];
+                $row['ref_day'] = $day;
             }
         }
 
-        return $data;
+//        tools::pretty($row);
+//        exit(0);
+
+        return $row;
+    }
+
+    public static function getIndicatorsLastQuote() {
+
+        $file_cache = 'cache/TMP_CURRENT_DUAL_MOMENTUM_.json';
+
+        $ret = array( 'stocks' => array(), 'perfs' => array(), 'day' => date("Y-m-d"), 'compute_time' => date("Y-d-m H:i:s") );
+
+        if (cacheData::refreshCache($file_cache, 600)) { // Cache de 10 min
+
+            $req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol=q.symbol LEFT JOIN indicators i1 ON s.symbol=i1.symbol WHERE (i1.symbol, i1.day, i1.period) IN (SELECT i2.symbol, max(i2.day), i2.period FROM indicators i2 WHERE i2.period='DAILY' GROUP BY i2.symbol) GROUP BY s.symbol";
+            $res = dbc::execSql($req);
+            while($row = mysqli_fetch_assoc($res)) {
+                $symbol = $row['symbol'];
+                $ret["stocks"][$symbol] = $row;
+                // On isole les perfs pour pouvoir trier par performance decroissante
+                $ret["perfs"][$symbol] = $row['DM'];
+            }
+
+            cacheData::writeCacheData($file_cache, $ret);
+
+        } else {
+            $ret = cacheData::readCacheData($file_cache);
+        }
+
+        return $ret;
+    }
+
+    public static function getSymbolIndicatorsLastQuote($symbol) {
+
+        $data = calc::getIndicatorsLastQuote();
+
+        return isset($data['stocks'][$symbol]) ? $data['stocks'][$symbol] : false;
+    }
+
+    public static function getFilteredSymbolIndicators($lst_symbols, $day) {
+
+        $ret = array( 'stocks' => array(), 'perfs' => array(), 'day' => $day, 'compute_time' => date("Y-d-m H:i:s") );
+
+        foreach($lst_symbols as $key => $symbol) {
+
+            $data = calc::getSymbolIndicators($symbol, $day);
+
+            // Encore utiliser dans simulator => peut etre utiliser day dans simulator
+            $data['ref_day']   = $day;
+            $data['ref_close'] = $data['price'];
+
+            //tools::pretty($data);
+            //exit(0);
+
+            $ret['stocks'][$symbol] = $data;
+            $ret['perfs'][$symbol]  = $data["DM"];
+
+        }
+
+        return $ret;
+    }
+
+    public static function getLastDayMonthQuoteIndicators($lst_symbols, $day) {
+
+        $ret = array( 'stocks' => array(), 'perfs' => array(), 'day' => $day, 'compute_time' => date("Y-d-m H:i:s") );
+
+        $req = "SELECT symbol, max(day) max_day FROM indicators WHERE period='DAILY' AND day LIKE '".substr($day, 0, 8)."%' AND symbol IN ("."'".implode("','", $lst_symbols)."'".") GROUP BY symbol";
+        $res = dbc::execSql($req);
+        while($row = mysqli_fetch_assoc($res)) {
+
+            $data = calc::getSymbolIndicators($row['symbol'], $row['max_day']);
+
+            $ret['stocks'][$row['symbol']] = $data;
+            $ret['perfs'][$row['symbol']]  = $data["DM"];
+
+        }
+
+        return $ret;
     }
 
 }
@@ -482,10 +578,6 @@ class aafinance {
         $json = file_get_contents($url);
         $data = json_decode($json,true);
 
-        if ($dbg_data) {
-            print("<pre>".$json."</pre>");
-        }
-
         $data['status'] = 0;
         if (isset($data['Error Message'])) {
             $data['status'] = 2;
@@ -496,6 +588,8 @@ class aafinance {
         } else {
             logger::info("ALPHAV", $symbol, "[".$function."] [".$options."] [OK]");
         }
+
+        if ($dbg_data) tools::pretty($data);
 
         return $data;
     }
@@ -539,11 +633,13 @@ class aafinance {
 //
 class cacheData {
 
-    public static $lst_cache = ["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"];
+    public static $lst_cache = ["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "WEEKLY_TIME_SERIES_ADJUSTED_FULL", "WEEKLY_TIME_SERIES_ADJUSTED_COMPACT", "MONTHLY_TIME_SERIES_ADJUSTED_FULL", "MONTHLY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"];
 
     public static function isMarketOpen($timezone, $market_open, $market_close) {
 
         $ret = false;
+
+        if (tools::isLocalHost()) return true;
 
         // Si on n'est pas en semaine
         if (date("N") >= 6) return false;
@@ -665,7 +761,7 @@ class cacheData {
                     fwrite($fp, json_encode($data));
                     fclose($fp);
                 }    
-            } catch(RuntimeException $e) { }
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[INTRADAY]".$e->getMessage()); }
         }
         else
             logger::info("CACHE", $symbol, "[INTRADAY] [No update]");    
@@ -674,9 +770,6 @@ class cacheData {
     public static function buildCacheDailyTimeSeriesAdjusted($symbol, $full = true) {
 
         $ret = false;
-
-        // Si on n'est pas en semaine
-        if (date("N") >= 6 && !$full) return false;
 
         $file_cache = 'cache/DAILY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
 
@@ -699,7 +792,7 @@ class cacheData {
     
                     $ret = true;
                 }        
-            } catch(RuntimeException $e) { }
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
         }
         else
             logger::info("CACHE", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
@@ -713,16 +806,12 @@ class cacheData {
 
         $file_cache = 'cache/WEEKLY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
 
-        // Si on n'est pas samedi
-        if (date("N") != 6 && !$full) return false;
-
         if (self::refreshOnceADayCache($file_cache)) {
             try {
                 $data = aafinance::getWeeklyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
-                $data = array();
                 $key = "Weekly Adjusted Time Series";
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {
@@ -736,7 +825,8 @@ class cacheData {
 
                     $ret = true;
                 }
-            } catch(RuntimeException $e) { }
+
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
         }
         else
             logger::info("CACHE", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
@@ -749,9 +839,6 @@ class cacheData {
         $ret = false;
 
         $file_cache = 'cache/MONTHLY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
-
-        // Si on n'est pas dimanche
-        if (date("N") != 7 && !$full) return false;
 
         if (self::refreshOnceADayCache($file_cache)) {
             try {
@@ -772,7 +859,7 @@ class cacheData {
     
                     $ret = true;
                 }        
-            } catch(RuntimeException $e) { }
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
         }
         else
             logger::info("CACHE", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
@@ -800,7 +887,7 @@ class cacheData {
     
                     $ret = true;
                 }        
-            } catch(RuntimeException $e) { }
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[GLOBAL_QUOTE]".$e->getMessage()); }
         }
         else
             logger::info("CACHE", $symbol, "[GLOBAL_QUOTE] [No update]");
@@ -815,29 +902,46 @@ class cacheData {
         foreach($options as $key => $val) $ret[$val] = false;
 
         if (isset($options['overview'])) $ret["overview"] = self::buildCacheOverview($symbol);
+        if (isset($options['quote']))    $ret["quote"]    = self::buildCacheQuote($symbol);
         if (isset($options['daily']))    $ret["daily"]    = self::buildCacheDailyTimeSeriesAdjusted($symbol, $full);
         if (isset($options['weekly']))   $ret["weekly"]   = self::buildCacheWeeklyTimeSeriesAdjusted($symbol, $full);
         if (isset($options['monthly']))  $ret["monthly"]  = self::buildCacheMonthlyTimeSeriesAdjusted($symbol, $full);
-        if (isset($options['quote']))    $ret["quote"]    = self::buildCacheQuote($symbol);
 
         return $ret;
     }
 
     public static function buildAllCachesSymbol($symbol, $full = false) {
-        return cacheData::buildCachesSymbol($symbol, $full, array("overview" => 1, "daily" => 1, "weekly" => 1, "monthly" => 1, "quote" => 1));
+        return cacheData::buildCachesSymbol($symbol, $full, array("overview" => 1, "quote" => 1, "daily" => 1, "weekly" => 1, "monthly" => 1));
     }
 
     public static function buildDailyCachesSymbol($symbol, $full = false) {
-        return cacheData::buildCachesSymbol($symbol, $full, array("overview" => 1, "daily" => 1, "quote" => 1));
+        return cacheData::buildCachesSymbol($symbol, $full, array("overview" => 1, "quote" => 1, "daily" => 1));
     }
 
     public static function buildWeekendCachesSymbol($symbol, $full = false) {
+
+        $options = array("weekly" => 0, "monthly" => 0);
+
+        // Le samedi on fait les weekly
+        if (date("N") == 6) $options['weekly'] = 1;
+
+        // Le dimanche on fait les monthly
+        if (date("N") == 7) $options['monthly'] = 1;
+
         return cacheData::buildCachesSymbol($symbol, $full, array("weekly" => 1, "monthly" => 1));
+    }
+
+    public static function deleteTMPFiles() {
+        foreach (glob("cache/TMP_*.json") as $filename) {
+            unlink($filename);
+        }
     }
 
     public static function deleteCacheSymbol($symbol) {
         foreach(self::$lst_cache as $key)
             if (file_exists("cache/".$key."_".$symbol.".json")) unlink("cache/".$key."_".$symbol.".json");
+
+        cacheData::deleteTMPFiles();
     }
 
 }
