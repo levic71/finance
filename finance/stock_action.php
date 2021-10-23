@@ -21,7 +21,7 @@ if ($symbol == "") tools::do_redirect("index.php");
 $db = dbc::connect();
 
 
-function updateSymbolData($symbol, $force = 0) {
+function updateSymbolData($symbol, $force = false) {
 
     if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
@@ -30,12 +30,12 @@ function updateSymbolData($symbol, $force = 0) {
     $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
     // Recalcul des indicateurs en fct maj cache
-    if ($force == 0)
-        foreach(['daily', 'weekly', 'monthly'] as $key) if ($ret[$key]) $periods[] = strtoupper($key);
-    else
+    if ($force)
         foreach(['daily', 'weekly', 'monthly'] as $key) $periods[] = strtoupper($key);
+    else
+        foreach(['daily', 'weekly', 'monthly'] as $key) if ($ret[$key]) $periods[] = strtoupper($key);
 
-    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => 1, "periods" => $periods));
+    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => $force ? 0 : 1, "periods" => $periods));
 
     // Mise à jour de la cote de l'actif avec la donnée GSheet
     if (isset($values[$symbol])) {
@@ -69,7 +69,7 @@ if ($action == "add") {
         $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
         $res = dbc::execSql($req);
 
-        updateSymbolData($symbol);
+        updateSymbolData($symbol, true);
     }
 }
 
@@ -109,7 +109,7 @@ if ($action == "upt" || $action == "sync") {
                     }
                 }
 
-                updateSymbolData($symbol);
+                updateSymbolData($symbol, true);
 
             } catch (RuntimeException $e) {
                 if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
