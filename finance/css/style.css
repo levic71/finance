@@ -1,6 +1,17 @@
 td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
+.readonly input {
+    padding: 8px 10px !important;
+    background: #333 !important;
+    border: 0px !important;
+    color: burlywood !important;
+}
+
+.readonly label {
+    padding: 0px 10px !important;
+}
+
 .disclaimer div {
     line-height: 10px;
 }

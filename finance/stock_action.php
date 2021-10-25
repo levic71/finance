@@ -70,6 +70,8 @@ if ($action == "add") {
         $res = dbc::execSql($req);
 
         updateSymbolData($symbol, true);
+
+        logger::info("STOCK", $symbol, "[OK]");
     }
 }
 
@@ -82,6 +84,8 @@ if ($action == "indic") {
 
     if ($row = mysqli_fetch_array($res)) {
         updateSymbolData($symbol);
+
+        logger::info("STOCK", $symbol, "[OK]");
     }
 }
 
@@ -113,15 +117,21 @@ if ($action == "upt" || $action == "sync") {
 
                 updateSymbolData($symbol, true);
 
+                logger::info("SYNC", $symbol, "[OK]");
+
             } catch (RuntimeException $e) {
                 if ($e->getCode() == 1) logger::error("UDT", $row['symbol'], $e->getMessage());
                 if ($e->getCode() == 2) logger::info("UDT", $row['symbol'], $e->getMessage());
             }
         }
+
+        logger::info("STOCK", $symbol, "[OK]");
     }
 }
 
 if ($action == "del") {
+
+    logger::info("STOCK", "DEL", "###########################################################");
 
     $req = "SELECT * FROM stocks WHERE symbol='".$symbol."'";
     $res = dbc::execSql($req);
@@ -134,6 +144,8 @@ if ($action == "del") {
         }
 
         cacheData::deleteCacheSymbol($symbol);
+
+        logger::info("STOCK", $symbol, "[OK]");
     }
 }
 

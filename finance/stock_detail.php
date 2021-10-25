@@ -23,6 +23,8 @@ $bt_mmx_colr      = "purple";
 $bt_volume_colr   = "yellow";
 $bt_grey_colr     = "grey";
 
+$readonly = $sess_context->isSuperAdmin() ? false : true;
+
 $db = dbc::connect();
 
 $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.symbol='".$symbol."'";
@@ -141,7 +143,7 @@ table div.checkbox { padding: 8px 0px !important; }
 </div>
 
 <div class="ui container inverted segment">
-    <form class="ui inverted form">
+    <form class="ui inverted form <?= $readonly ? "readonly" : "" ?>">
         <h4 class="ui inverted dividing header">Asset Informations</h4>
         <div class="field">
             <div class="three fields">
@@ -155,14 +157,18 @@ table div.checkbox { padding: 8px 0px !important; }
                 </div>
                 <div class="field">
                     <label>Catégorie</label>
-                    <select class="ui fluid search dropdown" id="f_categorie">
-                        <?
-                            $cat = array("0" => "Autre", "1" => "Biens conso & Services", "2" => "Communication", "3" => "Eau", "4" => "Ecologie", "5" => "Energie", "6" => "Finances", "7" => "Indice", "8" => "Infrastuctures", "9" => "Matériaux & Industrie", "10" => "Métaux Précieux", "11" => "Mixte", "12" => "Santé", "13" => "Services Publics", "14" => "Technologie");
-                            arsort($cat); // Permet de rajouter des items n'importe ou dans la liste
-                            foreach($cat as $key => $val)
-                                echo '<option value="'.$key.'" '.($row['distribution'] == $key ? 'selected="selected"' : '').'>'.$val.'</option>';
-                        ?>
-                    </select>
+                    <? if (!$readonly) { ?>
+                        <select class="ui fluid search dropdown" id="f_categorie">
+                            <?
+                                $cat = array("0" => "Autre", "1" => "Biens conso & Services", "2" => "Communication", "3" => "Eau", "4" => "Ecologie", "5" => "Energie", "6" => "Finances", "7" => "Indice", "8" => "Infrastuctures", "9" => "Matériaux & Industrie", "10" => "Métaux Précieux", "11" => "Mixte", "12" => "Santé", "13" => "Services Publics", "14" => "Technologie");
+                                arsort($cat); // Permet de rajouter des items n'importe ou dans la liste
+                                foreach($cat as $key => $val)
+                                    echo '<option value="'.$key.'" '.($row['distribution'] == $key ? 'selected="selected"' : '').'>'.$val.'</option>';
+                            ?>
+                        </select>
+                    <? } else { ?>
+                        <input type="text" id="f_categorie" value="<?= $row['categorie'] ?>" placeholder="Catégorie">
+                    <? } ?>
                 </div>
             </div>
             <div class="three fields">
@@ -176,13 +182,17 @@ table div.checkbox { padding: 8px 0px !important; }
                 </div>
                 <div class="field">
                     <label>Politique de distribution</label>
-                    <select class="ui fluid search dropdown" id="f_distribution">
+                    <? if (!$readonly) { ?>
+                        <select class="ui fluid search dropdown" id="f_distribution">
                         <option value="">Choisir</option>
                         <?
                             foreach(["0" => "Capitalisation", "1" => "Distribution"] as $key => $val)
                                 echo '<option value="'.$key.'" '.($row['distribution'] == $key ? 'selected="selected"' : '').'>'.$val.'</option>';
                         ?>
-                    </select>
+                        </select>
+                    <? } else { ?>
+                        <input type="text" id="f_distribution" value="<?= $row['distribution'] ?>" placeholder="Distribution">
+                    <? } ?>
                 </div>
             </div>
             <div class="two fields">
@@ -201,11 +211,16 @@ table div.checkbox { padding: 8px 0px !important; }
                     <input type="text" id="f_gf_symbol" value="<?= $row['gf_symbol'] ?>" placeholder="Google finance symbole">
                 </div>
                 <div class="field">
-                    <label>&nbsp;</label>
-                    <div class="ui toggle inverted checkbox"  onclick="toogleCheckBox('f_pea');">
-                        <input type="checkbox" id="f_pea" <?= $row['pea'] == 1 ? 'checked="checked' : '' ?> tabindex="0" class="hidden">
+                    <? if (!$readonly) { ?>
+                        <label>&nbsp;</label>
+                        <div class="ui toggle inverted checkbox"  onclick="toogleCheckBox('f_pea');">
+                            <input type="checkbox" id="f_pea" <?= $row['pea'] == 1 ? 'checked="checked' : '' ?> tabindex="0" class="hidden">
+                            <label>Eligible PEA</label>
+                        </div>
+                    <? } else { ?>
                         <label>Eligible PEA</label>
-                    </div>
+                        <input type="text" id="f_pea" value="<?= $row['pea'] == 0 ? "Non" : "Oui" ?>" placeholder="">
+                    <? } ?>
                 </div>
             </div>
         </div>
@@ -215,7 +230,7 @@ table div.checkbox { padding: 8px 0px !important; }
 
 <?
 
-if ($sess_context->isSuperAdmin()) {
+if (!$readonly) {
         $infos = calc::getDirectDM($data);
 ?>
 
@@ -255,16 +270,19 @@ if ($sess_context->isSuperAdmin()) {
     </div>
 </div>
 
+<? } ?>
+
 <div class="ui container inverted segment">
     <h2 class="ui inverted right aligned header">
+<? if (!$readonly) { ?>
         <button id="stock_edit_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
         <button id="stock_sync_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white retweet icon"></i> &nbsp;&nbsp;Modifier & Sync</button>
         <button id="stock_indic_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white settings icon"></i> &nbsp;&nbsp;Rebuild Indicators</button>
+<? } ?>
         <button id="stock_back_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white reply icon"></i> Back</button>
     </h2>
 </div>
 
-<? } ?>
 
 
 <script>
@@ -584,7 +602,7 @@ update_all_charts('graphe_all_bt');
 
 var p = loadPrompt();
 
-<? if ($sess_context->isSuperAdmin()) { ?>
+<? if (!$readonly) { ?>
 getFormValues = function() {
     params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_categorie', 'f_distribution', 'f_link1', 'f_link2' ])+'&pea='+(valof('f_pea') == 0 ? 0 : 1);
     return params;
