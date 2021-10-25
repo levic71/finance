@@ -27,7 +27,13 @@ $db = dbc::connect();
 
 $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.symbol='".$symbol."'";
 $res = dbc::execSql($req);
-$row = mysqli_fetch_assoc($res);
+
+if (!$row = mysqli_fetch_assoc($res)) exit(0);
+
+$links = json_decode($row['links'], true);
+
+$row['link1'] = isset($links['link1']) ? $links['link1'] : "";
+$row['link2'] = isset($links['link2']) ? $links['link2'] : "";
 
 $data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
 $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
@@ -64,23 +70,6 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
         </tbody>
     </table>
 
-    <table id="detail_stock2" class="ui selectable inverted single line table">
-        <tbody>
-            <tr>
-                <td>Eligible au PEA</td>
-                <td>
-                    <div class="ui fitted toggle checkbox">
-                        <input id="f_pea" type="checkbox" <?= isset($row["pea"]) && $row["pea"] == 1 ? 'checked="checked"' : '' ?>>
-                        <label></label>
-                    </div>
-                </td>
-                <td>GF symbole</td>
-                <td>
-                    <div class="ui inverted input"><input id="f_gf_symbol" type="text" value="<?= $row["gf_symbol"] ?>"></div>
-                </td>
-            </tr>
-        </tbody>        
-    </table>
 </div>
 
 
@@ -126,16 +115,21 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
 
 ?>
 
+<style>
+table td { padding: 5px 20px !important; }
+table div.checkbox { padding: 8px 0px !important; }
+</style>
+
 
 <div id="canvas_area" class="ui container inverted segment">
     <span>
-        <button id="graphe_D_bt"    class="mini ui <?= $rsi_choice == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">Daily</button>
-        <button id="graphe_W_bt"    class="mini ui <?= $rsi_choice == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">Weekly</button>
-        <button id="graphe_M_bt"    class="mini ui <?= $rsi_choice == 2  ? $bt_interval_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">Monthly</button>
-        <button id="graphe_all_bt"   class="mini ui <?= $bt_period_colr ?> button">All</button>
-        <button id="graphe_3Y_bt"    class="mini ui <?= $bt_grey_colr ?> button">3Y</button>
-        <button id="graphe_1Y_bt"    class="mini ui <?= $bt_grey_colr ?> button">1Y</button>
-        <button id="graphe_1T_bt"    class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;">1T</button>
+        <button id="graphe_D_bt"      class="mini ui <?= $rsi_choice == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">Daily</button>
+        <button id="graphe_W_bt"      class="mini ui <?= $rsi_choice == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">Weekly</button>
+        <button id="graphe_M_bt"      class="mini ui <?= $rsi_choice == 2  ? $bt_interval_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">Monthly</button>
+        <button id="graphe_all_bt"    class="mini ui <?= $bt_period_colr ?> button">All</button>
+        <button id="graphe_3Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">3Y</button>
+        <button id="graphe_1Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">1Y</button>
+        <button id="graphe_1T_bt"     class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;">1T</button>
         <button id="graphe_mm7_bt"    class="mini ui <?= ($mmx & 1) == 1 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM7</button>
         <button id="graphe_mm20_bt"   class="mini ui <?= ($mmx & 2) == 2 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM20</button>
         <button id="graphe_mm50_bt"   class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM50</button>
@@ -146,6 +140,78 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
     <canvas id="stock_canvas2" height="20"></canvas>
 </div>
 
+<div class="ui container inverted segment">
+    <form class="ui inverted form">
+        <h4 class="ui inverted dividing header">Asset Informations</h4>
+        <div class="field">
+            <div class="three fields">
+                <div class="field">
+                    <label>Provider</label>
+                    <input type="text" id="f_provider" value="<?= $row['provider'] ?>" placeholder="Provider">
+                </div>
+                <div class="field">
+                    <label>ISIN</label>
+                    <input type="text" id="f_isin" value="<?= $row['ISIN'] ?>" placeholder="ISIN">
+                </div>
+                <div class="field">
+                    <label>Catégorie</label>
+                    <select class="ui fluid search dropdown" id="f_categorie">
+                        <?
+                            $cat = array("0" => "Autre", "1" => "Biens conso & Services", "2" => "Communication", "3" => "Eau", "4" => "Ecologie", "5" => "Energie", "6" => "Finances", "7" => "Indice", "8" => "Infrastuctures", "9" => "Matériaux & Industrie", "10" => "Métaux Précieux", "11" => "Mixte", "12" => "Santé", "13" => "Services Publics", "14" => "Technologie");
+                            arsort($cat); // Permet de rajouter des items n'importe ou dans la liste
+                            foreach($cat as $key => $val)
+                                echo '<option value="'.$key.'" '.($row['distribution'] == $key ? 'selected="selected"' : '').'>'.$val.'</option>';
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="three fields">
+                <div class="field">
+                    <label>Frais de gestion (%)</label>
+                    <input type="text" id="f_frais" value="<?= $row['frais'] ?>" placeholder="Frais de gestion">
+                </div>
+                <div class="field">
+                    <label>Actifs (Million)</label>
+                    <input type="text" id="f_actifs" value="<?= $row['actifs'] ?>" placeholder="Actifs">
+                </div>
+                <div class="field">
+                    <label>Politique de distribution</label>
+                    <select class="ui fluid search dropdown" id="f_distribution">
+                        <option value="">Choisir</option>
+                        <?
+                            foreach(["0" => "Capitalisation", "1" => "Distribution"] as $key => $val)
+                                echo '<option value="'.$key.'" '.($row['distribution'] == $key ? 'selected="selected"' : '').'>'.$val.'</option>';
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>Morning Star</label>
+                    <input type="text" id="f_link1" value="<?= $row['link1'] ?>" placeholder="Lien http">
+                </div>
+                <div class="field">
+                    <label>JustETF</label>
+                    <input type="text" id="f_link2" value="<?= $row['link2'] ?>" placeholder="Lien http">
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>GF Symbole</label>
+                    <input type="text" id="f_gf_symbol" value="<?= $row['gf_symbol'] ?>" placeholder="Google finance symbole">
+                </div>
+                <div class="field">
+                    <label>&nbsp;</label>
+                    <div class="ui toggle inverted checkbox"  onclick="toogleCheckBox('f_pea');">
+                        <input type="checkbox" id="f_pea" <?= $row['pea'] == 1 ? 'checked="checked' : '' ?> tabindex="0" class="hidden">
+                        <label>Eligible PEA</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 
 <?
 
@@ -154,16 +220,22 @@ if ($sess_context->isSuperAdmin()) {
 ?>
 
 <div class="ui container inverted grid segment">
+    <form class="ui inverted form">
+        <h4 class="ui inverted dividing header">Cache Informations</h4>
+    </form>
+</div>
+
+<div class="ui container inverted grid segment">
     <div class="column">
 
         <div class="ui inverted stackable two column grid container">
             <div class="wide column">
                 <table id="detail2_stock" class="ui selectable inverted single line table">
                     <tbody>
-                        <tr><td>Price</td><td><?= $data["day"] ?> [<?= $infos['price']?>] [<?= $infos['dm']?>%]</td></tr>
-                        <tr><td>DMD1</td><td><?= isset($data["DMD1"]) ? $data["DMD1"] : "N/A" ?> [<?= $infos['close']['DMD1']?>] [<?= $infos['perf']['DMD1']?>%]</td></tr>
-                        <tr><td>DMD2</td><td><?= isset($data["DMD2"]) ? $data["DMD2"] : "N/A" ?> [<?= $infos['close']['DMD2']?>] [<?= $infos['perf']['DMD2']?>%]</td></tr>
-                        <tr><td>DMD3</td><td><?= isset($data["DMD3"]) ? $data["DMD3"] : "N/A" ?> [<?= $infos['close']['DMD3']?>] [<?= $infos['perf']['DMD3']?>%]</td></tr>
+                        <tr><td>Price</td><td><?= $data["day"] ?> [<?= sprintf("%.2f", $infos['price']) ?>] [<?= sprintf("%2.2f", $infos['dm']) ?>%]</td></tr>
+                        <tr><td>DMD1</td><td><?= isset($data["DMD1"]) ? $data["DMD1"] : "N/A" ?> [<?= sprintf("%.2f", $infos['close']['DMD1']) ?>] [<?= sprintf("%2.2f", $infos['perf']['DMD1']) ?>%]</td></tr>
+                        <tr><td>DMD2</td><td><?= isset($data["DMD2"]) ? $data["DMD2"] : "N/A" ?> [<?= sprintf("%.2f", $infos['close']['DMD2']) ?>] [<?= sprintf("%2.2f", $infos['perf']['DMD2']) ?>%]</td></tr>
+                        <tr><td>DMD3</td><td><?= isset($data["DMD3"]) ? $data["DMD3"] : "N/A" ?> [<?= sprintf("%.2f", $infos['close']['DMD3']) ?>] [<?= sprintf("%2.2f", $infos['perf']['DMD3']) ?>%]</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -173,7 +245,7 @@ if ($sess_context->isSuperAdmin()) {
                     <tbody>
                     <?
                         foreach(cacheData::$lst_cache as $key)
-                        echo "<tr><td>Cache ".$key."_".$symbol.".json</td><td>".(file_exists("cache/".$key."_".$symbol.".json") ? "<i class=\"ui icon inverted green check\"></i>" : "<i class=\"ui icon inverted red x\"></i>")."</td></tr>";
+                        echo "<tr><td style=\"padding: 0px 0px 0px 10px !important;\">".(file_exists("cache/".$key."_".$symbol.".json") ? "<i class=\"ui icon inverted green check\"></i>" : "<i class=\"ui icon inverted red x\"></i>")."</td><td>".$key."_".$symbol.".json</td></tr>";
                     ?>
                     </tbody>
                 </table>
@@ -186,8 +258,8 @@ if ($sess_context->isSuperAdmin()) {
 <div class="ui container inverted segment">
     <h2 class="ui inverted right aligned header">
         <button id="stock_edit_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
-        <button id="stock_sync_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white spinner icon"></i> Modifier & Sync</button>
-        <button id="stock_indic_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white settings icon"></i> Rebuild Indicators</button>
+        <button id="stock_sync_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white retweet icon"></i> &nbsp;&nbsp;Modifier & Sync</button>
+        <button id="stock_indic_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white settings icon"></i> &nbsp;&nbsp;Rebuild Indicators</button>
         <button id="stock_back_bt"  class="circular ui icon very small right floated pink labelled button"><i class="inverted white reply icon"></i> Back</button>
     </h2>
 </div>
@@ -513,8 +585,12 @@ update_all_charts('graphe_all_bt');
 var p = loadPrompt();
 
 <? if ($sess_context->isSuperAdmin()) { ?>
-Dom.addListener(Dom.id('stock_edit_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&gf_symbol='+valof('f_gf_symbol')+'&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_edit_bt' }); });
-Dom.addListener(Dom.id('stock_sync_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>&gf_symbol='+valof('f_gf_symbol')+'&pea='+(valof('f_pea') == 0 ? 0 : 1), loading_area: 'stock_sync_bt' }); });
+getFormValues = function() {
+    params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_categorie', 'f_distribution', 'f_link1', 'f_link2' ])+'&pea='+(valof('f_pea') == 0 ? 0 : 1);
+    return params;
+}
+Dom.addListener(Dom.id('stock_edit_bt'),  Dom.Event.ON_CLICK, function(event) { p = getFormValues(); go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>'+p, loading_area: 'stock_edit_bt' }); });
+Dom.addListener(Dom.id('stock_sync_bt'),  Dom.Event.ON_CLICK, function(event) { p = getFormValues(); go({ action: 'update', id: 'main', url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>'+p, loading_area: 'stock_sync_bt' }); });
 Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>', loading_area: 'stock_indic_bt' }); });
 <? } ?>
 Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'main' }); });

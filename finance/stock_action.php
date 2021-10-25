@@ -13,7 +13,7 @@ if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
 $pea = 0;
 
-foreach(['action', 'symbol', 'pea', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'gf_symbol'] as $key)
+foreach(['action', 'symbol', 'pea', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if ($symbol == "") tools::do_redirect("index.php");
@@ -21,13 +21,13 @@ if ($symbol == "") tools::do_redirect("index.php");
 $db = dbc::connect();
 
 
-function updateSymbolData($symbol, $force = false) {
+function updateSymbolData($mysymbol, $force = false) {
 
     if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
     $periods = array();
 
-    $ret = cacheData::buildAllCachesSymbol($symbol, true);
+    $ret = cacheData::buildAllCachesSymbol($mysymbol, true);
 
     // Recalcul des indicateurs en fct maj cache
     if ($force)
@@ -35,14 +35,14 @@ function updateSymbolData($symbol, $force = false) {
     else
         foreach(['daily', 'weekly', 'monthly'] as $key) if ($ret[$key]) $periods[] = strtoupper($key);
 
-    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => $force ? 0 : 1, "periods" => $periods));
+    computeIndicatorsForSymbolWithOptions($mysymbol, array("aggregate" => false, "limited" => $force ? 0 : 1, "periods" => $periods));
 
     // Mise à jour de la cote de l'actif avec la donnée GSheet
-    if (isset($values[$symbol])) {
-        $ret['gsheet'] = updateQuotesWithGSData($values[$symbol]);
+    if (isset($values[$mysymbol])) {
+        $ret['gsheet'] = updateQuotesWithGSData($values[$mysymbol]);
 
         // Mise a jour des indicateurs du jour (avec quotes)
-        computeQuoteIndicatorsSymbol($symbol);
+        computeQuoteIndicatorsSymbol($mysymbol);
     }
 
     // On supprime les fichiers cache tmp
@@ -94,7 +94,9 @@ if ($action == "upt" || $action == "sync") {
 
     if ($row = mysqli_fetch_array($res)) {
 
-        $req = "UPDATE stocks SET pea=".$pea.", gf_symbol='".$gf_symbol."' WHERE symbol='".$symbol."'";
+        $links = json_encode(array("link1" => $f_link1, "link2" => $f_link2));
+
+        $req = "UPDATE stocks SET links='".$links."', pea=".$pea.", ISIN='".$f_isin."', provider='".$f_provider."', categorie='".$f_categorie."', frais='".$f_frais."', actifs='".$f_actifs."', distribution='".$f_distribution."', gf_symbol='".$f_gf_symbol."' WHERE symbol='".$symbol."'";
         $res = dbc::execSql($req);
 
         if ($action == "sync") {
@@ -112,8 +114,8 @@ if ($action == "upt" || $action == "sync") {
                 updateSymbolData($symbol, true);
 
             } catch (RuntimeException $e) {
-                if ($e->getCode() == 1) logger::error("UDT", $row['symbole'], $e->getMessage());
-                if ($e->getCode() == 2) logger::info("UDT", $row['symbole'], $e->getMessage());
+                if ($e->getCode() == 1) logger::error("UDT", $row['symbol'], $e->getMessage());
+                if ($e->getCode() == 2) logger::info("UDT", $row['symbol'], $e->getMessage());
             }
         }
     }

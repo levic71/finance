@@ -45,7 +45,9 @@ rmCN  = function(id, cn) { try { var tmp = el(id).className.split(' '); ncn = ""
 isCN  = function(id, cn) { try { var tmp = el(id).className.split(' '); ret=false; for(var n=0;n<tmp.length;n++) { if (tmp[n] == cn) ret=true; }; return ret; } catch(e) { myconsole('isCN:' + id + ':' + e); } }
 replaceCN = function(id, cn1, cn2) { try { el(id).className = el(id).className.replace(cn1, cn2); } catch(e) { myconsole('replaceCN:' + id + ':' + e); } }
 switchCN  = function(id, cn1, cn2) { try { el(id).className = isCN(id, cn1) ? el(id).className.replace(cn1, cn2) : el(id).className.replace(cn2, cn1); } catch(e) { myconsole('switchCN:' + id + ':' + e); } }
+toogleCN  = function(id, cn) { try { if (isCN(id, cn)) rmCN(id, cn); else addCN(id, cn); } catch(e) { myconsole('switchCN:' + id + ':' + e); } }
 
+toogleCheckBox = function(id) { el(id).checked = el(id).checked ? false : true; }
 
 go = function(args) {
 	var opt = args||{};
