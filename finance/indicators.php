@@ -193,8 +193,8 @@ function aggregateWeeklyMonthlySymbol($symbol, $limited) {
     $tab_weekly  = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array() ];
     $tab_monthly = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array() ];
 
-    // Requete a revoir sur le subq
-    $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC" : "");
+    // Requete a revoir sur le subq (300 car il m'en faut 30 + 200 = 230 mim pour calcul MM200)
+    $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 300) subq ORDER BY day ASC" : "");
     $res= dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
 
@@ -243,7 +243,7 @@ function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
     if ($limited == 0)
         $req = "SELECT * FROM ".$table." WHERE symbol='".$symbol."'";
     else
-        $req = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC";
+        $req = "SELECT * FROM (SELECT * FROM ".$table." WHERE symbol='".$symbol."' ORDER BY day DESC LIMIT 300) subq ORDER BY day ASC";
 
     $res= dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
@@ -274,7 +274,7 @@ function computeQuoteIndicatorsSymbol($symbol) {
         $row2['close'] = $row2['price'];
         $row2['adjusted_close'] = $row2['price'];
 
-        $req = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\" ORDER BY day DESC LIMIT 210) subq ORDER BY day ASC";
+        $req = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\" ORDER BY day DESC LIMIT 300) subq ORDER BY day ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
 

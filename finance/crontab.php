@@ -44,7 +44,7 @@ while($row = mysqli_fetch_array($res)) {
 
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
-        // Mise a jour des caches : full = false => compact (aucun impact sur le calcul des indicateurs) 
+        // Mise a jour des caches : Si full = false => compact (aucun impact sur le calcul des indicateurs) 
         $ret = cacheData::buildDailyCachesSymbol($row['symbol'], false);
 
         // Mise à jour des data daily
@@ -80,7 +80,6 @@ while($row = mysqli_fetch_array($res)) {
     }
 
     logger::info("CRON", "---------", "---------------------------------------------------------");
-
 }
 
 logger::info("CRON", "END", "###########################################################");
