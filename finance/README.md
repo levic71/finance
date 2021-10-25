@@ -29,5 +29,5 @@
 // Backlog collective (avec pondération donation)
 // Priorisation des demandes
 // Rajouter les données : frais de gestion, capitalisation, volume moy echange, dividende ...
-
+// Mettre des likes sur les stratégies
 

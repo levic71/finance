@@ -338,9 +338,7 @@ while($i <= date("Ym", strtotime($date_end))) {
                             $actifs_achetes_nb -= $nb_actifs_a_vendre;
 
                         }
-
-                    }
-                    
+                    }                    
                 }
 
                 // Achat nouveaux actifs

@@ -1,6 +1,29 @@
 td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
+.login_page .ui.corner.label:after {
+    right: -1px;
+    top: -1px;
+    background-color: transparent;
+    border-top: 0 solid transparent;
+    border-right: 3em solid transparent;
+    border-bottom: 3em solid transparent;
+    border-left: 0 solid transparent;
+    border-right-color: inherit;
+    -webkit-transition: border-color .1s ease;
+    transition: border-color .1s ease;
+    border-radius: 0px 5px;
+}
+.login_page .ui.corner.label .icon {
+    font-size: 10px;
+}
+.login_page .user.icon, .login_page .lock.icon {
+    background: #ccc;
+}
+.login_page #f_email, .login_page #f_pwd {
+    padding-left: 50px;
+}
+
 .readonly input {
     padding: 8px 10px !important;
     background: #333 !important;
@@ -415,3 +438,76 @@ table th { color: burlywood !important; cursor: pointer !important; }
     
 }
   
+.ribbon {
+    line-height: 0.8em;
+    font-size: 2em;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+    letter-spacing: -2px;
+    display: block;
+    width: 6rem;
+    height: 4rem;
+    background: linear-gradient(to bottom, #999999 0%, #cccccc 100%);
+    color: white;
+    padding-top: 1rem;
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    -webkit-filter: drop-shadow(0 0.5rem 0.3em rgba(0, 0, 0, 0.5));
+    transform: translate3d(0, 0, 0);
+  }
+  .ribbon:after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-right: 3rem solid transparent;
+    border-left: 3rem solid transparent;
+    border-top: 1.5rem solid #CCCCCC;
+    position: absolute;
+    top: 5rem;
+    left: 0;
+  }
+  .ribbon.ribbon--red {
+    background: linear-gradient(to bottom, #d3362d 0%, #e57368 100%);
+  }
+  .ribbon.ribbon--red:after {
+    border-top: 1.5rem solid #E57368;
+  }
+  .ribbon.ribbon--orange {
+    background: linear-gradient(to bottom, #e7711b 0%, #f7981d 100%);
+  }
+  .ribbon.ribbon--orange:after {
+    border-top: 1.5rem solid #F7981D;
+  }
+  .ribbon.ribbon--yellow {
+    background: linear-gradient(to bottom, #f1ca3a 0%, #f6eb3b 100%);
+  }
+  .ribbon.ribbon--yellow:after {
+    border-top: 1.5rem solid #F6EB3B;
+  }
+  .ribbon.ribbon--green {
+    background: linear-gradient(to bottom, #5f9654 0%, #65b045 100%);
+  }
+  .ribbon.ribbon--green:after {
+    border-top: 1.5rem solid #65B045;
+  }
+  .ribbon.ribbon--blue {
+    background: linear-gradient(to bottom, #1c91c0 0%, #11a9cc 100%);
+  }
+  .ribbon.ribbon--blue:after {
+    border-top: 1.5rem solid #11A9CC;
+  }
+  .ribbon.ribbon--purple {
+    background: linear-gradient(to bottom, #5c3292 0%, #7e3794 100%);
+  }
+  .ribbon.ribbon--purple:after {
+    border-top: 1.5rem solid #7E3794;
+  }
+
+
+
+
+
+Resources 1× 0.5× 0.25× Rerun

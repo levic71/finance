@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.3.6";
+$ver = tools::isLocalHost() ? rand() : "1.3.7";
 
 foreach(['action'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -69,11 +69,11 @@ foreach(['action'] as $key)
 			// Dom.addListener(Dom.id('m2_pft_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'pft', id: 'main', menu: 'm2_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m1_pft_bt'),      Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
 			Dom.addListener(Dom.id('m2_pft_bt'),      Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
-			Dom.addListener(Dom.id('m1_palmares_bt'), Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
-			Dom.addListener(Dom.id('m2_palmares_bt'), Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
+			Dom.addListener(Dom.id('m1_palmares_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', menu: 'm1_palmares_bt', url: 'palmares.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_palmares_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', menu: 'm1_palmares_bt', url: 'palmares.php', loading_area: 'main' }); });
 <? if (!$sess_context->isUserConnected()) { ?>
-			Dom.addListener(Dom.id('m1_login_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_login_bt', url: 'login.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_login_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_login_bt', url: 'login.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m1_login_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'login', id: 'main', menu: 'm1_login_bt', url: 'login.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_login_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'login', id: 'main', menu: 'm2_login_bt', url: 'login.php', loading_area: 'main' }); });
 <? } else { ?>
 			Dom.addListener(Dom.id('m1_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_logout_bt', url: 'login_action.php?action=logout', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m2_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_logout_bt', url: 'login_action.php?action=logout', loading_area: 'main' }); });
