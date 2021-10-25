@@ -30,7 +30,7 @@ arsort($data2["perfs"]);
 <?
 			$req = "SELECT * FROM strategies WHERE defaut=1 AND methode=1";
 
-			$i = 0;
+			$i = 1;
 			$tab_strat = array();
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
@@ -40,7 +40,7 @@ arsort($data2["perfs"]);
         	<div class="four wide column swiper-slide">
 				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data2["day"], $data2["perfs"], $row['data'], $row['methode']) ?>
 				<? if ($i < 4) { ?>
-				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i+1 ?><br /><small>15%</small></div>
+				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i ?><br /><small>15%</small></div>
 				<? } ?>
 			</div>
 <?
@@ -67,7 +67,7 @@ arsort($data2["perfs"]);
 <?
 			$req = "SELECT * FROM strategies WHERE defaut=1 AND methode=2";
 
-			$i = 0;
+			$i = 1;
 			$tab_strat = array();
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
@@ -77,7 +77,7 @@ arsort($data2["perfs"]);
         	<div class="four wide column swiper-slide">
 				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data2["day"], $data2["perfs"], $row['data'], $row['methode']) ?>
 				<? if ($i < 4) { ?>
-				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i+1 ?><br /><small>15%</small></div>
+				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i ?><br /><small>15%</small></div>
 				<? } ?>
 			</div>
 <?
