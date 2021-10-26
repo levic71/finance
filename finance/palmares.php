@@ -35,13 +35,11 @@ arsort($data2["perfs"]);
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 				$tab_strat[] = $row['id'];
-				$ribbon_color = $i == 1 ? "ribbon--orange" : ($i == 2 ? "ribbon--green" : "ribbon--blue");
+				$ribbon_color = $i == 1 ? "ribbon--orange" : ($i == 2 ? "ribbon--green" : ($i == 3 ? "ribbon--blue" : "ribbon--gray"));
 ?>
         	<div class="four wide column swiper-slide">
 				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data2["day"], $data2["perfs"], $row['data'], $row['methode']) ?>
-				<? if ($i < 4) { ?>
 				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i ?><br /><small>15%</small></div>
-				<? } ?>
 			</div>
 <?
 				$i++;
@@ -72,13 +70,11 @@ arsort($data2["perfs"]);
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 				$tab_strat[] = $row['id'];
-				$ribbon_color = $i == 1 ? "ribbon--orange" : ($i == 2 ? "ribbon--green" : "ribbon--blue");
+				$ribbon_color = $i == 1 ? "ribbon--orange" : ($i == 2 ? "ribbon--green" : ($i == 3 ? "ribbon--blue" : "ribbon--gray"));
 ?>
         	<div class="four wide column swiper-slide">
 				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data2["day"], $data2["perfs"], $row['data'], $row['methode']) ?>
-				<? if ($i < 4) { ?>
 				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i ?><br /><small>15%</small></div>
-				<? } ?>
 			</div>
 <?
 				$i++;
