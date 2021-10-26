@@ -51,7 +51,7 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
     <table id="detail_stock" class="ui selectable inverted single line table">
         <thead>
             <tr><?
-                foreach(['Devise', 'Type', 'Région', 'Marché', 'TZ', 'Dernière cotation', 'Prix' , '%', 'DM', 'MM200', 'MM7'] as $key)
+                foreach(['Devise', 'Type', 'Région', 'Marché', 'TZ', 'Cotation', 'Prix' , '%', 'DM', 'MM200', 'MM7'] as $key)
                     echo "<th>".$key."</th>";
             ?></tr>
         </thead>
@@ -62,7 +62,7 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
                 <td data-label="Région"><?= $row['region'] ?></td>
                 <td data-label="Marché"><?= $row['marketopen']."-".$row['marketclose'] ?></td>
                 <td data-label="TZ"><?= $row['timezone'] ?></td>
-                <td data-label="Dernière Cotation"><?= ($row['day'] == "" ? "N/A" : $row['day']) ?></td>
+                <td data-label="Cotation"><?= ($row['day'] == "" ? "N/A" : $row['day']) ?></td>
                 <td data-label="Prix"><?= $row['price'] == "" ? "N/A" : sprintf("%.2f", $row['price']).$curr ?></td>
                 <td data-label="%" class="<?= ($row['percent'] >= 0 ? "aaf-positive" : "aaf-negative") ?>"><?= sprintf("%.2f", $row['percent'])?>%</td>
                 <td data-label="DM" class="<?= ($data['DM'] >= 0 ? "aaf-positive" : "aaf-negative") ?>"><?= $data['DM'] ?>%</td>

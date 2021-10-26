@@ -56,7 +56,14 @@ arsort($data2["perfs"]);
 	
 <div id="stocks_box" class="ui container inverted segment">
 
-<h2 class="ui left floated">Actifs suivis <button id="lst_filter1_bt" class="mini ui grey button">PEA</button><button id="lst_filter2_bt" class="mini ui grey button">EUR</button><button id="lst_filter3_bt" class="mini ui grey button">USD</button><? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
+	<h2 class="ui left floated">Actifs suivis 
+		<button id="lst_filter1_bt" class="mini ui grey button">PEA</button>
+		<button id="lst_filter2_bt" class="mini ui grey button">EUR</button>
+		<button id="lst_filter3_bt" class="mini ui grey button">USD</button>
+		<button id="lst_filter4_bt" class="mini ui grey button">&lt; 3%</button>
+		<button id="lst_filter5_bt" class="mini ui grey button">&gt; 150 M</button>
+		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?>
+	</h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
 		<thead>
@@ -65,12 +72,12 @@ arsort($data2["perfs"]);
 				<th>Symbole</th>
                 <th class="four wide">Nom</th>
                 <th>Type</th>
-				<th>Dernière cotation</th>
+				<th>Frais</th>
+				<th>Actifs</th>
+				<th>Cotation</th>
 				<th data-sortable-type="numeric">Prix</th>
-				<th data-sortable-type="numeric">%</th>
+				<th data-sortable-type="numeric">Var</th>
 				<th data-sortable-type="numeric">DM</th>
-				<th data-sortable-type="numeric">MM200</th>
-				<th data-sortable-type="numeric">MM7</th>
 <? if ($sess_context->isSuperAdmin()) { ?>
     		    <th></th>
 <? } ?>
@@ -97,7 +104,7 @@ foreach($data2["stocks"] as $key => $val) {
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
 if ($sess_context->isSuperAdmin()) {
-	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\">";
+	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." \">";
 } else {
 	echo "<tr onclick=\"gotoStockDetail('".$val['symbol']."');\" class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\">";
 }
@@ -117,12 +124,12 @@ if ($sess_context->isSuperAdmin()) {
 
 	echo "
 		<td>".$val['type']."</td>
+		<td>".sprintf("%.2f", $val['frais'])." %</td>
+		<td>".$val['actifs']." M</td>
 		<td>".($val['day'] == NULL ? "N/A" : $val['day'])."</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
 		<td class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['DM']."\">".sprintf("%.2f", $val['DM'])." %</td>
-		<td data-value=\"".$val['MM200']."\">".sprintf("%.2f", $val['MM200']).$curr."</td>
-		<td data-value=\"".$val['MM7']."\">".sprintf("%.2f", $val['MM7']).$curr."</td>
 	";
 
 if ($sess_context->isSuperAdmin()) {
@@ -199,14 +206,7 @@ if (false) {
         }
     });
 
-
-	hideSubDetail = function() {
-		tab = Dom.find("#lst_stock tbody tr.row-detail");
-		for (const element of tab) Dom.css(element, {'display' : 'none'});
-	}
-
 	gotoStockDetail = function(sym) {
-		// hideSubDetail();
 		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+sym, loading_area: 'main' });
 	}
 
@@ -214,18 +214,25 @@ if (false) {
 		f1_on = Dom.hasClass(Dom.id('lst_filter1_bt'), 'blue');
 		f2_on = Dom.hasClass(Dom.id('lst_filter2_bt'), 'blue');
 		f3_on = Dom.hasClass(Dom.id('lst_filter3_bt'), 'blue');
+		f4_on = Dom.hasClass(Dom.id('lst_filter4_bt'), 'blue');
+		f5_on = Dom.hasClass(Dom.id('lst_filter5_bt'), 'blue');
 
 		tab = Dom.find("#lst_stock tbody tr");
 		for (const element of tab) Dom.css(element, {'display' : 'table-row'});
 
-		if (!(f1_on == false && f2_on == false && f3_on == false)) {
+		if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false)) {
 			for (const element of tab) {
-				if ((f1_on && Dom.hasClass(element, 'PEA')) || (f2_on && Dom.hasClass(element, 'EUR')) || (f3_on && Dom.hasClass(element, 'USD')))
+				if (
+						(!f1_on || (f1_on && Dom.hasClass(element, 'PEA'))) &&
+						(!f2_on || (f2_on && Dom.hasClass(element, 'EUR'))) &&
+						(!f3_on || (f3_on && Dom.hasClass(element, 'USD'))) && 
+						(!f4_on || (f4_on && Dom.hasClass(element, 'FRAIS'))) && 
+						(!f5_on || (f5_on && Dom.hasClass(element, 'ACTIFS')))
+				)
 					continue;
 				Dom.css(element, {'display' : 'none'});
 			}
 		}
-		// hideSubDetail();
 	}
 
 	filterLstAction = function(elt, fct) {
@@ -236,6 +243,8 @@ if (false) {
 	Dom.addListener(Dom.id('lst_filter1_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
 	Dom.addListener(Dom.id('lst_filter2_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter2_bt'); });
 	Dom.addListener(Dom.id('lst_filter3_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter3_bt'); });
+	Dom.addListener(Dom.id('lst_filter4_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter4_bt'); });
+	Dom.addListener(Dom.id('lst_filter5_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter5_bt'); });
 
 	<? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });

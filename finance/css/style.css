@@ -115,7 +115,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 .home_page .card .header, .sim_page .card .header {
     color: burlywood !important;
 }
-#stocks_box h2 #lst_filter1_bt, #stocks_box h2 #lst_filter2_bt, #stocks_box h2 #lst_filter3_bt  {
+#stocks_box h2 #lst_filter1_bt, #stocks_box h2 #lst_filter2_bt, #stocks_box h2 #lst_filter3_bt, #stocks_box h2 #lst_filter4_bt, #stocks_box h2 #lst_filter5_bt  {
     margin: 6px 10px 0px 20px;
     position: absolute;
 }
@@ -125,7 +125,13 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #stocks_box h2 #lst_filter3_bt {
     margin-left: 120px;
 }
-#lst_stock td {
+#stocks_box h2 #lst_filter4_bt {
+    margin-left: 170px;
+}
+#stocks_box h2 #lst_filter5_bt {
+    margin-left: 220px;
+}
+#lst_stock td, #lst_stock th {
     text-align: center !important;
 }
 #lst_stock td:nth-child(3) {
@@ -136,12 +142,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
     display: inline-block;
     white-space: nowrap;
 }
-#lst_stock th:nth-child(6), #lst_stock th:nth-child(7), #lst_stock th:nth-child(8),#lst_stock th:nth-child(9), #lst_stock th:nth-child(10), #lst_stock th:nth-child(11), #lst_stock th:nth-child(12),
+
 #lst_stock td:nth-child(6), #lst_stock td:nth-child(7), #lst_stock td:nth-child(8),#lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
     text-align: right !important;
 }
-#lst_stock td:nth-child(2) {
-    text-align: left;
+#lst_stock td:nth-child(3), #lst_stock th:nth-child(3) {
+    text-align: left !important;
     color: deepskyblue;
 }
 #lst_ordres td, #lst_ordres th {
