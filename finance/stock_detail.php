@@ -160,8 +160,8 @@ table div.checkbox { padding: 8px 0px !important; }
                     <? if (!$readonly) { ?>
                         <select class="ui fluid search dropdown" id="f_categorie">
                             <?
-                                $cat = array("0" => "Autre", "1" => "Biens conso & Services", "2" => "Communication", "3" => "Eau", "4" => "Ecologie", "5" => "Energie", "6" => "Finances", "7" => "Indice", "8" => "Infrastuctures", "9" => "Matériaux & Industrie", "10" => "Métaux Précieux", "11" => "Mixte", "12" => "Santé", "13" => "Services Publics", "14" => "Technologie");
-                                arsort($cat); // Permet de rajouter des items n'importe ou dans la liste
+                                $cat = array("0" => "Autre", "1" => "Biens conso & Services", "2" => "Communication", "3" => "Eau", "4" => "Ecologie", "5" => "Energie", "6" => "Finances", "7" => "Indice", "8" => "Infrastuctures", "9" => "Matériaux & Industrie", "10" => "Métaux Précieux", "11" => "Mixte", "12" => "Santé", "13" => "Services Publics", "14" => "Technologie", "15" => "Obligations");
+                                asort($cat); // Permet de rajouter des items n'importe ou dans la liste
                                 foreach($cat as $key => $val)
                                     echo '<option value="'.$key.'" '.($row['distribution'] == $key ? 'selected="selected"' : '').'>'.$val.'</option>';
                             ?>

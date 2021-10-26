@@ -21,7 +21,7 @@ arsort($data2["perfs"]);
 
 <div class="ui container inverted segment">
 
-	<h2><i class="inverted black diamond icon"></i>&nbsp;&nbsp;Meilleures stratégies Dual Momemtum (1Y)</h2>
+	<h2><i class="inverted black diamond icon"></i>&nbsp;&nbsp;Dual Momemtum (1Y)</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
@@ -56,7 +56,7 @@ arsort($data2["perfs"]);
 
 <div class="ui container inverted segment">
 
-	<h2><i class="inverted black cubes icon"></i>&nbsp;&nbsp;Meilleures stratégies DCA (1Y)</h2>
+	<h2><i class="inverted black cubes icon"></i>&nbsp;&nbsp;DCA (1Y)</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
