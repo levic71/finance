@@ -91,6 +91,12 @@ function getTimeSeriesData($table_name, $period, $sym) {
         $req = "SELECT * FROM ".$table_name." dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='".$period."' AND dtsa.symbol='".$sym."' ORDER BY dtsa.day ASC";
         $res = dbc::execSql($req);    
         while ($row = mysqli_fetch_assoc($res)) {
+            $row['adjusted_close'] = sprintf("%.2f", $row['adjusted_close']);
+            $row['MM7']   = sprintf("%.2f", $row['MM7']);
+            $row['MM20']  = sprintf("%.2f", $row['MM20']);
+            $row['MM50']  = sprintf("%.2f", $row['MM50']);
+            $row['MM200'] = sprintf("%.2f", $row['MM200']);
+            $row['RSI14'] = sprintf("%.1f", $row['RSI14']);
             $ret['rows'][] = $row;
             // Pour le choix de la couleur on ne prend pas le adjusted_close car le adjusted_open n'existe pas
             $ret['colrs'][] = $row['close'] >= $row['open'] ? 1 : 0;
@@ -347,7 +353,7 @@ var ref_d_mm20   = [<?= implode(',', array_column($data_daily["rows"], "MM20")) 
 var ref_d_mm50   = [<?= implode(',', array_column($data_daily["rows"], "MM50"))   ?>];
 var ref_d_mm200  = [<?= implode(',', array_column($data_daily["rows"], "MM200"))  ?>];
 var ref_d_rsi14  = [<?= implode(',', array_column($data_daily["rows"], "RSI14"))  ?>];
-var ref_d_colors = [<?= '"'.implode('","', $data_daily["colrs"]).'"' ?>];
+var ref_d_colors = [<?= implode(',', $data_daily["colrs"]) ?>];
 
 // Ref Weekly Data
 var ref_w_days   = [<?= '"'.implode('","', array_column($data_weekly["rows"], "day")).'"' ?>];

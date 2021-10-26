@@ -60,7 +60,7 @@ arsort($data2["perfs"]);
 		<button id="lst_filter1_bt" class="mini ui grey button">PEA</button>
 		<button id="lst_filter2_bt" class="mini ui grey button">EUR</button>
 		<button id="lst_filter3_bt" class="mini ui grey button">USD</button>
-		<button id="lst_filter4_bt" class="mini ui grey button">&lt; 3%</button>
+		<button id="lst_filter4_bt" class="mini ui grey button">&lt; 0.3%</button>
 		<button id="lst_filter5_bt" class="mini ui grey button">&gt; 150 M</button>
 		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?>
 	</h2>
@@ -211,11 +211,11 @@ if (false) {
 	}
 
 	filterLstStocks = function() {
-		f1_on = Dom.hasClass(Dom.id('lst_filter1_bt'), 'blue');
-		f2_on = Dom.hasClass(Dom.id('lst_filter2_bt'), 'blue');
-		f3_on = Dom.hasClass(Dom.id('lst_filter3_bt'), 'blue');
-		f4_on = Dom.hasClass(Dom.id('lst_filter4_bt'), 'blue');
-		f5_on = Dom.hasClass(Dom.id('lst_filter5_bt'), 'blue');
+		f1_on = Dom.hasClass(Dom.id('lst_filter1_bt'), 'orange');
+		f2_on = Dom.hasClass(Dom.id('lst_filter2_bt'), 'orange');
+		f3_on = Dom.hasClass(Dom.id('lst_filter3_bt'), 'orange');
+		f4_on = Dom.hasClass(Dom.id('lst_filter4_bt'), 'orange');
+		f5_on = Dom.hasClass(Dom.id('lst_filter5_bt'), 'orange');
 
 		tab = Dom.find("#lst_stock tbody tr");
 		for (const element of tab) Dom.css(element, {'display' : 'table-row'});
@@ -236,7 +236,7 @@ if (false) {
 	}
 
 	filterLstAction = function(elt, fct) {
-		switchColorElement(elt, 'grey', 'blue');
+		switchColorElement(elt, 'grey', 'orange');
 		filterLstStocks();
 	}
 
