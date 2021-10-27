@@ -375,6 +375,17 @@ var ref_m_mm50   = [<?= implode(',', array_column($data_monthly["rows"], "MM50")
 var ref_m_mm200  = [<?= implode(',', array_column($data_monthly["rows"], "MM200"))  ?>];
 var ref_m_rsi14  = [<?= implode(',', array_column($data_monthly["rows"], "RSI14"))  ?>];
 
+var g1_days   = null;
+var g1_vals   = null;
+var g1_vols   = null;
+var g1_mm7    = null;
+var g1_mm20   = null;
+var g1_mm50   = null;
+var g1_mm200  = null;
+var g1_colors = null;
+var g2_days   = null;
+var g2_rsi14  = null;
+
 // Transformation des 0/1 en rouge et vert
 for (var i = 0; i < ref_d_colors.length; i++) {
     ref_d_colors[i] = (ref_d_colors[i] == 1) ? "green" : "red";

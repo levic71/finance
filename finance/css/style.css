@@ -1,6 +1,10 @@
 td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
+.sim_page #synthese_bloc2 {
+    display: none;
+}
+
 .login_page .ui.corner.label:after {
     right: -1px;
     top: -1px;
@@ -115,21 +119,21 @@ table th { color: burlywood !important; cursor: pointer !important; }
 .home_page .card .header, .sim_page .card .header {
     color: burlywood !important;
 }
+#stocks_box h2 {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: center;
+}
+#stocks_box h2 div {
+    top: -4px;
+    position: relative;
+    margin-left: 10px;
+}
 #stocks_box h2 #lst_filter1_bt, #stocks_box h2 #lst_filter2_bt, #stocks_box h2 #lst_filter3_bt, #stocks_box h2 #lst_filter4_bt, #stocks_box h2 #lst_filter5_bt  {
-    margin: 6px 10px 0px 20px;
-    position: absolute;
-}
-#stocks_box h2 #lst_filter2_bt {
-    margin-left: 70px;
-}
-#stocks_box h2 #lst_filter3_bt {
-    margin-left: 120px;
-}
-#stocks_box h2 #lst_filter4_bt {
-    margin-left: 170px;
-}
-#stocks_box h2 #lst_filter5_bt {
-    margin-left: 230px;
+    white-space: nowrap;
 }
 #lst_stock td, #lst_stock th {
     text-align: center !important;
@@ -170,17 +174,17 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_sim td:nth-child(2), #lst_sim td:nth-child(4), #lst_sim td:nth-child(5), #lst_sim td:nth-child(6), #lst_sim td:nth-child(8), #lst_sim td:nth-child(9), #lst_sim td:nth-child(10), #lst_sim td:nth-child(11)  {
     text-align: right;
 }
-#sim_imput_card .label {
+#sim_input_card .label {
     background: #333;
     color: rgba(255, 255, 255, 0.9);
 }
-#sim_imput_card td {
+#sim_input_card td {
     padding: 0px !important;
 }
-#sim_imput_card .selection {
+#sim_input_card .selection {
     border: none !important;
 }
-#sim_imput_card input, #sim_imput_card select {
+#sim_input_card input, #sim_input_card select {
     background: #111;
     color: rgba(255, 255, 255, 0.9);
 }
@@ -293,6 +297,86 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255,255,255,.08)
 }
 
+.ribbon {
+    line-height: 0.8em;
+    font-size: 2em;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+    letter-spacing: -2px;
+    display: block;
+    width: 6rem;
+    height: 4rem;
+    background: linear-gradient(to bottom, #999999 0%, #cccccc 100%);
+    color: white;
+    padding-top: 1rem;
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    -webkit-filter: drop-shadow(0 0.5rem 0.3em rgba(0, 0, 0, 0.5));
+    transform: translate3d(0, 0, 0);
+}
+
+.ribbon:after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-right: 3rem solid transparent;
+    border-left: 3rem solid transparent;
+    border-top: 1.5rem solid #CCCCCC;
+    position: absolute;
+    top: 5rem;
+    left: 0;
+}
+
+.ribbon.ribbon--red {
+    background: linear-gradient(to bottom, #d3362d 0%, #e57368 100%);
+}
+
+.ribbon.ribbon--red:after {
+    border-top: 1.5rem solid #E57368;
+}
+
+.ribbon.ribbon--orange {
+    background: linear-gradient(to bottom, #e7711b 0%, #f7981d 100%);
+}
+
+.ribbon.ribbon--orange:after {
+    border-top: 1.5rem solid #F7981D;
+}
+
+.ribbon.ribbon--yellow {
+    background: linear-gradient(to bottom, #f1ca3a 0%, #f6eb3b 100%);
+}
+
+.ribbon.ribbon--yellow:after {
+    border-top: 1.5rem solid #F6EB3B;
+}
+
+.ribbon.ribbon--green {
+    background: linear-gradient(to bottom, #5f9654 0%, #65b045 100%);
+}
+
+.ribbon.ribbon--green:after {
+    border-top: 1.5rem solid #65B045;
+}
+
+.ribbon.ribbon--blue {
+    background: linear-gradient(to bottom, #1c91c0 0%, #11a9cc 100%);
+}
+
+.ribbon.ribbon--blue:after {
+    border-top: 1.5rem solid #11A9CC;
+}
+
+.ribbon.ribbon--purple {
+    background: linear-gradient(to bottom, #5c3292 0%, #7e3794 100%);
+}
+
+.ribbon.ribbon--purple:after {
+    border-top: 1.5rem solid #7E3794;
+}
 
 
 
@@ -340,6 +424,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
         width: 100% !important;
     }
 
+    #stocks_box h2 div {
+        margin-left: 0px;
+    }
+    .stock_detail_page span .ui.mini.button {
+        margin: 2px !important;
+    }    
     #sim_card2 table td:nth-child(2) {
         display: none;
     }
@@ -352,10 +442,13 @@ table th { color: burlywood !important; cursor: pointer !important; }
 
     #lst_sim th:nth-child(2), #lst_sim th:nth-child(3), #lst_sim th:nth-child(4), #lst_sim th:nth-child(5), #lst_sim th:nth-child(6), #lst_sim th:nth-child(7), #lst_sim th:nth-child(8), #lst_sim th:nth-child(9),
     #lst_sim td:nth-child(2), #lst_sim td:nth-child(3), #lst_sim td:nth-child(4), #lst_sim td:nth-child(5), #lst_sim td:nth-child(6), #lst_sim td:nth-child(7), #lst_sim td:nth-child(8), #lst_sim td:nth-child(9),
-    #lst_stock th:nth-child(1), #lst_stock th:nth-child(3), #lst_stock th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10),
-    #lst_stock td:nth-child(1), #lst_stock td:nth-child(3), #lst_stock td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10)
+    #lst_stock th:nth-child(1), #lst_stock th:nth-child(3), #lst_stock th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(6), #lst_stock th:nth-child(7), #lst_stock th:nth-child(8),
+    #lst_stock td:nth-child(1), #lst_stock td:nth-child(3), #lst_stock td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(6), #lst_stock td:nth-child(7), #lst_stock td:nth-child(8)
     {
         display: none;
+    }
+    #lst_stock th:nth-child(9), #lst_stock th:nth-child(10) {
+        text-align: right !important;
     }
 
     .lst_sim_2 th {
@@ -441,79 +534,29 @@ table th { color: burlywood !important; cursor: pointer !important; }
     #detail3_stock td:nth-child(2) {
         width: 10% !important;
     }
+
+    .sim_page #synthese_bloc1 {
+        display: none;
+    }
+
+    .sim_page #synthese_bloc2 {
+        display: inline;
+    }
+
+    .sim_page #synthese_bloc2 .content {
+        padding: 0px;
+    }
+
+    .sim_page #sim_card12 td:nth-child(2), .sim_page #sim_card12 td:nth-child(3) {
+        text-align: right;
+    }
+
+    .sim_page #sim_card12 tr:nth-child(1) td {
+        color: burlywood;
+        background: #333;
+        padding: 5px;
+    }
+    
     
 }
-  
-.ribbon {
-    line-height: 0.8em;
-    font-size: 2em;
-    text-transform: uppercase;
-    text-align: center;
-    font-weight: bold;
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
-    letter-spacing: -2px;
-    display: block;
-    width: 6rem;
-    height: 4rem;
-    background: linear-gradient(to bottom, #999999 0%, #cccccc 100%);
-    color: white;
-    padding-top: 1rem;
-    position: absolute;
-    top: 0px;
-    right: 5px;
-    -webkit-filter: drop-shadow(0 0.5rem 0.3em rgba(0, 0, 0, 0.5));
-    transform: translate3d(0, 0, 0);
-  }
-  .ribbon:after {
-    content: "";
-    width: 0;
-    height: 0;
-    border-right: 3rem solid transparent;
-    border-left: 3rem solid transparent;
-    border-top: 1.5rem solid #CCCCCC;
-    position: absolute;
-    top: 5rem;
-    left: 0;
-  }
-  .ribbon.ribbon--red {
-    background: linear-gradient(to bottom, #d3362d 0%, #e57368 100%);
-  }
-  .ribbon.ribbon--red:after {
-    border-top: 1.5rem solid #E57368;
-  }
-  .ribbon.ribbon--orange {
-    background: linear-gradient(to bottom, #e7711b 0%, #f7981d 100%);
-  }
-  .ribbon.ribbon--orange:after {
-    border-top: 1.5rem solid #F7981D;
-  }
-  .ribbon.ribbon--yellow {
-    background: linear-gradient(to bottom, #f1ca3a 0%, #f6eb3b 100%);
-  }
-  .ribbon.ribbon--yellow:after {
-    border-top: 1.5rem solid #F6EB3B;
-  }
-  .ribbon.ribbon--green {
-    background: linear-gradient(to bottom, #5f9654 0%, #65b045 100%);
-  }
-  .ribbon.ribbon--green:after {
-    border-top: 1.5rem solid #65B045;
-  }
-  .ribbon.ribbon--blue {
-    background: linear-gradient(to bottom, #1c91c0 0%, #11a9cc 100%);
-  }
-  .ribbon.ribbon--blue:after {
-    border-top: 1.5rem solid #11A9CC;
-  }
-  .ribbon.ribbon--purple {
-    background: linear-gradient(to bottom, #5c3292 0%, #7e3794 100%);
-  }
-  .ribbon.ribbon--purple:after {
-    border-top: 1.5rem solid #7E3794;
-  }
 
-
-
-
-
-Resources 1× 0.5× 0.25× Rerun

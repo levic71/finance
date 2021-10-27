@@ -56,13 +56,17 @@ arsort($data2["perfs"]);
 	
 <div id="stocks_box" class="ui container inverted segment">
 
-	<h2 class="ui left floated">Actifs suivis 
-		<button id="lst_filter1_bt" class="mini ui grey button">PEA</button>
-		<button id="lst_filter2_bt" class="mini ui grey button">EUR</button>
-		<button id="lst_filter3_bt" class="mini ui grey button">USD</button>
-		<button id="lst_filter4_bt" class="mini ui grey button">&lt; 0.3%</button>
-		<button id="lst_filter5_bt" class="mini ui grey button">&gt; 150 M</button>
+	<h2 class="ui left floated">
+		<span>Actifs suivis</span>
+		<div>
+			<button id="lst_filter1_bt" class="mini ui grey button">PEA</button>
+			<button id="lst_filter2_bt" class="mini ui grey button">EUR</button>
+			<button id="lst_filter3_bt" class="mini ui grey button">USD</button>
+			<button id="lst_filter4_bt" class="mini ui grey button">&lt; 0.3%</button>
+			<button id="lst_filter5_bt" class="mini ui grey button">&gt; 150 M</button>
+		</div>
 		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Ajouter</button><? } ?>
+		
 	</h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>

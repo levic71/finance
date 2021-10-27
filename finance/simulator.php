@@ -81,7 +81,7 @@ foreach($lst_decode_symbols['quotes'] as $key => $val) {
 }
 
 $infos1 = '
-<table id="sim_imput_card">
+<table id="sim_input_card">
     <tr>
         <td>
             <div class="ui inverted fluid right labeled input">
@@ -128,7 +128,7 @@ $infos1 = '
 ';
 
 $infos2 = '
-<table id="sim_imput_card">
+<table id="sim_input_card">
     <tr>
         <td>
             <div class="ui inverted left labeled fluid input">
@@ -562,9 +562,52 @@ $final_info = '
     </table>
 ';
 
+$final_info2 = '
+    <table class="ui selectable inverted striped single line very compact unstackable table" id="sim_final_info2">
+    <tr>
+        <td></td>
+        <td>'.$row['title'].'</td>
+        <td>Benchmark</td>
+    </tr>
+    <tr>
+        <td>Valorisation</td>
+        <td>'.sprintf("%.2f", $valo_pf).' &euro;</td>
+        <td>'.sprintf("%.2f", $valo_pf_RC).' &euro;</td>
+    </tr>
+    <tr>
+        <td>Capital investit</td>
+        <td>'.sprintf("%.2f", $sum_invest).' &euro;</td>
+        <td>'.sprintf("%.2f", $sum_invest).' &euro;</td>
+    </tr>
+    <tr>
+        <td>Performance</td>
+        <td class="'.($perf_pf >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf).' %</td>
+        <td class="'.($perf_pf_RC >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $perf_pf_RC).' %</td>
+    </tr>
+    <tr>
+        <td>Max DD</td>
+        <td class="'.($maxdd >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $maxdd).' %</td>
+        <td class="'.($maxdd_RC >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $maxdd_RC).' %</td>
+    </tr>
+    <tr>
+        <td>Retrait</td>
+        <td>'.sprintf("%.2f", $retrait_cumule).' &euro;</td>
+        <td>'.sprintf("%.2f", $retrait_cumule).' &euro;</td>
+    </tr>
+    <tr>
+        <td>Duree</td>
+        <td>'.count(tools::getMonth($date_start, $date_end)).' mois</td>
+        <td>'.count(tools::getMonth($date_start, $date_end)).' mois</td>
+    </tr>
+    </table>
+';
+
 ?>
-            <div class="sixteen wide column" style="margin-top: 15px;">
+            <div class="sixteen wide column" style="margin-top: 15px;" id="synthese_bloc1">
                 <?= uimx::genCard('sim_card1', 'Synthèse', '', $final_info); ?>
+            </div>
+            <div class="sixteen wide column" style="margin-top: 15px;" id="synthese_bloc2">
+                <?= uimx::genCard('sim_card12', 'Synthèse', '', $final_info2); ?>
             </div>
 
         </div>
@@ -786,7 +829,7 @@ foreach($tab_detail as $key => $val) {
 
 <div class="ui container inverted segment">
     <h2>Ordres boursiers</h2>
-    <table id="lst_ordres" class="ui selectable inverted single line very compact unstackable table">
+    <table id="lst_ordres" class="ui striped selectable inverted single line very compact unstackable table">
         <thead><tr><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Nb</th><th>Prix</th></tr></thead>
         <tbody>
 <?
