@@ -107,11 +107,8 @@ foreach($data2["stocks"] as $key => $val) {
 
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
-if ($sess_context->isSuperAdmin()) {
-	echo "<tr class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." \">";
-} else {
-	echo "<tr onclick=\"gotoStockDetail('".$val['symbol']."');\" class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")."\">";
-}
+	echo "<tr ".( $sess_context->isSuperAdmin() ? "" : "onclick=\"gotoStockDetail('".$val['symbol']."');\"" )."class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." \">";
+
 	echo "<td class=\"collapsing\"><i class=\"inverted grey chevron right icon\"></i></td>";
 
 if ($sess_context->isSuperAdmin()) {
