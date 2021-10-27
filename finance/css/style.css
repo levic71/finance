@@ -475,7 +475,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
     #lst_ordres .Vente td:nth-child(2)::after {
         content: "-";
     }
-    
+    #lst_ordres td, #lst_sim td {
+        font-size: 12px;
+    }
+        
     .row-detail td:nth-child(2) > div {
         display: flex !important;
         margin-bottom: 5px !important;
@@ -506,11 +509,14 @@ table th { color: burlywood !important; cursor: pointer !important; }
     }
     #detail_stock tr{
         display: block;
-        margin-bottom: 40px;
+        padding: 0px !important;
     }
     #detail_stock td {
         display: block;
         text-align: right;
+    }
+    #detail_stock td:nth-child(even) {
+        background: #222;
     }
     #detail_stock td:before {
         content: attr(data-label);
@@ -556,7 +562,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
         background: #333;
         padding: 5px;
     }
-    
     
 }
 
