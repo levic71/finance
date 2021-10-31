@@ -117,7 +117,7 @@ class tools {
     }
 
     public static function getLibelleBtAction($action) {
-        return $action == "new" ? "Ajouter" : ($action == "upt" ? "Modifier" : "Supprimer");
+        return $action == "new" ? "Ajouter" : ($action == "upt" ? "Modifier" : ($action == "copy" ? "Copier" : "Supprimer"));
     }
 }
 
@@ -1002,11 +1002,11 @@ class uimx {
     <?
 }
 
-    public static function perfCard($id, $strategie_id, $title, $day, $perfs, $strategie, $methode) {
+    public static function perfCard($user_id, $strategie, $day, $perfs) {
 
         global $sess_context;
 
-        $t = json_decode($strategie, true);
+        $t = json_decode($strategie['data'], true);
 
         $desc = '<table class="ui inverted single line very compact unstackable table"><tbody>';
         
@@ -1021,13 +1021,13 @@ class uimx {
         $desc .= '</tbody>';
         $desc .= '<tfoot class="full-width"><tr>
             <th colspan="2">
-                <button id="home_sim_bt_'.$strategie_id.'" class="ui right floated small grey labeled icon button"><i class="inverted '.($methode == 2 ? 'cubes' : 'diamond').' icon"></i> Backtesting</button>
+                <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey labeled icon button"><i class="inverted '.($strategie['methode'] == 2 ? 'cubes' : 'diamond').' icon"></i> Backtesting</button>
             </th>
         </tr></tfoot>';
         $desc .= '</table>';
 
-        $title = $title.($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie_id."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
-        uimx::genCard($id, $title, $day, $desc);
+        $title = $strategie['title'].($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
+        uimx::genCard("home_card_".$strategie['id'], $title, $day, $desc);
     }
 }
 

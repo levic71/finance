@@ -18,32 +18,56 @@ $db = dbc::connect();
 $lst_symbol_strategie = array();
 $lst_symbol_strategie_pct = array();
 
-if ($action == "upt") {
-	$req = "SELECT count(*) total FROM strategies WHERE id=".$strategie_id.($sess_context->isSuperAdmin() ? "" : " AND user_id=".$sess_context->getUserId());
-	$res = dbc::execSql($req);
-	$row = mysqli_fetch_array($res);
+if ($action == "upt" || $action == "copy") {
 
+	$req = "SELECT count(*) total FROM strategies WHERE id=".$strategie_id." ".($sess_context->isSuperAdmin() || $action == "copy" ? "" : "AND user_id=".$sess_context->getUserId());
+	$res = dbc::execSql($req);
+
+	$row = mysqli_fetch_array($res);
 	if ($row['total'] != 1) {
-		echo '<div class="ui container inverted segment"><h2>Strategie not found !!!</h2></div>"';
+		echo '<div class="ui container inverted segment"><h2>Strategie not found or not autorized !!!</h2></div>';
 		exit(0);
 	}
 
 	$req = "SELECT * FROM strategies WHERE id=".$strategie_id;
 	$res = dbc::execSql($req);
-	$row = mysqli_fetch_array($res);
+	
+	if ($row = mysqli_fetch_array($res)) {
 
-	$t = json_decode($row['data'], true);
-	$i = 1;
-	foreach($t['quotes'] as $key => $val) {
-		$lst_symbol_strategie[$i] = $key;
-		$lst_symbol_strategie_pct[$i++] = $val;
+		$t = json_decode($row['data'], true);
+		$i = 1;
+		foreach($t['quotes'] as $key => $val) {
+			$lst_symbol_strategie[$i] = $key;
+			$lst_symbol_strategie_pct[$i++] = $val;
+		}
+
+		$nb_symbol = count($lst_symbol_strategie);
+		
+	} else {
+		echo '<div class="ui container inverted segment"><h3>Pb lecture stratégie !!!</h3></div>';
+		exit(0);	
 	}
-
-	$nb_symbol = count($lst_symbol_strategie);
 }
 else {
-	$row = [ "title" => "", "methode" => 1];
+	$row = [ "title" => "", "methode" => 1, "defaut" => 1 ];
 	$nb_symbol = 1;
+}
+
+if ($action == "copy") {
+	$row['title'] .= " - Copie";
+}
+
+if ($action == "new") {
+	if (!$sess_context->isSuperAdmin()) {
+        $req2 = "SELECT count(*) total FROM strategies WHERE user_id=".$sess_context->getUserId();
+        $res2 = dbc::execSql($req2);
+        $row2 = mysqli_fetch_array($res2);
+
+        if ($row2['total'] >= 3) {
+            echo '<div class="ui container inverted segment"><h3>Max stratégie atteint !!!</h3></div>';
+            exit(0);
+        }
+    }
 }
 
 $lst_all_symbol = array();
@@ -102,6 +126,7 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 							</select>
                     	</div>
 					</div>
+<? if ($sess_context->isSuperAdmin()) { ?>
 	                <div class="inverted field">
 						<table><tr>
 						<td><div class="ui inverted labeled input">
@@ -115,6 +140,9 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
                     	</div></td>
 						</tr></table>
 					</div>
+<? } else { ?>
+					<input id="f_common" type="hidden" value="0" />
+<? } ?>
                 </div>
 
 				<div id="symbol_area" class="wide column <?= $row['methode'] == 1 ? "bestof" : "" ?>">
@@ -194,5 +222,7 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 		params = '?action=<?= $action ?>&'+attrs(['strategie_id', 'f_name', 'f_methode', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
 		go({ action: 'home', id: 'main', url: 'strategie_action.php'+params, loading_area: 'strategie_<?= $libelle_action_bt ?>_bt' });
 	});
+<? if ($action == "upt") { ?>
 	Dom.addListener(Dom.id('strategie_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'strategie_action.php?action=del&strategie_id=<?= $strategie_id ?>', loading_area: 'strategie_delete_bt', confirmdel: 1 }); });
+<? } ?>
 </script>

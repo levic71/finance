@@ -19,29 +19,42 @@ arsort($data2["perfs"]);
 	
 ?>
 
-<div class="ui container inverted segment">
+<div id="strategie_container" class="ui container inverted segment">
 
-	<h2>Stratégies <? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ajouter</button><? } ?></h2>
+	<h2 class="ui left floated">
+		<span><?= $sess_context->isUserConnected() ? "Mes Stratégies" : "Stratégies" ?> <button id="strategie_bt" class="mini ui grey button"><i class="ui inverted star icon"></i></button></span>
+
+		<? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ajouter</button><? } ?>
+	</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
 			<div class="swiper-container mySwiper">
-    			<div class="swiper-wrapper">
+    			<div class="swiper-wrapper" id="strategie_swiper">
 <?
-			if ($sess_context->isUserConnected() && $sess_context->isSuperAdmin())
+/* 			if ($sess_context->isUserConnected() && $sess_context->isSuperAdmin())
 				$req = "SELECT * FROM strategies WHERE defaut= 1 OR user_id=".$sess_context->getUserId();
-			else if ($sess_context->isUserConnected())
-	        	$req = "SELECT * FROM strategies WHERE user_id=".$sess_context->getUserId();
+			else
+			if ($sess_context->isUserConnected())
+				$req = "SELECT * FROM strategies WHERE user_id=".$sess_context->getUserId();
 			else 
+				$req = "SELECT * FROM strategies WHERE defaut=1";
+ */
+			if ($sess_context->isUserConnected())
+				$req = "SELECT * FROM strategies WHERE defaut= 1 OR user_id=".$sess_context->getUserId()." ORDER BY defaut ASC";
+			else
 				$req = "SELECT * FROM strategies WHERE defaut=1";
 
 			$tab_strat = array();
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
-				$tab_strat[] = $row['id'];
+				$tab_strat[] = [
+					"id" => $row['id'],
+					"copy" => !($row['user_id'] == $sess_context->getUserId())
+				];
 ?>
-        	<div class="four wide column swiper-slide">
-				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data2["day"], $data2["perfs"], $row['data'], $row['methode']) ?>
+        	<div class="four wide column swiper-slide <?= $row['defaut'] == 1 ? "defaut" : "" ?>">
+				<?= uimx::perfCard($sess_context->getUserId(), $row, $data2["day"], $data2["perfs"]) ?>
 			</div>
 <? } ?>
 
@@ -236,11 +249,17 @@ if (false) {
 		}
 	}
 
-	filterLstAction = function(elt, fct) {
+	filterLstAction = function(elt) {
 		switchColorElement(elt, 'grey', 'orange');
 		filterLstStocks();
 	}
 
+	filterLstStrategies = function(elt) {
+		switchColorElement(elt, 'grey', 'yellow');
+		toogleCN("strategie_swiper", "showall", "showmine");
+	}
+
+	Dom.addListener(Dom.id('strategie_bt'), Dom.Event.ON_CLICK, function(event) { filterLstStrategies('strategie_bt'); });
 	Dom.addListener(Dom.id('lst_filter1_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
 	Dom.addListener(Dom.id('lst_filter2_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter2_bt'); });
 	Dom.addListener(Dom.id('lst_filter3_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter3_bt'); });
@@ -251,9 +270,9 @@ if (false) {
 	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
 <? } ?>
 <? foreach($tab_strat as $key => $val) { ?>
-	Dom.addListener(Dom.id('home_sim_bt_<?= $val ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val ?>', loading_area: 'home_sim_bt_<?= $val ?>' }); });
+	Dom.addListener(Dom.id('home_sim_bt_<?= $val['id'] ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val['id'] ?>', loading_area: 'home_sim_bt_<?= $val['id'] ?>' }); });
 <? if ($sess_context->isUserConnected()) { ?>
-	Dom.addListener(Dom.id('home_strategie_<?= $val ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_upt', id: 'main', url: 'strategie.php?action=upt&strategie_id=<?= $val ?>', loading_area: 'home_strategie_<?= $val ?>_bt' }); });
+	Dom.addListener(Dom.id('home_strategie_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_upt', id: 'main', url: 'strategie.php?action=<?= $val['copy'] ? "copy" : "upt" ?>&strategie_id=<?= $val['id'] ?>', loading_area: 'home_strategie_<?= $val['id'] ?>_bt' }); });
 <? } ?>
 <? } ?>
 <? if ($sess_context->isSuperAdmin()) { ?>
@@ -264,5 +283,10 @@ if (false) {
 	change_wide_menu_state('wide_menu', 'm1_home_bt');
 
 	Sortable.initTable(el("lst_stock"));
+
+	addCN("strategie_swiper", "showmine");
+<? if ($sess_context->isSuperAdmin() || !$sess_context->isUserConnected()) { ?>
+	filterLstStrategies('strategie_bt');
+<? } ?>
 
 </script>

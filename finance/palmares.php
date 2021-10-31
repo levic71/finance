@@ -38,7 +38,7 @@ arsort($data2["perfs"]);
 				$ribbon_color = $i == 1 ? "ribbon--orange" : ($i == 2 ? "ribbon--green" : ($i == 3 ? "ribbon--blue" : "ribbon--gray"));
 ?>
         	<div class="four wide column swiper-slide">
-				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data2["day"], $data2["perfs"], $row['data'], $row['methode']) ?>
+				<?= uimx::perfCard(0, $row, $data2["day"], $data2["perfs"]) ?>
 				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i ?><br /><small>15%</small></div>
 			</div>
 <?
@@ -73,7 +73,7 @@ arsort($data2["perfs"]);
 				$ribbon_color = $i == 1 ? "ribbon--orange" : ($i == 2 ? "ribbon--green" : ($i == 3 ? "ribbon--blue" : "ribbon--gray"));
 ?>
         	<div class="four wide column swiper-slide">
-				<?= uimx::perfCard("home_card", $row['id'], $row['title'], $data2["day"], $data2["perfs"], $row['data'], $row['methode']) ?>
+				<?= uimx::perfCard(0, $row, $data2["day"], $data2["perfs"]) ?>
 				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i ?><br /><small>15%</small></div>
 			</div>
 <?
