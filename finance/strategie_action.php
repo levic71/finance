@@ -10,7 +10,7 @@ if (!$sess_context->isUserConnected()) tools::do_redirect("index.php");
 
 $f_common = 0;
 
-foreach(['action', 'f_common', 'strategie_id', 'f_name', 'f_methode', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7'] as $key)
+foreach(['action', 'f_common', 'strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 // On force à 0 pour les petits malins qui essaierai de forcer
@@ -48,7 +48,7 @@ if ($action == "new" || $action == "copy") {
         }
     }
 
-    $req = "INSERT INTO strategies (title, data, methode, defaut, user_id) VALUES ('".$f_name."', '".$data."', ".$f_methode.", ".$f_common.", ".$sess_context->getUserId().")";
+    $req = "INSERT INTO strategies (title, data, methode, cycle, defaut, user_id) VALUES ('".$f_name."', '".$data."', ".$f_methode.", ".$f_cycle.", ".$f_common.", ".$sess_context->getUserId().")";
     $res = dbc::execSql($req);
 
 }
@@ -56,7 +56,7 @@ if ($action == "new" || $action == "copy") {
 if ($action == "upt" && isset($strategie_id) && $strategie_id != "") {
 
 
-    $req = "UPDATE strategies SET title='".$f_name."', data='".$data."', methode='".$f_methode."', defaut=".$f_common." WHERE id=".$strategie_id." AND user_id=".$sess_context->getUserId();
+    $req = "UPDATE strategies SET title='".$f_name."', data='".$data."', methode='".$f_methode."', cycle=".$f_cycle.", defaut=".$f_common." WHERE id=".$strategie_id." AND user_id=".$sess_context->getUserId();
     $res = dbc::execSql($req);
 
 }

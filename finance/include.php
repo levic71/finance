@@ -1008,7 +1008,7 @@ class uimx {
 
         $t = json_decode($strategie['data'], true);
 
-        $desc = '<table class="ui inverted single line very compact unstackable table"><tbody>';
+        $desc = '<table class="ui inverted single line very compact unstackable table perf_card"><tbody>';
         
         $x = 0;
         foreach($perfs as $key => $val) {

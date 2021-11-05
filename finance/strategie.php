@@ -49,7 +49,7 @@ if ($action == "upt" || $action == "copy") {
 	}
 }
 else {
-	$row = [ "title" => "", "methode" => 1, "defaut" => 1 ];
+	$row = [ "title" => "", "methode" => 1, "defaut" => 1, "cycle" => 1 ];
 	$nb_symbol = 1;
 }
 
@@ -115,6 +115,17 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 							<select id="f_methode" class="ui selection dropdown">
 								<option value="1" <?= $row['methode'] == 1 ? "selected=\"selected\"" : "" ?>>Meilleur DM</option>
 								<option value="2" <?= $row['methode'] == 2 ? "selected=\"selected\"" : "" ?>>DCA</option>
+							</select>
+                    	</div>
+					</div>
+	                <div class="inverted field">
+						<div class="ui inverted labeled input">
+							<div class="ui inverted basic label">Rebalancing</div>
+							<select id="f_cycle" class="ui selection dropdown">
+								<option value="1"  <?= $row['cycle'] == 1  ? "selected=\"selected\"" : "" ?>>Mensuel</option>
+								<option value="3"  <?= $row['cycle'] == 3  ? "selected=\"selected\"" : "" ?>>Trimestriel</option>
+								<option value="6"  <?= $row['cycle'] == 6  ? "selected=\"selected\"" : "" ?>>Semestriel</option>
+								<option value="12" <?= $row['cycle'] == 12 ? "selected=\"selected\"" : "" ?>>Annuel</option>
 							</select>
                     	</div>
 					</div>
@@ -219,7 +230,7 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 			return;
 		}
 
-		params = '?action=<?= $action ?>&'+attrs(['strategie_id', 'f_name', 'f_methode', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
+		params = '?action=<?= $action ?>&'+attrs(['strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
 		go({ action: 'home', id: 'main', url: 'strategie_action.php'+params, loading_area: 'strategie_<?= $libelle_action_bt ?>_bt' });
 	});
 <? if ($action == "upt") { ?>
