@@ -29,7 +29,7 @@ foreach(['search'] as $key)
 if (isset($search) && $search != "") {
 
     try {
-        $data = aafinance::searchSymbol($search);
+        $data = aafinance::searchSymbol(rawurlencode($search));
 
         if (isset($data["bestMatches"])) {
             echo "<table class=\"ui inverted very compact single line table\" id=\"lst_search_quote\">";

@@ -49,7 +49,7 @@ if ($action == "upt" || $action == "copy") {
 	}
 }
 else {
-	$row = [ "title" => "", "methode" => 1, "defaut" => 1, "cycle" => 1 ];
+	$row = [ "title" => "", "methode" => 1, "defaut" => 0, "cycle" => 1 ];
 	$nb_symbol = 1;
 }
 
