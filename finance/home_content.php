@@ -261,8 +261,8 @@ if (false) {
 
 	Dom.addListener(Dom.id('strategie_bt'), Dom.Event.ON_CLICK, function(event) { filterLstStrategies('strategie_bt'); });
 	Dom.addListener(Dom.id('lst_filter1_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
-	Dom.addListener(Dom.id('lst_filter2_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter2_bt'); });
-	Dom.addListener(Dom.id('lst_filter3_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter3_bt'); });
+	Dom.addListener(Dom.id('lst_filter2_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter3_bt', 'orange')) switchColorElement('lst_filter3_bt', 'orange', 'grey'); filterLstAction('lst_filter2_bt'); });
+	Dom.addListener(Dom.id('lst_filter3_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter2_bt', 'orange')) switchColorElement('lst_filter2_bt', 'orange', 'grey'); filterLstAction('lst_filter3_bt'); });
 	Dom.addListener(Dom.id('lst_filter4_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter4_bt'); });
 	Dom.addListener(Dom.id('lst_filter5_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter5_bt'); });
 
