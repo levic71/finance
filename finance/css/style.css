@@ -9,6 +9,13 @@ td.aaf-negative { color: rgb(247, 95, 90) !important; }
     text-align: right !important;
 }
 
+.perf_card button.badge {
+    padding: 5px 8px !important;
+}
+.perf_card button.badge i {
+    margin: 0px !important;
+}
+
 .login_page .ui.corner.label:after {
     right: -1px;
     top: -1px;

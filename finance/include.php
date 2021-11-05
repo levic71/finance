@@ -1021,7 +1021,9 @@ class uimx {
         $desc .= '</tbody>';
         $desc .= '<tfoot class="full-width"><tr>
             <th colspan="2">
-                <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey labeled icon button"><i class="inverted '.($strategie['methode'] == 2 ? 'cubes' : 'diamond').' icon"></i> Backtesting</button>
+                <button class="ui small teal  button badge">'.($strategie['cycle'] == 1 ? "M" : ($strategie['cycle'] == 3 ? "T" : ($strategie['cycle'] == 6 ? "S" : "A"))).'</button>
+                <button class="ui small brown button badge"><i class="inverted '.($strategie['methode'] == 2 ? 'cubes' : 'diamond').' icon"></i></button>
+                <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey icon button">Backtesting</button>
             </th>
         </tr></tfoot>';
         $desc .= '</table>';

@@ -7,8 +7,13 @@ session_start();
 include "common.php";
 include "simulator_fct.php";
 
-foreach([''] as $key)
+$range = 1;
+
+foreach(['range'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+
+// On cherche a tricher !!!
+if ($range != 1 && $range != 2 && $range != 3) $range = 1;
 
 $db = dbc::connect();
 
@@ -24,7 +29,7 @@ $tab_perfs = array("1" => array(), "2" => array());
 $req = "SELECT * FROM strategies WHERE defaut=1";
 $res = dbc::execSql($req);
 
-$date_start = date('Y-m-d', strtotime('-1 year'));
+$date_start = date('Y-m-d', strtotime('-'.$range.' year'));
 $date_end   = date("Y-m-d");
 
 while($row = mysqli_fetch_array($res)) {
@@ -67,7 +72,12 @@ arsort($tab_perfs["2"]);
 
 <div class="ui container inverted segment">
 
-	<h2><i class="inverted black diamond icon"></i>&nbsp;&nbsp;Dual Momemtum <button id="paramares_dca_1y_bt" class="mini ui button yellow">1Y</button><button id="paramares_dca_1y_bt" class="mini ui button grey">3Y</button></h2>
+	<h2 class="ui left floated">
+		<i class="inverted black diamond icon"></i>&nbsp;&nbsp;Dual Momemtum
+		<button id="paramares_3y_bt" class="mini ui right floated button <?= $range == 3 ? "yellow" : "gray" ?>">3Y</button>
+		<button id="paramares_2y_bt" class="mini ui right floated button <?= $range == 2 ? "yellow" : "gray" ?>">2Y</button>
+		<button id="paramares_1y_bt" class="mini ui right floated button <?= $range == 1 ? "yellow" : "gray" ?>">1Y</button>
+	</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
@@ -162,5 +172,19 @@ arsort($tab_perfs["2"]);
 			Dom.addListener(Dom.id('home_sim_bt_<?= $val['id'] ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val['id'] ?>&f_date_start=<?= $date_start ?>&f_date_end=<?= $date_end ?>', loading_area: 'home_sim_bt_<?= $val['id'] ?>' }); });
 <? } ?>
 
+<? if ($range == 1) { ?>
+	Dom.addListener(Dom.id('paramares_2y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=2', loading_area: 'paramares_2y_bt' }); });
+	Dom.addListener(Dom.id('paramares_3y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=3', loading_area: 'paramares_3y_bt' }); });
+<? } ?>
+
+<? if ($range == 2) { ?>
+	Dom.addListener(Dom.id('paramares_1y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=1', loading_area: 'paramares_1y_bt' }); });
+	Dom.addListener(Dom.id('paramares_3y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=3', loading_area: 'paramares_3y_bt' }); });
+<? } ?>
+
+<? if ($range == 3) { ?>
+	Dom.addListener(Dom.id('paramares_1y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=1', loading_area: 'paramares_1y_bt' }); });
+	Dom.addListener(Dom.id('paramares_2y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=2', loading_area: 'paramares_2y_bt' }); });
+<? } ?>
 
 </script>
