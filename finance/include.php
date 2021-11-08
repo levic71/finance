@@ -989,7 +989,32 @@ class logger {
 // Log
 //
 class uimx {
-    
+
+    public static $invest_cycle        = [ 1 => "Mensuel", 3 => "Trimestriel", 6 => "Semestriel", 12 => "Annuel" ];
+    public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA' ];
+    public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes' ];
+    public static $invest_distribution = [ 0 => "Capitalisation", 1 => "Distribution" ];
+    public static $invest_categories   = [
+        0  => "Autre",
+        1  => "Biens conso & Services",
+        2  => "Communication",
+        3  => "Eau",
+        4  => "Ecologie",
+        5  => "Energie",
+        6  => "Finances",
+        7  => "Indice",
+        8  => "Infrastuctures",
+        9  => "Matériaux & Industrie",
+        10 => "Métaux Précieux",
+        11 => "Mixte",
+        12 => "Santé",
+        13 => "Services Publics",
+        14 => "Technologie",
+        15 => "Obligations",
+        16 => "Immobilier"
+    ];
+
+
     public static function genCard($id, $header, $meta, $desc) {
     ?>
         <div class="ui inverted card" id="<?= $id ?>">
@@ -1021,8 +1046,8 @@ class uimx {
         $desc .= '</tbody>';
         $desc .= '<tfoot class="full-width"><tr>
             <th colspan="2">
-                <button class="ui small teal  button badge">'.($strategie['cycle'] == 1 ? "M" : ($strategie['cycle'] == 3 ? "T" : ($strategie['cycle'] == 6 ? "S" : "A"))).'</button>
-                <button class="ui small brown button badge"><i class="inverted '.($strategie['methode'] == 2 ? 'cubes' : 'diamond').' icon"></i></button>
+                <button class="ui small teal  button badge tooltip2" data-tooltip2="'.self::$invest_cycle[$strategie['cycle']].'">'.substr(self::$invest_cycle[$strategie['cycle']], 0, 1).'</button>
+                <button class="ui small brown button badge tooltip2" data-tooltip2="'.self::$invest_methode[$strategie['methode']].'"><i class="inverted '.self::$invest_methode_icon[$strategie['methode']].' icon"></i></button>
                 <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey icon button">Backtesting</button>
             </th>
         </tr></tfoot>';

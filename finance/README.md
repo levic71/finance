@@ -31,3 +31,19 @@
 // Rajouter les données : frais de gestion, capitalisation, volume moy echange, dividende ...
 // Mettre des likes sur les stratégies
 
+
+
+// 8 REGLES D'UN BON INVESTISSEUR
+
+// 1 - On investit que l'argent qu'il reste après avoir couvert ses besoins essentiels et payé ces factures
+// 2 - On ne devient pas riche en 1j, l'investissement est sur le moyen/long terme (10, 20, 30 ans)
+// 3 - On n'emprunte pas pour investir et on n'investit pas l'argent des autres. Economisez et patientez.
+// 4 - Les performances passées ne préjugent pas des performances futures
+// 5 - Investir dans ce que l'on comprend. Il faut se former et s'informer pour bien choisir.
+// 6 - Définir sa stratégie d'investissement et s'y tenir.
+// 7 - Diversifier et investir petit à petit
+// 8 - Attention aux commisions et aux marges des conseillers
+// 9 - Réinvestir les dividendes
+
+
+

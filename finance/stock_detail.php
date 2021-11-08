@@ -166,14 +166,13 @@ table div.checkbox { padding: 8px 0px !important; }
                     <? if (!$readonly) { ?>
                         <select class="ui fluid search dropdown" id="f_categorie">
                             <?
-                                $cat = array("0" => "Autre", "1" => "Biens conso & Services", "2" => "Communication", "3" => "Eau", "4" => "Ecologie", "5" => "Energie", "6" => "Finances", "7" => "Indice", "8" => "Infrastuctures", "9" => "Matériaux & Industrie", "10" => "Métaux Précieux", "11" => "Mixte", "12" => "Santé", "13" => "Services Publics", "14" => "Technologie", "15" => "Obligations", "16" => "Immobilier");
-                                asort($cat); // Permet de rajouter des items n'importe ou dans la liste
-                                foreach($cat as $key => $val)
+                                asort(uimx::$invest_categories); // Permet de rajouter des items n'importe ou dans la liste
+                                foreach(uimx::$invest_categories as $key => $val)
                                     echo '<option value="'.$key.'" '.($row['distribution'] == $key ? 'selected="selected"' : '').'>'.$val.'</option>';
                             ?>
                         </select>
                     <? } else { ?>
-                        <input type="text" id="f_categorie" value="<?= $row['categorie'] ?>" placeholder="Catégorie">
+                        <input type="text" id="f_categorie" value="<?= uimx::$invest_categories[$row['categorie']] ?>" placeholder="Catégorie">
                     <? } ?>
                 </div>
             </div>
@@ -192,23 +191,31 @@ table div.checkbox { padding: 8px 0px !important; }
                         <select class="ui fluid search dropdown" id="f_distribution">
                         <option value="">Choisir</option>
                         <?
-                            foreach(["0" => "Capitalisation", "1" => "Distribution"] as $key => $val)
+                            foreach(uimx::$invest_distribution as $key => $val)
                                 echo '<option value="'.$key.'" '.($row['distribution'] == $key ? 'selected="selected"' : '').'>'.$val.'</option>';
                         ?>
                         </select>
                     <? } else { ?>
-                        <input type="text" id="f_distribution" value="<?= $row['distribution'] ?>" placeholder="Distribution">
+                        <input type="text" id="f_distribution" value="<?= uimx::$invest_distribution[$row['distribution']] ?>" placeholder="Distribution">
                     <? } ?>
                 </div>
             </div>
             <div class="two fields">
                 <div class="field">
                     <label>Morning Star</label>
-                    <input type="text" id="f_link1" value="<?= $row['link1'] ?>" placeholder="Lien http">
+                    <? if (!$readonly) { ?>
+                        <input type="text" id="f_link1" value="<?= $row['link1'] ?>" placeholder="Lien http">
+                    <? } else { ?>
+                        <a href="<?= $row['link1'] ?>">Link</a>
+                    <? } ?>
                 </div>
                 <div class="field">
                     <label>JustETF</label>
-                    <input type="text" id="f_link2" value="<?= $row['link2'] ?>" placeholder="Lien http">
+                    <? if (!$readonly) { ?>
+                        <input type="text" id="f_link2" value="<?= $row['link2'] ?>" placeholder="Lien http">
+                    <? } else { ?>
+                        <a href="<?= $row['link2'] ?>">Link</a>
+                    <? } ?>
                 </div>
             </div>
             <div class="two fields">

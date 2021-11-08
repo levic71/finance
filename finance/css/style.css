@@ -406,6 +406,49 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 
 
+.tooltip2 {
+    position: relative;
+    padding: 5px 12px;
+    margin: 5px;
+    font-size: 15px;
+    border-radius: 100%;
+  }
+  
+  .tooltip2:before,
+  .tooltip2:after {
+    position: absolute;
+    content: '';
+    opacity: 0;
+    transition: all 0.4s ease;
+  }
+  
+  .tooltip2:before {
+    border-width: 10px 8px 0 8px;
+    border-style: solid;
+    border-color: #000 transparent transparent transparent;
+    top: -15px;
+    transform: translateY(20px);
+  }
+  
+  .tooltip2:after {
+    content: attr(data-tooltip2);
+    background: #000;
+    font-size: 13px;
+    font-weight: 300;
+    top: -45px;
+    left: -10px;
+    padding: 10px;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    transform: translateY(20px);
+  }
+  
+  .tooltip2:hover::before,
+  .tooltip2:hover::after {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+
 
 @media only screen and (max-width: 1024px) {
 

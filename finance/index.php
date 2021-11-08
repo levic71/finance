@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.3.15";
+$ver = tools::isLocalHost() ? rand() : "1.3.16";
 
 foreach(['action'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -108,6 +108,7 @@ foreach(['action'] as $key)
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
 		<a class="item" id="m2_palmares_bt"><i class="ui inverted trophy icon"></i>Palmarès</a>
 		<a class="item" id="m2_pft_bt"><i class="ui inverted briefcase icon"></i>Portfolio</a>
+		<a class="item" id="m2_outils_bt"><i class="ui inverted briefcase icon"></i>Outils</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
 		<a class="item" id="m2_admin_bt"><i class="ui inverted sort amount down icon"></i>Admin</a>
@@ -131,6 +132,7 @@ foreach(['action'] as $key)
 					<a class="active item" id="m1_home_bt">Home</a>
 					<a class="item" id="m1_palmares_bt">Palmarès</a>
 					<a class="item" id="m1_pft_bt">Portfolio</a>
+					<a class="item" id="m1_tools_bt">Outils</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 					<a class="item" id="m1_users_bt">Users</a>
 					<a class="item" id="m1_admin_bt">Admin</a>
