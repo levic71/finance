@@ -84,14 +84,14 @@ if ($strategie_defined && $f_strategie_id != "")
                     </tr>
                     <tr>
                         <th class="center aligned" data-toogle="1">Nb</th>
-                        <th class="center aligned" data-toogle="1">&euro;</th>
-                        <th class="center aligned" data-toogle="1">%</th>
+                        <th class="right aligned" data-toogle="1">&euro;</th>
+                        <th class="right aligned" data-toogle="1">%</th>
                         <th class="center aligned">Nb</th>
-                        <th class="center aligned">&euro;</th>
-                        <th class="center aligned">%</th>
+                        <th class="right aligned">&euro;</th>
+                        <th class="right aligned">%</th>
                         <th class="center aligned" data-toogle="1">Nb</th>
-                        <th class="center aligned" data-toogle="1">&euro;</th>
-                        <th class="center aligned" data-toogle="1">%</th>
+                        <th class="right aligned" data-toogle="1">&euro;</th>
+                        <th class="right aligned" data-toogle="1">%</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -135,13 +135,16 @@ if ($strategie_defined && $f_strategie_id != "")
                     <tr>
                         <td></td>
                         <td class="center aligned"></td>
-                        <td class="center aligned" style="padding-right: 25px;" id="sum_pct">0 %</td>
+                        <td class="center aligned"><div class="ui right labeled input">
+                            <input id="sum_pct" type="text" size="1" value="0" />
+                            <div class="ui basic label">%</div>
+                        </div></td>
                         <td class="right aligned" id="sum_before" data-toogle="1" colspan="2">0 &euro;</td>
-                        <td class="right aligned" id="sum_pct1" data-toogle="1">0 %</td>
+                        <td class="right aligned" id="sum_pct1" data-toogle="1"></td>
                         <td class="right aligned" id="sum_buy" colspan="2">0 &euro;</td>
-                        <td class="right aligned" id="sum_pct2">0 %</td>
+                        <td class="right aligned" id="sum_pct2"></td>
                         <td class="right aligned" id="sum_final" data-toogle="1" colspan="2">0 &euro;</td>
-                        <td class="right aligned" id="sum_pct3" data-toogle="1">0 %</td>
+                        <td class="right aligned" id="sum_pct3" data-toogle="1"></td>
                     </tr>
                 </thead>
 
@@ -231,14 +234,14 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
             el('f_pct1_'+i).innerHTML = v + ' %';
         }
         v = sum_before == 0 ? 0 : Math.floor((sum_before * 100)/ sum_before);
-        el('sum_pct1').innerHTML = v + ' %';
+        // el('sum_pct1').innerHTML = v + ' %';
 
-        // Totaux des repartitions
+        // Totaux des repartitions souhaitees
         sum_pct = 0;
-        Dom.find('#dca_calc_form td:nth-child(3) div input').forEach(function(item) {
+        Dom.find('#dca_calc_form tbody td:nth-child(3) div input').forEach(function(item) {
             sum_pct += parseInt(item.value);
         });
-        el('sum_pct').innerHTML = sum_pct + ' %';
+        el('sum_pct').value = sum_pct;
 
         // Controle somme des repartitions
         sum = 0;
@@ -248,7 +251,7 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
             sum += parseInt(valof('f_pct_'+i));
         }
 
-        // Rouge sur la colonne repartition
+        // Controle sur la colonne repartition
         if (sum != 100) {
             Dom.find('#dca_calc_form td:nth-child(3) div input').forEach(function(item) {
                 Dom.css(item, {'background': 'rgba(255, 255, 255, 0.8)', 'color': 'red'});
@@ -259,16 +262,19 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
             return false;
         }
 
+        // Controle si champ numerique
         for(i=1; i <= nb_actifs; i++) {
             ret = check_num(valof('f_price_'+i), 'de la colonne valeur', 0, 10000);
             if (!ret) return false;
         }
 
+        // Controle si champ numerique
         for(i=1; i <= nb_actifs; i++) {
             ret = check_num(valof('f_get_'+i), 'de la colonne valeur', 0, 10000);
             if (!ret) return false;
         }
 
+        // Controle si champ numerique
         if (!check_num(valof('f_montant'), 'montant à investir', 0, 10000000))
             return false;
 
@@ -279,6 +285,7 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
             invest += parseInt(valof('f_price_'+i)) * parseInt(valof('f_get_'+i));
         }
 
+        // On recherche si tous les actifs sont elligibles - On retire les actifs en surpoids
         actifs_elligibles = new Array();
         actifs_inelligibles = new Array();
     
@@ -317,13 +324,13 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
         }
         el('sum_buy').innerHTML = sum_buy + ' &euro;';
 
-        // Calcul des nouveaux % de repartition
+        // Calcul des % de repartition des actifs a acheter/vendre
         for(i=1; i <= nb_actifs; i++) {
-            v = invest_init == 0 ? 0 : Math.floor((parseInt(el('f_valo2_'+i).innerHTML.replace(' &euro; ', '')) * 100) / invest_init);
+            v = invest_init == 0 ? 0 : Math.floor((parseInt(el('f_valo2_'+i).innerHTML.replace(' &euro; ', '')) * 100) / sum_buy);
             el('f_pct2_'+i).innerHTML = v + ' %';
         }
-        v = invest_init == 0 ? 0 : Math.floor((sum_buy * 100)/ invest_init);
-        el('sum_pct2').innerHTML = v + ' %';
+        v = invest_init == 0 ? 0 : Math.floor((sum_buy * 100)/ sum_buy);
+        // el('sum_pct2').innerHTML = v + ' %';
 
         // Final
         sum_final = 0;
@@ -342,7 +349,7 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
             el('f_pct3_'+i).innerHTML = v + ' %';
         }
         v = sum_final == 0 ? 0 : Math.floor((sum_final * 100)/ sum_final);
-        el('sum_pct3').innerHTML = v + ' %';
+        // el('sum_pct3').innerHTML = v + ' %';
 
     }
     

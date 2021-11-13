@@ -20,15 +20,6 @@ while ($row = mysqli_fetch_assoc($res)) {
 
 <div class="ui container inverted segment form">
 
-    <div class="ui icon red message">
-        <i class="alarm red inverted icon"></i>
-        <div class="content">
-            <div class="header">
-            L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS
-            </div>
-        </div>
-    </div>
-
     <h2 class="ui inverted dividing header">Calcul Rebalancing</h2>
     <div class="field">
         <div class="two fields">
@@ -58,6 +49,19 @@ while ($row = mysqli_fetch_assoc($res)) {
             </div>
         </div>
     </div>
+
+    <br />
+    <br />
+
+    <div class="ui icon red message">
+        <i class="alarm red inverted icon"></i>
+        <div class="content">
+            <div class="header">
+            L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
