@@ -63,10 +63,10 @@ if ($strategie_defined && $f_strategie_id != "")
     
     <div class="ui centered grid">
         <div class="sixteen wide column">
-            <table class="ui compact inverted table">
+            <table class="ui compact inverted selectable table">
                 <thead>
                 <tr>
-                        <th class="center aligned" rowspan="2">Actif<br />sélectionnés</th>
+                        <th class="center aligned" rowspan="2">Actif</th>
                         <th class="center aligned" rowspan="2">Cotation<br />observée</th>
                         <th class="center aligned" rowspan="2">Répartition<br />cible</th>
                         <th class="center aligned" colspan="3">En portefeuille</th>
@@ -110,12 +110,12 @@ if ($strategie_defined && $f_strategie_id != "")
                         <td class="right aligned" id="f_valo1_<?= $i ?>">0 &euro;</td>
                         <td class="right aligned" id="f_pct1_<?= $i ?>">0 %</td>
                         <td class="center aligned"><div class="ui input">
-                            <input id="f_buy_<?= $i ?>" type="text" size="3" value="0" />
+                            <input id="f_buy_<?= $i ?>" type="text" size="3" value="0" readonly="readonly" />
                         </div></td>
                         <td class="right aligned" id="f_valo2_<?= $i ?>">0 &euro;</td>
                         <td class="right aligned" id="f_pct2_<?= $i ?>">0 %</td>
                         <td class="right aligned"><div class="ui input">
-                            <input id="f_final_<?= $i ?>" type="text" size="3" value="0" />
+                            <input id="f_final_<?= $i ?>" type="text" size="3" value="0" readonly="readonly" />
                         </div></td>
                         <td class="right aligned" id="f_valo3_<?= $i ?>">0 &euro;</td>
                         <td class="right aligned" id="f_pct3_<?= $i ?>">0 %</td>
@@ -152,7 +152,48 @@ if ($strategie_defined && $f_strategie_id != "")
     </div>
 </div>
 
+<div class="ui container inverted segment">
+    <h2> Comment utiliser cet outil <button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button></h2>
+
+    <div id="faq_view">
+<p>
+Après avoir choisit soit la stratégie, soit le nombre d'actifs souhaités dans le portefeuille, le tableau se remplit automatiquement avec les valeurs par défaut.
+<br />
+<br />
+La modification d'une des données par l'utilisateur déclenche le recalcul automatique du tableau. Le bouton "Rééquilibrage" fait de même.
+<br />
+<br />
+<b>Liste des données modifiables :</b>
+<ul>
+    <li>Choix des actifs sélectionnés : La modification de la valeur d'un des actifs, modifie sa cotation et relance le réquilibrage</li>
+    <li>La cotation et la répartition de chaque actif peuvent être ajustées manuellement et leurs prises en compte est immédiament intégré au nouveau calcul</li>
+    <li>La colonne Nb dans la section portefeuille permet de saisir le nombre d'actifs déjà en possession</li>
+    <li>Le montant à investir permet de déterminer le nombre d'actifs à acheter pour retourner à l'équilibre</li>
+</ul>
+<b>Quelques remarques :</b>
+<ul>
+    <li>Un déséquilibre trop important dans son portefeuille peut amener à un calcul qui conduit à vendre des actifs (nombre négatif dans la colonne Nb de Achat/Vente)</li>
+</ul>
+
+    <div class="ui icon red message">
+        <i class="alarm red inverted icon"></i>
+        <div class="content">
+            <div class="header">
+            L'OBJECTIF DE CET OUTIL EST PEDAGOGIQUE - IL N'A PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS
+            </div>
+        </div>
+    </div>
+
+</p>
+    </div>
+
+</div>
+
+
 <script>
+    
+    hide('faq_view');
+    Dom.addListener(Dom.id('faq_eye_bt'), Dom.Event.ON_CLICK, function(event) { toogle('faq_view'); });
 
     rebalance = function(attr) {
 
