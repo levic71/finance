@@ -63,26 +63,35 @@ if ($strategie_defined && $f_strategie_id != "")
     
     <div class="ui centered grid">
         <div class="sixteen wide column">
+    
+            <div class="ui inverted left labeled fluid input">
+                <label for="f_pft_actif" class="ui black label">Portefeuille actif</label>
+                <div class="ui fitted inverted toggle checkbox" style="padding: 8px 10px;">
+                    <input id="f_pft_actif" type="checkbox" />
+                    <label></label>
+                </div>
+            </div>
+
             <table class="ui compact inverted selectable table">
                 <thead>
                 <tr>
                         <th class="center aligned" rowspan="2">Actif</th>
                         <th class="center aligned" rowspan="2">Cotation<br />observée</th>
                         <th class="center aligned" rowspan="2">Répartition<br />cible</th>
-                        <th class="center aligned" colspan="3">En portefeuille</th>
+                        <th class="center aligned" colspan="3" data-toogle="1">En portefeuille</th>
                         <th class="center aligned" colspan="3">Achat/Vente</th>
-                        <th class="center aligned" colspan="3">Final</th>
+                        <th class="center aligned" colspan="3" data-toogle="1">Final</th>
                     </tr>
                     <tr>
+                        <th class="center aligned" data-toogle="1">Nb</th>
+                        <th class="center aligned" data-toogle="1">&euro;</th>
+                        <th class="center aligned" data-toogle="1">%</th>
                         <th class="center aligned">Nb</th>
                         <th class="center aligned">&euro;</th>
                         <th class="center aligned">%</th>
-                        <th class="center aligned">Nb</th>
-                        <th class="center aligned">&euro;</th>
-                        <th class="center aligned">%</th>
-                        <th class="center aligned">Nb</th>
-                        <th class="center aligned">&euro;</th>
-                        <th class="center aligned">%</th>
+                        <th class="center aligned" data-toogle="1">Nb</th>
+                        <th class="center aligned" data-toogle="1">&euro;</th>
+                        <th class="center aligned" data-toogle="1">%</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -104,21 +113,21 @@ if ($strategie_defined && $f_strategie_id != "")
                             <input id="f_pct_<?= $i ?>" type="text" size="1" value="<?= $lst_symbol_strategie_pct[$i] ?>" />
                             <div class="ui basic label">%</div>
                         </div></td>
-                        <td class="center aligned"><div class="ui input">
+                        <td class="center aligned" data-toogle="1"><div class="ui input">
                             <input id="f_get_<?= $i ?>" type="text" size="3" value="0" />
                         </div></td>
-                        <td class="right aligned" id="f_valo1_<?= $i ?>">0 &euro;</td>
-                        <td class="right aligned" id="f_pct1_<?= $i ?>">0 %</td>
+                        <td class="right aligned" data-toogle="1" id="f_valo1_<?= $i ?>">0 &euro;</td>
+                        <td class="right aligned" data-toogle="1" id="f_pct1_<?= $i ?>">0 %</td>
                         <td class="center aligned"><div class="ui input">
                             <input id="f_buy_<?= $i ?>" type="text" size="3" value="0" readonly="readonly" />
                         </div></td>
                         <td class="right aligned" id="f_valo2_<?= $i ?>">0 &euro;</td>
                         <td class="right aligned" id="f_pct2_<?= $i ?>">0 %</td>
-                        <td class="right aligned"><div class="ui input">
+                        <td class="right aligned" data-toogle="1"><div class="ui input">
                             <input id="f_final_<?= $i ?>" type="text" size="3" value="0" readonly="readonly" />
                         </div></td>
-                        <td class="right aligned" id="f_valo3_<?= $i ?>">0 &euro;</td>
-                        <td class="right aligned" id="f_pct3_<?= $i ?>">0 %</td>
+                        <td class="right aligned" data-toogle="1" id="f_valo3_<?= $i ?>">0 &euro;</td>
+                        <td class="right aligned" data-toogle="1" id="f_pct3_<?= $i ?>">0 %</td>
                     </tr>
                     <? } ?>
                 </tbody>
@@ -127,12 +136,12 @@ if ($strategie_defined && $f_strategie_id != "")
                         <td></td>
                         <td class="center aligned"></td>
                         <td class="center aligned" style="padding-right: 25px;" id="sum_pct">0 %</td>
-                        <td class="right aligned" id="sum_before" colspan="2">0 &euro;</td>
-                        <td class="right aligned" id="sum_pct1">0 %</td>
+                        <td class="right aligned" id="sum_before" data-toogle="1" colspan="2">0 &euro;</td>
+                        <td class="right aligned" id="sum_pct1" data-toogle="1">0 %</td>
                         <td class="right aligned" id="sum_buy" colspan="2">0 &euro;</td>
                         <td class="right aligned" id="sum_pct2">0 %</td>
-                        <td class="right aligned" id="sum_final" colspan="2">0 &euro;</td>
-                        <td class="right aligned" id="sum_pct3">0 %</td>
+                        <td class="right aligned" id="sum_final" data-toogle="1" colspan="2">0 &euro;</td>
+                        <td class="right aligned" id="sum_pct3" data-toogle="1">0 %</td>
                     </tr>
                 </thead>
 
@@ -172,7 +181,8 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
 </ul>
 <b>Quelques remarques :</b>
 <ul>
-    <li>Un déséquilibre trop important dans son portefeuille peut amener à un calcul qui conduit à vendre des actifs (nombre négatif dans la colonne Nb de Achat/Vente)</li>
+    <li>L'option "Portefeuille actif" permet de saisir le nombre d'actifs déjà en possession pour l'intégrer dans le calcul du rééquilibrage</li>
+    <li>Un déséquilibre trop important dans son portefeuille actuel peut amener à un calcul qui conduit à vendre des actifs (nombre négatif dans la colonne Nb de Achat/Vente)</li>
 </ul>
 
     <div class="ui icon red message">
@@ -338,6 +348,20 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
     
     // Declencheur sur bouton reequilibrage
     Dom.addListener(Dom.id('dca_go_bt'), Dom.Event.ON_CLICK, function(event) { rebalance(); });
+
+    switchStateToogle = function(item) {
+        t = Dom.attribute(item, 'data-toogle');
+        if (t !== null) {
+            item.style.display = t == 1 ? 'table-cell' : 'none';
+            Dom.attribute(item, { 'data-toogle': t == 1 ? '0' : '1' });
+            t = Dom.attribute(item, 'data-toogle');
+        }
+    }
+    // Declencheur affichage portefeuille actif
+    Dom.addListener(Dom.id('f_pft_actif'), Dom.Event.ON_CHANGE, function(event) {
+        Dom.find('#dca_calc_form table th').forEach(function(item) { switchStateToogle(item); });
+        Dom.find('#dca_calc_form table td').forEach(function(item) { switchStateToogle(item); });
+    });
 
     // Declenceheur sur changement de valeur dans une des listes d'actifs
     Dom.find('#dca_calc_form select').forEach(function(item) {

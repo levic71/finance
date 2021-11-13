@@ -24,7 +24,7 @@ while ($row = mysqli_fetch_assoc($res)) {
         <i class="alarm red inverted icon"></i>
         <div class="content">
             <div class="header">
-            L'OBJECTIF DE CES OUTILS SONT PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS
+            L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS
             </div>
         </div>
     </div>

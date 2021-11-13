@@ -486,12 +486,14 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #dca_calc_form thead tr:nth-child(2) th:nth-child(1),
 #dca_calc_form thead tr:nth-child(2) th:nth-child(2),
 #dca_calc_form thead tr:nth-child(2) th:nth-child(3) {
-        background: rgba(255, 0, 0, 0.05);
+    background: rgba(255, 0, 0, 0.05);
+    display: none;
 }
 #dca_calc_form tbody td:nth-child(4),
 #dca_calc_form tbody td:nth-child(5),
 #dca_calc_form tbody td:nth-child(6) {
-        background: rgba(255, 0, 0, 0.1);
+    background: rgba(255, 0, 0, 0.1);
+    display: none;
 }
 
 #dca_calc_form tfoot td:nth-child(6),
@@ -500,12 +502,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #dca_calc_form thead tr:nth-child(2) th:nth-child(4),
 #dca_calc_form thead tr:nth-child(2) th:nth-child(5),
 #dca_calc_form thead tr:nth-child(2) th:nth-child(6) {
-        background: rgba(255, 255, 0, 0.05);
+    background: rgba(255, 255, 0, 0.05);
 }
 #dca_calc_form tbody td:nth-child(7),
 #dca_calc_form tbody td:nth-child(8),
 #dca_calc_form tbody td:nth-child(9) {
-        background: rgba(255, 255, 0, 0.1);
+    background: rgba(255, 255, 0, 0.1);
 }
 
 #dca_calc_form tfoot td:nth-child(8),
@@ -514,12 +516,14 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #dca_calc_form thead tr:nth-child(2) th:nth-child(7),
 #dca_calc_form thead tr:nth-child(2) th:nth-child(8),
 #dca_calc_form thead tr:nth-child(2) th:nth-child(9) {
-        background: rgba(0, 0, 255, 0.05);
+    background: rgba(0, 0, 255, 0.05);
+    display: none;
 }
 #dca_calc_form tbody td:nth-child(10),
 #dca_calc_form tbody td:nth-child(11),
 #dca_calc_form tbody td:nth-child(12) {
-        background: rgba(0, 0, 255, 0.1);
+    background: rgba(0, 0, 255, 0.1);
+    display: none;
 }
 
 @media only screen and (max-width: 1024px) {
