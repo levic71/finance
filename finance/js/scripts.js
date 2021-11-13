@@ -106,6 +106,57 @@ check_email = function(txt) {
 	return re.test(txt);
 }
 
+check_JJMMAAAA = function(str, label)
+{
+	if (str.length == 0) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text : 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
+	if (!(str.length == 10)) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text : 'Le champ "'+label+'" doit être de la forme JJ/MM/AAAA' }); return false; }
+	var jour=str.substring(0, 2); var mois=str.substring(3, 5); var year=str.substring(6, 10);
+	if (jour > 31 || jour < 1 || mois < 1 || mois > 12) { Swal.fire({title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" doit être de la forme JJ/MM/AAAA'});  return false; }
+	return true;
+}
+
+check_num = function(num, label, min, max)
+{
+	if (num.length == 0) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
+	for(var i=0; i < num.length; i++)
+	{
+		var car=num.substring(i, i+1);
+		if (!((car >= "0" && car <= "9") || car == '.')) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" doit être numérique' }); return false; }
+	}
+	if (num > max || num < min) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" doit être compris entre '+min+' et '+max }); return false; }
+	return true;
+}
+isacar = function(car) { if ((car >= "0" && car <= "9") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z")) return true; return false; }
+isaextcar = function(car)
+{
+	if ((car >= "0" && car <= "9") || (car == "&") || (car == "Ã©") || (car == "\"") || (car == "\n") || (car == "'") || (car == "(") ||
+		(car == ")") || (car == "-") || (car == "Ã¨") || (car == "_") || (car == "Ã§") || (car == ",") || (car == "Ã ") || (car == ")") ||
+		(car == "=") || (car == "+") || (car == "#") || (car == "{") || (car == "[") || (car == "|") || (car == "\\") || (car == "@") ||
+		(car == "Ã¹") || (car == "$") || (car == "Â£") || (car == "Â§") || (car == "Ãª") || (car == "Ã¢") || (car == "Ã´") || (car == "Ã¤") ||
+		(car == "Ã«") || (car == " ") || (car == "Ã¯") || (car == "\;") || (car == ".") || (car == "?") || (car == "/") || (car == ":") ||
+		(car == "!") || (car == "Â°") || (car == "%") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z"))
+		return true;
+
+	return false;
+}
+check_alphanum_gen = function(str, label, size, type)
+{
+	if (str.length == 0) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
+	if (size != -1 && str.length < size) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Minimum '+size+' caractères pour "'+label+'"'}); return false; }
+	for(var i=0; i < str.length; i++)
+	{
+		var car=str.substring(i, i+1);
+		if (type == 0)
+			if (!isacar(car)) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: '"'+label+'" doit être alphanumérique'}); return false; }
+		else
+			if (!isacarext(car)) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: '"'+label+'" doit être alphanumérique'}); return false; }
+	}
+	return true;
+}
+check_alphanum    = function(str, label, size) { return check_alphanum_gen(str, label, size, 0); }
+check_alphanumext = function(str, label, size) { return check_alphanum_gen(str, label, size, 1); }
+
+
 switchColorElement = function(elt, c1, c2) {
 	elt_on = Dom.hasClass(Dom.id(elt), c1);
 	if (elt_on) {

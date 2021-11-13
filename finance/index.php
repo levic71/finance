@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.3.16";
+$ver = tools::isLocalHost() ? rand() : "1.3.17";
 
 foreach(['action'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -65,8 +65,8 @@ foreach(['action'] as $key)
 			Dom.addListener(Dom.id('m2_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { rmCN('sidebar_menu', 'visible'); });
 			Dom.addListener(Dom.id('m1_home_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_home_bt', url: 'home_content.php', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m2_home_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_home_bt', url: 'home_content.php', loading_area: 'main' }); });
-			// Dom.addListener(Dom.id('m1_pft_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'pft', id: 'main', menu: 'm1_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
-			// Dom.addListener(Dom.id('m2_pft_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'pft', id: 'main', menu: 'm2_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m1_tools_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'tools', id: 'main', menu: 'm1_tools_bt', url: 'tools_dca_calculator.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_tools_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'tools', id: 'main', menu: 'm2_tools_bt', url: 'tools_dca_calculator.php', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m1_pft_bt'),      Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
 			Dom.addListener(Dom.id('m2_pft_bt'),      Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
 			Dom.addListener(Dom.id('m1_palmares_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', menu: 'm1_palmares_bt', url: 'palmares.php', loading_area: 'main' }); });
@@ -108,7 +108,7 @@ foreach(['action'] as $key)
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
 		<a class="item" id="m2_palmares_bt"><i class="ui inverted trophy icon"></i>Palmarès</a>
 		<a class="item" id="m2_pft_bt"><i class="ui inverted briefcase icon"></i>Portfolio</a>
-		<a class="item" id="m2_outils_bt"><i class="ui inverted briefcase icon"></i>Outils</a>
+		<a class="item" id="m2_tools_bt"><i class="ui inverted briefcase icon"></i>Outils</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
 		<a class="item" id="m2_admin_bt"><i class="ui inverted sort amount down icon"></i>Admin</a>

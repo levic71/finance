@@ -21,7 +21,7 @@ $res = dbc::execSql($req);
 $row = mysqli_fetch_assoc($res);
 
 if ($row['total'] != 1) {
-    echo '<div class="ui container inverted segment"><h2>Strategies not found !!!</h2></div>"';
+    echo '<div class="ui container inverted segment"><h2>Strategies not found !!!</h2></div>';
     exit(0);
 }
 

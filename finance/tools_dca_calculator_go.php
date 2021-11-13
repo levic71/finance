@@ -1,0 +1,318 @@
+<?
+
+require_once "sess_context.php";
+
+session_start();
+
+include "common.php";
+
+$f_nb_actifs = 0;
+
+foreach(['f_strategie_id', 'f_nb_actifs'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+
+$db = dbc::connect();
+
+$strategie_defined = $f_nb_actifs > 0 ? false : true;
+
+$tab_stocks = array();
+$lst_symbol_strategie = array();
+$lst_symbol_strategie_pct = array();
+
+// On réxupère tous les actifs avec leurs dernieres cotations
+$req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ORDER BY s.symbol";
+$res = dbc::execSql($req);
+
+while($row = mysqli_fetch_assoc($res)) {
+    $tab_stocks[$row['symbol']] = $row;
+}
+
+// Initialistaion des data du formulaire
+if ($strategie_defined && $f_strategie_id != "")
+{
+    $req = "SELECT * FROM strategies WHERE id=".$f_strategie_id;
+    $res = dbc::execSql($req);
+    if ($row = mysqli_fetch_assoc($res)) {
+        $t = json_decode($row['data'], true);
+		$i = 1;
+		foreach($t['quotes'] as $key => $val) {
+			$lst_symbol_strategie[$i] = $key;
+			$lst_symbol_strategie_pct[$i++] = $val;
+		}
+
+		$f_nb_actifs = count($lst_symbol_strategie);
+    }
+    else {
+        echo "Stratégie inexistante !!!";
+        exit(0);
+    }
+} else {
+    $first_symbol = array_keys($tab_stocks)[0];
+    $sum = 0;
+    for($i=1 ; $i <= $f_nb_actifs; $i++) {
+        $lst_symbol_strategie[$i] = $first_symbol;
+        $pct = floor(100 / $f_nb_actifs);
+        $sum += $pct;
+        $lst_symbol_strategie_pct[$i] = $i == $f_nb_actifs && $i !=1 ? 100-$sum+$pct : $pct;
+    }
+}
+
+?>
+
+<div id="dca_calc_form" class="ui container inverted segment form">
+    
+    <div class="ui centered grid">
+        <div class="sixteen wide column">
+            <table class="ui compact inverted table">
+                <thead>
+                <tr>
+                        <th class="center aligned" rowspan="2">Actif<br />sélectionnés</th>
+                        <th class="center aligned" rowspan="2">Cotation<br />observée</th>
+                        <th class="center aligned" rowspan="2">Répartition<br />cible</th>
+                        <th class="center aligned" colspan="3">En portefeuille</th>
+                        <th class="center aligned" colspan="3">Achat/Vente</th>
+                        <th class="center aligned" colspan="3">Final</th>
+                    </tr>
+                    <tr>
+                        <th class="center aligned">Nb</th>
+                        <th class="center aligned">&euro;</th>
+                        <th class="center aligned">%</th>
+                        <th class="center aligned">Nb</th>
+                        <th class="center aligned">&euro;</th>
+                        <th class="center aligned">%</th>
+                        <th class="center aligned">Nb</th>
+                        <th class="center aligned">&euro;</th>
+                        <th class="center aligned">%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <? for($i = 1; $i <= $f_nb_actifs; $i++) { ?>
+                    <tr>
+                        <td>
+                            <select class="ui fluid search dropdown" id="f_lst_actifs_<?= $i ?>">
+                                <?
+                                    foreach($tab_stocks as $key => $val)
+                                        echo '<option value="'.$key.'" '.($key == $lst_symbol_strategie[$i] ? 'SELECTED="SELECTED"' : "").' data-price="'.sprintf("%.2f", $val['price']).'">'.$key.'</option>';
+                                ?>
+                            </select>
+                        </td>
+                        <td class="center aligned"><div class="ui right labeled input">
+                            <input id="f_price_<?= $i ?>" type="text" size="2" value="<?= sprintf("%.2f", $tab_stocks[$lst_symbol_strategie[$i]]['price']) ?>" />
+                            <div class="ui basic label">&euro;</div>
+                        </div></td>
+                        <td class="center aligned"><div class="ui right labeled input">
+                            <input id="f_pct_<?= $i ?>" type="text" size="1" value="<?= $lst_symbol_strategie_pct[$i] ?>" />
+                            <div class="ui basic label">%</div>
+                        </div></td>
+                        <td class="center aligned"><div class="ui input">
+                            <input id="f_get_<?= $i ?>" type="text" size="3" value="0" />
+                        </div></td>
+                        <td class="right aligned" id="f_valo1_<?= $i ?>">0 &euro;</td>
+                        <td class="right aligned" id="f_pct1_<?= $i ?>">0 %</td>
+                        <td class="center aligned"><div class="ui input">
+                            <input id="f_buy_<?= $i ?>" type="text" size="3" value="0" />
+                        </div></td>
+                        <td class="right aligned" id="f_valo2_<?= $i ?>">0 &euro;</td>
+                        <td class="right aligned" id="f_pct2_<?= $i ?>">0 %</td>
+                        <td class="right aligned"><div class="ui input">
+                            <input id="f_final_<?= $i ?>" type="text" size="3" value="0" />
+                        </div></td>
+                        <td class="right aligned" id="f_valo3_<?= $i ?>">0 &euro;</td>
+                        <td class="right aligned" id="f_pct3_<?= $i ?>">0 %</td>
+                    </tr>
+                    <? } ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td class="center aligned"></td>
+                        <td class="center aligned" style="padding-right: 25px;" id="sum_pct">0 %</td>
+                        <td class="right aligned" id="sum_before" colspan="2">0 &euro;</td>
+                        <td class="right aligned" id="sum_pct1">0 %</td>
+                        <td class="right aligned" id="sum_buy" colspan="2">0 &euro;</td>
+                        <td class="right aligned" id="sum_pct2">0 %</td>
+                        <td class="right aligned" id="sum_final" colspan="2">0 &euro;</td>
+                        <td class="right aligned" id="sum_pct3">0 %</td>
+                    </tr>
+                </thead>
+
+                </tfoot>
+            </table>
+        </div>
+        <div class="ten wide column" style="padding-left: 25px;">
+            <div class="ui right labeled input">
+                <label for="f_montant" class="ui inverted label">Montant à investir</label>
+                <input type="text" id="f_montant" size="8" value="1000" />
+                <div class="ui basic label">&euro;</div>
+            </div>
+        </div>
+        <div class="six wide column">
+            <button id="dca_go_bt" class="ui pink left right floated button">Rééquilibrage</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    rebalance = function(attr) {
+
+        nb_actifs = <?= $f_nb_actifs ?>;
+
+        Dom.find('#dca_calc_form td:nth-child(3) div input').forEach(function(item) {
+            Dom.css(item, {'background': 'rgba(255, 255, 255, 1)', 'color': 'black'});
+        });
+        Dom.find('#dca_calc_form td:nth-child(3) div .label').forEach(function(item) {
+            Dom.css(item, {'background': 'rgba(255, 255, 255, 1)', 'color': 'black'});
+        });
+
+        // Valeurs des actifs en possession + Total
+        sum_before = 0;
+        for(i=1; i <= nb_actifs; i++) {
+            v = parseInt(valof('f_get_'+i)) * parseInt(valof('f_price_'+i));
+            el('f_valo1_'+i).innerHTML = v + ' &euro;';
+            sum_before += v;
+        }
+        el('sum_before').innerHTML = sum_before + ' &euro;';
+
+        // Calcul repartition actuelle
+        for(i=1; i <= nb_actifs; i++) {
+            v = sum_before == 0 ? 0 : Math.floor((parseInt(el('f_valo1_'+i).innerHTML.replace(' &euro; ', '')) * 100) / sum_before);
+            el('f_pct1_'+i).innerHTML = v + ' %';
+        }
+        v = sum_before == 0 ? 0 : Math.floor((sum_before * 100)/ sum_before);
+        el('sum_pct1').innerHTML = v + ' %';
+
+        // Totaux des repartitions
+        sum_pct = 0;
+        Dom.find('#dca_calc_form td:nth-child(3) div input').forEach(function(item) {
+            sum_pct += parseInt(item.value);
+        });
+        el('sum_pct').innerHTML = sum_pct + ' %';
+
+        // Controle somme des repartitions
+        sum = 0;
+        for(i=1; i <= nb_actifs; i++) {
+            ret = check_num(valof('f_pct_'+i), 'de la colonne répartition', 0, 1000);
+            if (!ret) return false;
+            sum += parseInt(valof('f_pct_'+i));
+        }
+
+        // Rouge sur la colonne repartition
+        if (sum != 100) {
+            Dom.find('#dca_calc_form td:nth-child(3) div input').forEach(function(item) {
+                Dom.css(item, {'background': 'rgba(255, 255, 255, 0.8)', 'color': 'red'});
+            });
+            Dom.find('#dca_calc_form td:nth-child(3) div .label').forEach(function(item) {
+                Dom.css(item, {'background': 'rgba(255, 255, 255, 0.8)', 'color': 'red'});
+            });
+            return false;
+        }
+
+        for(i=1; i <= nb_actifs; i++) {
+            ret = check_num(valof('f_price_'+i), 'de la colonne valeur', 0, 10000);
+            if (!ret) return false;
+        }
+
+        for(i=1; i <= nb_actifs; i++) {
+            ret = check_num(valof('f_get_'+i), 'de la colonne valeur', 0, 10000);
+            if (!ret) return false;
+        }
+
+        if (!check_num(valof('f_montant'), 'montant à investir', 0, 10000000))
+            return false;
+
+        invest_init = parseInt(valof('f_montant'));
+        invest = invest_init;
+
+        for(i=1; i <= nb_actifs; i++) {
+            invest += parseInt(valof('f_price_'+i)) * parseInt(valof('f_get_'+i));
+        }
+
+        actifs_elligibles = new Array();
+        actifs_inelligibles = new Array();
+    
+        for(i=1; i <= nb_actifs; i++) {
+
+            budget = (invest * parseInt(valof('f_pct_'+i))) / 100;
+            nb_actif = budget/parseInt(valof('f_price_'+i));
+            value = Math.floor(nb_actif) - parseInt(valof('f_get_'+i));
+            el('f_buy_'+i).value = 0;
+
+            if (true || value > 0)
+                actifs_elligibles.push(i);
+            else
+                actifs_inelligibles.push(i);
+        }
+        
+        retrait = 0;
+        actifs_inelligibles.forEach(function(item) {
+            retrait += (invest * parseInt(valof('f_pct_'+item))) / 100;
+        });
+        invest -= retrait;
+
+        // Calcul du nb d'actifs a acheter
+        actifs_elligibles.forEach(function(item) {
+            budget = (invest * parseInt(valof('f_pct_'+item))) / 100;
+            nb_actif = parseInt(valof('f_price_'+item)) == 0 ? 0 : Math.floor(budget / parseInt(valof('f_price_'+item)));
+            el('f_buy_'+item).value = nb_actif - parseInt(valof('f_get_'+item));
+        });
+
+        // Valeur des actifs a acheter + Total
+        sum_buy = 0;
+        for(i=1; i <= nb_actifs; i++) {
+            v = parseInt(valof('f_buy_'+i)) * parseInt(valof('f_price_'+i));
+            el('f_valo2_'+i).innerHTML = v + ' &euro;';
+            sum_buy += v;
+        }
+        el('sum_buy').innerHTML = sum_buy + ' &euro;';
+
+        // Calcul des nouveaux % de repartition
+        for(i=1; i <= nb_actifs; i++) {
+            v = invest_init == 0 ? 0 : Math.floor((parseInt(el('f_valo2_'+i).innerHTML.replace(' &euro; ', '')) * 100) / invest_init);
+            el('f_pct2_'+i).innerHTML = v + ' %';
+        }
+        v = invest_init == 0 ? 0 : Math.floor((sum_buy * 100)/ invest_init);
+        el('sum_pct2').innerHTML = v + ' %';
+
+        // Final
+        sum_final = 0;
+        for(i=1; i <= nb_actifs; i++) {
+            x = parseInt(valof('f_buy_'+i)) + parseInt(valof('f_get_'+i));
+            v = x * parseInt(valof('f_price_'+i));
+            el('f_final_'+i).value = x;
+            el('f_valo3_'+i).innerHTML = v + ' &euro;';
+            sum_final += v;
+        }
+        el('sum_final').innerHTML = sum_final + ' &euro;';
+
+        // Calcul des nouveaux % de repartition
+        for(i=1; i <= nb_actifs; i++) {
+            v = sum_final == 0 ? 0 : Math.floor((parseInt(el('f_valo3_'+i).innerHTML.replace(' &euro; ', '')) * 100) / sum_final);
+            el('f_pct3_'+i).innerHTML = v + ' %';
+        }
+        v = sum_final == 0 ? 0 : Math.floor((sum_final * 100)/ sum_final);
+        el('sum_pct3').innerHTML = v + ' %';
+
+    }
+    
+    // Declencheur sur bouton reequilibrage
+    Dom.addListener(Dom.id('dca_go_bt'), Dom.Event.ON_CLICK, function(event) { rebalance(); });
+
+    // Declenceheur sur changement de valeur dans une des listes d'actifs
+    Dom.find('#dca_calc_form select').forEach(function(item) {
+        Dom.addListener(item, Dom.Event.ON_CHANGE, function(event) {
+            input_price_id = 'f_price_'+Dom.attribute(item, 'id').split('_')[3];
+            new_price = Dom.attribute(item.options[item.selectedIndex], 'data-price');
+            el(input_price_id).value = new_price;
+            rebalance();
+        });
+    });
+    
+    // Declencheur sur changement dans un des champs de saisie
+    Dom.find('#dca_calc_form input').forEach(function(item) {
+        Dom.addListener(item, Dom.Event.ON_CHANGE, function(event) { rebalance(); });
+    });
+
+    rebalance();
+
+</script>
