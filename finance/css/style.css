@@ -5,7 +5,7 @@ td.aaf-negative { color: rgb(247, 95, 90) !important; }
     display: none;
 }
 
-.perf_card td:nth-child(2) {
+.align_right, .perf_card td:nth-child(2) {
     text-align: right !important;
 }
 
@@ -41,8 +41,9 @@ td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
 .readonly input {
     padding: 8px 10px !important;
-    background: #333 !important;
+    background: #222 !important;
     border: 0px !important;
+    border-bottom: 1px solid grey !important;
     color: burlywood !important;
 }
 
@@ -135,7 +136,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     text-align: right;
 }
 
-.home_page .card .header, .sim_page .card .header {
+.home_page .card .header, .sim_page .card .header, .portfolio_page .card .header {
     color: burlywood !important;
 }
 #stocks_box h2 {
@@ -161,6 +162,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 #strategie_container h2 span .icon:before {
     padding: 0px 0px 0px 4px !important;
+}
+#lst_order td, #lst_order th {
+    text-align: center !important;
+}
+#lst_order td:nth-child(4), #lst_order td:nth-child(5), #lst_order td:nth-child(6), #lst_order td:nth-child(7) {
+    text-align: right !important;
 }
 #lst_stock td, #lst_stock th {
     text-align: center !important;
@@ -493,6 +500,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 0, 0, 0.05);
     display: none;
 }
+
 #dca_calc_form tbody td:nth-child(4),
 #dca_calc_form tbody td:nth-child(5),
 #dca_calc_form tbody td:nth-child(6) {
@@ -500,6 +508,11 @@ table th { color: burlywood !important; cursor: pointer !important; }
     display: none;
 }
 
+#lst_position tbody td:nth-child(1) {
+    color: deepskyblue;
+}
+#lst_position thead th:nth-child(7),
+#lst_position tfoot td:nth-child(3),
 #dca_calc_form tfoot td:nth-child(6),
 #dca_calc_form tfoot td:nth-child(7),
 #dca_calc_form thead tr:nth-child(1) th:nth-child(5),
@@ -508,6 +521,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #dca_calc_form thead tr:nth-child(2) th:nth-child(6) {
     background: rgba(255, 255, 0, 0.05);
 }
+#lst_position tbody td:nth-child(7),
 #dca_calc_form tbody td:nth-child(7),
 #dca_calc_form tbody td:nth-child(8),
 #dca_calc_form tbody td:nth-child(9) {

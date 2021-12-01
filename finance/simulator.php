@@ -110,7 +110,6 @@ $infos1 = '
                 <input type="text" size="10" id="f_date_start" value="'.$f_date_start.'" placeholder="0000-00-00">
                 <input type="text" size="10" id="f_date_end" value="'.$f_date_end.'" placeholder="0000-00-00" style="margin-left: 10px">
                 <i class="inverted black calendar alternate outline icon"></i>
-
             </div>
         </td>
         <td class="rowspanned"></td>

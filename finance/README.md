@@ -12,6 +12,9 @@
 // Done : Palmares des meilleures stratégies par methode (DCA/DM) + Niveau de risque
 // Done : Arrondie 2/3 chiffres après virgules ou en k en fct min max pour dimuner la taille des data envoyées
 
+// Choix sur nb actifs investit sur DM (aujourd'hui uniquement le meilleur)
+// Niveau de risque d'une stratégie/ETF
+// tags multiples sur expositions ETF (secteurs, geo, ...)
 // Comparaison entre stratégie choisie et investissement réel => Déviation et rattrapage prochain invest 
 // Croisement MM200 et TR
 // alerte si gros volume échangé
@@ -24,6 +27,7 @@
 // Recuperer les montants frais EFT + capitalisation + volume xchange par jour
 // Creer une stack d'execution tache CRON en base de données pour dépiler les actions a réaliser pour n'en ratée aucune et éviter les doublons
 // Pause crontab avec lock en gestion admin
+// IMPORT/EXPORT ORDRES PORTEFEUILLE
 
 // Idées
 // Backlog collective (avec pondération donation)

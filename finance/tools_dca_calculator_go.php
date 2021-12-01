@@ -188,14 +188,7 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
     <li>Un déséquilibre trop important dans son portefeuille actuel peut amener à un calcul qui conduit à vendre des actifs (nombre négatif dans la colonne Nb de Achat/Vente)</li>
 </ul>
 
-    <div class="ui icon red message">
-        <i class="alarm red inverted icon"></i>
-        <div class="content">
-            <div class="header">
-            L'OBJECTIF DE CET OUTIL EST PEDAGOGIQUE - IL N'A PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS
-            </div>
-        </div>
-    </div>
+<?= uimx::staticInfoMsg("L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS", "alarm", "red"); ?>
 
 </p>
     </div>

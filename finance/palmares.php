@@ -13,7 +13,7 @@ foreach(['range'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 // On cherche a tricher !!!
-if ($range != 1 && $range != 2 && $range != 3) $range = 1;
+if ($range > 4 || $range < 0) $range = 1;
 
 $db = dbc::connect();
 
@@ -29,7 +29,11 @@ $tab_perfs = array("1" => array(), "2" => array());
 $req = "SELECT * FROM strategies WHERE defaut=1";
 $res = dbc::execSql($req);
 
-$date_start = date('Y-m-d', strtotime('-'.$range.' year'));
+if ($range == 4)
+	$date_start = date('Y-m-d', strtotime('-6 month'));
+else
+	$date_start = date('Y-m-d', strtotime('-'.$range.' year'));
+
 $date_end   = date("Y-m-d");
 
 while($row = mysqli_fetch_array($res)) {
@@ -77,6 +81,7 @@ arsort($tab_perfs["2"]);
 		<button id="paramares_3y_bt" class="mini ui right floated button <?= $range == 3 ? "pink" : "gray" ?>">3Y</button>
 		<button id="paramares_2y_bt" class="mini ui right floated button <?= $range == 2 ? "pink" : "gray" ?>">2Y</button>
 		<button id="paramares_1y_bt" class="mini ui right floated button <?= $range == 1 ? "pink" : "gray" ?>">1Y</button>
+		<button id="paramares_6M_bt" class="mini ui right floated button <?= $range == 4 ? "pink" : "gray" ?>">6M</button>
 	</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
@@ -169,22 +174,23 @@ arsort($tab_perfs["2"]);
 
 <?	foreach(["1", "2"] as $k => $v)
 		foreach($tab_strat[$v] as $key => $val) { ?>
-			Dom.addListener(Dom.id('home_sim_bt_<?= $val['id'] ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val['id'] ?>&f_date_start=<?= $date_start ?>&f_date_end=<?= $date_end ?>', loading_area: 'home_sim_bt_<?= $val['id'] ?>' }); });
+			Dom.addListener(Dom.id('home_sim_bt_<?= $val['id'] ?>'), Dom.Event.ON_CLICK, function(event) { go({ action: 'sim', id: 'main', url: 'simulator.php?strategie_id=<?= $val['id'] ?>&f_date_start=<?= $date_start ?>&f_date_end=<?= $date_end ?>', loading_area: 'main' }); });
 <? } ?>
 
-<? if ($range == 1) { ?>
-	Dom.addListener(Dom.id('paramares_2y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=2', loading_area: 'paramares_2y_bt' }); });
-	Dom.addListener(Dom.id('paramares_3y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=3', loading_area: 'paramares_3y_bt' }); });
+<? if ($range != 1) { ?>
+	Dom.addListener(Dom.id('paramares_1y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=1', loading_area: 'main' }); });
 <? } ?>
 
-<? if ($range == 2) { ?>
-	Dom.addListener(Dom.id('paramares_1y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=1', loading_area: 'paramares_1y_bt' }); });
-	Dom.addListener(Dom.id('paramares_3y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=3', loading_area: 'paramares_3y_bt' }); });
+<? if ($range != 2) { ?>
+	Dom.addListener(Dom.id('paramares_2y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=2', loading_area: 'main' }); });
 <? } ?>
 
-<? if ($range == 3) { ?>
-	Dom.addListener(Dom.id('paramares_1y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=1', loading_area: 'paramares_1y_bt' }); });
-	Dom.addListener(Dom.id('paramares_2y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=2', loading_area: 'paramares_2y_bt' }); });
+<? if ($range != 3) { ?>
+	Dom.addListener(Dom.id('paramares_3y_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=3', loading_area: 'main' }); });
+<? } ?>
+
+<? if ($range != 4) { ?>
+	Dom.addListener(Dom.id('paramares_6M_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', url: 'palmares.php?range=4', loading_area: 'main' }); });
 <? } ?>
 
 </script>

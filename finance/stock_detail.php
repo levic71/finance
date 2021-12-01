@@ -202,19 +202,19 @@ table div.checkbox { padding: 8px 0px !important; }
             </div>
             <div class="two fields">
                 <div class="field">
-                    <label>Morning Star</label>
                     <? if (!$readonly) { ?>
+                        <label>Morning Star</label>
                         <input type="text" id="f_link1" value="<?= $row['link1'] ?>" placeholder="Lien http">
                     <? } else { ?>
-                        <a href="<?= $row['link1'] ?>">Link</a>
+                        &nbsp;&nbsp;<i class="ui icon inverted external"></i><a href="<?= $row['link1'] ?>">Morning Star</a>
                     <? } ?>
                 </div>
                 <div class="field">
-                    <label>JustETF</label>
                     <? if (!$readonly) { ?>
+                        <label>JustETF</label>
                         <input type="text" id="f_link2" value="<?= $row['link2'] ?>" placeholder="Lien http">
                     <? } else { ?>
-                        <a href="<?= $row['link2'] ?>">Link</a>
+                        &nbsp;&nbsp;<i class="ui icon inverted external"></i><a href="<?= $row['link2'] ?>">JustETF</a>
                     <? } ?>
                 </div>
             </div>

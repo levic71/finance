@@ -152,6 +152,80 @@ class dbc {
 //
 class calc {
 
+    public static function aggregatePortfolio($id) {
+
+        global $sess_context;
+
+        $portfolio      = array();
+        $positons       = array();
+        $sum_depot      = 0;
+        $sum_retrait    = 0;
+        $sum_dividende  = 0;
+        $sum_commission = 0;
+
+        $portfolio['orders']    = array();
+        $portfolio['positions'] = array();
+
+        $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND id=".$id;
+        $res = dbc::execSql($req);
+        if (!$row = mysqli_fetch_array($res)) {
+            uimx::staticInfoMsg("Bad data !", "alarm", "red");
+            exit(0);
+        }
+        $portfolio['infos'] = $row;
+
+        $req = "SELECT * FROM orders WHERE portfolio_id=".$id." ORDER BY datetime ASC";
+        $res = dbc::execSql($req);
+        while($row = mysqli_fetch_assoc($res)) {
+
+            // Tableau des ordres
+            $portfolio['orders'][] = $row;
+            
+            // Achat/Vente
+            if ($row['action'] == 1 || $row['action'] == -1) {
+
+                $nb = 0;
+                $pru = 0;
+                $achat = $row['action'] >= 0 ? true : false;
+                $pname = $row['product_name'];
+                
+                if (isset($positons[$pname]['nb'])) {
+
+                    $nb = $positons[$pname]['nb'] + ($row['quantity'] * ($achat ? 1 : -1));
+                    
+                    // Si achat on recalcule PRU mais pas si vente
+                    $pru = $achat ? ($positons[$pname]['pru'] * $positons[$pname]['nb'] + $row['quantity'] * $row['price']) / $nb : $positons[$pname]['pru'];
+
+                } else {
+                    $nb  = $row['quantity'];
+                    $pru = $row['price'];
+                }
+
+                $positons[$pname]['nb']  = $nb;
+                $positons[$pname]['pru'] = $pru;
+                $sum_commission += $row['commission'];
+            }
+
+            // Depot
+            if ($row['action'] == 2) $sum_depot += $row['quantity'] * $row['price'];
+
+            // Retrait
+            if ($row['action'] == -2) $sum_retrait += $row['quantity'] * $row['price'];
+
+            // Retrait
+            if ($row['action'] == 4) $sum_dividende += $row['quantity'] * $row['price'];
+   
+        }
+        
+        $portfolio['positions']  = $positons;
+        $portfolio['depot']      = $sum_depot;
+        $portfolio['retrait']    = $sum_retrait;
+        $portfolio['dividende']  = $sum_dividende;
+        $portfolio['commission'] = $sum_commission;
+        
+        return $portfolio;
+    } 
+
     public static function getAchatActifsDCAInvest($day, $lst_decode_symbols, $lst_actifs_achetes_pu, $invest_montant) {
 
         $ret = array();
@@ -300,7 +374,7 @@ class calc {
                 else {
                     $ref_TJ0 = floatval($close_value);
                     $ref_DAY = $row['day'];
-                    $ref_PCT = ($row['close'] - $row['open']) * 100 / $row['open'];
+                    $ref_PCT = $row['open'] == 0 ? 0 : ($row['close'] - $row['open']) * 100 / $row['open'];
                 }
                 $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
                 $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
@@ -990,7 +1064,7 @@ class logger {
 //
 class uimx {
 
-    public static $invest_cycle        = [ 1 => "Mensuel", 3 => "Trimestriel", 6 => "Semestriel", 12 => "Annuel" ];
+    public static $invest_cycle        = [ 1 => [ "tip" => "Mensuel", "colr" => "orange" ], 3 => [ "tip" => "Trimestriel", "colr" => "green" ], 6 => [ "tip" => "Semestriel", "colr" => "yellow" ], 12 => [ "tip" => "Annuel", "colr" => "purple" ] ];
     public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA' ];
     public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes' ];
     public static $invest_distribution = [ 0 => "Capitalisation", 1 => "Distribution" ];
@@ -1013,7 +1087,27 @@ class uimx {
         15 => "Obligations",
         16 => "Immobilier"
     ];
+    public static $order_actions   = [
+         2 => "Dépot",
+         1 => "Achat",
+        -1 => "Vente",
+        -2 => "Retrait",
+         4 => "Dividende",
+         5 => "Solde"
+    ];
 
+    public static function staticInfoMsg($msg, $icon, $color) {
+?>
+        <div class="ui icon <?= $color ?> message">
+        <i class="<?= $icon ?> <?= $color ?> inverted icon"></i>
+        <div class="content">
+            <div class="header">
+            <?= $msg ?>
+            </div>
+        </div>
+    </div>
+<?
+    }
 
     public static function genCard($id, $header, $meta, $desc) {
     ?>
@@ -1046,7 +1140,7 @@ class uimx {
         $desc .= '</tbody>';
         $desc .= '<tfoot class="full-width"><tr>
             <th colspan="2">
-                <button class="ui small teal  button badge tooltip2" data-tooltip2="'.self::$invest_cycle[$strategie['cycle']].'">'.substr(self::$invest_cycle[$strategie['cycle']], 0, 1).'</button>
+                <button class="ui small '.self::$invest_cycle[$strategie['cycle']]['colr'].' button badge tooltip2" data-tooltip2="'.self::$invest_cycle[$strategie['cycle']]['tip'].'">'.substr(self::$invest_cycle[$strategie['cycle']]['tip'], 0, 1).'</button>
                 <button class="ui small brown button badge tooltip2" data-tooltip2="'.self::$invest_methode[$strategie['methode']].'"><i class="inverted '.self::$invest_methode_icon[$strategie['methode']].' icon"></i></button>
                 <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey icon button">Backtesting</button>
             </th>
@@ -1056,6 +1150,19 @@ class uimx {
         $title = $strategie['title'].($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
         uimx::genCard("home_card_".$strategie['id'], $title, $day, $desc);
     }
+
+    public static function portfolioCard($portfolio) {
+
+        global $sess_context;
+
+        $desc  = '0 &euro;';
+        $desc .= '<button id="portfolio_orders_'.$portfolio['id'].'_bt" class="ui right floated small grey icon button">Détails</button>'; 
+
+        $title = $portfolio['name'].($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
+        uimx::genCard("portfolio_card_".$portfolio['id'], $title, date('Y-m-d'), $desc);
+    }
+
+
 }
 
 ?>

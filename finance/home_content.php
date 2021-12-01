@@ -82,7 +82,7 @@ arsort($data2["perfs"]);
 		
 	</h2>
 
-	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
+	<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
 		<thead>
 			<tr>
 				<th></th>

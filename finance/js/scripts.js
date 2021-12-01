@@ -168,3 +168,12 @@ switchColorElement = function(elt, c1, c2) {
 		Dom.addClass(Dom.id(elt), c1);
 	}
 }
+
+getPerf = function(depart, arrive) {
+	return ( ((arrive - depart) * 100) / depart);
+}
+
+getRatio = function(ref, val) {
+	return ( (val * 100) / ref);
+}
+

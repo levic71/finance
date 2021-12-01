@@ -53,14 +53,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     <br />
     <br />
 
-    <div class="ui icon red message">
-        <i class="alarm red inverted icon"></i>
-        <div class="content">
-            <div class="header">
-            L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS
-            </div>
-        </div>
-    </div>
+    <?= uimx::staticInfoMsg("L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS", "alarm", "red"); ?>
 
 </div>
 

@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.3.22";
+$ver = tools::isLocalHost() ? rand() : "1.3.23";
 
 foreach(['action'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -67,8 +67,8 @@ foreach(['action'] as $key)
 			Dom.addListener(Dom.id('m2_home_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_home_bt', url: 'home_content.php', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m1_tools_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'tools', id: 'main', menu: 'm1_tools_bt', url: 'tools_dca_calculator.php', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m2_tools_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'tools', id: 'main', menu: 'm2_tools_bt', url: 'tools_dca_calculator.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m1_pft_bt'),      Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
-			Dom.addListener(Dom.id('m2_pft_bt'),      Dom.Event.ON_CLICK, function(event) { Swal.fire({ title: '', icon: 'success', html: "Bientot ..." }); });
+			Dom.addListener(Dom.id('m1_pft_bt'),      Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', menu: 'm1_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
+			Dom.addListener(Dom.id('m2_pft_bt'),      Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', menu: 'm2_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m1_palmares_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', menu: 'm1_palmares_bt', url: 'palmares.php', loading_area: 'main' }); });
 			Dom.addListener(Dom.id('m2_palmares_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', menu: 'm1_palmares_bt', url: 'palmares.php', loading_area: 'main' }); });
 <? if (!$sess_context->isUserConnected()) { ?>
@@ -107,7 +107,7 @@ foreach(['action'] as $key)
 		<a class="item" id="m2_sidebar_bt"><i style="float: left; margin: 0px;" class="ui inverted arrow left icon"></i>&nbsp;</a>
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
 		<a class="item" id="m2_palmares_bt"><i class="ui inverted trophy icon"></i>Palmarès</a>
-		<a class="item" id="m2_pft_bt"><i class="ui inverted briefcase icon"></i>Portefeuille</a>
+		<a class="item" id="m2_pft_bt"><i class="ui inverted briefcase icon"></i>Portefeuilles</a>
 		<a class="item" id="m2_tools_bt"><i class="ui inverted briefcase icon"></i>Outils</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
@@ -131,7 +131,7 @@ foreach(['action'] as $key)
 					<a class="toc inverted item" id="m1_sidebar_bt"><i class="sidebar inverted icon"></i></a>
 					<a class="active item" id="m1_home_bt">Home</a>
 					<a class="item" id="m1_palmares_bt">Palmarès</a>
-					<a class="item" id="m1_pft_bt">Portefeuille</a>
+					<a class="item" id="m1_pft_bt">Portefeuilles</a>
 					<a class="item" id="m1_tools_bt">Outils</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 					<a class="item" id="m1_users_bt">Users</a>
