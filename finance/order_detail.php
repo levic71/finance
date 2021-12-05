@@ -70,7 +70,9 @@ $quotes = calc::getIndicatorsLastQuote();
                 <? foreach ($quotes["stocks"] as $key => $val) { ?>
                     <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" <?= $row['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
                 <? } ?>
+                <option value="AUTRE" data-price="0" <?= substr($row['product_name'], 0, 5) == "AUTRE" ? "selected=\"selected\"" : "" ?>>Autre</option>
             </select>
+            <input type="text" id="f_other_name" value="<?= substr($row['product_name'], 0, 5) == "AUTRE" ? substr($row['product_name'], 6) : "" ?>" style="<?= substr($row['product_name'], 0, 5) == "AUTRE" ? "" : "display: none;" ?> margin-top: 5px;" />
         </div>
         <div class="field">
             <label>Action</label>
@@ -115,10 +117,13 @@ const datepicker1 = new TheDatepicker.Datepicker(el('f_date'));
 datepicker1.options.setInputFormat("Y-m-d")
 datepicker1.render();
 
+// Change sur selection produit
 Dom.addListener(Dom.id('f_product_name'), Dom.Event.ON_CHANGE, function(event) {
 	item = Dom.id('f_product_name');
 	v = Dom.attribute(item.options[item.selectedIndex], 'data-price');
+	n = item.options[item.selectedIndex].value;
 	Dom.attribute(Dom.id('f_price'), { 'value': v });
+    if (n == 'AUTRE') show('f_other_name'); else hide('f_other_name');
 });
 
 // Cancel button
@@ -137,7 +142,12 @@ Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK
 	if (!check_num(valof('f_commission'), 'Commission', 0, 999999999999))
 		return false;
 
-	params = '?action=<?= $action ?>&'+attrs(['order_id', 'portfolio_id', 'f_date', 'f_product_name', 'f_action', 'f_quantity', 'f_price', 'f_commission' ]);
+    item = Dom.id('f_product_name');
+    n = item.options[item.selectedIndex].value;
+
+    params = '?action=<?= $action ?>&'+attrs(['order_id', 'portfolio_id', 'f_date', 'f_action', 'f_quantity', 'f_price', 'f_commission' ]);
+    params += '&f_product_name=' + (n == 'AUTRE' ? 'AUTRE:' + encodeURIComponent(valof('f_other_name')) : encodeURIComponent(valof('f_product_name')));
+
 	go({ action: 'order', id: 'main', url: 'order_action.php'+params, loading_area: 'main' });
 
 });

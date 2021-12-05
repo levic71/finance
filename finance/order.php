@@ -18,11 +18,11 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
-// Calcul synthese portefeuille
-$portfolio_data = calc::aggregatePortfolio($portfolio_id);
-
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
+
+// Calcul synthese portefeuille
+$portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
 
 // On récupère les infos du portefeuille + les positions et les ordres
 $my_portfolio  = $portfolio_data['infos'];
@@ -34,61 +34,66 @@ $lst_orders    = $portfolio_data['orders'];
 <div class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<i class="inverted black briefcase icon"></i>&nbsp;&nbsp;<?= $my_portfolio['name'] ?>
+		<i class="inverted black briefcase icon"></i>&nbsp;&nbsp;<?= $my_portfolio['name'] ?><small id="subtitle"></small>
 	</h2>
-
-	<div class="ui stackable two column grid container">
+	<div class="ui stackable column grid container">
 		<div class="row">
-			<div class="column">
-				<h3 class="ui left floated">Répartition</h3>
-				<canvas id="pft_donut" height="100"></canvas>
-			</div>
-			<div class="column">
-				<h3 class="ui left floated">Informations</h3>
+			<div class="ten wide column">
+				<h3>Synthèse</h3>
 				<div class="ui stackable two column grid container">
 					<div class="row">
+
 						<div class="ui inverted column readonly form">
 							<div class="field">
-								<label>&sum; Achats</label>
+								<label>Estimation Portefeuille</label>
 								<div class="field">
-								<input type="text" value="<?= sprintf("%.2f &euro;", $portfolio_data['depot']) ?>" readonly="" />
+									<input id="f_valo_ptf" type="text" value="0 &euro;" readonly="" />
 								</div>
 							</div>
 							<div class="field">
-								<label>&sum; Dépots</label>
+								<label>Cash disponible</label>
 								<div class="field">
-								<input type="text" value="<?= sprintf("%.2f &euro;", $portfolio_data['depot']) ?>" readonly="" />
+									<input type="text" value="<?= sprintf("%.2f &euro;", $portfolio_data['cash']) ?>" readonly="" />
 								</div>
 							</div>
 							<div class="field">
-								<label>&sum; Retraits</label>
+								<label>Gain/Perte</label>
 								<div class="field">
-								<input type="text" value="<?= sprintf("%.2f &euro;", $portfolio_data['retrait']) ?>" readonly="" />
+									<input id="gain_perte" type="text" value="0 &euro;" readonly="" />
 								</div>
 							</div>
 						</div>
+
 						<div class="ui inverted column readonly form">
 							<div class="field">
-								<label>Valorisation</label>
+								<label>&sum; Dépots</label>
 								<div class="field">
-									<input type="text" value="<?= sprintf("%.2f &euro;", $portfolio_data['dividende']) ?>" readonly="" />
+									<input id="depots" type="text" value="0 &euro;" readonly="" />
+								</div>
+							</div>
+							<div class="field">
+								<label>&sum; Retraits / &sum; Transferts</label>
+								<div class="field">
+									<input id="retraits_transferts" type="text" value="0x &euro; / 0y &euro;" readonly="" />
 								</div>
 							</div>
 							<div class="field">
 								<label>&sum; Dividendes</label>
 								<div class="field">
-									<input type="text" value="<?= sprintf("%.2f &euro;", $portfolio_data['dividende']) ?>" readonly="" />
-								</div>
-							</div>
-							<div class="field">
-								<label>&sum; Commissions</label>
-								<div class="field">
-									<input type="text" value="<?= sprintf("%.2f &euro;", $portfolio_data['commission']) ?>" readonly="" />
+									<input id="dividendes" type="text" value="0 &euro;" readonly="" />
 								</div>
 							</div>
 						</div>
+
 					</div>
 				</div>
+				<!-- div id="perf_ribbon1" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div> -->
+				<div id="perf_ribbon3" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div>
+			</div>
+			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px;">
+				<h3 class="ui left floated">Répartition</h3>
+				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div>
+				<canvas id="pft_donut" height="100"></canvas>
 			</div>
 		</div>
 	</div>
@@ -106,23 +111,26 @@ $lst_orders    = $portfolio_data['orders'];
 						<th class="center aligned">% jour</th>
 						<th class="center aligned">Achat</th>
 						<th class="center aligned">Valorisation</th>
-						<th class="center aligned" colspan="2">Perf PRU</th>
+						<th class="center aligned" colspan="2">Performance</th>
 					</tr></thead>
 					<tbody>
 	<?
 				$i = 1;
 				foreach($lst_positions as $key => $val) {
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
-					$valo  = sprintf("%.2f", $val['nb'] * $quotes['stocks'][$key]['price']);
+					// Si on n'a pas la cotation en base on prend le pru
+					$quote = isset($quotes['stocks'][$key]['price'])   ? $quotes['stocks'][$key]['price']   : $val['pru'];
+					$pct   = isset($quotes['stocks'][$key]['percent']) ? $quotes['stocks'][$key]['percent'] : 0;
+					$valo  = sprintf("%.2f", $val['nb'] * $quote);
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
 					echo '<tr id="tr_item_'.$i.'">
 						<td id="f_actif_'.$i.'">'.$key.'</td>
 						<td class="right aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
 						<td class="right aligned" id="f_pru_'.$i.'" data-pru="'.sprintf("%.2f", $val['pru']).'">'.sprintf("%.2f", $val['pru']).' &euro;</td>
 						<td class="right aligned"><div class="ui right labeled input">
-							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.$quotes['stocks'][$key]['price'].'" />
+							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" />
 							<div class="ui basic label">&euro;</div>
-						<td id="f_pct_jour_'.$i.'" class="align_right '.($quotes['stocks'][$key]['percent'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$quotes['stocks'][$key]['percent'].' %</td>
+						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
 						<td id="f_achat_'.$i.'" class="right aligned"></td>
 						<td id="f_valo_'.$i.'"  class="right aligned"></td>
 						<td id="f_perf_pru_'.$i.'" class="right aligned"></td>
@@ -170,11 +178,11 @@ $lst_orders    = $portfolio_data['orders'];
 						<td><i class="inverted long arrow alternate '.($val['action'] >= 0 ? "right green" : "left orange").' icon"></i></td>
 						<td>'.$val['date'].'</td>
 						<td>'.$val['product_name'].'</td>
-						<td>'.uimx::$order_actions[$val['action']].'</td>
+						<td class="center aligned">'.uimx::$order_actions[$val['action']].'</td>
 						<td>'.$val['quantity'].'</td>
 						<td>'.sprintf("%.2f", $val['price']).' &euro;</td>
 						<td>'.sprintf("%.2f", $val['quantity'] * $val['price']).' &euro;</td>
-						<td>'.$val['commission'].' &euro;</td>
+						<td>'.sprintf("%.2f", $val['commission']).' &euro;</td>
 						<td class="collapsing">
 							<i id="order_edit_'.$val['id'].'_bt" class="edit inverted icon"></i>
 						</td>
@@ -182,6 +190,11 @@ $lst_orders    = $portfolio_data['orders'];
 				}
 	?>
 					</tbody>
+					<tfoot><tr>
+						<td colspan="7"></th>
+						<td id="sum_comm" class="right aligned"></td>
+						<td></th>
+					</tr></tfoot>
 				</table>
 			</div>
 		</div>
@@ -212,8 +225,7 @@ var options = {
 				position: 'right'
             }
         },
-
-};
+	};
 
 <?
 	foreach($lst_orders as $key => $val) { ?>
@@ -238,6 +250,27 @@ computeLines = function(opt) {
 	const actifs_labels = [];
 	const actifs_data = [];
 	const actifs_bg = [];
+
+	valo_ptf   = <?= sprintf("%.2f", $portfolio_data['valo_ptf']) ?>;
+	cash       = <?= sprintf("%.2f", $portfolio_data['cash']) ?>;
+	ampplt     = <?= sprintf("%.2f", $portfolio_data['ampplt']) ?>;
+	gain_perte = <?= sprintf("%.2f", $portfolio_data['gain_perte']) ?>;
+	retraits   = <?= sprintf("%.2f", $portfolio_data['retrait']) ?>;
+	depots     = <?= sprintf("%.2f", $portfolio_data['depot']) ?>;
+	dividendes = <?= sprintf("%.2f", $portfolio_data['dividende']) ?>;
+	transferts = <?= sprintf("%.2f", $portfolio_data['transfert_in'] - $portfolio_data['transfert_out']) ?>;
+	commissions = <?= sprintf("%.2f", $portfolio_data['commission']) ?>;
+
+	if (opt == 'init') {
+		setInputValueAndKeepLastCar('f_valo_ptf', valo_ptf.toFixed(2));
+		setInputValueAndKeepLastCar('gain_perte', gain_perte.toFixed(2));
+		Dom.id('depots').value = Dom.id('depots').value.replace("0", depots.toFixed(2));
+		Dom.id('dividendes').value = Dom.id('dividendes').value.replace("0", dividendes.toFixed(2));
+		Dom.id('retraits_transferts').value = Dom.id('retraits_transferts').value.replace("0x", retraits.toFixed(2));
+		Dom.id('retraits_transferts').value = Dom.id('retraits_transferts').value.replace("0y", transferts.toFixed(2));
+		setColTab('sum_comm', commissions, ' &euro;');
+		Dom.id('subtitle').innerHTML = ' (<?= $portfolio_data['interval_year'] > 0 ? $portfolio_data['interval_year'].($portfolio_data['interval_year'] > 1 ? " ans " : " an") : "" ?> <?= $portfolio_data['interval_month'] ?> mois)';
+	}
 
 	Dom.find('#lst_position tbody tr').forEach(function(item) {
 
@@ -272,38 +305,57 @@ computeLines = function(opt) {
 
 		ind = Dom.attribute(item, 'id').split('_')[2];
 
-		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'value'));
-		nb       = parseFloat(el('f_nb_' + ind).innerHTML);
-		valo     = parseFloat(nb * price);
+		price = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'value'));
+		nb    = parseFloat(el('f_nb_' + ind).innerHTML);
+		valo  = parseFloat(nb * price);
 
 		actifs_data.push(getRatio(sum_valo, valo).toFixed(2));
 	});
 
 	glob_perf = getPerf(sum_achat, sum_valo);
 	glob_gain = sum_valo - sum_achat;
+	estimation_valo = valo_ptf;
 
 	if (actifs_data.length > 0) {
 
 		setColTab('sum_achat', sum_achat, ' &euro;');
 		setColTab('sum_valo',  sum_valo,  ' &euro;');
-		setColTab('glob_perf', glob_perf,  ' %');
-		setColTab('glob_gain', glob_gain,  ' &euro;');
+		setColTab('glob_perf', glob_perf, ' %');
+		setColTab('glob_gain', glob_gain, ' &euro;');
 
-		['rgb(54,  162, 235)',
-		'rgb(255, 205, 86)',
-		'rgb(255, 99,  132)',
-		'rgb(238, 130, 6)',
-		'rgb(97,  194, 97)',
-		'rgb(255, 153, 255)',
-		'rgb(153, 51,  51)',
-		'rgb(204, 230, 255)',
-		'rgb(209, 179, 255)' ].forEach((item) => { actifs_bg.push(item); });
+		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
+		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
+
+		estimation_valo = cash + sum_valo;
+		gain_perte = estimation_valo - depots;
+
+		setInputValueAndKeepLastCar('f_valo_ptf', estimation_valo.toFixed(2));
+		setInputValueAndKeepLastCar('gain_perte', gain_perte.toFixed(2));
 	}
+
+	// RIBBON
+	// perf_ptf = getPerf(depots, estimation_valo);
+	// addCN('perf_ribbon1', perf_ptf >= 0 ? "ribbon--green" : "ribbon--red");
+	// Dom.find('#perf_ribbon1 small')[0].innerHTML = perf_ptf.toFixed(2) + ' %';
+	perf_ptf2 = (gain_perte / ampplt) * 100;
+	addCN('perf_ribbon3', perf_ptf2 >= 0 ? "ribbon--green" : "ribbon--red");
+	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf2.toFixed(2) + ' %';
+
 
 	if (actifs_data.length == 0) {
 		actifs_data.push(100);
 		actifs_labels.push('None');
 		actifs_bg.push('rgb(200, 200, 200)');
+	} else {
+		['rgb(54,  162, 235)',
+			'rgb(255, 205, 86)',
+			'rgb(255, 99,  132)',
+			'rgb(238, 130, 6)',
+			'rgb(97,  194, 97)',
+			'rgb(255, 153, 255)',
+			'rgb(153, 51,  51)',
+			'rgb(204, 230, 255)',
+			'rgb(209, 179, 255)' ].forEach((item) => { actifs_bg.push(item); });
 	}
 
 	const data = {
@@ -320,7 +372,6 @@ computeLines = function(opt) {
 	if (myChart) myChart.destroy();
 	myChart = new Chart(ctx, { type: 'doughnut', data: data, options: options } );
 	mychart.update();
-
 }
 
 Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {

@@ -1,6 +1,8 @@
 td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
+h3 { color: chocolate; }
+
 .sim_page #synthese_bloc2 {
     display: none;
 }
@@ -136,8 +138,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
     text-align: right;
 }
 
-.home_page .card .header, .sim_page .card .header, .portfolio_page .card .header {
-    color: burlywood !important;
+.palmares_page .card .header, .home_page .card .header, .sim_page .card .header, .portfolio_page .card .header {
+    color: chocolate !important;
 }
 #stocks_box h2 {
     flex-direction: row;
@@ -163,10 +165,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #strategie_container h2 span .icon:before {
     padding: 0px 0px 0px 4px !important;
 }
-#lst_order td, #lst_order th {
+#lst_order tbody td, #lst_order th {
     text-align: center !important;
 }
-#lst_order td:nth-child(4), #lst_order td:nth-child(5), #lst_order td:nth-child(6), #lst_order td:nth-child(7) {
+#lst_order td:nth-child(5), #lst_order td:nth-child(6), #lst_order td:nth-child(7), #lst_order td:nth-child(8) {
     text-align: right !important;
 }
 #lst_stock td, #lst_stock th {
@@ -351,7 +353,9 @@ table th { color: burlywood !important; cursor: pointer !important; }
     -webkit-filter: drop-shadow(0 0.5rem 0.3em rgba(0, 0, 0, 0.5));
     transform: translate3d(0, 0, 0);
 }
-
+.ribbon small {
+    color: rgba(255, 255, 255, 0.7);
+}
 .ribbon:after {
     content: "";
     width: 0;

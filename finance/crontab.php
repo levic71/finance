@@ -82,6 +82,8 @@ while($row = mysqli_fetch_array($res)) {
     logger::info("CRON", "---------", "---------------------------------------------------------");
 }
 
+if (tools::isLocalHost()) cacheData::deleteTMPFiles();
+
 logger::info("CRON", "END", "###########################################################");
 
 echo "Done.";

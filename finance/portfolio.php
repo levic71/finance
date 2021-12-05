@@ -34,6 +34,9 @@ $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 
+// Recuperation de tous les actifs
+$quotes = calc::getIndicatorsLastQuote();
+
 ?>
 
 <div class="ui container inverted segment">
@@ -49,9 +52,13 @@ while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
     			<div class="swiper-wrapper">
 <?
         	foreach($lst_portfolios as $key => $val) {
+
+				// Calcul synthese portefeuille
+				$portfolio_data = calc::aggregatePortfolio($val['id'], $quotes);
+
 ?>
         	<div class="four wide column swiper-slide">
-				<?= uimx::portfolioCard($val) ?>
+				<?= uimx::portfolioCard($val, $portfolio_data) ?>
 			</div>
 <?
 			}

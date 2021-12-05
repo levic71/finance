@@ -49,5 +49,16 @@
 // 8 - Attention aux commisions et aux marges des conseillers
 // 9 - Réinvestir les dividendes
 
+// ERREUR DEBUTANT BOURSE
+// Ne jamais moyenner a la baisse (Loosers average losers)
+// Manque de diversification ou positions disproportionnées
+// Ne jamais suivre les recommandations externes
+// Ne pas acheter les actifs surévaluer
+// Ne pas investir dans des entreprises/actifs en perte
+
+// Conseil debutant
+// Diversifier
+// Se faire sa propre opinion
+// Réfléchir sur ces stop loss et ces take limit profit
 
 

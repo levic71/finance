@@ -152,16 +152,21 @@ class dbc {
 //
 class calc {
 
-    public static function aggregatePortfolio($id) {
+    public static function aggregatePortfolio($id, $quotes = array()) {
 
         global $sess_context;
 
         $portfolio      = array();
-        $positons       = array();
+        $positions      = array();
+        $transfert_in   = 0;
+        $transfert_out  = 0;
         $sum_depot      = 0;
         $sum_retrait    = 0;
         $sum_dividende  = 0;
         $sum_commission = 0;
+        $valo_ptf       = 0;
+        $cash           = 0;
+        $ampplt         = 0; // Apports moyen ponderes par le temps
 
         $portfolio['orders']    = array();
         $portfolio['positions'] = array();
@@ -174,9 +179,31 @@ class calc {
         }
         $portfolio['infos'] = $row;
 
+        $i = 0;
+        $interval_ref = 0;
+        $today = new DateTime(date("Y-m-d"));
+
         $req = "SELECT * FROM orders WHERE portfolio_id=".$id." ORDER BY datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
+
+            $date_ref = new DateTime($row['date']);
+
+            // Recuperation de la date de debut du portefeuille
+            if ($i == 0) {
+                $date_ref = new DateTime($row['date']);
+                $interval_ref = $today->diff($date_ref)->format("%a");
+                $interval_year = $today->diff($date_ref)->format("%y");
+                $interval_month = $today->diff($date_ref)->format("%m");
+                $i++;
+            }
+
+            $interval = $today->diff($date_ref)->format("%a");
+
+            // Traitement des ordres de type "Autre"
+            $row['other_name'] = substr($row['product_name'], 0, 5) == "AUTRE" ? true : false;
+            $pname = $row['other_name'] ? substr($row['product_name'], 6) : $row['product_name'];
+            $row['product_name'] = $pname;
 
             // Tableau des ordres
             $portfolio['orders'][] = $row;
@@ -187,42 +214,86 @@ class calc {
                 $nb = 0;
                 $pru = 0;
                 $achat = $row['action'] >= 0 ? true : false;
-                $pname = $row['product_name'];
                 
-                if (isset($positons[$pname]['nb'])) {
+                if (isset($positions[$pname]['nb'])) {
 
-                    $nb = $positons[$pname]['nb'] + ($row['quantity'] * ($achat ? 1 : -1));
+                    $nb = $positions[$pname]['nb'] + ($row['quantity'] * ($achat ? 1 : -1));
                     
                     // Si achat on recalcule PRU mais pas si vente
-                    $pru = $achat ? ($positons[$pname]['pru'] * $positons[$pname]['nb'] + $row['quantity'] * $row['price']) / $nb : $positons[$pname]['pru'];
+                    $pru = $achat ? ($positions[$pname]['pru'] * $positions[$pname]['nb'] + $row['quantity'] * $row['price']) / $nb : $positions[$pname]['pru'];
 
                 } else {
                     $nb  = $row['quantity'];
                     $pru = $row['price'];
                 }
 
-                $positons[$pname]['nb']  = $nb;
-                $positons[$pname]['pru'] = $pru;
+                $cash += ($row['quantity'] * $row['price'] * ($achat ? -1 : 1)); // ajout si vente, retrait achat
+
+                $positions[$pname]['nb']  = $nb;
+                $positions[$pname]['pru'] = $pru;
                 $sum_commission += $row['commission'];
             }
 
+            // Transfert IN
+            if ($row['action'] == 5) {
+                $transfert_in += $row['quantity'] * $row['price'];
+                $cash         += $row['quantity'] * $row['price'];
+                $ampplt       += ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+            }
+
+            // Transfert OUT
+            if ($row['action'] == -5) {
+                $transfert_out += $row['quantity'] * $row['price'];
+                $cash          -= $row['quantity'] * $row['price'];
+                $ampplt        -= ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+            }
+
             // Depot
-            if ($row['action'] == 2) $sum_depot += $row['quantity'] * $row['price'];
+            if ($row['action'] == 2) {
+                $sum_depot += $row['quantity'] * $row['price'];
+                $cash      += $row['quantity'] * $row['price'];
+                $ampplt    += ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+            }
 
             // Retrait
-            if ($row['action'] == -2) $sum_retrait += $row['quantity'] * $row['price'];
+            if ($row['action'] == -2) {
+                $sum_retrait += $row['quantity'] * $row['price'];
+                $cash        -= $row['quantity'] * $row['price'];
+                $ampplt      -= ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+            }
 
-            // Retrait
-            if ($row['action'] == 4) $sum_dividende += $row['quantity'] * $row['price'];
+            // Divende
+            if ($row['action'] == 4) {
+                $sum_dividende += $row['quantity'] * $row['price'];
+                $cash          += $row['quantity'] * $row['price'];
+                $ampplt        += ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+            }
    
         }
-        
-        $portfolio['positions']  = $positons;
+
+        // On retire des positions les actifs dont le nb = 0 (plus dans le portefeuille)
+        foreach($positions as $key => $val) {
+            if ($val['nb'] == 0)
+                unset($positions[$key]);
+            else
+                $valo_ptf += $val['nb'] * (isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru']);
+        }
+
+        $portfolio['valo_ptf']   = $valo_ptf + $cash;
+        $portfolio['cash']       = $cash;
+        $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot;
+        $portfolio['ampplt']     = $ampplt;
+        $portfolio['perf_ptf']   = ($portfolio['gain_perte'] / $ampplt) * 100;
+        $portfolio['transfert_in']  = $transfert_in;
+        $portfolio['transfert_out'] = $transfert_out;
         $portfolio['depot']      = $sum_depot;
         $portfolio['retrait']    = $sum_retrait;
         $portfolio['dividende']  = $sum_dividende;
         $portfolio['commission'] = $sum_commission;
-        
+        $portfolio['positions']  = $positions;
+        $portfolio['interval_year']  = $interval_year;
+        $portfolio['interval_month'] = $interval_month;
+
         return $portfolio;
     } 
 
@@ -1093,7 +1164,8 @@ class uimx {
         -1 => "Vente",
         -2 => "Retrait",
          4 => "Dividende",
-         5 => "Solde"
+         5 => "Transfert IN",
+        -5 => "Transfert OUT"
     ];
 
     public static function staticInfoMsg($msg, $icon, $color) {
@@ -1151,12 +1223,17 @@ class uimx {
         uimx::genCard("home_card_".$strategie['id'], $title, $day, $desc);
     }
 
-    public static function portfolioCard($portfolio) {
+    public static function portfolioCard($portfolio, $portfolio_data) {
 
         global $sess_context;
 
-        $desc  = '0 &euro;';
-        $desc .= '<button id="portfolio_orders_'.$portfolio['id'].'_bt" class="ui right floated small grey icon button">Détails</button>'; 
+        $desc  = '
+        <div id="portfolio_orders_'.$portfolio['id'].'_bt" class="ui labeled button" tabindex="0">
+            <div class="ui '.($portfolio_data['valo_ptf'] >= 0 ? 'green' : 'red' ).'  button">
+                <i class="chart pie inverted icon"></i>'.sprintf("%.2f &euro;", $portfolio_data['valo_ptf']).'
+            </div>
+            <a class="ui basic '.($portfolio_data['valo_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).' %</a>
+        </div>';
 
         $title = $portfolio['name'].($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
         uimx::genCard("portfolio_card_".$portfolio['id'], $title, date('Y-m-d'), $desc);
