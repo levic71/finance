@@ -61,4 +61,10 @@
 // Se faire sa propre opinion
 // Réfléchir sur ces stop loss et ces take limit profit
 
+// CALCUL DE LA PERFORMANCE
+// https://blog.yomoni.fr/comment-est-calculee-la-performance-chez-yomoni
+// https://fr.emmtrade.com/dietz/-Modified-Dietz-Method/
 
+
+
+ALTER TABLE `portfolios`  ADD `synthese` INT NOT NULL DEFAULT '0'  AFTER `strategie_id`,  ADD `all_ids` VARCHAR(32) NOT NULL  AFTER `synthese`;

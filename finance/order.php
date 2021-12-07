@@ -258,7 +258,9 @@ computeLines = function(opt) {
 	retraits   = <?= sprintf("%.2f", $portfolio_data['retrait']) ?>;
 	depots     = <?= sprintf("%.2f", $portfolio_data['depot']) ?>;
 	dividendes = <?= sprintf("%.2f", $portfolio_data['dividende']) ?>;
-	transferts = <?= sprintf("%.2f", $portfolio_data['transfert_in'] - $portfolio_data['transfert_out']) ?>;
+	transferts_in  = <?= sprintf("%.2f", $portfolio_data['transfert_in']) ?>;
+	transferts_out = <?= sprintf("%.2f", $portfolio_data['transfert_out']) ?>;
+	transferts = transferts_in - transferts_out;
 	commissions = <?= sprintf("%.2f", $portfolio_data['commission']) ?>;
 
 	if (opt == 'init') {
@@ -327,7 +329,7 @@ computeLines = function(opt) {
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
 
 		estimation_valo = cash + sum_valo;
-		gain_perte = estimation_valo - depots;
+		gain_perte = estimation_valo - depots - transferts_in;
 
 		setInputValueAndKeepLastCar('f_valo_ptf', estimation_valo.toFixed(2));
 		setInputValueAndKeepLastCar('gain_perte', gain_perte.toFixed(2));

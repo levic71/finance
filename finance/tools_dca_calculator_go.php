@@ -8,18 +8,20 @@ include "common.php";
 
 $f_nb_actifs = 0;
 
-foreach(['f_strategie_id', 'f_nb_actifs'] as $key)
+foreach(['f_portfolio_id', 'f_strategie_id', 'f_nb_actifs'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
 
+$portfolio_defined = $f_portfolio_id != "" ? false : true;
 $strategie_defined = $f_nb_actifs > 0 ? false : true;
+$portfolio_actif = false;
 
 $tab_stocks = array();
 $lst_symbol_strategie = array();
 $lst_symbol_strategie_pct = array();
 
-// On réxupère tous les actifs avec leurs dernieres cotations
+// On récupère tous les actifs avec leurs dernieres cotations
 $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ORDER BY s.symbol";
 $res = dbc::execSql($req);
 
@@ -28,8 +30,24 @@ while($row = mysqli_fetch_assoc($res)) {
 }
 
 // Initialistaion des data du formulaire
-if ($strategie_defined && $f_strategie_id != "")
-{
+if ($f_portfolio_id != "") {
+
+    $req = "SELECT * FROM portfolios WHERE id=".$f_portfolio_id;
+    $res = dbc::execSql($req);
+    if ($row = mysqli_fetch_assoc($res)) {
+        if ($row['strategie_id'] != 0) {
+            $strategie_defined = true;
+            $f_strategie_id    = $row['strategie_id'];
+            $portfolio_actif   = true;
+        }
+    }
+
+    $portfolio_data = calc::aggregatePortfolio($f_portfolio_id);
+
+}
+
+if ($strategie_defined && $f_strategie_id != "") {
+
     $req = "SELECT * FROM strategies WHERE id=".$f_strategie_id;
     $res = dbc::execSql($req);
     if ($row = mysqli_fetch_assoc($res)) {
@@ -46,7 +64,9 @@ if ($strategie_defined && $f_strategie_id != "")
         echo "Stratégie inexistante !!!";
         exit(0);
     }
+
 } else {
+
     $first_symbol = array_keys($tab_stocks)[0];
     $sum = 0;
     for($i=1 ; $i <= $f_nb_actifs; $i++) {
@@ -55,6 +75,7 @@ if ($strategie_defined && $f_strategie_id != "")
         $sum += $pct;
         $lst_symbol_strategie_pct[$i] = $i == $f_nb_actifs && $i !=1 ? 100-$sum+$pct : $pct;
     }
+
 }
 
 ?>
@@ -67,7 +88,7 @@ if ($strategie_defined && $f_strategie_id != "")
             <div class="ui inverted left labeled fluid input">
                 <label for="f_pft_actif" class="ui black label">Portefeuille actif</label>
                 <div class="ui fitted inverted toggle checkbox" style="padding: 8px 10px;">
-                    <input id="f_pft_actif" type="checkbox" />
+                    <input id="f_pft_actif" type="checkbox" <?= $portfolio_actif ? "checked=\"checked\"" : "" ?> />
                     <label></label>
                 </div>
             </div>
@@ -114,7 +135,7 @@ if ($strategie_defined && $f_strategie_id != "")
                             <div class="ui basic label">%</div>
                         </div></td>
                         <td class="center aligned" data-toogle="1"><div class="ui input">
-                            <input id="f_get_<?= $i ?>" type="text" size="3" value="0" />
+                            <input id="f_get_<?= $i ?>" type="text" size="3" value="<?= isset($portfolio_data['positions'][$lst_symbol_strategie[$i]]['nb']) ? $portfolio_data['positions'][$lst_symbol_strategie[$i]]['nb'] : "0" ?>" />
                         </div></td>
                         <td class="right aligned" data-toogle="1" id="f_valo1_<?= $i ?>">0 &euro;</td>
                         <td class="right aligned" data-toogle="1" id="f_pct1_<?= $i ?>">0 %</td>
@@ -357,10 +378,15 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
             t = Dom.attribute(item, 'data-toogle');
         }
     }
-    // Declencheur affichage portefeuille actif
-    Dom.addListener(Dom.id('f_pft_actif'), Dom.Event.ON_CHANGE, function(event) {
+
+    switchState = function() {
         Dom.find('#dca_calc_form table th').forEach(function(item) { switchStateToogle(item); });
         Dom.find('#dca_calc_form table td').forEach(function(item) { switchStateToogle(item); });
+    }
+
+    // Declencheur affichage portefeuille actif
+    Dom.addListener(Dom.id('f_pft_actif'), Dom.Event.ON_CHANGE, function(event) {
+        switchState();
     });
 
     // Declenceheur sur changement de valeur dans une des listes d'actifs
@@ -377,6 +403,10 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
     Dom.find('#dca_calc_form input').forEach(function(item) {
         Dom.addListener(item, Dom.Event.ON_CHANGE, function(event) { rebalance(); });
     });
+
+<? if ($portfolio_actif) { ?>
+    switchState();
+<? } ?>
 
     rebalance();
 

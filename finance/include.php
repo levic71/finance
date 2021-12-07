@@ -183,7 +183,7 @@ class calc {
         $interval_ref = 0;
         $today = new DateTime(date("Y-m-d"));
 
-        $req = "SELECT * FROM orders WHERE portfolio_id=".$id." ORDER BY datetime ASC";
+        $req = "SELECT * FROM orders WHERE portfolio_id IN (".$id.") ORDER BY date, datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
 
@@ -281,7 +281,7 @@ class calc {
 
         $portfolio['valo_ptf']   = $valo_ptf + $cash;
         $portfolio['cash']       = $cash;
-        $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot;
+        $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot - $transfert_in;
         $portfolio['ampplt']     = $ampplt;
         $portfolio['perf_ptf']   = ($portfolio['gain_perte'] / $ampplt) * 100;
         $portfolio['transfert_in']  = $transfert_in;
@@ -1229,10 +1229,10 @@ class uimx {
 
         $desc  = '
         <div id="portfolio_orders_'.$portfolio['id'].'_bt" class="ui labeled button" tabindex="0">
-            <div class="ui '.($portfolio_data['valo_ptf'] >= 0 ? 'green' : 'red' ).'  button">
+            <div class="ui '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).'  button">
                 <i class="chart pie inverted icon"></i>'.sprintf("%.2f &euro;", $portfolio_data['valo_ptf']).'
             </div>
-            <a class="ui basic '.($portfolio_data['valo_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).' %</a>
+            <a class="ui basic '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).' %</a>
         </div>';
 
         $title = $portfolio['name'].($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
