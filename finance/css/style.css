@@ -207,6 +207,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_sim th, #lst_sim td {
     text-align: center;
 }
+#lst_sim td:nth-child(1) {
+    white-space: nowrap;
+}
+#lst_sim td:nth-child(3) {
+    text-overflow: ellipsis;
+}
 #lst_sim td:nth-child(2), #lst_sim td:nth-child(4), #lst_sim td:nth-child(5), #lst_sim td:nth-child(6), #lst_sim td:nth-child(8), #lst_sim td:nth-child(9), #lst_sim td:nth-child(10), #lst_sim td:nth-child(11)  {
     text-align: right;
 }

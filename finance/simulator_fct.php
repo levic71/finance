@@ -311,7 +311,7 @@ function strategieSimulator($params) {
 
                     // Recap actifs dans portefeuille
                     // if ($nb_actions2buy > 0)
-                    $recap_actifs_portefeuille .= ($recap_actifs_portefeuille == "" ? "" : ", ").$lst_actifs_achetes_nb[$key]." [".$key."] à ".$lst_actifs_achetes_pu[$key].$curr;
+                    $recap_actifs_portefeuille .= ($recap_actifs_portefeuille == "" ? "" : ", ").$lst_actifs_achetes_nb[$key]." [".$key."] à ".sprintf("%.2f", $lst_actifs_achetes_pu[$key]).$curr;
                 }
 
                 // Performance 

@@ -90,7 +90,7 @@ $lst_orders    = $portfolio_data['orders'];
 				<!-- div id="perf_ribbon1" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div> -->
 				<div id="perf_ribbon3" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div>
 			</div>
-			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px;">
+			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
 				<h3 class="ui left floated">Répartition</h3>
 				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div>
 				<canvas id="pft_donut" height="100"></canvas>
