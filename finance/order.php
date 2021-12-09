@@ -34,6 +34,8 @@ if ($t[0] != '') {
 	}
 }
 
+var_dump($save_quotes);
+
 // On récupère les infos du portefeuille + les positions et les ordres
 $my_portfolio  = $portfolio_data['infos'];
 $lst_positions = $portfolio_data['positions'];
