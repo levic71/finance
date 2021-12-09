@@ -29,12 +29,10 @@ $save_quotes = array();
 $t = explode(',', $portfolio_data['infos']['quotes']);
 if ($t[0] != '') {
 	foreach($t as $key => $val) {
-		$x = explode(':', $val);
+		$x = explode('|', $val);
 		$save_quotes[$x[0]] = $x[1];
 	}
 }
-
-var_dump($save_quotes);
 
 // On récupère les infos du portefeuille + les positions et les ordres
 $my_portfolio  = $portfolio_data['infos'];
@@ -402,7 +400,7 @@ Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { g
 Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 	var quotes = '';
 	Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
-		if (Dom.attribute(item, 'data-pru') == 1) quotes += (quotes == "" ? "" : ",") + Dom.attribute(item, 'data-name') + ':' + valof(item.id);
+		if (Dom.attribute(item, 'data-pru') == 1) quotes += (quotes == "" ? "" : ",") + Dom.attribute(item, 'data-name') + '|' + valof(item.id);
 	});
 	go({ action: 'order', id: 'main', url: 'order_action.php?action=save&portfolio_id=<?= $portfolio_id ?>&quotes=' + quotes, no_data: 1, msg: 'Portfolio sauvegardé' });
 });
