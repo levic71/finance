@@ -24,6 +24,15 @@ $quotes = calc::getIndicatorsLastQuote();
 // Calcul synthese portefeuille
 $portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
 
+// On recupere les eventuelles saisies de cotation manuelles
+$t = explode(',', $portfolio_data['infos']['quotes']);
+if ($t[0] != '') {
+	foreach($t as $key => $val) {
+		$x = explode(':', $val);
+		$quotes['stocks'][$x[0]]['price'] = $x[1];
+	}
+}
+
 // On récupère les infos du portefeuille + les positions et les ordres
 $my_portfolio  = $portfolio_data['infos'];
 $lst_positions = $portfolio_data['positions'];
@@ -87,12 +96,12 @@ $lst_orders    = $portfolio_data['orders'];
 
 					</div>
 				</div>
-				<!-- div id="perf_ribbon1" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div> -->
-				<div id="perf_ribbon3" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div>
+				<!-- div id="perf_ribbon1" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div> -->
+				<div id="perf_ribbon3" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
 			</div>
 			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
 				<h3 class="ui left floated">Répartition</h3>
-				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0 %</small></div>
+				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
 				<canvas id="pft_donut" height="100"></canvas>
 			</div>
 		</div>
@@ -101,7 +110,9 @@ $lst_orders    = $portfolio_data['orders'];
 	<div class="ui stackable column grid container">
       	<div class="row">
 			<div class="column">
-				<h3 class="ui left floated">Positions</h3>
+				<h3 class="ui left floated">Positions
+					<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i> Save</button>
+				</h3>
 				<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_position" data-sortable>
 					<thead><tr>
 						<th>Actif</th>
@@ -119,7 +130,8 @@ $lst_orders    = $portfolio_data['orders'];
 				foreach($lst_positions as $key => $val) {
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
 					// Si on n'a pas la cotation en base on prend le pru
-					$quote = isset($quotes['stocks'][$key]['price'])   ? $quotes['stocks'][$key]['price']   : $val['pru'];
+					$quote_from_pru = isset($quotes['stocks'][$key]['price']) ? false : true;
+					$quote = $quote_from_pru ? $val['pru'] : $quotes['stocks'][$key]['price'];
 					$pct   = isset($quotes['stocks'][$key]['percent']) ? $quotes['stocks'][$key]['percent'] : 0;
 					$valo  = sprintf("%.2f", $val['nb'] * $quote);
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
@@ -128,7 +140,7 @@ $lst_orders    = $portfolio_data['orders'];
 						<td class="right aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
 						<td class="right aligned" id="f_pru_'.$i.'" data-pru="'.sprintf("%.2f", $val['pru']).'">'.sprintf("%.2f", $val['pru']).' &euro;</td>
 						<td class="right aligned"><div class="ui right labeled input">
-							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" />
+							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" />
 							<div class="ui basic label">&euro;</div>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
 						<td id="f_achat_'.$i.'" class="right aligned"></td>
@@ -339,7 +351,7 @@ computeLines = function(opt) {
 	// perf_ptf = getPerf(depots, estimation_valo);
 	// addCN('perf_ribbon1', perf_ptf >= 0 ? "ribbon--green" : "ribbon--red");
 	// Dom.find('#perf_ribbon1 small')[0].innerHTML = perf_ptf.toFixed(2) + ' %';
-	perf_ptf2 = (gain_perte / ampplt) * 100;
+	perf_ptf2 = ampplt == 0 ? 0 : (gain_perte / ampplt) * 100;
 	addCN('perf_ribbon3', perf_ptf2 >= 0 ? "ribbon--green" : "ribbon--red");
 	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf2.toFixed(2) + ' %';
 
@@ -384,6 +396,13 @@ Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
 
 
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
+	var quotes = '';
+	Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
+		if (Dom.attribute(item, 'data-pru') == 1) quotes += (quotes == "" ? "" : ",") + Dom.attribute(item, 'data-name') + ':' + Dom.attribute(item, 'value');
+	});
+	go({ action: 'order', id: 'main', url: 'order_action.php?action=save&portfolio_id=<?= $portfolio_id ?>&quotes=' + quotes, no_data: 1, msg: 'Portfolio sauvegardé' });
+});
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 
 Sortable.initTable(el("lst_position"));

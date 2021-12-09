@@ -72,7 +72,7 @@ while ($row = mysqli_fetch_assoc($res)) {
         </div>
     </div>
 
-    <h2 class="ui inverted dividing header">Devenir libre financièrement</h2>
+    <h2 class="ui inverted dividing header">Devenir libre financièrement en étant rentier</h2>
 
     <br />
     <br />

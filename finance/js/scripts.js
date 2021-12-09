@@ -55,6 +55,8 @@ go = function(args) {
 	var action=opt.action||'';
 	var menu=opt.menu||'';
 	var confirmdel=opt.confirmdel||0;
+	var no_data=opt.no_data||'0';
+	var msg=opt.msg||'';
 	var loading_area=opt.loading_area||'';
 
 	myconsole('----> go begin : action=' + action + ' -- url=' + opt.url);
@@ -71,7 +73,11 @@ go = function(args) {
 			function(data) {
 				myconsole('----> go jx in  : action='+action+' -- url='+opt.url);
 				setCN(id, (id == 'main' ? 'ui container inverted segment main ' : '')+action+'_page');
-				cc(id, data);
+				if (no_data == 0) cc(id, data);
+				if (msg != '') {
+					var p = loadPrompt();
+					p.success(msg);
+				}
 				rmCN('sidebar_menu', 'visible');
 				myconsole('----> go jx out : action='+action+' -- url='+opt.url);
 			},

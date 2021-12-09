@@ -11,7 +11,7 @@ if (!$sess_context->isUserConnected()) tools::do_redirect("index.php");
 $order_id = 0;
 $portfolio_id = 0;
 
-foreach(['action', 'order_id', 'portfolio_id', 'f_date', 'f_product_name', 'f_action', 'f_quantity', 'f_price', 'f_commission'] as $key)
+foreach(['action', 'order_id', 'portfolio_id', 'f_date', 'f_product_name', 'f_action', 'f_quantity', 'f_price', 'f_commission', 'quotes'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -37,10 +37,21 @@ if ($action == "upt" && isset($order_id) && $order_id != 0) {
 
 }
 
+// Save assets prices not folloxed and filled manually by user in portfolio data
+if ($action == "save" && isset($portfolio_id) && $portfolio_id != 0) {
+
+    $req = "UPDATE portfolios SET quotes='".$quotes."' WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
+    $res = dbc::execSql($req);
+
+}
+
+
 ?>
 
 <script>
+<? if ($action != "save") { ?>
     go({ action: 'order', id: 'main', url: 'order.php?portfolio_id=<?= $portfolio_id ?>' });
+<? } ?>
     var p = loadPrompt();
-    p.success('Ordre <?= ($action == "new" ? " ajouté": ($action == "upt" ? " modifié" : " supprimé")) ?>');
+    p.success('Ordre <?= ($action == "new" ? " ajouté": ($action == "upt" || $action == "save" ? " modifié" : " supprimé")) ?>');
 </script>
