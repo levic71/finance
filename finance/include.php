@@ -179,6 +179,26 @@ class calc {
         }
         $portfolio['infos'] = $row;
 
+        // Si portefeuille synthese on fusionne les eventuelles saisies de cotation
+        if ($portfolio['infos']['synthese'] == 1) {
+            $local_quotes = '';
+            $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND id IN (".$portfolio['infos']['all_ids'].")";
+            $res = dbc::execSql($req);
+            while($row = mysqli_fetch_array($res)) $local_quotes .= ($local_quotes ==  '' ? '' : ',').$row['quotes'];
+            $portfolio['infos']['quotes'] = $local_quotes;
+        }
+
+        // On recupere les eventuelles saisies de cotation manuelles
+        if (!isset($quotes['stocks'])) $quotes['stocks'] = array();
+        $t = explode(',', $portfolio['infos']['quotes']);
+        if ($t[0] != '') {
+            foreach($t as $key2 => $val2) {
+                $x = explode('|', $val2);
+                if (!isset($quotes['stocks'][$x[0]])) $quotes['stocks'][$x[0]] = array();
+                $quotes['stocks'][$x[0]]['price'] = $x[1];
+            }
+        }
+
         $i = 0;
         $interval_ref = 0;
         $interval_year = 0;

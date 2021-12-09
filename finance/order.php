@@ -112,7 +112,9 @@ $lst_orders    = $portfolio_data['orders'];
       	<div class="row">
 			<div class="column">
 				<h3 class="ui left floated">Positions
+					<? if ($portfolio_data['infos']['synthese'] == 0) { ?>
 					<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i> Save</button>
+					<? } ?>
 				</h3>
 				<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_position" data-sortable>
 					<thead><tr>
@@ -397,6 +399,9 @@ Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
 
 
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
+
+<? if ($portfolio_data['infos']['synthese'] == 0) { ?>
 Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 	var quotes = '';
 	Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
@@ -404,7 +409,7 @@ Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 	});
 	go({ action: 'order', id: 'main', url: 'order_action.php?action=save&portfolio_id=<?= $portfolio_id ?>&quotes=' + quotes, no_data: 1, msg: 'Portfolio sauvegardé' });
 });
-Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
+<? } ?>
 
 Sortable.initTable(el("lst_position"));
 Sortable.initTable(el("lst_order"));

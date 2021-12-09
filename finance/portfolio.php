@@ -56,7 +56,6 @@ $quotes = calc::getIndicatorsLastQuote();
 
 					// Calcul synthese portefeuille
 					$portfolio_data = calc::aggregatePortfolio($val['id'], $quotes);
-
 ?>
 					<div class="four wide column swiper-slide">
 						<?= uimx::portfolioCard($val, $portfolio_data) ?>
