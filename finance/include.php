@@ -181,9 +181,11 @@ class calc {
 
         $i = 0;
         $interval_ref = 0;
+        $interval_year = 0;
+        $interval_month = 0;
         $today = new DateTime(date("Y-m-d"));
 
-        $req = "SELECT * FROM orders WHERE portfolio_id IN (".$id.") ORDER BY date, datetime ASC";
+        $req = "SELECT * FROM orders WHERE portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $id).") ORDER BY date, datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
 
@@ -283,7 +285,7 @@ class calc {
         $portfolio['cash']       = $cash;
         $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot - $transfert_in;
         $portfolio['ampplt']     = $ampplt;
-        $portfolio['perf_ptf']   = ($portfolio['gain_perte'] / $ampplt) * 100;
+        $portfolio['perf_ptf']   = $ampplt == 0 ? 0 : ($portfolio['gain_perte'] / $ampplt) * 100;
         $portfolio['transfert_in']  = $transfert_in;
         $portfolio['transfert_out'] = $transfert_out;
         $portfolio['depot']      = $sum_depot;

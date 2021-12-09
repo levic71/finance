@@ -127,8 +127,7 @@ check_num = function(num, label, min, max)
 	return true;
 }
 isacar = function(car) { if ((car >= "0" && car <= "9") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z")) return true; return false; }
-isaextcar = function(car)
-{
+isacarext = function(car) {
 	if ((car >= "0" && car <= "9") || (car == "&") || (car == "é") || (car == "\"") || (car == "\n") || (car == "'") || (car == "(") ||
 		(car == ")") || (car == "-") || (car == "è") || (car == "_") || (car == "ç") || (car == ",") || (car == "à") || (car == ")") ||
 		(car == "=") || (car == "+") || (car == "#") || (car == "{") || (car == "[") || (car == "|") || (car == "\\") || (car == "@") ||

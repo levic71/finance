@@ -18,21 +18,25 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
-$libelle_action_bt = tools::getLibelleBtAction($action);
+$libelle_action_bt = tools::getLibelleBtAction($action == "new_synthese" ? "new" : ($action == "upt_synthese" ? "upt" : $action));
 
-if ($action == "upt") {
+$all_ids = array();
+if ($action == "upt" || $action == "upt_synthese") {
     $req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
     $res = dbc::execSql($req);
     if (!$strategie = mysqli_fetch_assoc($res)) exit(0);
+    $all_ids = explode(',', $strategie['all_ids']);
 } else {
     $strategie['name'] = "";
     $strategie['strategie_id'] = 0;
 }
 
+foreach($all_ids as $key => $val) $ctrl_all_ids[$val] = $val;
+
 // Dans le cadre de la création d'un portefeuille synthese, on recupère tous les portefeuilles de l'utilisateur
 $all_portfolios = array();
-if ($action == "new_synthese") {
-    $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId();
+if (strstr($action, "synthese")) {
+    $req = "SELECT * FROM portfolios WHERE synthese=0 AND user_id=".$sess_context->getUserId();
     $res = dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) $all_portfolios[] = $row;
 }
@@ -54,7 +58,7 @@ while($row = mysqli_fetch_assoc($res)) $tab_strategies[] = $row;
             <i class="inverted black briefcase icon"></i>&nbsp;&nbsp;Mon Portefeuille
         </h2>
 
-        <? if ($action == "upt") { ?>
+        <? if (strstr($action, "upt")) { ?>
             <h3 class="ui right floated header"><i id="portfolio_delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
         <? } ?>
     </h2>
@@ -75,13 +79,13 @@ while($row = mysqli_fetch_assoc($res)) $tab_strategies[] = $row;
         </div>
     </div>
 
-<? if ($action = "new_synthese") { ?>
+<? if (strstr($action, "synthese")) { ?>
     <div class="two fields">
         <div class="field">
             <label>Sélection des portefeuilles</label>
 
             <? foreach ($all_portfolios as $key => $val) { ?>
-                <button id="button_choice_<?= $val['id'] ?>" class="ui blue button strategie_choice" data-value="<?= $val['id'] ?>"><?= $val['name'] ?></button>
+                <button id="button_choice_<?= $val['id'] ?>" class="ui <?= isset($ctrl_all_ids[$val['id']]) ? "blue" : "grey" ?> button strategie_choice" data-value="<?= $val['id'] ?>"><?= $val['name'] ?></button>
             <? } ?>
 
         </div>
@@ -105,21 +109,35 @@ Dom.addListener(Dom.id('portfolio_cancel_bt'), Dom.Event.ON_CLICK, function(even
 
 Dom.addListener(Dom.id('portfolio_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
 
+    if (!check_alphanumext(valof('f_nom'), "Nom", 5))
+        return false;
+
     params = '?action=<?= $action ?>&'+attrs(['portfolio_id', 'f_nom', 'f_strategie_id' ]);
 
-    <? if ($action == 'new_synthese') { ?>
+    <? if (strstr($action, "synthese")) { ?>
 
+        all_ids = '';
+        nb = 0;
         Dom.find('button.strategie_choice').forEach(function(item) {
-        	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) { changeState(item); });
+            if (isCN(item.id, 'blue')) {
+                all_ids += (all_ids == "" ? "" : ",") + item.id.split('_')[2];
+                nb++;
+            }
         });
+
+        if (nb < 2) {
+            Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Vous devez sélectionner au moins 2 portefeuilles'});
+            return false;
+        }
+        params += '&all_ids=' + encodeURIComponent(all_ids);
 
     <? } ?>
 
-	go({ action: 'portfolio', id: 'main', url: 'portfolio_action.php'+params, loading_area: 'main' });
+    go({ action: 'portfolio', id: 'main', url: 'portfolio_action.php'+params, loading_area: 'main' });
 
 });
 
-<? if ($action == "upt") { ?>
+<? if (strstr($action, "upt")) { ?>
 	Dom.addListener(Dom.id('portfolio_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_action.php?action=del&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main', confirmdel: 1 }); });
 <? } ?>
 
@@ -127,9 +145,9 @@ changeState = function(item) {
     switchColorElement(item.id, 'blue', 'grey');
 }
 
+// Changement d'etat des boutons portfolio
 Dom.find('button.strategie_choice').forEach(function(item) {
 	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) { changeState(item); });
-    alert(isCN(item.id, 'blue'));
 });
 
 </script>

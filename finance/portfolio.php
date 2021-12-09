@@ -108,7 +108,7 @@ $quotes = calc::getIndicatorsLastQuote();
 
 <?
 	foreach($lst_portfolios as $key => $val) { ?>
-		Dom.addListener(Dom.id('portfolio_edit_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_detail.php?action=upt&portfolio_id=<?= $val['id'] ?>', loading_area: 'main' }); });
+		Dom.addListener(Dom.id('portfolio_edit_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_detail.php?action=upt<?= $val['synthese'] == 1 ? "_synthese" : "" ?>&portfolio_id=<?= $val['id'] ?>', loading_area: 'main' }); });
 		Dom.addListener(Dom.id('portfolio_orders_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order.php?portfolio_id=<?= $val['id'] ?>', loading_area: 'main' }); });
 <?	
 	}
