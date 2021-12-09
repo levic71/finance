@@ -66,7 +66,7 @@ while($row = mysqli_fetch_assoc($res)) $tab_strategies[] = $row;
     <div class="two fields">
         <div class="field">
             <label>Titre</label>
-            <input type="text" id="f_nom" value="<?= $strategie['name'] ?>" placeholder="Nom du portefeuille">
+            <input type="text" id="f_nom" value="<?= utf8_decode($strategie['name']) ?>" placeholder="Nom du portefeuille">
         </div>
         <div class="field">
             <label>Choix d'une stratégie</label>

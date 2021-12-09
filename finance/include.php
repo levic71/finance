@@ -5,6 +5,7 @@ date_default_timezone_set("Europe/Paris");
 // ini_set('display_errors', false);
 ini_set('error_log', './finance.log');
 
+//header( 'content-type: text/html; charset=iso-8859-1' );
 header( 'content-type: text/html; charset=iso-8859-1' );
 
 $dbg = false;
@@ -1257,7 +1258,7 @@ class uimx {
             <a class="ui basic '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).' %</a>
         </div>';
 
-        $title = $portfolio['name'].($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
+        $title = utf8_decode($portfolio['name']).($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
         uimx::genCard("portfolio_card_".$portfolio['id'], $title, date('Y-m-d'), $desc);
     }
 
