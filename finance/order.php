@@ -25,11 +25,12 @@ $quotes = calc::getIndicatorsLastQuote();
 $portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
 
 // On recupere les eventuelles saisies de cotation manuelles
+$save_quotes = array();
 $t = explode(',', $portfolio_data['infos']['quotes']);
 if ($t[0] != '') {
 	foreach($t as $key => $val) {
 		$x = explode(':', $val);
-		$quotes['stocks'][$x[0]]['price'] = $x[1];
+		$save_quotes[$x[0]] = $x[1];
 	}
 }
 
@@ -130,8 +131,8 @@ $lst_orders    = $portfolio_data['orders'];
 				foreach($lst_positions as $key => $val) {
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
 					// Si on n'a pas la cotation en base on prend le pru
-					$quote_from_pru = isset($quotes['stocks'][$key]['price']) ? false : true;
-					$quote = $quote_from_pru ? $val['pru'] : $quotes['stocks'][$key]['price'];
+					$quote_from_pru = isset($quotes['stocks'][$key]['price']) && !isset($save_quotes[$key]) ? false : true;
+					$quote = $quote_from_pru ? (isset($save_quotes[$key]) ? $save_quotes[$key] : $val['pru']) : $quotes['stocks'][$key]['price'];
 					$pct   = isset($quotes['stocks'][$key]['percent']) ? $quotes['stocks'][$key]['percent'] : 0;
 					$valo  = sprintf("%.2f", $val['nb'] * $quote);
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
