@@ -401,7 +401,7 @@ Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 	Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
 		if (Dom.attribute(item, 'data-pru') == 1) quotes += (quotes == "" ? "" : ",") + Dom.attribute(item, 'data-name') + ':' + Dom.attribute(item, 'value');
 	});
-	go({ action: 'order', id: 'main', url: 'order_action.php?action=save&portfolio_id=<?= $portfolio_id ?>&quotes=' + quotes, no_data: 1, msg: 'Portfolio sauvegardé' });
+	go({ action: 'order', id: 'main', url: 'order_action.php?action=save&portfolio_id=<?= $portfolio_id ?>&quotes=' + quotes, no_data: 0, msg: 'Portfolio sauvegardé' });
 });
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 
