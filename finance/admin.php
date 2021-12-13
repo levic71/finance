@@ -45,12 +45,12 @@ if ($handle)
 ?>
 
 <div class="ui container inverted segment">
-    <h2>Log
+    <h2><i class="inverted black code icon"></i>&nbsp;&nbsp;Log
         <button id="lst_filter1_bt" class="mini ui blue button"><?= number_format(filesize("./finance.log") / 1048576, 2) . ' MB' ?> bytes</button>
         <button id="lst_filter1_bt" class="mini ui green button"><?= count($matches_info) ?></button>
         <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_warn) ?></button>
         <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_error) ?></button>
-        <button id="log_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button>
+        <button id="log_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button>
     </h2>
     <pre id="log_view" style="width: 100%; overflow-x: hidden;">
 
@@ -60,7 +60,7 @@ if ($handle)
 </div>
 
 <div class="ui container inverted segment">
-    <h2> User Connexions <button id="users_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button></h2>
+    <h2><i class="inverted black users icon"></i>&nbsp;&nbsp;User Connexions <button id="users_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
     <pre id="users_view" style="width: 100%; overflow-x: hidden;">
 
 <? 
@@ -80,7 +80,7 @@ while($row = mysqli_fetch_array($res)) {
 
 
 <div class="ui container inverted segment">
-    <h2> Alphavantage <button id="alpha_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white eye icon"></i></button></h2>
+    <h2><i class="inverted black dashboard icon"></i>&nbsp;&nbsp;Alphavantage <button id="alpha_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
     <pre id="alpha_view" style="width: 100%; overflow-x: hidden;">
 
 <? 

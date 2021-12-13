@@ -27,9 +27,9 @@ while ($row = mysqli_fetch_assoc($res)) {
 
 <div class="ui container inverted segment form">
 
-    <h2 class="ui inverted dividing header">Calcul Rebalancing</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted black balance scale icon"></i> Rebalancing</h2>
     <div class="field">
-        <div class="two fields">
+        <div class="three fields">
 
             <div class="field">
                 <label>Par sélection d'un portefeuille</label>
@@ -72,7 +72,30 @@ while ($row = mysqli_fetch_assoc($res)) {
         </div>
     </div>
 
-    <h2 class="ui inverted dividing header">Devenir libre financièrement en étant rentier</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted black dollar sign icon"></i> Libre financièrement en étant rentier</h2>
+    <div class="field">
+        <div class="three fields">
+
+            <div class="field">
+                <label>Revenus mensuels</label>
+                <div class="ui right labeled input">
+                    <input id="f_revenus" type="text" value="2500">
+                    <div class="ui basic label">&euro;</div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Dépenses mensuelles</label>
+                <div class="ui action input">
+                    <div class="ui right labeled input">
+                        <input id="f_depenses" type="text" value="2000">
+                        <div class="ui basic label">&euro;</div>
+                    </div>
+                    <button id="dca_go_bt3" class="ui pink right icon button"><i class="play inverted icon"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <br />
     <br />
@@ -93,5 +116,6 @@ while ($row = mysqli_fetch_assoc($res)) {
     Dom.addListener(Dom.id('dca_go_bt0'), Dom.Event.ON_CLICK, function(event) { launcher('f_portfolio_id'); });
     Dom.addListener(Dom.id('dca_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher('f_strategie_id'); });
     Dom.addListener(Dom.id('dca_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher('f_nb_actifs'); });
+    Dom.addListener(Dom.id('dca_go_bt3'), Dom.Event.ON_CLICK, function(event) { params = attrs([ 'f_revenus', 'f_depenses' ]); go({ action: 'tools', id: 'main', url: 'tools_rentier_go.php?'+params, loading_area: 'main' }); });
 
 </script>

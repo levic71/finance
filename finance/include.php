@@ -304,7 +304,7 @@ class calc {
 
         $portfolio['valo_ptf']   = $valo_ptf + $cash;
         $portfolio['cash']       = $cash;
-        $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot - $transfert_in;
+        $portfolio['gain_perte'] = $portfolio['valo_ptf'] + $transfert_out - $sum_depot - $transfert_in;
         $portfolio['ampplt']     = $ampplt;
         $portfolio['perf_ptf']   = $ampplt == 0 ? 0 : ($portfolio['gain_perte'] / $ampplt) * 100;
         $portfolio['transfert_in']  = $transfert_in;
@@ -1242,7 +1242,7 @@ class uimx {
         </tr></tfoot>';
         $desc .= '</table>';
 
-        $title = $strategie['title'].($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
+        $title = utf8_decode($strategie['title']).($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
         uimx::genCard("home_card_".$strategie['id'], $title, $day, $desc);
     }
 

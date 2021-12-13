@@ -44,7 +44,7 @@ $lst_orders    = $portfolio_data['orders'];
 <div class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<i class="inverted black briefcase icon"></i>&nbsp;&nbsp;<?= $my_portfolio['name'] ?><small id="subtitle"></small>
+		<i class="inverted black briefcase icon"></i>&nbsp;&nbsp;<?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
 	</h2>
 	<div class="ui stackable column grid container">
 		<div class="row">
@@ -226,7 +226,7 @@ $lst_orders    = $portfolio_data['orders'];
 
 <script>
 
-var myChart
+var myChart;
 var ctx = document.getElementById('pft_donut').getContext('2d');
 
 el("pft_donut").height = document.body.offsetWidth > 700 ? 200 : 300;
@@ -344,7 +344,7 @@ computeLines = function(opt) {
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
 
 		estimation_valo = cash + sum_valo;
-		gain_perte = estimation_valo - depots - transferts_in;
+		gain_perte = estimation_valo + transferts_out - depots - transferts_in;
 
 		setInputValueAndKeepLastCar('f_valo_ptf', estimation_valo.toFixed(2));
 		setInputValueAndKeepLastCar('gain_perte', gain_perte.toFixed(2));
