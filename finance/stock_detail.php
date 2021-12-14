@@ -500,7 +500,6 @@ var options2 = {
         }
     };
 
-
 const horizontalLines = {
     id: 'horizontalLines',
     beforeDraw(chart, args, options) {

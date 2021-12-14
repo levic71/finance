@@ -364,26 +364,24 @@ computeLines = function(opt) {
 		actifs_labels.push('None');
 		actifs_bg.push('rgb(200, 200, 200)');
 	} else {
-		['rgb(54,  162, 235)',
-			'rgb(255, 205, 86)',
-			'rgb(255, 99,  132)',
-			'rgb(238, 130, 6)',
-			'rgb(97,  194, 97)',
-			'rgb(255, 153, 255)',
-			'rgb(153, 51,  51)',
-			'rgb(204, 230, 255)',
-			'rgb(209, 179, 255)' ].forEach((item) => { actifs_bg.push(item); });
+		[
+			'#118ab2', '#ef476f', '#ffd166', '#06d6a0', '#073b4c'
+		].forEach((item) => { actifs_bg.push(item); });
 	}
 
 	const data = {
 		labels: actifs_labels,
-		datasets: [{
-			label: 'Répartition',
-			data: actifs_data,
-			borderWidth: 0.5,
-			backgroundColor: actifs_bg,
-			hoverOffset: 4
-		}]
+		datasets: [
+			{
+				label: 'Répartition',
+				data: actifs_data,
+				borderWidth: 0.5,
+				backgroundColor: actifs_bg,
+				borderWidth: 4,
+				borderColor: "#222",
+				hoverOffset: 4
+			}
+		]
 	};
 
 	if (myChart) myChart.destroy();

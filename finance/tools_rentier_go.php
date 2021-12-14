@@ -142,9 +142,8 @@ Dom.attribute(Dom.id('f_epargne'),    { value: f_epargne } );
 Dom.attribute(Dom.id('f_taux_rente'), { value: f_taux_rente } );
 Dom.attribute(Dom.id('f_taux_reel'),  { value: f_taux_reel } );
 
-const actifs_labels = [];
-const actifs_data = [];
-const actifs_bg = [];
+var actifs_labels = [];
+var actifs_data = [];
 
 var myChart;
 var ctx = document.getElementById('rentier_chart').getContext('2d');
@@ -167,6 +166,8 @@ Dom.addListener(Dom.id('faq_eye_bt'), Dom.Event.ON_CLICK, function(event) { toog
 
 compute = function() {
 
+    actifs_data   = [];
+    actifs_labels = [];
     f_revenus     = valof('f_revenus');
     f_depenses    = valof('f_depenses');
     f_taux_rente  = valof('f_taux_rente');
@@ -180,84 +181,91 @@ compute = function() {
     Dom.attribute(Dom.id('f_rentier_montant'), { value: f_rentier_montant.toFixed(0) })
     Dom.attribute(Dom.id('f_rentier_dans'), { value: f_rentier_dans.toFixed(1) })
 
+    var sim_valo = f_epargne;
+    for(i = 1; i <= 50; i++) {
+		actifs_labels.push(i);
+		actifs_data.push(sim_valo);
+		sim_valo += sim_valo * ((1 + f_taux_reel) / 100);
+    }
+
     if (actifs_data.length == 0) {
 		actifs_data.push(100);
-		actifs_labels.push('None');
-		actifs_bg.push('rgb(200, 200, 200)');
-	} else {
-		['rgb(54,  162, 235)',
-			'rgb(255, 205, 86)',
-			'rgb(255, 99,  132)',
-			'rgb(238, 130, 6)',
-			'rgb(97,  194, 97)',
-			'rgb(255, 153, 255)',
-			'rgb(153, 51,  51)',
-			'rgb(204, 230, 255)',
-			'rgb(209, 179, 255)' ].forEach((item) => { actifs_bg.push(item); });
+		actifs_labels.push('N/A');
 	}
 
-	const data = {
+    var stepSize = (sim_valo / 6).toFixed(0);
+    stepSize = stepSize > 100000 ? 100000 : (stepSize > 50000 ? 50000 : (stepSize > 25000 ? 25000 : (stepSize > 10000 ? 10000 : 5000)));
+
+    var ratio = sim_valo > f_rentier_montant ? getRatio(sim_valo, f_rentier_montant) : 100;
+
+    const horizontalLines = {
+        id: 'horizontalLines',
+        beforeDraw(chart, args, options) {
+            const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
+            // Attention, l'origine du graphe est en haut a gauche et donc le top en bas et le bottom en haut
+            ctx.beginPath();
+            ctx.setLineDash([3, 3]);
+            h = (height * (1 - (ratio / 100))) + top;
+            ctx.moveTo(left, h);
+            ctx.lineTo(right, h);
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.restore();
+        }
+    };
+
+    var options = {
+        interaction: {
+            intersect: false
+        },
+        radius: 1,
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true
+            }
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: true
+                }
+            },
+            y1: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.05)'
+                },
+                beginAtZero: true,
+                ticks: {
+                    stepSize: stepSize,
+                    display: true,
+                    align: 'end',
+                    callback: function(value, index, values) {
+                        var c = value+" \u20ac";
+                        return c;
+                    }
+                },
+                type: 'linear',
+                position: 'left'
+            }
+        }
+    };
+    
+    const data = {
 		labels: actifs_labels,
 		datasets: [{
-			label: 'Répartition',
+			label: 'Rendement taux réel',
 			data: actifs_data,
-			borderWidth: 0.5,
-			backgroundColor: actifs_bg,
-			hoverOffset: 4
+            borderColor: 'rgb(75, 192, 192)',
+			borderWidth: 8
 		}]
 	};
 
-    var options1 = {
-        interaction: {
-                intersect: false
-            },
-            radius: 0,
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        minRotation: 90,
-                        maxRotation: 90
-                    }
-                },
-                y1: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.05)'
-                    },
-                    ticks: {
-                        align: 'end',
-                        callback: function(value, index, values) {
-                            var c = value+" \u20ac       ";
-                            return c.substring(0, 6);
-                        }
-                    },
-                    type: 'linear',
-                    position: 'right'
-                },
-                y2: {
-                    type: 'linear',
-                    position: 'left',
-                    display: false,
-                    ticks : {
-                        max: 100000000,
-                        min: 0,
-                        stepSize: 20000000
-                    }
-                }
-            }
-        };
-
 	if (myChart) myChart.destroy();
-	myChart = new Chart(ctx, { type: 'line', data: data, options: options1 } );
+	myChart = new Chart(ctx, { type: 'line', data: data, options: options, plugins: [horizontalLines] } );
 	mychart.update();
 
 }
