@@ -19,8 +19,9 @@ $db = dbc::connect();
 ?>
 
 <style>
-    .input input  { text-align: right !important; }
-    .input .label { width: 50px; }
+    .input input  { text-align: right !important; background: rgba(75, 192, 192, 0.1) !important; color: rgb(75, 192, 192) !important; }
+    .field label { margin-top: 10px !important; color: rgba(255, 255, 255, 0.75) !important; }
+    .input .label { width: 50px; background: rgb(75, 192, 192) !important; }
     .input .label, .input input { padding: 5px 15px !important; }
 </style>
 
@@ -81,7 +82,7 @@ $db = dbc::connect();
         </div>
         <div class="thirteen wide field">
             <div class="field">
-                <canvas id="rentier_chart" height="120"></canvas>
+                <canvas id="rentier_chart" height="150"></canvas>
             </div>
         </div>
     </div>
@@ -90,7 +91,7 @@ $db = dbc::connect();
 
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted black help circle icon"></i>&nbsp;&nbsp;Conseils et hypothèses d'utilisation <button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
+    <h2><i class="inverted black help circle icon"></i>&nbsp;&nbsp;Conseils d'utilisation et hypothèses<button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
 
     <div id="faq_view">
 <p>
@@ -146,7 +147,7 @@ var actifs_data = [];
 var myChart;
 var ctx = document.getElementById('rentier_chart').getContext('2d');
 
-el("rentier_chart").height = document.body.offsetWidth > 700 ? 140 : 140;
+el("rentier_chart").height = document.body.offsetWidth > 700 ? 150 : 150;
 
 var options = {
     responsive: false,
@@ -240,7 +241,13 @@ compute = function() {
             x: {
                 grid: {
                     display: true
-                }
+                },
+                ticks: {
+                    callback: function(value, index, values) {
+                        var c = value+((value == 0 || value == 1) ? " an" : " ans");
+                        return c;
+                    }
+                },
             },
             y1: {
                 grid: {
