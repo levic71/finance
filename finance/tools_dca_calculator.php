@@ -98,6 +98,29 @@ while ($row = mysqli_fetch_assoc($res)) {
     </div>
 
     <br />
+
+    <h3>REGLES D'OR D'UN BON INVESTISSEUR</h3>
+    <ol>
+        <li>On investit que l'argent qu'il reste après avoir couvert ses besoins essentiels et payé ces factures</li>
+        <li>On ne devient pas riche en 1 jour, l'investissement est sur le moyen/long terme (10, 20, 30 ans)</li>
+        <li>On n'emprunte pas pour investir et on n'investit pas l'argent des autres, économisez et patientez</li>
+        <li>Les performances passées ne préjugent pas des performances futures</li>
+        <li>Investir dans ce que l'on comprend, il faut se former et s'informer pour bien choisir</li>
+        <li>Définir sa stratégie d'investissement et s'y tenir</li>
+        <li>Diversifier et investir petit à petit</li>
+        <li>Attention aux commisions et aux marges des conseillers</li>
+        <li>Réinvestir les dividendes</li>
+    </ol>
+
+    <h3>ERREUR DEBUTANT BOURSE</h3>
+    <ol>
+        <li>Ne jamais moyenner à la baisse (Loosers average losers)</li>
+        <li>Manque de diversification ou positions disproportionnées</li>
+        <li>Ne jamais suivre les recommandations externes</li>
+        <li>Ne pas acheter les actifs surévaluer</li>
+        <li>Ne pas investir dans des entreprises/actifs en perte</li>
+    </ol>
+
     <br />
 
     <?= uimx::staticInfoMsg("L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS", "alarm", "red"); ?>

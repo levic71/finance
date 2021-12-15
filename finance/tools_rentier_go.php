@@ -83,9 +83,6 @@ $db = dbc::connect();
             <div class="field">
                 <canvas id="rentier_chart" height="120"></canvas>
             </div>
-            <div class="field">
-                <button id="rentier_go_bt" class="ui pink right floated button">Compute</button>
-            </div>
         </div>
     </div>
 
@@ -93,28 +90,29 @@ $db = dbc::connect();
 
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted black help circle icon"></i>&nbsp;&nbsp;Comment utiliser cet outil <button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
+    <h2><i class="inverted black help circle icon"></i>&nbsp;&nbsp;Conseils et hypothèses d'utilisation <button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
 
     <div id="faq_view">
 <p>
-Après avoir choisit soit la stratégie, soit le nombre d'actifs souhaités dans le portefeuille, le tableau se remplit automatiquement avec les valeurs par défaut.
+L'objectif de cet outil est de définir approximativement le nombre d'années nécessaire pour devenir financièrement indépendant en étant rentier en investissant la même somme tous les mois.
 <br />
 <br />
-La modification d'une des données par l'utilisateur déclenche le recalcul automatique du tableau. Le bouton "Rééquilibrage" fait de même.
+C'est une manière de calculer le montant à cumuler pour pouvoir partir en retraire et de pouvoir couvrir ses dépenses avec les intérets cumulés générés par cet investissement.
 <br />
 <br />
-<b>Liste des données modifiables :</b>
+L'outil est intéractif, il suffit de renseigner les données à gauche et les calculs + graphe sont automatiquement mis à jour.
+<br />
+<br />
+<b>Quelques hypothèses et remarques :</b>
 <ul>
-    <li>Choix des actifs sélectionnés : La modification de la valeur d'un des actifs, modifie sa cotation et relance le réquilibrage</li>
-    <li>La cotation et la répartition de chaque actif peuvent être ajustées manuellement et leurs prises en compte est immédiament intégré au nouveau calcul</li>
-    <li>La colonne Nb dans la section portefeuille permet de saisir le nombre d'actifs déjà en possession</li>
-    <li>Le montant à investir permet de déterminer le nombre d'actifs à acheter pour retourner à l'équilibre</li>
+    <li>Les revenus à renseigner sont après impôts</li>
+    <li>Ne prend pas en compte l'inflation</li>
+    <li>Augmentation revenu couvre l'inflation dans le temps</li>
+    <li>L'hypothèse de rente permet de couvrir les depenses mensuelles</li>
+    <li>Le taux de rente ne doit pas etre inférieur au taux réel, sinon le capital cumulé sera imputé par les dépenses</li>
 </ul>
-<b>Quelques remarques :</b>
-<ul>
-    <li>L'option "Portefeuille actif" permet de saisir le nombre d'actifs déjà en possession pour l'intégrer dans le calcul du rééquilibrage</li>
-    <li>Un déséquilibre trop important dans son portefeuille actuel peut amener à un calcul qui conduit à vendre des actifs (nombre négatif dans la colonne Nb de Achat/Vente)</li>
-</ul>
+<br />
+<br />
 
 <?= uimx::staticInfoMsg("L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS", "alarm", "red"); ?>
 
@@ -148,7 +146,7 @@ var actifs_data = [];
 var myChart;
 var ctx = document.getElementById('rentier_chart').getContext('2d');
 
-el("rentier_chart").height = document.body.offsetWidth > 700 ? 120 : 120;
+el("rentier_chart").height = document.body.offsetWidth > 700 ? 140 : 140;
 
 var options = {
     responsive: false,
@@ -175,23 +173,33 @@ compute = function() {
 
     f_epargne         = f_revenus - f_depenses;
     f_rentier_montant = (f_depenses * 12 * 100) / f_taux_rente;
-    f_rentier_dans    = f_rentier_montant / (f_epargne * 12);
 
-    Dom.attribute(Dom.id('f_epargne'), { value: f_epargne.toFixed(0) })
-    Dom.attribute(Dom.id('f_rentier_montant'), { value: f_rentier_montant.toFixed(0) })
-    Dom.attribute(Dom.id('f_rentier_dans'), { value: f_rentier_dans.toFixed(1) })
+    Dom.attribute(Dom.id('f_epargne'), { value: f_epargne.toFixed(0) });
+    Dom.attribute(Dom.id('f_rentier_montant'), { value: f_rentier_montant.toFixed(0) });
 
-    var sim_valo = f_epargne;
-    for(i = 1; i <= 50; i++) {
-		actifs_labels.push(i);
-		actifs_data.push(sim_valo);
-		sim_valo += sim_valo * ((1 + f_taux_reel) / 100);
+    var rentier_dans = 0;
+    var sim_valo = 0;
+    for(i = 12; i <=  12 * 60; i++) {
+		sim_valo += f_epargne;
+        if ((i % 12) == 0) {
+            actifs_labels.push(Math.floor(i / 12));
+            actifs_data.push(sim_valo);
+        }
+        if (sim_valo >= f_rentier_montant && rentier_dans == 0) rentier_dans = i;
+		sim_valo += (sim_valo * (f_taux_reel / 12) ) / 100;
     }
+
+    f_rentier_dans = Math.round(rentier_dans / 12);
+    Dom.attribute(Dom.id('f_rentier_dans'), { value: f_rentier_dans.toFixed(0) });
 
     if (actifs_data.length == 0) {
 		actifs_data.push(100);
 		actifs_labels.push('N/A');
-	}
+	} else {
+        actifs_data   = actifs_data.slice(0,   f_rentier_dans + 10);
+        actifs_labels = actifs_labels.slice(0, f_rentier_dans + 10);
+        sim_valo = actifs_data[actifs_data.length - 1];
+    }
 
     var stepSize = (sim_valo / 6).toFixed(0);
     stepSize = stepSize > 100000 ? 100000 : (stepSize > 50000 ? 50000 : (stepSize > 25000 ? 25000 : (stepSize > 10000 ? 10000 : 5000)));
@@ -260,7 +268,7 @@ compute = function() {
 			label: 'Rendement taux réel',
 			data: actifs_data,
             borderColor: 'rgb(75, 192, 192)',
-			borderWidth: 8
+			borderWidth: 0.5
 		}]
 	};
 
@@ -269,9 +277,6 @@ compute = function() {
 	mychart.update();
 
 }
-
-// Declencheur sur bouton reequilibrage
-Dom.addListener(Dom.id('rentier_go_bt'), Dom.Event.ON_CLICK, function(event) { compute(); });
 
 // Declencheur sur changement dans un des champs de saisie
 Dom.find('#rentier_calc_form input').forEach(function(item) {

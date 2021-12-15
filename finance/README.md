@@ -11,20 +11,19 @@
 // Done : Recupérer les données indicators + DM de la page stock_detail dans DB et ne plus les calculer !!!
 // Done : Palmares des meilleures stratégies par methode (DCA/DM) + Niveau de risque
 // Done : Arrondie 2/3 chiffres après virgules ou en k en fct min max pour dimuner la taille des data envoyées
+// Done : Gestion des portefeuilles en base de donnees
 
 // Choix sur nb actifs investit sur DM (aujourd'hui uniquement le meilleur)
-// Niveau de risque d'une stratégie/ETF
+// Recuperer les montants frais EFT + capitalisation + volume xchange par jour/niveau de risque
 // tags multiples sur expositions ETF (secteurs, geo, ...)
 // Comparaison entre stratégie choisie et investissement réel => Déviation et rattrapage prochain invest 
 // Croisement MM200 et TR
-// alerte si gros volume échangé
-// ratio de sharpe
-// Gestion des portefeuilles en base de donnees
-// Reinjecte les données json en cache
 // Notification sur journée d'invest + periode ou sur seuil cours avec info nb actions a acheter/vendre en fct stratégie
+// Notification si passage cotation ou si gros volume échangé
+// ratio de sharpe
+// Reinjecte les données json en cache
 // Disclaimer + Acceptation cookies
-// Grille tarifaire (Notifications/Ajout x stratégie/Gestion x portefeuille)
-// Recuperer les montants frais EFT + capitalisation + volume xchange par jour
+// Grille tarifaire (Notifications/Ajout x stratégie/Gestion x portefeuille/nb portefeuille/synthèse)
 // Creer une stack d'execution tache CRON en base de données pour dépiler les actions a réaliser pour n'en ratée aucune et éviter les doublons
 // Pause crontab avec lock en gestion admin
 // IMPORT/EXPORT ORDRES PORTEFEUILLE
