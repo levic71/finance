@@ -261,35 +261,35 @@ class calc {
             if ($row['action'] == 5) {
                 $transfert_in += $row['quantity'] * $row['price'];
                 $cash         += $row['quantity'] * $row['price'];
-                $ampplt       += ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+                $ampplt       += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
 
             // Transfert OUT
             if ($row['action'] == -5) {
                 $transfert_out += $row['quantity'] * $row['price'];
                 $cash          -= $row['quantity'] * $row['price'];
-                $ampplt        -= ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+                $ampplt        -= $interval_ref == 0 ? 0 : $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
 
             // Depot
             if ($row['action'] == 2) {
                 $sum_depot += $row['quantity'] * $row['price'];
                 $cash      += $row['quantity'] * $row['price'];
-                $ampplt    += ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+                $ampplt    += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
 
             // Retrait
             if ($row['action'] == -2) {
                 $sum_retrait += $row['quantity'] * $row['price'];
                 $cash        -= $row['quantity'] * $row['price'];
-                $ampplt      -= ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+                $ampplt      -= $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
 
             // Divende
             if ($row['action'] == 4) {
                 $sum_dividende += $row['quantity'] * $row['price'];
                 $cash          += $row['quantity'] * $row['price'];
-                $ampplt        += ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+                $ampplt        += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
    
         }
