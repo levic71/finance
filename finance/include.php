@@ -268,7 +268,7 @@ class calc {
             if ($row['action'] == -5) {
                 $transfert_out += $row['quantity'] * $row['price'];
                 $cash          -= $row['quantity'] * $row['price'];
-                $ampplt        -= $interval_ref == 0 ? 0 : $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+                $ampplt        -= $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
 
             // Depot

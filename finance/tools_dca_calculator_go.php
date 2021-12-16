@@ -6,16 +6,18 @@ session_start();
 
 include "common.php";
 
-$f_nb_actifs = 0;
+$f_nb_actifs    = 0;
+$f_portfolio_id = 0;
+$f_strategie_id = 0;
 
 foreach(['f_portfolio_id', 'f_strategie_id', 'f_nb_actifs'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
 
-$portfolio_defined = $f_portfolio_id != "" ? false : true;
-$strategie_defined = $f_nb_actifs > 0 ? false : true;
-$portfolio_actif = false;
+$portfolio_defined = $f_portfolio_id == 0 ? false : true;
+$strategie_defined = $f_strategie_id == 0 ? false : true;
+$portfolio_actif   = false;
 
 $tab_stocks = array();
 $lst_symbol_strategie = array();
@@ -30,23 +32,21 @@ while($row = mysqli_fetch_assoc($res)) {
 }
 
 // Initialistaion des data du formulaire
-if ($f_portfolio_id != "") {
+if ($f_portfolio_id != 0) {
 
     $req = "SELECT * FROM portfolios WHERE id=".$f_portfolio_id;
     $res = dbc::execSql($req);
     if ($row = mysqli_fetch_assoc($res)) {
-        if ($row['strategie_id'] != 0) {
-            $strategie_defined = true;
-            $f_strategie_id    = $row['strategie_id'];
-            $portfolio_actif   = true;
-        }
+        $f_strategie_id    = $row['strategie_id'];
+        $strategie_defined = $f_strategie_id == 0 ? false : true;
+        $portfolio_actif   = true;
     }
 
     $portfolio_data = calc::aggregatePortfolio($f_portfolio_id);
 
 }
 
-if ($strategie_defined && $f_strategie_id != "") {
+if ($strategie_defined && $f_strategie_id != 0) {
 
     $req = "SELECT * FROM strategies WHERE id=".$f_strategie_id;
     $res = dbc::execSql($req);
@@ -67,13 +67,31 @@ if ($strategie_defined && $f_strategie_id != "") {
 
 } else {
 
-    $first_symbol = array_keys($tab_stocks)[0];
-    $sum = 0;
-    for($i=1 ; $i <= $f_nb_actifs; $i++) {
-        $lst_symbol_strategie[$i] = $first_symbol;
-        $pct = floor(100 / $f_nb_actifs);
-        $sum += $pct;
-        $lst_symbol_strategie_pct[$i] = $i == $f_nb_actifs && $i !=1 ? 100-$sum+$pct : $pct;
+    // Cas d'un Portfolio sans strategie
+    if ($portfolio_defined && !$strategie_defined) {
+
+        $i = 1;
+        $sum = 0;
+        $f_nb_actifs = count($portfolio_data['positions']);
+        foreach($portfolio_data['positions'] as $key => $value) {
+            $lst_symbol_strategie[$i] = $key;
+            $pct = floor(100 / $f_nb_actifs);
+            $sum += $pct;
+            $lst_symbol_strategie_pct[$i] = $i == $f_nb_actifs && $i !=1 ? 100-$sum+$pct : $pct;
+            $i++;
+        }
+
+    } else {
+
+        // Choix libre avec un nombre d'actifs selectionnes
+        $first_symbol = array_keys($tab_stocks)[0];
+        $sum = 0;
+        for($i=1 ; $i <= $f_nb_actifs; $i++) {
+            $lst_symbol_strategie[$i] = $first_symbol;
+            $pct = floor(100 / $f_nb_actifs);
+            $sum += $pct;
+            $lst_symbol_strategie_pct[$i] = $i == $f_nb_actifs && $i !=1 ? 100-$sum+$pct : $pct;
+        }
     }
 
 }
@@ -128,7 +146,7 @@ if ($strategie_defined && $f_strategie_id != "") {
                             </select>
                         </td>
                         <td class="center aligned"><div class="ui right labeled input">
-                            <input id="f_price_<?= $i ?>" type="text" size="2" value="<?= sprintf("%.2f", $tab_stocks[$lst_symbol_strategie[$i]]['price']) ?>" />
+                            <input id="f_price_<?= $i ?>" type="text" size="2" value="<?= sprintf("%.2f", isset($tab_stocks[$lst_symbol_strategie[$i]]['price']) ? $tab_stocks[$lst_symbol_strategie[$i]]['price'] : 0) ?>" />
                             <div class="ui basic label">&euro;</div>
                         </div></td>
                         <td class="center aligned"><div class="ui right labeled input">
@@ -341,7 +359,7 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
 
         // Calcul des % de repartition des actifs a acheter/vendre
         for(i=1; i <= nb_actifs; i++) {
-            v = invest_init == 0 ? 0 : Math.floor((parseInt(el('f_valo2_'+i).innerHTML.replace(' &euro; ', '')) * 100) / sum_buy);
+            v = invest_init == 0 || sum_buy == 0 ? 0 : Math.floor((parseInt(el('f_valo2_'+i).innerHTML.replace(' &euro; ', '')) * 100) / sum_buy);
             el('f_pct2_'+i).innerHTML = v + ' %';
         }
         v = invest_init == 0 ? 0 : Math.floor((sum_buy * 100)/ sum_buy);

@@ -12,7 +12,7 @@ $tab_strategies = array();
 
 // On récupère les portefeuilles de l'utilisateur
 $lst_portfolios = array();
-$req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId();
+$req = "SELECT * FROM portfolios WHERE synthese=0 AND user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 
@@ -37,7 +37,7 @@ while ($row = mysqli_fetch_assoc($res)) {
                     <select class="ui fluid search dropdown" id="f_portfolio_id">
                         <?
                             foreach($lst_portfolios as $key => $val)
-                                echo '<option value="'.$val['id'].'">'.$val['name'].'</option>';
+                                echo '<option value="'.$val['id'].'">'.utf8_decode($val['name']).'</option>';
                         ?>
                     </select>
                     <button id="dca_go_bt0" class="ui icon pink float right small button"><i class="inverted play icon"></i></button>
@@ -50,7 +50,7 @@ while ($row = mysqli_fetch_assoc($res)) {
                     <select class="ui fluid search dropdown" id="f_strategie_id">
                         <?
                             foreach($tab_strategies as $key => $val)
-                                echo '<option value="'.$val['id'].'">'.$val['title'].'</option>';
+                                echo '<option value="'.$val['id'].'">'.utf8_decode($val['title']).'</option>';
                         ?>
                     </select>
                     <button id="dca_go_bt1" class="ui icon pink float right small button"><i class="inverted play icon"></i></button>
