@@ -38,6 +38,7 @@ if ($f_portfolio_id != 0) {
     $res = dbc::execSql($req);
     if ($row = mysqli_fetch_assoc($res)) {
         $f_strategie_id    = $row['strategie_id'];
+        $portfolio_name    = $row['name'];
         $strategie_defined = $f_strategie_id == 0 ? false : true;
         $portfolio_actif   = true;
     }
@@ -51,6 +52,7 @@ if ($strategie_defined && $f_strategie_id != 0) {
     $req = "SELECT * FROM strategies WHERE id=".$f_strategie_id;
     $res = dbc::execSql($req);
     if ($row = mysqli_fetch_assoc($res)) {
+        $strategie_name = $row['title']; 
         $t = json_decode($row['data'], true);
 		$i = 1;
 		foreach($t['quotes'] as $key => $val) {
@@ -100,7 +102,7 @@ if ($strategie_defined && $f_strategie_id != 0) {
 
 <div id="dca_calc_form" class="ui container inverted segment form">
     
-    <h2 class="ui inverted dividing header"><i class="inverted black balance scale icon"></i>Rebalancing</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted black balance scale icon"></i>Rebalancing <?= $portfolio_defined ? "portefeuille ".utf8_decode($portfolio_name) : ( $strategie_defined ? " stratégie ".utf8_decode($strategie_name) : "libre") ?></h2>
     <div class="ui centered grid">
         <div class="sixteen wide column">
     
@@ -139,14 +141,19 @@ if ($strategie_defined && $f_strategie_id != 0) {
                     <tr>
                         <td>
                             <select class="ui fluid search dropdown" id="f_lst_actifs_<?= $i ?>">
-                                <?
-                                    foreach($tab_stocks as $key => $val)
-                                        echo '<option value="'.$key.'" '.($key == $lst_symbol_strategie[$i] ? 'SELECTED="SELECTED"' : "").' data-price="'.sprintf("%.2f", $val['price']).'">'.$key.'</option>';
+                                <?  
+                                    $item_selected = false;
+                                    $symbol   = $lst_symbol_strategie[$i];
+                                    foreach($tab_stocks as $key => $val) {
+                                        $item_selected = $key == $symbol;
+                                        echo '<option value="'.$key.'" '.($item_selected ? 'SELECTED="SELECTED"' : "").' data-price="'.sprintf("%.2f", $val['price']).'">'.$key.'</option>';
+                                    }
+                                    if ($portfolio_defined && !$item_selected) echo '<option value="'.$symbol.'" SELECTED="SELECTED" data-price="'.sprintf("%.2f", $portfolio_data['positions'][$symbol]['pru']).'">'.$symbol.'</option>';
                                 ?>
                             </select>
                         </td>
                         <td class="center aligned"><div class="ui right labeled input">
-                            <input id="f_price_<?= $i ?>" type="text" size="2" value="<?= sprintf("%.2f", isset($tab_stocks[$lst_symbol_strategie[$i]]['price']) ? $tab_stocks[$lst_symbol_strategie[$i]]['price'] : 0) ?>" />
+                            <input id="f_price_<?= $i ?>" type="text" size="2" value="<?= sprintf("%.2f", isset($tab_stocks[$lst_symbol_strategie[$i]]['price']) ? $tab_stocks[$lst_symbol_strategie[$i]]['price'] : ( $portfolio_defined && isset($portfolio_data['positions'][$symbol]['pru']) ? $portfolio_data['positions'][$symbol]['pru'] : 0)) ?>" />
                             <div class="ui basic label">&euro;</div>
                         </div></td>
                         <td class="center aligned"><div class="ui right labeled input">
