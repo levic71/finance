@@ -211,7 +211,7 @@ if (false) {
 			1024: {
 				slidesPerView: 4,
 				slidesPerGroup: 4,
-				spaceBetween: 5
+				spaceBetween: 15
 			}
 		},
 		pagination: {

@@ -1204,9 +1204,9 @@ class uimx {
 <?
     }
 
-    public static function genCard($id, $header, $meta, $desc) {
+    public static function genCard($id, $header, $meta, $desc, $cn = "") {
     ?>
-        <div class="ui inverted card" id="<?= $id ?>">
+        <div class="ui inverted card <?= $cn ?>" id="<?= $id ?>" style="height: 100%; background: rgba(255, 255, 255, 0.05);">
             <div class="content">
                 <div class="header"><?= $header ?></div>
                 <div class="meta"><?= $meta ?></div>
@@ -1222,7 +1222,7 @@ class uimx {
 
         $t = json_decode($strategie['data'], true);
 
-        $desc = '<table class="ui inverted single line very compact unstackable table perf_card"><tbody>';
+        $desc = '<table class="ui inverted single line very compact unstackable table"><tbody>';
         
         $x = 0;
         foreach($perfs as $key => $val) {
@@ -1232,18 +1232,16 @@ class uimx {
             }
         }
 
-        $desc .= '</tbody>';
-        $desc .= '<tfoot class="full-width"><tr>
-            <th colspan="2">
-                <button class="ui small '.self::$invest_cycle[$strategie['cycle']]['colr'].' button badge tooltip2" data-tooltip2="'.self::$invest_cycle[$strategie['cycle']]['tip'].'">'.substr(self::$invest_cycle[$strategie['cycle']]['tip'], 0, 1).'</button>
-                <button class="ui small brown button badge tooltip2" data-tooltip2="'.self::$invest_methode[$strategie['methode']].'"><i class="inverted '.self::$invest_methode_icon[$strategie['methode']].' icon"></i></button>
-                <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey icon button">Backtesting</button>
-            </th>
-        </tr></tfoot>';
-        $desc .= '</table>';
+        $desc .= '</tbody></table>';
+
+        $desc .= '<div style="bottom: 5px; position: absolute; width: 90%;">
+            <button class="ui small '.self::$invest_cycle[$strategie['cycle']]['colr'].' button badge tooltip2" data-tooltip2="'.self::$invest_cycle[$strategie['cycle']]['tip'].'">'.substr(self::$invest_cycle[$strategie['cycle']]['tip'], 0, 1).'</button>
+            <button class="ui small brown button badge tooltip2" data-tooltip2="'.self::$invest_methode[$strategie['methode']].'"><i class="inverted '.self::$invest_methode_icon[$strategie['methode']].' icon"></i></button>
+            <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey icon button">Backtesting</button>
+        </div>';
 
         $title = utf8_decode($strategie['title']).($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
-        uimx::genCard("home_card_".$strategie['id'], $title, $day, $desc);
+        uimx::genCard("home_card_".$strategie['id'], $title, $day, $desc, "perf_card");
     }
 
     public static function portfolioCard($portfolio, $portfolio_data) {

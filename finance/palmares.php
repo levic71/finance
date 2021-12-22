@@ -74,7 +74,7 @@ arsort($tab_perfs["2"]);
 
 ?>
 
-<div class="ui container inverted segment">
+<div class="ui container inverted">
 
 	<h2 class="ui left floated">
 		<i class="inverted grey diamond icon"></i>Dual Momemtum
@@ -109,7 +109,7 @@ arsort($tab_perfs["2"]);
     </div>
 </div>
 
-<div class="ui container inverted segment">
+<div class="ui container inverted">
 
 	<h2><i class="inverted grey cubes icon"></i>DCA</h2>
 
@@ -163,7 +163,7 @@ arsort($tab_perfs["2"]);
 			1024: {
 				slidesPerView: 4,
 				slidesPerGroup: 4,
-				spaceBetween: 5
+				spaceBetween: 15
 			}
 		},
 		pagination: {
