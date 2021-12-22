@@ -43,13 +43,10 @@ $lst_orders    = $portfolio_data['orders'];
 
 <div class="ui container inverted segment">
 
-	<h2 class="ui left floated">
-		<i class="inverted black briefcase icon"></i>&nbsp;&nbsp;<?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
-	</h2>
-	<div class="ui stackable column grid container">
+	<h2 class="ui left floated"><i class="inverted grey briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small></h2>
+	<div class="ui stackable column grid">
 		<div class="row">
 			<div class="ten wide column">
-				<h3>Synthèse</h3>
 				<div class="ui stackable two column grid container">
 					<div class="row">
 
@@ -101,21 +98,22 @@ $lst_orders    = $portfolio_data['orders'];
 				<div id="perf_ribbon3" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
 			</div>
 			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
-				<h3 class="ui left floated">Répartition</h3>
 				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
 				<canvas id="pft_donut" height="100"></canvas>
 			</div>
 		</div>
 	</div>
 
-	<div class="ui stackable column grid container">
+	<div class="ui hidden divider"></div>
+
+	<h2 class="ui left floated"><i class="inverted grey location arrow icon"></i>Positions
+		<? if ($portfolio_data['infos']['synthese'] == 0) { ?>
+		<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i> Save</button>
+		<? } ?>
+	</h2>
+	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
-				<h3 class="ui left floated">Positions
-					<? if ($portfolio_data['infos']['synthese'] == 0) { ?>
-					<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i> Save</button>
-					<? } ?>
-				</h3>
 				<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_position" data-sortable>
 					<thead><tr>
 						<th>Actif</th>
@@ -167,13 +165,14 @@ $lst_orders    = $portfolio_data['orders'];
 		</div>
 	</div>
 
-	<div class="ui stackable column grid container">
+	<div class="ui hidden divider"></div>
+	
+	<h2 class="ui left floated"><i class="inverted grey history icon"></i>Historique ordres
+		<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ordre</button>
+	</h2>
+	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
-				<h3 class="ui left floated">
-					Historique ordres
-					<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ordre</button>
-				</h3>
 				<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_order" data-sortable>
 					<thead><tr>
 						<th></th>

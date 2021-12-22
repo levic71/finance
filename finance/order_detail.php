@@ -47,7 +47,7 @@ $quotes = calc::getIndicatorsLastQuote();
 
     <div class="ui inverted clearing">
 		<h2 class="ui inverted left floated header">
-            <i class="inverted black briefcase icon"></i>&nbsp;&nbsp;Mon Ordre
+            <i class="inverted grey briefcase icon"></i>Mon Ordre
         </h2>
 
         <? if ($action == "upt") { ?>

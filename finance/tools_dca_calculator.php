@@ -27,7 +27,7 @@ while ($row = mysqli_fetch_assoc($res)) {
 
 <div class="ui container inverted segment form">
 
-    <h2 class="ui inverted dividing header"><i class="inverted black balance scale icon"></i> Rebalancing</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted grey balance scale icon"></i> Rebalancing</h2>
     <div class="field">
         <div class="three fields">
 
@@ -45,7 +45,7 @@ while ($row = mysqli_fetch_assoc($res)) {
             </div>
 
             <div class="field">
-                <label>Par sélection d'une stratégie</label>
+                <label>Par sélection d'une stratégie DCA</label>
                 <div class="ui action input">
                     <select class="ui fluid search dropdown" id="f_strategie_id">
                         <?
@@ -72,7 +72,9 @@ while ($row = mysqli_fetch_assoc($res)) {
         </div>
     </div>
 
-    <h2 class="ui inverted dividing header"><i class="inverted black dollar sign icon"></i> Libre financièrement en étant rentier</h2>
+    <div class="ui hidden divider"></div>
+
+    <h2 class="ui inverted dividing header"><i class="inverted grey money sign icon"></i> Libre financièrement en étant rentier</h2>
     <div class="field">
         <div class="three fields">
 
@@ -97,7 +99,7 @@ while ($row = mysqli_fetch_assoc($res)) {
         </div>
     </div>
 
-    <br />
+    <div class="ui hidden divider"></div>
 
     <h3>REGLES D'OR D'UN BON INVESTISSEUR</h3>
     <ol>
@@ -121,7 +123,7 @@ while ($row = mysqli_fetch_assoc($res)) {
         <li>Ne pas investir dans des entreprises/actifs en perte</li>
     </ol>
 
-    <br />
+    <div class="ui hidden divider"></div>
 
     <?= uimx::staticInfoMsg("L'OBJECTIF DE CES OUTILS EST PEDAGOGIQUE - ILS N'ONT PAS VOCATION A INCITER A ACHETER OU VENDRE DES ACTIFS", "alarm", "red"); ?>
 

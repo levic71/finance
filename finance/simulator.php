@@ -170,14 +170,14 @@ $infos2 = '
 <input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
 
 <div class="ui container inverted segment">
-    <h2>Informations</h2>
+    <h2><i class="inverted <?= $row['methode'] == 2 ? 'cubes' : 'diamond' ?> grey icon"></i><?= $row['title'] ?></h2>
     <div class="ui stackable grid container">
           <div class="row">
           <div class="eight wide column">
-                <?= uimx::genCard('sim_card2', '<i style="margin-right: 10px;" class="inverted '.($row['methode'] == 2 ? 'cubes' : 'diamond').' blurely line icon"></i>'.$row['title'], '', $infos1); ?>
+                <?= uimx::genCard('sim_card2', implode(', ', $lst_symbols), '', $infos1); ?>
             </div>
             <div class="eight wide column">
-                <?= uimx::genCard('sim_card2', implode(', ', $lst_symbols), '', $infos2); ?>
+                <?= uimx::genCard('sim_card2', '&nbsp;', '', $infos2); ?>
             </div>
 
             <div class="center aligned sixteen wide column" id="sim_card_bt">
@@ -260,10 +260,10 @@ $final_info2 = '
 
 ?>
             <div class="sixteen wide column" style="margin-top: 15px;" id="synthese_bloc1">
-                <?= uimx::genCard('sim_card1', 'Synthèse', '', $final_info); ?>
+                <?= uimx::genCard('sim_card1', '', '', $final_info); ?>
             </div>
             <div class="sixteen wide column" style="margin-top: 15px;" id="synthese_bloc2">
-                <?= uimx::genCard('sim_card12', 'Synthèse', '', $final_info2); ?>
+                <?= uimx::genCard('sim_card12', '', '', $final_info2); ?>
             </div>
 
         </div>
@@ -274,7 +274,7 @@ $final_info2 = '
 <!-- GRAPHE 1 -->
 
 <div class="ui container inverted segment">
-    <h2>Evolution du portefeuille</h2>
+    <h2><i class="inverted money grey icon"></i>Valorisation du portefeuille</h2>
     <canvas id="sim_canvas1" height="100"></canvas>
 </div>
 <script>
@@ -297,7 +297,7 @@ var myChart = new Chart(ctx, {
             data: invts,
             label: "Investissement",
             borderColor: "rgba(97, 194, 97, 0.75)",
-            backgroundColor: "rgba(97, 194, 97, 0.3)",
+            backgroundColor: "rgba(97, 194, 97, 1)",
             cubicInterpolationMode: 'monotone',
             pointRadius: 1,
             tension: 0.4,
@@ -308,7 +308,7 @@ var myChart = new Chart(ctx, {
             data: valos_RC,
             label: "<?= $sim['sym_RC'] ?>",
             borderColor: "rgba(23, 109, 181, 0.75)",
-            backgroundColor: "rgba(23, 109, 181, 0.3)",
+            backgroundColor: "rgba(23, 109, 181, 1)",
             cubicInterpolationMode: 'monotone',
             pointRadius: 1,
             tension: 0.4,
@@ -331,11 +331,20 @@ var myChart = new Chart(ctx, {
         responsive: true,
         maintainAspectRatio: true,
         scales: {
-            yAxes: [{
+            x: {
+                gridLines: {
+                },
+                ticks: {
+                    minRotation: 45,
+                    maxRotation: 45,
+                    display: true
+                }
+                },
+            y: {
                 ticks: {
                     beginAtZero:true
                 }
-            }]
+            }
         }
     }
 });
@@ -347,7 +356,7 @@ var myChart = new Chart(ctx, {
 <? if ($row['methode'] == 1) { ?>
 
 <div class="ui container inverted segment">
-    <h2>Evolution DM</h2>
+    <h2><i class="inverted line graph grey icon"></i>Evolution DM</h2>
     <canvas id="sim_canvas2" height="100"></canvas>
 </div>
 
@@ -388,7 +397,7 @@ var data2 = {
 <?
     $x = 0; 
     foreach($lst_symbols as $key => $val) {
-        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$sess_context->getSpectreColor($x)."\", cubicInterpolationMode: 'monotone', pointRadius: 1, tension: 0.4, borderWidth: 0.5, fill: false },";
+        echo "{ data: dataset_".$x.", label: \"".$val."\", borderColor: \"".$sess_context->getSpectreColor($x, 0.9)."\", backgroundColor: \"".$sess_context->getSpectreColor($x, 0.75)."\", cubicInterpolationMode: 'monotone', pointRadius: 1, tension: 0.4, borderWidth: 0.5, fill: false },";
         $x++;
     }
 ?>
@@ -399,16 +408,28 @@ var options2 = {
     responsive: true,
     maintainAspectRatio: true,
     scales: {
-        xAxes: [{
+        x: {
             gridLines: {
                 color: "red"
+            },
+            ticks: {
+                minRotation: 45,
+                maxRotation: 45,
+                display: true
             }
-        }],
-        yAxes: [{
+        },
+        y: {
             gridLines: {
                 color: "red"
+            },
+            ticks : {
+                suggestedMin: -40,
+                suggestedMax: 40,
+                max: 40,
+                min: -40,
+                stepSize: 10
             }
-        }]
+        }
     }
 };
 
@@ -422,7 +443,7 @@ var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options2, p
 <!-- TABLEAU DETAIL -->
 
 <div class="ui container inverted segment">
-    <h2>Détail</h2>
+    <h2><i class="inverted grid layout grey icon"></i>Composition portefeuille</h2>
     <table id="lst_sim" class="ui selectable inverted very compact unstackable table lst_sim_<?= $row['methode'] ?>">
         <thead>
             <tr>
@@ -457,14 +478,14 @@ foreach($sim['tab_detail'] as $key => $val) {
 </div>
 
 <div class="ui container inverted segment">
-    <h2>Ordres boursiers</h2>
+    <h2><i class="inverted exchange grey icon"></i>Ordres boursiers</h2>
     <table id="lst_ordres" class="ui striped selectable inverted single line very compact unstackable table">
-        <thead><tr><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Nb</th><th>Prix</th></tr></thead>
+        <thead><tr><th style="width: 50px;"></th><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Nb</th><th>Prix</th></tr></thead>
         <tbody>
 <?
 foreach($sim['ordres'] as $key => $val) {
     $o = json_decode($val);
-    echo "<tr class=\"".$o->{"action"}."\"><td>".$o->{"date"}."</td><td><div>".$o->{"action"}."</div></td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".sprintf("%.2f", $o->{"price"}).$o->{"currency"}."</td></tr>";
+    echo "<tr class=\"".$o->{"action"}."\"><td><i class=\"inverted long arrow alternate ".($o->{"action"} == 'Achat' ? "right green" : "left orange")." icon\"></i></td><td>".$o->{"date"}."</td><td><div>".$o->{"action"}."</div></td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".sprintf("%.2f", $o->{"price"}).$o->{"currency"}."</td></tr>";
 }
 ?>
         </tbody>

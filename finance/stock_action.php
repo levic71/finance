@@ -72,6 +72,8 @@ if ($action == "add") {
         updateSymbolData($symbol, true);
 
         logger::info("STOCK", $symbol, "[OK]");
+    } else {
+        updateSymbolData($symbol, true);
     }
 }
 

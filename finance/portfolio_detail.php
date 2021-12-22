@@ -55,7 +55,7 @@ while($row = mysqli_fetch_assoc($res)) $tab_strategies[] = $row;
 
     <div class="ui inverted clearing segment">
 		<h2 class="ui inverted left floated header">
-            <i class="inverted black briefcase icon"></i>&nbsp;&nbsp;Mon Portefeuille
+            <i class="inverted grey briefcase icon"></i>Mon Portefeuille
         </h2>
 
         <? if (strstr($action, "upt")) { ?>

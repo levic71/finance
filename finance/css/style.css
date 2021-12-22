@@ -2,6 +2,7 @@ td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
 
 h3 { color: chocolate; }
+h2 > i { margin-right: 15px !important; }
 
 .sim_page #synthese_bloc2 {
     display: none;
