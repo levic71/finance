@@ -52,16 +52,27 @@ if ($handle)
         <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_error) ?></button>
         <button id="log_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button>
     </h2>
-    <pre id="log_view" style="width: 100%; overflow-x: hidden;">
+    <pre id="log_view" style="width: 100%; overflow: scroll;">
 
-<? echo shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); ?>
+<?
+    $text = shell_exec( 'tail -n '.$nb_lignes.' ./finance.log'); 
+
+    foreach(preg_split('~[\r\n]+~', $text) as $line){
+        if(empty($line) or ctype_space($line)) continue; // skip only spaces
+        // if(!strlen($line = trim($line))) continue; // or trim by force and skip empty
+        if (strstr($line, "ERROR") || strstr($line, "WARN") || strstr($line, "###"))
+            echo "<mark style=\"background-color: ".(strstr($line, "ERROR") ? "red" : (strstr($line, "WARN") ? "orange" : (strstr($line, "###") ? "cyan" : "#222")))."\">".$line."</mark><br />";
+        else
+            echo $line."<br />";
+    }
+?>
 
     </pre>
 </div>
 
 <div class="ui container inverted segment">
     <h2><i class="inverted black users icon"></i>&nbsp;&nbsp;User Connexions <button id="users_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
-    <pre id="users_view" style="width: 100%; overflow-x: hidden;">
+    <pre id="users_view" style="width: 100%; overflow: scroll;">
 
 <? 
 
@@ -81,7 +92,7 @@ while($row = mysqli_fetch_array($res)) {
 
 <div class="ui container inverted segment">
     <h2><i class="inverted black dashboard icon"></i>&nbsp;&nbsp;Alphavantage <button id="alpha_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
-    <pre id="alpha_view" style="width: 100%; overflow-x: hidden;">
+    <pre id="alpha_view" style="width: 100%; overflow: scroll;">
 
 <? 
 

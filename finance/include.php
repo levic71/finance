@@ -742,6 +742,7 @@ class aafinance {
 
     public static $apikey = "ZFO6Y0QL00YIG7RH";
     public static $apikey_local = "X6K6Z794TD321PTH";
+    public static $premium = false;
 
     public static function getData($function, $symbol, $options) {
 
@@ -758,6 +759,9 @@ class aafinance {
         } elseif (isset($data['Note'])) {
             $data['status'] = 1;
             logger::warning("ALPHAV", $symbol, "[".$function."] [".$options."] [".$data['Note']."]");
+        } elseif (isset($data['Information'])) {
+            $data['status'] = 3;
+            logger::warning("ALPHAV", $symbol, "[".$function."] [".$options."] [".$data['Information']."]");
         } else {
             logger::info("ALPHAV", $symbol, "[".$function."] [".$options."] [OK]");
         }
@@ -783,8 +787,16 @@ class aafinance {
         return self::getData("TIME_SERIES_DAILY_ADJUSTED", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
+    public static function getWeeklyTimeSeries($symbol, $options = "") {
+        return self::getData("TIME_SERIES_WEEKLY", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
+    }
+
     public static function getWeeklyTimeSeriesAdjusted($symbol, $options = "") {
         return self::getData("TIME_SERIES_WEEKLY_ADJUSTED", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
+    }
+
+    public static function getMonthlyTimeSeries($symbol, $options = "") {
+        return self::getData("TIME_SERIES_MONTHLY", $symbol, "symbol=".$symbol.($options == "" ? "" : "&").$options);
     }
 
     public static function getMonthlyTimeSeriesAdjusted($symbol, $options = "") {
@@ -907,6 +919,8 @@ class cacheData {
             if ($data['status'] == 0) {
                 cacheData::writeData($file_cache, $data);
                 $ret = true;
+            } else {
+                logger::error("ALPHAV", $symbol, "[OVERVIEW] [NOK]".print_r($data, true));
             }
         }
         else
@@ -933,7 +947,10 @@ class cacheData {
                     $fp = fopen($file_cache, 'w');
                     fwrite($fp, json_encode($data));
                     fclose($fp);
-                }    
+                } else {
+                    logger::error("ALPHAV", $symbol, "[INTRADAY] [NOK]".print_r($data, true));
+                }
+    
             } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[INTRADAY]".$e->getMessage()); }
         }
         else
@@ -948,15 +965,25 @@ class cacheData {
 
         if (self::refreshOnceADayCache($file_cache)) {
             try {
-                $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
 
-                var_dump($data);
+                if (aafinance::$premium)
+                    $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                else
+                    $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
                 $key = "Time Series (Daily)";
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {
+
+                        if (!aafinance::$premium) {
+                            $val['5. adjusted close']    = $val['4. close'];
+                            $val['6. volume']            = $val['5. volume'];
+                            $val['7. dividend amount']   = 0;
+                            $val['8. split coefficient'] = 0;
+                        }
+
                         $update = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."', '".$val['8. split coefficient']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."', split_coef='".$val['8. split coefficient']."'";
                         $res2 = dbc::execSql($update);
                     }
@@ -966,7 +993,9 @@ class cacheData {
                     fclose($fp);
     
                     $ret = true;
-                }        
+                } else {
+                    logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [NOK]".print_r($data, true));
+                }
             } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
         }
         else
@@ -983,13 +1012,25 @@ class cacheData {
 
         if (self::refreshOnceADayCache($file_cache)) {
             try {
-                $data = aafinance::getWeeklyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+
+                if (aafinance::$premium)
+                    $data = aafinance::getWeeklyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                else
+                    $data = aafinance::getWeeklyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
                 $key = "Weekly Adjusted Time Series";
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {
+
+                        if (!aafinance::$premium) {
+                            $val['5. adjusted close']    = $val['4. close'];
+                            $val['6. volume']            = $val['5. volume'];
+                            $val['7. dividend amount']   = 0;
+                            $val['8. split coefficient'] = 0;
+                        }
+
                         $update = "INSERT INTO weekly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."'";
                         $res2 = dbc::execSql($update);
                     }
@@ -999,6 +1040,9 @@ class cacheData {
                     fclose($fp);
 
                     $ret = true;
+
+                } else {
+                    logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [NOK]".print_r($data, true));
                 }
 
             } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
@@ -1017,13 +1061,25 @@ class cacheData {
 
         if (self::refreshOnceADayCache($file_cache)) {
             try {
-                $data = aafinance::getMonthlyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+
+                if (aafinance::$premium)
+                    $data = aafinance::getMonthlyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                else
+                    $data = aafinance::getMonthlyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
                 $key = "Monthly Adjusted Time Series";
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {
+
+                        if (!aafinance::$premium) {
+                            $val['5. adjusted close']    = $val['4. close'];
+                            $val['6. volume']            = $val['5. volume'];
+                            $val['7. dividend amount']   = 0;
+                            $val['8. split coefficient'] = 0;
+                        }
+
                         $update = "INSERT INTO monthly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."'";
                         $res2 = dbc::execSql($update);
                     }
@@ -1033,7 +1089,9 @@ class cacheData {
                     fclose($fp);
     
                     $ret = true;
-                }        
+                } else {
+                    logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [NOK]".print_r($data, true));
+                }
             } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
         }
         else
@@ -1061,7 +1119,9 @@ class cacheData {
                     fclose($fp);
     
                     $ret = true;
-                }        
+                } else {
+                    logger::error("ALPHAV", $symbol, "[GLOBAL_QUOTE] [NOK]".print_r($data, true));
+                }
             } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[GLOBAL_QUOTE]".$e->getMessage()); }
         }
         else
