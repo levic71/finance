@@ -172,7 +172,7 @@ table div.checkbox { padding: 8px 0px !important; }
                             ?>
                         </select>
                     <? } else { ?>
-                        <input type="text" id="f_categorie" value="<?= uimx::$invest_categories[$row['categorie']] ?>" placeholder="Catégorie">
+                        <input type="text" id="f_categorie" value="<?= $row['categorie'] == "" ? "" : uimx::$invest_categories[$row['categorie']] ?>" placeholder="Catégorie">
                     <? } ?>
                 </div>
             </div>
@@ -196,7 +196,7 @@ table div.checkbox { padding: 8px 0px !important; }
                         ?>
                         </select>
                     <? } else { ?>
-                        <input type="text" id="f_distribution" value="<?= uimx::$invest_distribution[$row['distribution']] ?>" placeholder="Distribution">
+                        <input type="text" id="f_distribution" value="<?= $row['distribution'] == "" ? "" : uimx::$invest_distribution[$row['distribution']] ?>" placeholder="Distribution">
                     <? } ?>
                 </div>
             </div>

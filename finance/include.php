@@ -555,9 +555,13 @@ class calc {
         foreach(['DMD1', 'DMD2', 'DMD3'] as $key) {
             $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$data['symbol']."' AND day='".$data[$key]."'";
             $res = dbc::execSql($req);
-            $row = mysqli_fetch_assoc($res);
-            $close[$key] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
-            $perf[$key]  = round($close[$key] != 0 ? (($price - $close[$key]) * 100) / $close[$key] : 0, 2); 
+            if ($row = mysqli_fetch_assoc($res)) {
+                $close[$key] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
+                $perf[$key]  = round($close[$key] != 0 ? (($price - $close[$key]) * 100) / $close[$key] : 0, 2); 
+            } else {
+                $close[$key] = $price;
+                $perf[$key] = 0;
+            }
         }
 
         $ret['price'] = $price;
@@ -945,6 +949,8 @@ class cacheData {
         if (self::refreshOnceADayCache($file_cache)) {
             try {
                 $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+
+                var_dump($data);
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
