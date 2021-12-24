@@ -973,7 +973,8 @@ class cacheData {
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
-                $key = "Time Series (Daily)";
+                $key = aafinance::$premium ? "Time Series (Daily)" : "Time Series (Daily)";
+
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {
 
@@ -1020,7 +1021,8 @@ class cacheData {
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
-                $key = "Weekly Adjusted Time Series";
+                $key = aafinance::$premium ? "Weekly Adjusted Time Series" : "Weekly Time Series";
+
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {
 
@@ -1069,7 +1071,8 @@ class cacheData {
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
-                $key = "Monthly Adjusted Time Series";
+                $key = aafinance::$premium ? "Monthly Adjusted Time Series" : "Monthly Time Series";
+                
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {
 
@@ -1136,11 +1139,11 @@ class cacheData {
 
         foreach($options as $key => $val) $ret[$val] = false;
 
-        if (isset($options['overview'])) $ret["overview"] = self::buildCacheOverview($symbol);
-        if (isset($options['quote']))    $ret["quote"]    = self::buildCacheQuote($symbol);
         if (isset($options['daily']))    $ret["daily"]    = self::buildCacheDailyTimeSeriesAdjusted($symbol, $full);
         if (isset($options['weekly']))   $ret["weekly"]   = self::buildCacheWeeklyTimeSeriesAdjusted($symbol, $full);
         if (isset($options['monthly']))  $ret["monthly"]  = self::buildCacheMonthlyTimeSeriesAdjusted($symbol, $full);
+        if (isset($options['quote']))    $ret["quote"]    = self::buildCacheQuote($symbol);
+        if (isset($options['overview'])) $ret["overview"] = self::buildCacheOverview($symbol);
 
         return $ret;
     }
