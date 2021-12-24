@@ -27,7 +27,7 @@ $db = dbc::connect();
 
 <div id="rentier_calc_form" class="ui container inverted segment form">
     
-    <h2 class="ui inverted dividing header"><i class="inverted black dollar sign icon"></i> Libre financièrement en étant rentier</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted black dollar sign icon"></i>Rentier et Liberté Financière</h2>
     <div class="fields">
         <div class="three wide field">
             <div class="field">
@@ -82,7 +82,7 @@ $db = dbc::connect();
         </div>
         <div class="thirteen wide field">
             <div class="field">
-                <canvas id="rentier_chart" height="150"></canvas>
+                <canvas id="rentier_chart" height="300"></canvas>
             </div>
         </div>
     </div>
@@ -147,7 +147,7 @@ var actifs_data = [];
 var myChart;
 var ctx = document.getElementById('rentier_chart').getContext('2d');
 
-el("rentier_chart").height = document.body.offsetWidth > 700 ? 150 : 150;
+el("rentier_chart").height = document.body.offsetWidth > 700 ? 150 : 300;
 
 var options = {
     responsive: false,

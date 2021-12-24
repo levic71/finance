@@ -74,7 +74,7 @@ while ($row = mysqli_fetch_assoc($res)) {
 
     <div class="ui hidden divider"></div>
 
-    <h2 class="ui inverted dividing header"><i class="inverted grey money sign icon"></i> Libre financièrement en étant rentier</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted grey money sign icon"></i>Rentier et Liberté Financière</h2>
     <div class="field">
         <div class="three fields">
 
