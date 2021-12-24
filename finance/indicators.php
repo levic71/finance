@@ -339,11 +339,11 @@ $filter  = "";
 foreach(['force', 'reset', 'limited', 'filter'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
+$db = dbc::connect();
+
 if ($reset == 1) resetData($filter);
 
 if ($force == 1) {
-
-    $db = dbc::connect();
 
     logger::info("DIRECT", "---------", "---------------------------------------------------------");
 
