@@ -41,9 +41,9 @@ arsort($data2["perfs"]);
 				$req = "SELECT * FROM strategies WHERE defaut=1";
  */
 			if ($sess_context->isUserConnected())
-				$req = "SELECT * FROM strategies WHERE defaut= 1 OR user_id=".$sess_context->getUserId()." ORDER BY ordre, defaut ASC";
+				$req = "SELECT * FROM strategies WHERE defaut= 1 OR user_id=".$sess_context->getUserId()." ORDER BY ordre, id, defaut ASC";
 			else
-				$req = "SELECT * FROM strategies WHERE defaut=1 ORDER BY ordre";
+				$req = "SELECT * FROM strategies WHERE defaut=1 ORDER BY ordre, id ASC";
 
 			$tab_strat = array();
 			$res = dbc::execSql($req);
