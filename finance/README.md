@@ -34,7 +34,12 @@
 // Rajouter les données : frais de gestion, capitalisation, volume moy echange, dividende ...
 // Mettre des likes sur les stratégies
 
-
+// Abonnement
+// Nb de stratégies
+// Nb de portefeuille et option synthèse
+// Nb d'actifs perso en plus des actifs par défaut
+// Comparaison des stratégies par défaut vs perso
+// ETF + option Equity
 
 // 8 REGLES D'UN BON INVESTISSEUR
 

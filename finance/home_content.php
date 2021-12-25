@@ -41,9 +41,9 @@ arsort($data2["perfs"]);
 				$req = "SELECT * FROM strategies WHERE defaut=1";
  */
 			if ($sess_context->isUserConnected())
-				$req = "SELECT * FROM strategies WHERE defaut= 1 OR user_id=".$sess_context->getUserId()." ORDER BY defaut ASC";
+				$req = "SELECT * FROM strategies WHERE defaut= 1 OR user_id=".$sess_context->getUserId()." ORDER BY ordre, defaut ASC";
 			else
-				$req = "SELECT * FROM strategies WHERE defaut=1";
+				$req = "SELECT * FROM strategies WHERE defaut=1 ORDER BY ordre";
 
 			$tab_strat = array();
 			$res = dbc::execSql($req);
@@ -95,9 +95,6 @@ arsort($data2["perfs"]);
 				<th data-sortable-type="numeric">Prix</th>
 				<th data-sortable-type="numeric">Var</th>
 				<th data-sortable-type="numeric">DM</th>
-<? if ($sess_context->isSuperAdmin()) { ?>
-    		    <th></th>
-<? } ?>
 			</tr>
 		</thead>
         <tbody id="lst_stock_body">
@@ -146,13 +143,6 @@ if ($sess_context->isSuperAdmin()) {
 		<td class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['DM']."\">".sprintf("%.2f", $val['DM'])." %</td>
 	";
 
-if ($sess_context->isSuperAdmin()) {
-	echo "<td class=\"collapsing\">
-			<div class=\"ui inverted checkbox\">
-				<input type=\"radio\" name=\"row_symbol\" id=\"row_symbol\" value=\"".$val['symbol']."\" /> <label></label>
-			</div>
-	</td>";
-}
 	echo "</tr>";
 
 	$tabi = [ $val['region'] => $val['currency'], "Marché" => $val['marketopen'].'-'.$val['marketclose'], "TZ" => $val['timezone'], "Max Histo" => $max_histo, "Cache" => $cache_timestamp ];
@@ -172,18 +162,6 @@ if (false) {
 
 ?>
 		</tbody>
-<? 	if ($sess_context->isSuperAdmin()) { ?>
-		<tfoot class="full-width">
-			<tr>
-				<th></th>
-				<th colspan="16">
-					<div class="ui right floated buttons">
-						<div class="ui small black button" id="delete_bt">Supprimer</div>
-					</div>
-				</th>
-			</tr>
-		</tfoot>
-<? } ?>
 	</table>
 </div>
 
@@ -276,7 +254,6 @@ if (false) {
 <? } ?>
 <? } ?>
 <? if ($sess_context->isSuperAdmin()) { ?>
-	Dom.addListener(Dom.id('delete_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('row_symbol') != '') go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol='+valof('row_symbol'), loading_area: 'delete_bt', confirmdel: 1 }); });
 	Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
 <? } ?>
 

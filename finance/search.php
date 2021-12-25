@@ -37,7 +37,7 @@ if (isset($search) && $search != "") {
             foreach ($data["bestMatches"] as $key => $val) {
                 echo "<tr>
                     <td>" . $val["1. symbol"] . "</td>
-                    <td><div class=\"td_name\">" . $val["2. name"] . "</div></td>
+                    <td><div class=\"td_name\">" . utf8_decode($val["2. name"]) . "</div></td>
                     <td>" . $val["3. type"] . "</td>
                     <td>" . $val["4. region"] . "</td>
                     <td>" . $val["5. marketOpen"] . "</td>

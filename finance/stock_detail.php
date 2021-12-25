@@ -46,6 +46,9 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
     
     <h2 class="ui inverted left floated header"><?= utf8_decode($row['name']) ?>
         <div id="symbol_refresh_bt" class="ui floated right label button"><?= $row['symbol'] ?></div>
+        <? if ($sess_context->isSuperAdmin()) { ?>
+            <h3 class="ui right floated header"><i id="stock_delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
+        <? } ?>
     </h2>
 
     <table id="detail_stock" class="ui selectable inverted single line table">
@@ -661,6 +664,10 @@ Dom.addListener(Dom.id('graphe_M_bt'),  Dom.Event.ON_CLICK, function(event) { up
 }); */
 
 Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' }); });
+
+<? if ($sess_context->isSuperAdmin()) { ?>
+	Dom.addListener(Dom.id('stock_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol=<?= $symbol ?>)', loading_area: 'main', confirmdel: 1 }); });
+<? } ?>
 
 </script>
 
