@@ -27,12 +27,14 @@ $db = dbc::connect();
                 <th>Inscription</th>
                 <th>Confirmation</th>
                 <th>Abonnement</th>
+                <th>Nb Strategies</th>
+                <th>Nb Portfolios</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 <?
-			$req = "SELECT * FROM users";
+			$req = "SELECT *, (SELECT count(*) FROM strategies s WHERE s.user_id= users.id) total_strategies, (SELECT count(*) FROM portfolios p WHERE p.user_id= users.id) total_portfolios FROM users";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 ?>
@@ -42,6 +44,8 @@ $db = dbc::connect();
 					<td><?= $row['date_inscription'] ?></td>
 					<td><i class="ui inverted <?= $row['confirmation'] == 1 ? "green check" : "red cancel" ?> icon"></i></td>
 					<td><?= $row['abonnement'] ?></td>
+					<td><?= $row['total_strategies'] ?></td>
+					<td><?= $row['total_portfolios'] ?></td>
 					<td>
 						<i class="ui inverted edit icon"  onclick="go({ action: 'user', id: 'main', url: 'user.php?action=upt&item_id=<?= $row['id'] ?>' });"></i>
 						<i class="ui inverted trash icon" onclick="go({ action: 'user', id: 'main', url: 'user_action.php?action=del&item_id=<?= $row['id'] ?>', confirmdel: 1 });"></i>
