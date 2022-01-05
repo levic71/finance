@@ -127,7 +127,7 @@ Dom.addListener(Dom.id('f_product_name'), Dom.Event.ON_CHANGE, function(event) {
 });
 
 // Cancel button
-Dom.addListener(Dom.id('order_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('order_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
 
 // Add/Update button
 Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {

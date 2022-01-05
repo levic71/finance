@@ -50,7 +50,7 @@ $lst_orders    = $portfolio_data['orders'];
 				<div class="ui stackable two column grid container">
 					<div class="row">
 
-						<div class="ui inverted column readonly form">
+						<div class="ui inverted column readonly form" style="padding-left: 0px;">
 							<div class="field">
 								<label>Estimation Portefeuille</label>
 								<div class="field">
@@ -168,12 +168,13 @@ $lst_orders    = $portfolio_data['orders'];
 	<div class="ui hidden divider"></div>
 	
 	<h2 class="ui left floated"><i class="inverted grey history icon"></i>Historique ordres
+		<span id="sum_comm" style="display: none;"></span>
 		<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ordre</button>
 	</h2>
 	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
-				<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_order" data-sortable>
+				<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal tototo" id="lst_order" data-sortable>
 					<thead><tr>
 						<th></th>
 						<th>Date</th>
@@ -186,8 +187,10 @@ $lst_orders    = $portfolio_data['orders'];
 						<th></th>
 					</tr></thead>
 					<tbody>
-	<?
+<?
+				$hide_save_bt = true;
 				foreach($lst_orders as $key => $val) {
+					if ($val['other_name']) $hide_save_bt = false;
 					echo '<tr>
 						<td><i class="inverted long arrow alternate '.($val['action'] >= 0 ? "right green" : "left orange").' icon"></i></td>
 						<td>'.$val['date'].'</td>
@@ -202,14 +205,15 @@ $lst_orders    = $portfolio_data['orders'];
 						</td>
 					</tr>';
 				}
-	?>
+?>
 					</tbody>
-					<tfoot><tr>
-						<td colspan="7"></th>
-						<td id="sum_comm" class="right aligned"></td>
-						<td></th>
-					</tr></tfoot>
 				</table>
+
+				<div class="ui inverted icon input" style="top: -40px;">
+					<input id="searchBox" type="text" placeholder="Search...">
+					<i class="inverted search gray icon"></i>
+				</div>
+
 			</div>
 		</div>
     </div>
@@ -225,7 +229,7 @@ $lst_orders    = $portfolio_data['orders'];
 
 <script>
 
-var myChart;
+var myChart = null;
 var ctx = document.getElementById('pft_donut').getContext('2d');
 
 el("pft_donut").height = document.body.offsetWidth > 700 ? 200 : 300;
@@ -385,19 +389,21 @@ computeLines = function(opt) {
 
 	if (myChart) myChart.destroy();
 	myChart = new Chart(ctx, { type: 'doughnut', data: data, options: options } );
-	mychart.update();
+	myChart.update();
 }
 
+// Listener sur changement de valeur dans tableau des positions
 Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
 	Dom.addListener(item, Dom.Event.ON_CHANGE, function(event) {
 		computeLines('change');
 	});
 });
 
-
+// Listener sur les boutons ADD et BACK
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 
+// Listener possible sur SAVE et SELECT si pas portfolio synthese 
 <? if ($portfolio_data['infos']['synthese'] == 0) { ?>
 Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 	var quotes = '';
@@ -406,11 +412,31 @@ Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 	});
 	go({ action: 'order', id: 'main', url: 'order_action.php?action=save&portfolio_id=<?= $portfolio_id ?>&quotes=' + quotes, no_data: 1, msg: 'Portfolio sauvegardé' });
 });
+
+<? if ($hide_save_bt) { ?>
+hide('order_save_bt');
 <? } ?>
 
+<? } ?>
+
+// Init du calcul
+computeLines('init');
+
+// Tri sur tableau
 Sortable.initTable(el("lst_position"));
 Sortable.initTable(el("lst_order"));
 
-computeLines('init');
+// Pagination
+let t_options = {
+	numberPerPage: 10,
+	goBar: false,
+	pageCounter: true,
+};
+
+let t_filterOptions = {
+	el: '#searchBox'
+};
+
+paginate.init('#lst_order', t_options, t_filterOptions);
 
 </script>

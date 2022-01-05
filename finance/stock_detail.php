@@ -9,7 +9,6 @@ include "common.php";
 $symbol = "";
 $rsi_choice = 0;
 $volume_choice = 1;
-$display_date_rsi = false; // Affiche les dates dans le graphe RSI
 
 foreach(['symbol'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -243,6 +242,15 @@ table div.checkbox { padding: 8px 0px !important; }
     </form>
 </div>
 
+<div id="canvas_area" class="ui container inverted segment">
+    <h4 class="ui inverted dividing header">Tags</h4>
+    <span>
+        <? foreach(['toto', 'tutu', 'titi'] as $key => $val) { ?>
+            <button id="bt_<?= $val ?>" class="mini ui bt_tags <?= true ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val ?></button>
+        <? } ?>
+    </span>
+</div>
+
 
 <?
 
@@ -454,7 +462,7 @@ var options1 = {
     };
 
 var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
-el("stock_canvas2").height = document.body.offsetWidth > 700 ? <?= $display_date_rsi ? 100 : 30 ?> : 60;
+el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 60;
 
 var options2 = {
         interaction: {
@@ -476,7 +484,7 @@ var options2 = {
                 ticks: {
                     minRotation: 90,
                     maxRotation: 90,
-                    display: <?= $display_date_rsi ? "true" : "false" ?>
+                    display: false
                 }
             },
             y: {
@@ -633,6 +641,7 @@ getFormValues = function() {
     params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_categorie', 'f_distribution', 'f_link1', 'f_link2' ])+'&pea='+(valof('f_pea') == 0 ? 0 : 1);
     return params;
 }
+
 Dom.addListener(Dom.id('stock_edit_bt'),  Dom.Event.ON_CLICK, function(event) { p = getFormValues(); go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>'+p, loading_area: 'stock_edit_bt' }); });
 Dom.addListener(Dom.id('stock_sync_bt'),  Dom.Event.ON_CLICK, function(event) { p = getFormValues(); go({ action: 'update', id: 'main', url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>'+p, loading_area: 'stock_sync_bt' }); });
 Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'update', id: 'main', url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>', loading_area: 'stock_indic_bt' }); });
@@ -664,6 +673,13 @@ Dom.addListener(Dom.id('graphe_M_bt'),  Dom.Event.ON_CLICK, function(event) { up
 }); */
 
 Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' }); });
+
+changeState = function(item) {
+    switchColorElement(item.id, '<?= $bt_interval_colr ?>', '<?= $bt_grey_colr ?>');
+}
+Dom.find('button.bt_tags').forEach(function(item) {
+    Dom.addListener(item, Dom.Event.ON_CLICK, function(event) { changeState(item); });
+});
 
 <? if ($sess_context->isSuperAdmin()) { ?>
 	Dom.addListener(Dom.id('stock_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol=<?= $symbol ?>)', loading_area: 'main', confirmdel: 1 }); });

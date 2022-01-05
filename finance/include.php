@@ -1320,7 +1320,7 @@ class uimx {
         global $sess_context;
 
         $desc  = '
-        <div id="portfolio_orders_'.$portfolio['id'].'_bt" class="ui labeled button" tabindex="0">
+        <div id="portfolio_dashboard_'.$portfolio['id'].'_bt" class="ui labeled button" tabindex="0">
             <div class="ui '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).'  button">
                 <i class="chart pie inverted icon"></i>'.sprintf("%.2f &euro;", $portfolio_data['valo_ptf']).'
             </div>

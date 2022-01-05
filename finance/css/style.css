@@ -184,8 +184,9 @@ table th { color: burlywood !important; cursor: pointer !important; }
     white-space: nowrap;
 }
 
-#lst_stock td:nth-child(6), #lst_stock td:nth-child(7), #lst_stock td:nth-child(8),#lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
-    text-align: right !important;
+#lst_stock th:nth-child(6), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10), #lst_stock th:nth-child(11), #lst_stock th:nth-child(12),
+#lst_stock td:nth-child(6), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
+        text-align: right !important;
 }
 #lst_stock td:nth-child(3), #lst_stock th:nth-child(3) {
     text-align: left !important;

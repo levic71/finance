@@ -50,7 +50,7 @@ if ($action == "save" && isset($portfolio_id) && $portfolio_id != 0) {
 
 <script>
 <? if ($action != "save") { ?>
-    go({ action: 'order', id: 'main', url: 'order.php?portfolio_id=<?= $portfolio_id ?>' });
+    go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $portfolio_id ?>' });
 <? } ?>
     var p = loadPrompt();
     p.success('Ordre <?= ($action == "new" ? " ajouté": ($action == "upt" || $action == "save" ? " modifié" : " supprimé")) ?>');
