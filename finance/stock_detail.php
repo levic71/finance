@@ -465,7 +465,7 @@ var options1 = {
     };
 
 var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
-el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 60;
+el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 90;
 
 var options2 = {
         interaction: {

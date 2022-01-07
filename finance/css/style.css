@@ -183,7 +183,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 #lst_stock td:nth-child(3) {
     text-align: left !important;
-    width: 280px;
+    width: 340px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
