@@ -169,23 +169,27 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_order tbody td, #lst_order th {
     text-align: center !important;
 }
+#lst_order th:nth-child(5), #lst_order th:nth-child(6), #lst_order th:nth-child(7), #lst_order th:nth-child(8),
 #lst_order td:nth-child(5), #lst_order td:nth-child(6), #lst_order td:nth-child(7), #lst_order td:nth-child(8) {
     text-align: right !important;
 }
 #lst_stock td, #lst_stock th {
     text-align: center !important;
 }
+#lst_stock td:nth-child(1), #lst_stock th:nth-child(1) {
+    display: none;
+}
 #lst_stock td:nth-child(3) {
     text-align: left !important;
-    width: 250px;
+    width: 280px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
     white-space: nowrap;
 }
 
-#lst_stock th:nth-child(6), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10), #lst_stock th:nth-child(11), #lst_stock th:nth-child(12),
-#lst_stock td:nth-child(6), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
+#lst_stock th:nth-child(2), #lst_stock th:nth-child(6), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10), #lst_stock th:nth-child(11), #lst_stock th:nth-child(12),
+#lst_stock td:nth-child(2), #lst_stock td:nth-child(6), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
         text-align: right !important;
 }
 #lst_stock td:nth-child(3), #lst_stock th:nth-child(3) {
@@ -460,6 +464,18 @@ table th { color: burlywood !important; cursor: pointer !important; }
     transform: translateY(20px);
 }
 
+a.tooltip2:before {
+    transform: translateY(0px);
+    transform: translateX(100px);
+    top: 0px;
+}
+a.tooltip2:after {
+    transform: translateY(0px);
+    transform: translateX(100px);
+    padding: 10px 30px;
+    top: -35px;
+}
+.perf_card button.tooltip2 { white-space: nowrap; }
 .tooltip2:hover::before,
 .tooltip2:hover::after {
     opacity: 1;
@@ -554,6 +570,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #dca_calc_form tbody td:nth-child(12) {
     background: rgba(0, 0, 255, 0.1);
     display: none;
+}
+#lst_position thead th:nth-child(8) {
+    background:rgba(12, 158, 195, 0.05);
+}
+#lst_position tbody td:nth-child(8), #lst_position tfoot td:nth-child(4), #lst_position tbody td:nth-child(9), #lst_position tfoot td:nth-child(5) {
+    background: rgba(12, 158, 195, 0.1);
 }
 
 @media only screen and (max-width: 1024px) {

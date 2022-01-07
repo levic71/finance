@@ -116,13 +116,13 @@ $lst_orders    = $portfolio_data['orders'];
 			<div class="column">
 				<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_position" data-sortable>
 					<thead><tr>
-						<th>Actif</th>
-						<th class="center aligned">Qté</th>
-						<th class="center aligned">PRU</th>
+						<th class="center aligned">Actif</th>
+						<th class="right aligned">Qté</th>
+						<th class="right aligned">PRU</th>
 						<th class="center aligned">Cotation</th>
-						<th class="center aligned">% jour</th>
-						<th class="center aligned">Achat</th>
-						<th class="center aligned">Valorisation</th>
+						<th class="right aligned">% jour</th>
+						<th class="right aligned">Achat</th>
+						<th class="right aligned">Valorisation</th>
 						<th class="center aligned" colspan="2">Performance</th>
 					</tr></thead>
 					<tbody>
@@ -136,11 +136,12 @@ $lst_orders    = $portfolio_data['orders'];
 					$pct   = isset($quotes['stocks'][$key]['percent']) ? $quotes['stocks'][$key]['percent'] : 0;
 					$valo  = sprintf("%.2f", $val['nb'] * $quote);
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
+					$pname = $val['other_name'] ? $key : '<button class="tiny ui primary button">'.$key.'</button>';
 					echo '<tr id="tr_item_'.$i.'">
-						<td id="f_actif_'.$i.'">'.$key.'</td>
+						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
 						<td class="right aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
 						<td class="right aligned" id="f_pru_'.$i.'" data-pru="'.sprintf("%.2f", $val['pru']).'">'.sprintf("%.2f", $val['pru']).' &euro;</td>
-						<td class="right aligned"><div class="ui right labeled input">
+						<td class="right aligned"><div class="small ui right labeled input">
 							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" />
 							<div class="ui basic label">&euro;</div>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
@@ -168,7 +169,6 @@ $lst_orders    = $portfolio_data['orders'];
 	<div class="ui hidden divider"></div>
 	
 	<h2 class="ui left floated"><i class="inverted grey history icon"></i>Historique ordres
-		<span id="sum_comm" style="display: none;"></span>
 		<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ordre</button>
 	</h2>
 	<div class="ui stackable column grid">
@@ -207,12 +207,13 @@ $lst_orders    = $portfolio_data['orders'];
 				}
 ?>
 					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="7"></td>
+							<td class="right aligned"><span id="sum_comm"></span></td>
+							<td></td>
+					</tfoot>
 				</table>
-
-				<div class="ui inverted icon input" style="top: -40px;">
-					<input id="searchBox" type="text" placeholder="Search...">
-					<i class="inverted search gray icon"></i>
-				</div>
 
 			</div>
 		</div>
@@ -296,7 +297,7 @@ computeLines = function(opt) {
 
 		ind = Dom.attribute(item, 'id').split('_')[2];
 
-		actif    = el('f_actif_' + ind).innerHTML;
+		actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
 		pru      = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-pru'));
 		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'value'));
 		nb       = parseFloat(el('f_nb_' + ind).innerHTML);
@@ -426,17 +427,5 @@ computeLines('init');
 Sortable.initTable(el("lst_position"));
 Sortable.initTable(el("lst_order"));
 
-// Pagination
-let t_options = {
-	numberPerPage: 10,
-	goBar: false,
-	pageCounter: true,
-};
-
-let t_filterOptions = {
-	el: '#searchBox'
-};
-
-paginate.init('#lst_order', t_options, t_filterOptions);
 
 </script>

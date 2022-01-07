@@ -95,6 +95,7 @@ arsort($data2["perfs"]);
 				<th data-sortable-type="numeric">Prix</th>
 				<th data-sortable-type="numeric">Var</th>
 				<th data-sortable-type="numeric">DM</th>
+				<th data-sortable="false"></th>
 			</tr>
 		</thead>
         <tbody id="lst_stock_body">
@@ -117,45 +118,26 @@ foreach($data2["stocks"] as $key => $val) {
 
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
-	echo "<tr ".( $sess_context->isSuperAdmin() ? "" : "onclick=\"gotoStockDetail('".$val['symbol']."');\"" )."class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." \">";
+	echo "<tr onclick=\"gotoStockDetail('".$val['symbol']."');\" class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." \">";
 
 	echo "<td class=\"collapsing\"><i class=\"inverted grey chevron right icon\"></i></td>";
 
-if ($sess_context->isSuperAdmin()) {
 	echo "
-		<td onclick=\"gotoStockDetail('".$val['symbol']."');\">".$val['symbol']."</td>
-		<td onclick=\"gotoStockDetail('".$val['symbol']."');\">".utf8_decode($val['name'])."</td>
-	";
-} else {
-	echo "
-		<td>".$val['symbol']."</td>
+		<td><button class=\"mini ui primary button badge tooltip2\" data-tooltip2=\"toto\">".$val['symbol']."</button></td>
 		<td>".utf8_decode($val['name'])."</td>
 	";
-}
-
+	
 	echo "
 		<td>".$val['type']."</td>
 		<td>".sprintf("%.2f", $val['frais'])." %</td>
 		<td>".$val['actifs']." M</td>
-		<td>".($val['day'] == NULL ? "N/A" : $val['day'])."</td>
+		<td><a class=\"ui circular tooltip2\" data-position2=\"left center\" data-tooltip2=\"".($val['day'] == NULL ? "N/A" : $val['day'])."\"><i class=\"inverted calendar alternate icon\"></i></a></td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
 		<td class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['DM']."\">".sprintf("%.2f", $val['DM'])." %</td>
 	";
 
-	echo "</tr>";
-
-	$tabi = [ $val['region'] => $val['currency'], "Marché" => $val['marketopen'].'-'.$val['marketclose'], "TZ" => $val['timezone'], "Max Histo" => $max_histo, "Cache" => $cache_timestamp ];
-
-if (false) {
-	echo '<tr class="row-detail"><td></td><td colspan="10" class="ui fluid">';
-	foreach($tabi as $keyi => $vali)
-		echo '<div class="ui labeled button" tabindex="0">
-				<div class="ui teal button">'.$keyi.'</div>
-				<a class="ui basic teal left pointing label">'.$vali.'</a>
-			</div>';
-	echo '</td></tr>';
-}
+	echo "<td></td></tr>";
 
 	$x++;
 }

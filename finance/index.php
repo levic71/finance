@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.3.54";
+$ver = tools::isLocalHost() ? rand() : "1.3.56";
 
 foreach(['action'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -38,7 +38,6 @@ foreach(['action'] as $key)
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <title>Homepage Dual Momentum</title>
 
-		<link rel="stylesheet" href="css/paginate.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/mysemantic.min.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/the-datepicker.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/swiper-bundle.min.css?ver=<?= $ver ?>" />
@@ -56,7 +55,6 @@ foreach(['action'] as $key)
 		<script type="text/javascript" src="js/sortable.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/swiper-bundle.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/scripts.js?ver=<?= $ver ?>"></script>
-		<script type="text/javascript" src="js/paginate.min.js?ver=<?= $ver ?>"></script>
 
 		<script>
 		window.onload = function() {

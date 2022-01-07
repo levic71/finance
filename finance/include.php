@@ -254,6 +254,7 @@ class calc {
 
                 $positions[$pname]['nb']  = $nb;
                 $positions[$pname]['pru'] = $pru;
+                $positions[$pname]['other_name'] = $row['other_name'];
                 $sum_commission += $row['commission'];
             }
 
