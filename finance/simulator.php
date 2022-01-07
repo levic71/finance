@@ -277,6 +277,7 @@ $final_info2 = '
     <h2><i class="inverted money grey icon"></i>Valorisation du portefeuille</h2>
     <canvas id="sim_canvas1" height="100"></canvas>
 </div>
+
 <script>
 // Our labels along the x-axis
 var dates    = [<?= '"'.implode('","', $sim['tab_date']).'"' ?>];
@@ -373,24 +374,6 @@ var myChart = new Chart(ctx, {
 var ctx2 = document.getElementById('sim_canvas2').getContext('2d');
 el("sim_canvas2").height = document.body.offsetWidth > 700 ? 100 : 300;
 
-const horizontalLines = {
-    id: 'horizontalLines',
-    beforeDraw(chart, args, options) {
-        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
-        ctx.save();
-        ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
-        // Attention, l'origine du graphe est en haut a gauche et donc le top en bas et le bottom en haut
-        ctx.beginPath();
-        ctx.setLineDash([3, 3]);
-        h = (height/2) + top;
-        ctx.moveTo(left, h);
-        ctx.lineTo(right, h);
-        ctx.stroke();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.restore();
-    }
-};
-
 var data2 = {
     labels: dates,
     datasets: [
@@ -404,36 +387,7 @@ var data2 = {
     ]
 }
 
-var options2 = {
-    responsive: true,
-    maintainAspectRatio: true,
-    scales: {
-        x: {
-            gridLines: {
-                color: "red"
-            },
-            ticks: {
-                minRotation: 45,
-                maxRotation: 45,
-                display: true
-            }
-        },
-        y: {
-            gridLines: {
-                color: "red"
-            },
-            ticks : {
-                suggestedMin: -40,
-                suggestedMax: 40,
-                max: 40,
-                min: -40,
-                stepSize: 10
-            }
-        }
-    }
-};
-
-var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options2, plugins: [horizontalLines] } );
+var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options_DM_Graphe, plugins: [horizontalLines_DM_Graphe] } );
 
 </script>
 

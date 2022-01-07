@@ -45,7 +45,7 @@ foreach(['action'] as $key)
 		<link rel="stylesheet" href="css/prompt.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/style.css?ver=<?= $ver ?>" />
 
-		<!-- script type="text/javascript" src="js/semantic.min.js?ver=<?= $ver ?>"></script -->
+		<script type="text/javascript" src="js/chart_options.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/chart.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/sweetalert2.all.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/prompt.min.js?ver=<?= $ver ?>"></script>

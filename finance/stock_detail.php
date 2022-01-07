@@ -26,16 +26,20 @@ $readonly = $sess_context->isSuperAdmin() ? false : true;
 
 $db = dbc::connect();
 
+// Recuperation des infos de l'actif selectionne
 $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.symbol='".$symbol."'";
 $res = dbc::execSql($req);
 
+// Bye bye si inexistant
 if (!$row = mysqli_fetch_assoc($res)) exit(0);
 
+// Traitement des donnees
 $links = json_decode($row['links'], true);
 
 $row['link1'] = isset($links['link1']) ? $links['link1'] : "";
 $row['link2'] = isset($links['link2']) ? $links['link2'] : "";
 
+// Recuperation des indicateurs de l'actif de la derniere cotation
 $data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
 $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
@@ -102,6 +106,7 @@ function getTimeSeriesData($table_name, $period, $sym) {
             $row['MM50']  = sprintf("%.2f", $row['MM50']);
             $row['MM200'] = sprintf("%.2f", $row['MM200']);
             $row['RSI14'] = sprintf("%.1f", $row['RSI14']);
+            $row['DM']    = sprintf("%.2f", $row['DM']);
             $ret['rows'][] = $row;
             // Pour le choix de la couleur on ne prend pas le adjusted_close car le adjusted_open n'existe pas
             $ret['colrs'][] = $row['close'] >= $row['open'] ? 1 : 0;
@@ -116,13 +121,15 @@ function getTimeSeriesData($table_name, $period, $sym) {
     return $ret;
 }
 
-$data_daily   = getTimeSeriesData("daily_time_series_adjusted",   "DAILY",   $symbol);
+// Recuperation de tous les indicateurs DAILY de l'actif
+$data_daily = getTimeSeriesData("daily_time_series_adjusted", "DAILY", $symbol);
 
 // On ajoute la cotation du jour
 $data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "open" => $row["open"], "high" => $row["high"], "low" => $row["low"], "close" => $row["price"], "adjusted_close" => $row["price"], "volume" => $row["volume"], "period" => "DAILY", "DM" => $data['DM'], "MM7" => $data['MM7'], "MM20" => $data['MM20'], "MM50" => $data["MM50"], "MM200" => $data['MM200'], "RSI14" => $data["RSI14"] );
 $data_daily["rows"][]  = $data_daily_today;
 $data_daily["colrs"][] = 1;
 
+// Recuperation de tous les indicateurs WEEKLY/MONTHLY de l'actif
 $data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $symbol);
 $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $symbol);
 
@@ -151,6 +158,8 @@ table div.checkbox { padding: 8px 0px !important; }
     </span>
     <canvas id="stock_canvas1" height="100"></canvas>
     <canvas id="stock_canvas2" height="20"></canvas>
+    <h3><i class="inverted line graph grey icon"></i>Evolution DM</h3>
+    <canvas id="stock_canvas3" height="80"></canvas>
 </div>
 
 <div class="ui container inverted segment">
@@ -316,6 +325,7 @@ if (!$readonly) {
 
 var myChart1 = null;
 var myChart2 = null;
+var myChart3 = null;
 
 // 1y=280d, 55w, 12m
 var interval_period_days = {
@@ -340,19 +350,20 @@ getSlicedData2 = function(interval, t_d, t_w, t_m, size) {
     return size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));
 }
 
-newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill) {
+newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0) {
     
     var ret = {
         type: mytype,
         data: mydata,
 	    label: mylabel,
         borderColor: mycolor,
-        borderWidth: 0.5,
+        borderWidth: myborderwith,
         yAxisID: yaxeid,
         cubicInterpolationMode: 'monotone',
-        tension: 0.4,
+        tension: mytension,
         backgroundColor: bg,
-        fill: myfill
+        fill: myfill,
+        pointRadius: myradius,
     };
 
     return ret;
@@ -361,7 +372,8 @@ newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill) {
 getDatasetVals  = function(vals) { return newDataset(vals, 'line', 'y1', 'Cours',  '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>', true); }
 getDatasetVols  = function(vals, l, c) { return newDataset(vals, 'bar',  'y2', l, c, c, true); }
 getDatasetMMX   = function(vals, l) { return newDataset(vals, 'line', 'y1', l, mmx_colors[l], '', false); }
-getDatasetRSI14 = function(vals) { return newDataset(vals, 'line', 'y', "RSI14", 'violet', '', false); }
+getDatasetRSI14 = function(vals) { return newDataset(vals, 'line', 'y', "RSI14", 'violet', 'violet', false); }
+getDatasetDM    = function(vals) { return newDataset(vals, 'line', 'y', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.5)', false, 0.5, 0.4, 0.5); }
 
 var graphe_size_days = 0;
 
@@ -374,6 +386,7 @@ var ref_d_mm20   = [<?= implode(',', array_column($data_daily["rows"], "MM20")) 
 var ref_d_mm50   = [<?= implode(',', array_column($data_daily["rows"], "MM50"))   ?>];
 var ref_d_mm200  = [<?= implode(',', array_column($data_daily["rows"], "MM200"))  ?>];
 var ref_d_rsi14  = [<?= implode(',', array_column($data_daily["rows"], "RSI14"))  ?>];
+var ref_d_dm     = [<?= implode(',', array_column($data_daily["rows"], "DM"))     ?>];
 var ref_d_colors = [<?= implode(',', $data_daily["colrs"]) ?>];
 
 // Ref Weekly Data
@@ -385,6 +398,7 @@ var ref_w_mm20   = [<?= implode(',', array_column($data_weekly["rows"], "MM20"))
 var ref_w_mm50   = [<?= implode(',', array_column($data_weekly["rows"], "MM50"))   ?>];
 var ref_w_mm200  = [<?= implode(',', array_column($data_weekly["rows"], "MM200"))  ?>];
 var ref_w_rsi14  = [<?= implode(',', array_column($data_weekly["rows"], "RSI14"))  ?>];
+var ref_w_dm     = [<?= implode(',', array_column($data_weekly["rows"], "DM"))     ?>];
 
 // Ref Monthly Data
 var ref_m_days   = [<?= '"'.implode('","', array_column($data_monthly["rows"], "day")).'"' ?>];
@@ -395,6 +409,7 @@ var ref_m_mm20   = [<?= implode(',', array_column($data_monthly["rows"], "MM20")
 var ref_m_mm50   = [<?= implode(',', array_column($data_monthly["rows"], "MM50"))   ?>];
 var ref_m_mm200  = [<?= implode(',', array_column($data_monthly["rows"], "MM200"))  ?>];
 var ref_m_rsi14  = [<?= implode(',', array_column($data_monthly["rows"], "RSI14"))  ?>];
+var ref_m_dm     = [<?= implode(',', array_column($data_monthly["rows"], "DM"))     ?>];
 
 var g1_days   = null;
 var g1_vals   = null;
@@ -406,6 +421,7 @@ var g1_mm200  = null;
 var g1_colors = null;
 var g2_days   = null;
 var g2_rsi14  = null;
+var g3_dm     = null;
 
 // Transformation des 0/1 en rouge et vert
 for (var i = 0; i < ref_d_colors.length; i++) {
@@ -415,127 +431,12 @@ for (var i = 0; i < ref_d_colors.length; i++) {
 var ctx1 = document.getElementById('stock_canvas1').getContext('2d');
 el("stock_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
 
-var options1 = {
-    interaction: {
-            intersect: false
-        },
-        radius: 0,
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            x: {
-                grid: {
-                    display: false
-                },
-                ticks: {
-                    minRotation: 90,
-                    maxRotation: 90
-                }
-            },
-            y1: {
-                grid: {
-                    color: 'rgba(255, 255, 255, 0.05)'
-                },
-                ticks: {
-                    align: 'end',
-                    callback: function(value, index, values) {
-                        var c = value+" \u20ac       ";
-                        return c.substring(0, 6);
-                    }
-                },
-                type: 'linear',
-                position: 'right'
-            },
-            y2: {
-                type: 'linear',
-                position: 'left',
-                display: false,
-                ticks : {
-                    max: 100000000,
-                    min: 0,
-                    stepSize: 20000000
-                }
-            }
-        }
-    };
-
 var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
 el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 90;
 
-var options2 = {
-        interaction: {
-            intersect: false
-        },
-        radius: 0,
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            x: {
-                grid: {
-                    display: false
-                },
-                ticks: {
-                    minRotation: 90,
-                    maxRotation: 90,
-                    display: false
-                }
-            },
-            y: {
-                position: 'right',
-                suggestedMin: 0,
-                suggestedMax: 100,
-                grid: {
-                    color: 'rgba(255, 255, 255, 0.05)'
-                },
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 25,
-                    display: true,
-                    align: 'end',
-                    callback: function(value, index, values) {
-                        var c = value+" %       ";
-                        return c.substring(0, 6);
-                    }
-                },
-                afterSetDimensions: (scale) => {
-                    scale.maxWidth = 100;
-                }
-            }
-        }
-    };
+var ctx3 = document.getElementById('stock_canvas3').getContext('2d');
+el("stock_canvas3").height = document.body.offsetWidth > 700 ? 80 : 150;
 
-const horizontalLines = {
-    id: 'horizontalLines',
-    beforeDraw(chart, args, options) {
-        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
-        ctx.save();
-        ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
-        // Attention, l'origine du graphe est en haut a gauche et donc le top en bas et le bottom en haut
-        ctx.beginPath();
-        ctx.setLineDash([3, 3]);
-        h = (height/2) + top;
-        // console.log('h:'+height+'y:'+y+'b:'+bottom+'t:'+top);
-        ctx.moveTo(left, h);
-        ctx.lineTo(right, h);
-        ctx.stroke();
-        ctx.fillStyle = 'rgba(1, 207, 243, 0.1)';
-        pct = 30/100;
-        x1 = (height*pct) + top;
-        h2 = (height*(1-(pct*2)));
-        ctx.fillRect(left, x1, right, h2);
-        ctx.restore();
-    }
-};
 
 getMMXData = function(label) {
     return label == "MM7" ? g1_mm7 : (label == "MM20" ? g1_mm20 : (label == "MM50" ? g1_mm50 : g1_mm200));
@@ -567,7 +468,7 @@ update_data = function(size) {
 
     interval = getIntervalStatus();
 
-    // Graphe 1
+    // Graphe Stock
     g1_days   = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
     g1_vals   = getSlicedData2(interval, ref_d_vals, ref_w_vals, ref_m_vals, size);
     g1_vols   = getSlicedData2(interval, ref_d_vols, ref_w_vols, ref_m_vols, size);
@@ -579,9 +480,13 @@ update_data = function(size) {
     
     g1_colors = getSlicedData2(interval, ref_d_colors, ref_d_colors, ref_d_colors, size); // Couleurs peut etre a revoir !!!!
 
-    // Graphe 2
+    // Graphe RSI
     g2_days  = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days,  size);
     g2_rsi14 = getSlicedData2(interval, ref_d_rsi14, ref_w_rsi14, ref_m_rsi14, size);
+
+    // Graphe DM
+    g3_days = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days,  size);
+    g3_dm   = getSlicedData2(interval, ref_d_dm, ref_w_dm, ref_m_dm, size);
 
     return g1_days.length;
 }
@@ -616,7 +521,7 @@ update_all_charts = function(bt) {
     // Ajustement des données
     var nb_items = update_data(interval_period_days[getIntervalStatus()][getPeriodStatus()]);
 
-    // Update Chart 1
+    // Update Chart Stock
     var datasets1 = [];
     datasets1.push(getDatasetVals(g1_vals));
     if (isCN('graphe_mm7_bt',   '<?= $bt_mmx_colr ?>'))  datasets1.push(getDatasetMMX(g1_mm7,   'MM7'));
@@ -624,12 +529,17 @@ update_all_charts = function(bt) {
     if (isCN('graphe_mm50_bt',  '<?= $bt_mmx_colr ?>'))  datasets1.push(getDatasetMMX(g1_mm50,  'MM50'));
     if (isCN('graphe_mm200_bt', '<?= $bt_mmx_colr ?>'))  datasets1.push(getDatasetMMX(g1_mm200, 'MM200'));
     if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g1_vols, 'VOLUME', g1_colors));
-    myChart1 = update_graph_chart(myChart1, ctx1, options1, g1_days, datasets1, [{}]);
+    myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g1_days, datasets1, [{}]);
 
-    // Update Chart 2
+    // Update Chart RSI
     var datasets2 = [];
     datasets2.push(getDatasetRSI14(g2_rsi14));
-    myChart2 = update_graph_chart(myChart2, ctx2, options2, g2_days, datasets2, [horizontalLines]);
+    myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g2_days, datasets2, [horizontalLines_RSI_Graphe]);
+
+    // Update Chart DM
+    var datasets3 = [];
+    datasets3.push(getDatasetDM(g3_dm));
+    myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g3_days, datasets3, [horizontalLines_DM_Graphe]);
 
     rmCN(bt, 'loading');
 }
