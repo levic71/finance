@@ -43,10 +43,13 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
 <div class="ui container inverted segment">
     
-    <h2 class="ui inverted left floated header"><?= utf8_decode($row['name']) ?>
-        <div id="symbol_refresh_bt" class="ui floated right label button"><?= $row['symbol'] ?></div>
+    <h2 class="ui left">
+        <span>
+            <?= utf8_decode($row['name']) ?>
+            <button style="position: relative; left: 10px; top:-4px;" id="symbol_refresh_bt" class="mini ui floated right button"><?= $row['symbol'] ?></button>
+        </span>
         <? if ($sess_context->isSuperAdmin()) { ?>
-            <h3 class="ui right floated header"><i id="stock_delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
+            <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float black small trash icon"></i>
         <? } ?>
     </h2>
 

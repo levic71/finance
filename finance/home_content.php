@@ -123,7 +123,7 @@ foreach($data2["stocks"] as $key => $val) {
 	echo "<td class=\"collapsing\"><i class=\"inverted grey chevron right icon\"></i></td>";
 
 	echo "
-		<td><button class=\"mini ui primary button badge tooltip2\" data-tooltip2=\"toto\">".$val['symbol']."</button></td>
+		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
 		<td>".utf8_decode($val['name'])."</td>
 	";
 	
