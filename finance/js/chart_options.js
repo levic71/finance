@@ -120,6 +120,11 @@ const horizontalLines_RSI_Graphe = {
 var options_DM_Graphe = {
     responsive: true,
     maintainAspectRatio: true,
+	plugins: {
+		legend: {
+			display: false
+		}
+	},
     scales: {
         x: {
             gridLines: {
@@ -128,7 +133,7 @@ var options_DM_Graphe = {
             ticks: {
                 minRotation: 90,
                 maxRotation: 90,
-                display: true
+                display: false
             }
         },
         y: {

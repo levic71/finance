@@ -164,7 +164,7 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
     <canvas id="stock_canvas1" height="100"></canvas>
     <canvas id="stock_canvas2" height="20"></canvas>
     <h3><i class="inverted line graph grey icon"></i>Evolution DM</h3>
-    <canvas id="stock_canvas3" height="80"></canvas>
+    <canvas id="stock_canvas3" height="50"></canvas>
 </div>
 
 <div class="ui container inverted segment">
@@ -482,7 +482,7 @@ if (!$readonly) {
     el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 90;
 
     var ctx3 = document.getElementById('stock_canvas3').getContext('2d');
-    el("stock_canvas3").height = document.body.offsetWidth > 700 ? 80 : 150;
+    el("stock_canvas3").height = document.body.offsetWidth > 700 ? 50 : 150;
 
 
     getMMXData = function(label) {

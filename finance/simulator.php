@@ -387,6 +387,7 @@ var data2 = {
     ]
 }
 
+options_DM_Graphe.plugins.legend.display = true;
 var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options_DM_Graphe, plugins: [horizontalLines_DM_Graphe] } );
 
 </script>
