@@ -373,7 +373,7 @@ getDatasetVals  = function(vals) { return newDataset(vals, 'line', 'y1', 'Cours'
 getDatasetVols  = function(vals, l, c) { return newDataset(vals, 'bar',  'y2', l, c, c, true); }
 getDatasetMMX   = function(vals, l) { return newDataset(vals, 'line', 'y1', l, mmx_colors[l], '', false); }
 getDatasetRSI14 = function(vals) { return newDataset(vals, 'line', 'y', "RSI14", 'violet', 'violet', false); }
-getDatasetDM    = function(vals) { return newDataset(vals, 'line', 'y', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.5)', false, 0.5, 0.4, 0.5); }
+getDatasetDM    = function(vals) { return newDataset(vals, 'line', 'y', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0); }
 
 var graphe_size_days = 0;
 
@@ -537,9 +537,11 @@ update_all_charts = function(bt) {
     myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g2_days, datasets2, [horizontalLines_RSI_Graphe]);
 
     // Update Chart DM
-    var datasets3 = [];
-    datasets3.push(getDatasetDM(g3_dm));
-    myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g3_days, datasets3, [horizontalLines_DM_Graphe]);
+    if (myChart3 == null) { // On le dessine une fois en daily pour l'instant (pb perf et data)
+        var datasets3 = [];
+        datasets3.push(getDatasetDM(g3_dm));
+        myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g3_days, datasets3, [horizontalLines_DM_Graphe]);
+    }
 
     rmCN(bt, 'loading');
 }

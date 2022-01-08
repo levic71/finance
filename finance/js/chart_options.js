@@ -132,9 +132,9 @@ var options_DM_Graphe = {
             }
         },
         y: {
-            gridLines: {
-                color: "red"
-            },
+			grid: {
+				color: 'rgba(255, 255, 255, 0.05)'
+			},
             ticks : {
                 suggestedMin: -40,
                 suggestedMax: 40,
