@@ -126,8 +126,8 @@ var options_DM_Graphe = {
                 color: "red"
             },
             ticks: {
-                minRotation: 45,
-                maxRotation: 45,
+                minRotation: 90,
+                maxRotation: 90,
                 display: true
             }
         },
@@ -155,11 +155,12 @@ const horizontalLines_DM_Graphe = {
     beforeDraw(chart, args, options) {
         const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
         ctx.save();
-        ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
+//		alert(chart.scales.y.max);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
         // Attention, l'origine du graphe est en haut a gauche et donc le top en bas et le bottom en haut
         ctx.beginPath();
-        ctx.setLineDash([3, 3]);
-        h = (height/2) + top;
+        ctx.setLineDash([5, 5]);
+        h = height - ((Math.abs(chart.scales.y.min) * height) / (Math.abs(chart.scales.y.min) + chart.scales.y.max)) + top;
         ctx.moveTo(left, h);
         ctx.lineTo(right, h);
         ctx.stroke();
@@ -168,3 +169,130 @@ const horizontalLines_DM_Graphe = {
     }
 };
 
+
+/*         {
+            "responsive": true,
+            "maintainAspectRatio": true,
+            "scales": {
+                "x": {
+                    "axis": "x",
+                    "gridLines": {
+                        "color": "red"
+                    },
+                    "ticks": {
+                        "minRotation": 90,
+                        "maxRotation": 90,
+                        "display": true,
+                        "mirror": false,
+                        "textStrokeWidth": 0,
+                        "textStrokeColor": "",
+                        "padding": 3,
+                        "autoSkip": true,
+                        "autoSkipPadding": 3,
+                        "labelOffset": 0,
+                        "minor": {},
+                        "major": {},
+                        "align": "center",
+                        "crossAlign": "near",
+                        "showLabelBackdrop": false,
+                        "backdropColor": "rgba(255, 255, 255, 0.75)",
+                        "backdropPadding": 2,
+                        "color": "#666"
+                    },
+                    "type": "category",
+                    "display": true,
+                    "offset": false,
+                    "reverse": false,
+                    "beginAtZero": false,
+                    "bounds": "ticks",
+                    "grace": 0,
+                    "grid": {
+                        "display": true,
+                        "lineWidth": 1,
+                        "drawBorder": true,
+                        "drawOnChartArea": true,
+                        "drawTicks": true,
+                        "tickLength": 8,
+                        "offset": false,
+                        "borderDash": [],
+                        "borderDashOffset": 0,
+                        "borderWidth": 1,
+                        "color": "rgba(0,0,0,0.1)",
+                        "borderColor": "rgba(0,0,0,0.1)"
+                    },
+                    "title": {
+                        "display": false,
+                        "text": "",
+                        "padding": {
+                            "top": 4,
+                            "bottom": 4
+                        },
+                        "color": "#666"
+                    },
+                    "id": "x",
+                    "position": "bottom"
+                },
+                "y": {
+                    "axis": "y",
+                    "grid": {
+                        "color": "rgba(255, 255, 255, 0.05)",
+                        "display": true,
+                        "lineWidth": 1,
+                        "drawBorder": true,
+                        "drawOnChartArea": true,
+                        "drawTicks": true,
+                        "tickLength": 8,
+                        "offset": false,
+                        "borderDash": [],
+                        "borderDashOffset": 0,
+                        "borderWidth": 1,
+                        "borderColor": "rgba(0,0,0,0.1)"
+                    },
+                    "ticks": {
+                        "suggestedMin": -40,
+                        "suggestedMax": 40,
+                        "max": 40,
+                        "min": -40,
+                        "stepSize": 10,
+                        "minRotation": 0,
+                        "maxRotation": 50,
+                        "mirror": false,
+                        "textStrokeWidth": 0,
+                        "textStrokeColor": "",
+                        "padding": 3,
+                        "display": true,
+                        "autoSkip": true,
+                        "autoSkipPadding": 3,
+                        "labelOffset": 0,
+                        "minor": {},
+                        "major": {},
+                        "align": "center",
+                        "crossAlign": "near",
+                        "showLabelBackdrop": false,
+                        "backdropColor": "rgba(255, 255, 255, 0.75)",
+                        "backdropPadding": 2,
+                        "color": "#666"
+                    },
+                    "type": "linear",
+                    "display": true,
+                    "offset": false,
+                    "reverse": false,
+                    "beginAtZero": false,
+                    "bounds": "ticks",
+                    "grace": 0,
+                    "title": {
+                        "display": false,
+                        "text": "",
+                        "padding": {
+                            "top": 4,
+                            "bottom": 4
+                        },
+                        "color": "#666"
+                    },
+                    "id": "y",
+                    "position": "left"
+                }
+            },
+            "plugins": {}
+        }
+ */

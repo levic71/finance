@@ -4,7 +4,8 @@ td.aaf-negative { color: rgb(247, 95, 90) !important; }
 h3 { color: chocolate; }
 h2 > i { margin-right: 15px !important; }
 h2 { padding: 10px 10px 10px 0px; color: antiquewhite !important; background: linear-gradient(90deg, rgba(2,0,36,0.05) 0%, rgba(130,130,130,0.3) 45%, rgba(240,240,240,1) 100%); }
-h2 > i, h2 > span > i { color: antiquewhite !important; }
+h2 > i:not([class*="trash"]), h2 > span > i { color: antiquewhite !important; }
+h2 > i[class*="trash"] { color: black !important; }
 .clearing h2 { background: none; }
 
 .sim_page #synthese_bloc2 {
