@@ -77,7 +77,7 @@ arsort($tab_perfs["2"]);
 <div class="ui container inverted">
 
 	<h2 class="ui left floated">
-		<i class="inverted grey diamond icon"></i>Dual Momemtum
+		<i class="inverted diamond icon"></i>Dual Momemtum
 		<button id="paramares_3y_bt" class="mini ui right floated button <?= $range == 3 ? "pink" : "gray" ?>">3Y</button>
 		<button id="paramares_2y_bt" class="mini ui right floated button <?= $range == 2 ? "pink" : "gray" ?>">2Y</button>
 		<button id="paramares_1y_bt" class="mini ui right floated button <?= $range == 1 ? "pink" : "gray" ?>">1Y</button>
@@ -111,7 +111,7 @@ arsort($tab_perfs["2"]);
 
 <div class="ui container inverted">
 
-	<h2><i class="inverted grey cubes icon"></i>DCA</h2>
+	<h2><i class="inverted cubes icon"></i>DCA</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">

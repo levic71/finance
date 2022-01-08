@@ -22,7 +22,7 @@ arsort($data2["perfs"]);
 <div id="strategie_container" class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<i class="inverted grey chess icon"></i><span><?= $sess_context->isUserConnected() ? "Mes Stratégies" : "Stratégies" ?> <button id="strategie_bt" class="mini ui grey button"><i class="ui inverted star icon"></i></button></span>
+		<i class="inverted chess icon"></i><span><?= $sess_context->isUserConnected() ? "Mes Stratégies" : "Stratégies" ?> <button id="strategie_bt" class="mini ui grey button"><i class="ui inverted star icon"></i></button></span>
 
 		<? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Stratégie</button><? } ?>
 	</h2>
@@ -70,7 +70,7 @@ arsort($data2["perfs"]);
 <div id="stocks_box" class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<span><i class="inverted grey podcast icon"></i>Actifs suivis</span>
+		<span><i class="inverted podcast icon"></i>Actifs suivis</span>
 		<div>
 			<button id="lst_filter1_bt" class="mini ui grey button">PEA</button>
 			<button id="lst_filter2_bt" class="mini ui grey button">EUR</button>

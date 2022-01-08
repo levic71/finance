@@ -54,14 +54,12 @@ while($row = mysqli_fetch_assoc($res)) $tab_strategies[] = $row;
     <input type="hidden" id="portfolio_id" value="<?= $portfolio_id ?>" />
 
     <div class="ui inverted clearing segment">
-		<h2 class="ui inverted left floated header">
-            <i class="inverted grey briefcase icon"></i>Mon Portefeuille
-        </h2>
+		<h2 class="ui inverted left floated header"><i class="inverted briefcase icon"></i>Mon Portefeuille</h2>
 
         <? if (strstr($action, "upt")) { ?>
             <h3 class="ui right floated header"><i id="portfolio_delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
         <? } ?>
-    </h2>
+    </div>
 
     <div class="two fields">
         <div class="field">

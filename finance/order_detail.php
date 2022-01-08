@@ -46,14 +46,12 @@ $quotes = calc::getIndicatorsLastQuote();
     <input type="hidden" id="portfolio_id" value="<?= $portfolio_id ?>" />
 
     <div class="ui inverted clearing">
-		<h2 class="ui inverted left floated header">
-            <i class="inverted grey briefcase icon"></i>Mon Ordre
-        </h2>
+		<h2 class="ui inverted left floated header"><i class="inverted briefcase icon"></i>Mon Ordre</h2>
 
         <? if ($action == "upt") { ?>
             <h3 class="ui right floated header"><i id="order_delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
         <? } ?>
-    </h2>
+    </div>
 
     <div class="six fields">
         <div class="field">

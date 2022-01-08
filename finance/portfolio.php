@@ -42,7 +42,7 @@ $quotes = calc::getIndicatorsLastQuote();
 <div class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<i class="inverted grey briefcase icon"></i>Mes Portefeuilles
+		<i class="inverted briefcase icon"></i>Mes Portefeuilles
 		<? if ($sess_context->isUserConnected()) { ?><button id="portfolio_add2_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Synthèse</button><? } ?>
 		<? if ($sess_context->isUserConnected()) { ?><button id="portfolio_add1_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Portefeuille</button><? } ?>
 	</h2>

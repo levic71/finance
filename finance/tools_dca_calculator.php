@@ -27,7 +27,7 @@ while ($row = mysqli_fetch_assoc($res)) {
 
 <div class="ui container inverted segment form">
 
-    <h2 class="ui inverted dividing header"><i class="inverted grey balance scale icon"></i> Rebalancing</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted balance scale icon"></i> Rebalancing</h2>
     <div class="field">
         <div class="three fields">
 
@@ -74,7 +74,7 @@ while ($row = mysqli_fetch_assoc($res)) {
 
     <div class="ui hidden divider"></div>
 
-    <h2 class="ui inverted dividing header"><i class="inverted grey money sign icon"></i>Rentier et Liberté Financière</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted money sign icon"></i>Rentier et Liberté Financière</h2>
     <div class="field">
         <div class="three fields">
 

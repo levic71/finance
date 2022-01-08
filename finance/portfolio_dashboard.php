@@ -43,7 +43,7 @@ $lst_orders    = $portfolio_data['orders'];
 
 <div class="ui container inverted segment">
 
-	<h2 class="ui left floated"><i class="inverted grey briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small></h2>
+	<h2 class="ui left floated"><i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small></h2>
 	<div class="ui stackable column grid">
 		<div class="row">
 			<div class="ten wide column">
@@ -106,7 +106,7 @@ $lst_orders    = $portfolio_data['orders'];
 
 	<div class="ui hidden divider"></div>
 
-	<h2 class="ui left floated"><i class="inverted grey location arrow icon"></i>Positions
+	<h2 class="ui left floated"><i class="inverted location arrow icon"></i>Positions
 		<? if ($portfolio_data['infos']['synthese'] == 0) { ?>
 		<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i> Save</button>
 		<? } ?>
@@ -168,7 +168,7 @@ $lst_orders    = $portfolio_data['orders'];
 
 	<div class="ui hidden divider"></div>
 	
-	<h2 class="ui left floated"><i class="inverted grey history icon"></i>Historique ordres
+	<h2 class="ui left floated"><i class="inverted history icon"></i>Historique ordres
 		<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ordre</button>
 	</h2>
 	<div class="ui stackable column grid">

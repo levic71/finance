@@ -102,7 +102,7 @@ if ($strategie_defined && $f_strategie_id != 0) {
 
 <div id="dca_calc_form" class="ui container inverted segment form">
     
-    <h2 class="ui inverted dividing header"><i class="inverted black balance scale icon"></i>Rebalancing <?= $portfolio_defined ? "portefeuille ".utf8_decode($portfolio_name) : ( $strategie_defined ? " stratégie ".utf8_decode($strategie_name) : "libre") ?></h2>
+    <h2 class="ui inverted dividing header"><i class="inverted balance scale icon"></i>Rebalancing <?= $portfolio_defined ? "portefeuille ".utf8_decode($portfolio_name) : ( $strategie_defined ? " stratégie ".utf8_decode($strategie_name) : "libre") ?></h2>
     <div class="ui centered grid">
         <div class="sixteen wide column">
     
@@ -212,7 +212,7 @@ if ($strategie_defined && $f_strategie_id != 0) {
 </div>
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted black help circle icon"></i>&nbsp;&nbsp;Comment utiliser cet outil <button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
+    <h2><i class="inverted help circle icon"></i>&nbsp;&nbsp;Comment utiliser cet outil <button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
 
     <div id="faq_view">
 <p>

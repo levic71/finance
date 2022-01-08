@@ -27,7 +27,7 @@ $db = dbc::connect();
 
 <div id="rentier_calc_form" class="ui container inverted segment form">
     
-    <h2 class="ui inverted dividing header"><i class="inverted black dollar sign icon"></i>Rentier et Liberté Financière</h2>
+    <h2 class="ui inverted dividing header"><i class="inverted dollar sign icon"></i>Rentier et Liberté Financière</h2>
     <div class="fields">
         <div class="three wide field">
             <div class="field">
@@ -91,7 +91,7 @@ $db = dbc::connect();
 
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted black help circle icon"></i>&nbsp;&nbsp;Conseils d'utilisation et hypothèses<button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
+    <h2><i class="inverted help circle icon"></i>&nbsp;&nbsp;Conseils d'utilisation et hypothèses<button id="faq_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
 
     <div id="faq_view">
 <p>

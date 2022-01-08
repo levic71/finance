@@ -170,7 +170,7 @@ $infos2 = '
 <input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted <?= $row['methode'] == 2 ? 'cubes' : 'diamond' ?> grey icon"></i><?= $row['title'] ?></h2>
+    <h2><i class="inverted <?= $row['methode'] == 2 ? 'cubes' : 'diamond' ?> icon"></i><?= $row['title'] ?></h2>
     <div class="ui stackable grid container">
           <div class="row">
           <div class="eight wide column">
@@ -274,7 +274,7 @@ $final_info2 = '
 <!-- GRAPHE 1 -->
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted money grey icon"></i>Valorisation du portefeuille</h2>
+    <h2><i class="inverted money icon"></i>Valorisation du portefeuille</h2>
     <canvas id="sim_canvas1" height="100"></canvas>
 </div>
 
@@ -357,7 +357,7 @@ var myChart = new Chart(ctx, {
 <? if ($row['methode'] == 1) { ?>
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted line graph grey icon"></i>Evolution DM</h2>
+    <h2><i class="inverted line graph icon"></i>Evolution DM</h2>
     <canvas id="sim_canvas2" height="100"></canvas>
 </div>
 
@@ -397,7 +397,7 @@ var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options_DM_
 <!-- TABLEAU DETAIL -->
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted grid layout grey icon"></i>Composition portefeuille</h2>
+    <h2><i class="inverted grid layout icon"></i>Composition portefeuille</h2>
     <table id="lst_sim" class="ui selectable inverted very compact unstackable table lst_sim_<?= $row['methode'] ?>">
         <thead>
             <tr>
@@ -432,7 +432,7 @@ foreach($sim['tab_detail'] as $key => $val) {
 </div>
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted exchange grey icon"></i>Ordres boursiers</h2>
+    <h2><i class="inverted exchange icon"></i>Ordres boursiers</h2>
     <table id="lst_ordres" class="ui striped selectable inverted single line very compact unstackable table">
         <thead><tr><th style="width: 50px;"></th><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Nb</th><th>Prix</th></tr></thead>
         <tbody>
