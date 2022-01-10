@@ -735,6 +735,60 @@ class calc {
         return $ret;
     }
 
+    public static function getPerfIndicator($data) {
+
+        $ret = 0;
+
+        //Indicateur tendance
+        $MM7   = $data['MM7'];
+        $MM20  = $data['MM20'];
+        $MM50  = $data['MM50'];
+        $MM100 = ($data['MM200'] + $data['MM50']) / 2;
+        $MM200 = $data['MM200'];
+        $close = $data['price'];
+
+/*
+//rouge (baissier prix sous moyenne mobile 200)
+c1= (close<MM200)
+//orange( rebond technique)
+c2= c1 and(MM20<close)
+//jaune (phase1 nouveau cycle)
+c3= c1 and(MM50<close)and(mm50<mm200)and(close<mm200)
+//vert fluo ( phase 2 nouveau cycle)
+c4= (MM200<close)and(MM50<close)and(MM50<MM200)
+//vert foncé ( au dessus de tte moyenne mobile, cycle mur)
+C5= (MM200<MM50)and(MM50<close)and(MM20<close)
+//bleu (retournement de tendance)
+c6= (MM100<MM200) and(MM50<MM200)and (close<MM200)and(MM100<close)and(MM50<MM100)
+//bleu (retournement de tendance 2 )
+c6bis= (MM100<MM200) and(MM50<MM200)and (close<MM200)and(MM50<close)and(MM100<MM50)
+//gris (phase 5 affaiblissement ou retournement à la baisse, neutre)
+c7= (MM200<close) and(close<MM100)and (MM200<MM100)and(MM200<MM50)
+//bleu bouteille (consolidation)
+c8=(MM200<MM50)and(MM200<close)and(MM100<close)and((close<MM50)or(close<MM20))
+*/
+        if ($MM200 < $MM50 && $MM200 < $close && $MM100 < $close && ($close < $MM50 || $close < $MM200))
+            $ret = 1; // bleu bouteille (consolidation)
+        else if ($MM200 < $close && $close < $MM100 && $MM200 < $MM100 && $MM200 < $MM50)
+            $ret = 2; // gris (phase 5 affaiblissement ou retournement à la baisse, neutre)
+        else if ($MM100 < $MM200 && $MM50 < $MM200 && $close < $MM200 && $MM50 < $close && $MM100 < $MM50)
+            $ret = 3; // bleu (retournement de tendance 2)
+        else if ($MM100 < $MM200 && $MM50 < $MM200 && $close < $MM200 && $MM100 < $close && $MM50 < $MM100)
+            $ret = 4; // bleu (retournement de tendance)
+        else if ($MM200 < $MM50 && $MM50 < $close && $MM20 < $close)
+            $ret = 5; // vert foncé (au dessus de tte moyenne mobile, cycle mur)
+        else if ($MM200 < $close && $MM50 < $close && $MM50 < $MM200)
+            $ret = 6; // vert fluo (phase 2 nouveau cycle)
+        else if ($MM50 < $close && $MM50 < $MM200 && $close < $MM200)
+            $ret = 7; // jaune (phase1 nouveau cycle)
+        else if ($MM20 < $close)
+            $ret = 8; // orange (rebond technique)
+        else if ($close < $MM200)
+            $ret = 9; // rouge (baissier prix sous moyenne mobile 200)
+
+        return $ret;
+    }
+
 }
 
 //
@@ -1300,6 +1354,32 @@ class uimx {
          4 => "Dividende",
          5 => "Transfert IN",
         -5 => "Transfert OUT"
+    ];
+
+    public static $perf_indicator_colrs = [
+        0 => "black",
+        1 => "purple",
+        2 => "gray",
+        3 => "teal",
+        4 => "blue",
+        5 => "olive",
+        6 => "green",
+        7 => "yellow",
+        8 => "orange",
+        9 => "red"
+    ];
+
+    public static $perf_indicator_libs = [
+        0 => "N/A",
+        1 => "Consolidation",
+        2 => "Phase 5 affaiblissement ou retournement à la baisse, neutre",
+        3 => "Retournement de tendance 2",
+        4 => "Retournement de tendance",
+        5 => "Au dessus de toute moyenne mobile, cycle mur",
+        6 => "Phase 2 nouveau cycle",
+        7 => "Phase1 nouveau cycle",
+        8 => "Rebond technique",
+        9 => "Baissier prix sous moyenne mobile 200"
     ];
 
     public static function staticInfoMsg($msg, $icon, $color) {

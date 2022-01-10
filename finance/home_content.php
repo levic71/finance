@@ -110,6 +110,7 @@ arsort($data2["perfs"]);
 				<th data-sortable-type="numeric">Var</th>
 				<th data-sortable-type="numeric">DM</th>
 				<th data-sortable="false"></th>
+				<th data-sortable="false"></th>
 			</tr>
 		</thead>
         <tbody id="lst_stock_body">
@@ -125,7 +126,8 @@ foreach($data2["stocks"] as $key => $val) {
 	$symbol = $key;
 
 //	$max_histo = calc::getMaxHistoryDate($symbol);
-	$max_histo = isset($max_histo_tab[$symbol]) ? $max_histo_tab[$symbol] : "0000-00-00";
+	$max_histo      = isset($max_histo_tab[$symbol]) ? $max_histo_tab[$symbol] : "0000-00-00";
+	$perf_indicator = calc::getPerfIndicator($val);
 
 	$cache_filename = "cache/QUOTE_".$symbol.".json";
 	$cache_timestamp = file_exists($cache_filename) ? date("Y-m-d", filemtime($cache_filename)) : "xxxx-xx-xx";
@@ -151,7 +153,10 @@ foreach($data2["stocks"] as $key => $val) {
 		<td class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['DM']."\">".sprintf("%.2f", $val['DM'])." %</td>
 	";
 
-	echo "<td></td></tr>";
+	echo "<td><a class=\"ui mini ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label tooltip2\" data-position2=\"right center\" data-tooltip2=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"></a></td>";
+
+	echo "<td></td>";
+	echo "</tr>";
 
 	$x++;
 }
