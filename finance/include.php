@@ -1234,17 +1234,17 @@ class uimx {
     public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA' ];
     public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes' ];
     public static $invest_distribution = [ 0 => "Capitalisation", 1 => "Distribution" ];
-    public static $invest_categories   = [
-        0  => "Autre",
-        1  => "Biens conso & Services",
-        2  => "Communication",
+    public static $invest_secteur   = [
+        0 => "Biens de consommation hors cyclique",
+        1  => "Biens de consommation cyclique",
+        2  => "Télécommunication",
         3  => "Eau",
         4  => "Ecologie",
         5  => "Energie",
         6  => "Finances",
         7  => "Indice",
         8  => "Infrastuctures",
-        9  => "Matériaux & Industrie",
+        9  => "Matériaux et Industrie",
         10 => "Métaux Précieux",
         11 => "Mixte",
         12 => "Santé",
@@ -1252,6 +1252,45 @@ class uimx {
         14 => "Technologie",
         15 => "Obligations",
         16 => "Immobilier"
+    ];
+    public static $invest_zone_geo = [
+        0  => "Internationnal",
+        1  => "Europe",
+        2  => "Europe du Nord",
+        3  => "Europe de l'est",
+        4  => "Union Européenne",
+        5  => "Europe hors UK",
+        6  => "UK",
+        7  => "Moyen Orient",
+        8  => "Bric",
+        9  => "Afrique",
+        10 => "Europe méditerranéenne",
+        11 => "Amérique du Nord",
+        12 => "MENA",  // Afrique du nord + Moyen Orient
+        13 => "EMEA",
+        14 => "ASEAN"
+    ];
+    public static $invest_taille = [
+        0  => "Large Cap",
+        1  => "Middle Cap",
+        2  => "Small Cap"
+    ];
+    public static $invest_classe = [
+        0  => "Actions",
+        1  => "Obligations",
+        2  => "Placement monétaires",
+        3  => "Matières premières",
+        4  => "Devises",
+        5  => "Indices"
+    ];
+    public static $invest_factorielle = [
+        0  => "Value",     // Critère de sélection sur la valorisation de l'asset (recherche des actifs sous coté par rapport à la valeur intraséque)
+        1  => "Growth",    // Critère de sélection lié à la croissance du chiffre d?affaires et des résultats (recherche des actifs dont les bénéfices augmentent plus que le marché)
+        2  => "Momentum",  // Critère de sélection qui prend en compte la tendance positive sur les jours/semaines/mois précédents plus forte que le marché
+        3  => "Quality",   // Faible endettement et forte profitabilité
+        4  => "Low Volatility", // Faible volatilité
+        5  => "High Dividend Yield", // Rendement élevé et constant des dividendes
+        6  => "Equal Weight"  // Capitalisation plus petite
     ];
     public static $order_actions   = [
          2 => "Dépot",

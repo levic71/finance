@@ -12,10 +12,10 @@
 // Done : Palmares des meilleures stratégies par methode (DCA/DM) + Niveau de risque
 // Done : Arrondie 2/3 chiffres après virgules ou en k en fct min max pour dimuner la taille des data envoyées
 // Done : Gestion des portefeuilles en base de donnees
+// Done : tags multiples sur expositions ETF (secteurs, geo, ...)
 
 // Choix sur nb actifs investit sur DM (aujourd'hui uniquement le meilleur)
 // Recuperer les montants frais EFT + capitalisation + volume xchange par jour/niveau de risque
-// tags multiples sur expositions ETF (secteurs, geo, ...)
 // Comparaison entre stratégie choisie et investissement réel => Déviation et rattrapage prochain invest 
 // Croisement MM200 et TR
 // Notification sur journée d'invest + periode ou sur seuil cours avec info nb actions a acheter/vendre en fct stratégie

@@ -20,6 +20,7 @@ $bt_interval_colr = "green"; // D/W/M
 $bt_period_colr   = "blue";  // ALL/3Y/1Y/1T
 $bt_mmx_colr      = "purple";
 $bt_volume_colr   = "yellow";
+$bt_filter_colr   = "teal";
 $bt_grey_colr     = "grey";
 
 $readonly = $sess_context->isSuperAdmin() ? false : true;
@@ -38,6 +39,8 @@ $links = json_decode($row['links'], true);
 
 $row['link1'] = isset($links['link1']) ? $links['link1'] : "";
 $row['link2'] = isset($links['link2']) ? $links['link2'] : "";
+
+$tags = array_flip(explode("|", utf8_decode($row['tags'])));
 
 // Recuperation des indicateurs de l'actif de la derniere cotation
 $data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
@@ -133,6 +136,11 @@ $data_daily["colrs"][] = 1;
 $data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $symbol);
 $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $symbol);
 
+asort(uimx::$invest_secteur); // Permet de rajouter des items n'importe ou dans la liste
+asort(uimx::$invest_zone_geo);
+asort(uimx::$invest_classe);
+asort(uimx::$invest_factorielle);
+
 ?>
 
 <style>
@@ -163,7 +171,7 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
     </span>
     <canvas id="stock_canvas1" height="100"></canvas>
     <canvas id="stock_canvas2" height="20"></canvas>
-    <h3><i class="inverted line graph grey icon"></i>Evolution DM</h3>
+    <h4>Evolution DM</h4>
     <canvas id="stock_canvas3" height="50"></canvas>
 </div>
 
@@ -181,17 +189,16 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
                     <input type="text" id="f_isin" value="<?= $row['ISIN'] ?>" placeholder="ISIN">
                 </div>
                 <div class="field">
-                    <label>Catégorie</label>
+                    <label>Risque</label>
                     <? if (!$readonly) { ?>
-                        <select class="ui fluid search dropdown" id="f_categorie">
+                        <select class="ui fluid search dropdown" id="f_rating">
                             <?
-                            asort(uimx::$invest_categories); // Permet de rajouter des items n'importe ou dans la liste
-                            foreach (uimx::$invest_categories as $key => $val)
-                                echo '<option value="' . $key . '" ' . ($row['distribution'] == $key ? 'selected="selected"' : '') . '>' . $val . '</option>';
+                            foreach ([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7] as $key => $val)
+                                echo '<option value="' . $key . '" ' . ($row['rating'] == $key ? 'selected="selected"' : '') . '>' . $val . '</option>';
                             ?>
                         </select>
                     <? } else { ?>
-                        <input type="text" id="f_categorie" value="<?= $row['categorie'] == "" ? "" : uimx::$invest_categories[$row['categorie']] ?>" placeholder="Catégorie">
+                        <input type="text" id="f_categorie" value="<?= $row['categorie'] == "" ? "" : uimx::$invest_secteur[$row['categorie']] ?>" placeholder="Catégorie">
                     <? } ?>
                 </div>
             </div>
@@ -224,16 +231,12 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
                     <? if (!$readonly) { ?>
                         <label>Morning Star</label>
                         <input type="text" id="f_link1" value="<?= $row['link1'] ?>" placeholder="Lien http">
-                    <? } else { ?>
-                        &nbsp;&nbsp;<i class="ui icon inverted external"></i><a href="<?= $row['link1'] ?>">Morning Star</a>
                     <? } ?>
                 </div>
                 <div class="field">
                     <? if (!$readonly) { ?>
                         <label>JustETF</label>
                         <input type="text" id="f_link2" value="<?= $row['link2'] ?>" placeholder="Lien http">
-                    <? } else { ?>
-                        &nbsp;&nbsp;<i class="ui icon inverted external"></i><a href="<?= $row['link2'] ?>">JustETF</a>
                     <? } ?>
                 </div>
             </div>
@@ -260,16 +263,60 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
 </div>
 
 <div id="canvas_area" class="ui container inverted segment">
+<? if ($readonly) { ?>
     <h4 class="ui inverted dividing header">Tags</h4>
-    <span>
-        <? foreach (['toto', 'tutu', 'titi'] as $key => $val) { ?>
-            <button id="bt_<?= $val ?>" class="mini ui bt_tags <?= true ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val ?></button>
-        <? } ?>
-    </span>
+<? } ?>
+<? foreach( [
+                "Secteur"             => uimx::$invest_secteur,
+                "Zone géographique"   => uimx::$invest_zone_geo,
+                "Classe d'actif"      => uimx::$invest_classe,
+                "Critère factorielle" => uimx::$invest_factorielle,
+                "Taille"              => uimx::$invest_taille
+            ] as $lib => $tab) { ?>
+
+<? if (!$readonly) { ?>
+    <h4 class="ui inverted dividing header"><?= $lib ?></h4>
+<? } ?>
+
+    <div class="ui horizontal list">
+        <?
+            foreach ($tab as $key => $val) {
+                if ($readonly) {
+                    
+                    if (isset($tags[$val])) { ?>
+
+                        <div class="item"><button class="item very small ui bt_tags <?= $bt_interval_colr ?> button"><?= $val ?></button></div>
+
+                <? } } else { ?>
+    
+                    <div class="item"><button id="bt_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item very small ui bt_tags <?= isset($tags[$val]) ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val ?></button></div>
+
+                <? } ?>
+
+            <? } ?>
+    </div>
+<? } ?>
 </div>
 
+<? if ($readonly) { ?>
+<div id="canvas_area" class="ui container inverted segment form">
+    <h4 class="ui inverted dividing header">Links</h4>
+    <div class="field">
+        <div class="two fields">
+            <div class="field">
+                <i class="ui icon inverted external"></i><a href="<?= $row['link1'] ?>">Morning Star</a>
+            </div>
+            <div class="field">
+                <i class="ui icon inverted external"></i><a href="<?= $row['link2'] ?>">JustETF</a>
+            </div>
+        </div>
+    </div>
+</div>
+<? } ?>
 
 <?
+
+// ALTER TABLE `stocks` ADD `tags` TEXT NOT NULL AFTER `links`, ADD `rating` INT NOT NULL DEFAULT '6' AFTER `tags`;
 
 if (!$readonly) {
     $infos = calc::getDirectDM($data);
@@ -425,50 +472,50 @@ if (!$readonly) {
     var graphe_size_days = 0;
 
     // Ref Daily data
-    var ref_d_days = [<?= '"' . implode('","', array_column($data_daily["rows"], "day")) . '"' ?>];
-    var ref_d_vals = [<?= implode(',', array_column($data_daily["rows"], "adjusted_close"))  ?>];
-    var ref_d_vols = [<?= implode(',', array_column($data_daily["rows"], "volume")) ?>];
-    var ref_d_mm7 = [<?= implode(',', array_column($data_daily["rows"], "MM7"))    ?>];
-    var ref_d_mm20 = [<?= implode(',', array_column($data_daily["rows"], "MM20"))   ?>];
-    var ref_d_mm50 = [<?= implode(',', array_column($data_daily["rows"], "MM50"))   ?>];
-    var ref_d_mm200 = [<?= implode(',', array_column($data_daily["rows"], "MM200"))  ?>];
-    var ref_d_rsi14 = [<?= implode(',', array_column($data_daily["rows"], "RSI14"))  ?>];
-    var ref_d_dm = [<?= implode(',', array_column($data_daily["rows"], "DM"))     ?>];
+    var ref_d_days   = [<?= '"' . implode('","', array_column($data_daily["rows"], "day")) . '"' ?>];
+    var ref_d_vals   = [<?= implode(',', array_column($data_daily["rows"], "adjusted_close"))  ?>];
+    var ref_d_vols   = [<?= implode(',', array_column($data_daily["rows"], "volume")) ?>];
+    var ref_d_mm7    = [<?= implode(',', array_column($data_daily["rows"], "MM7"))    ?>];
+    var ref_d_mm20   = [<?= implode(',', array_column($data_daily["rows"], "MM20"))   ?>];
+    var ref_d_mm50   = [<?= implode(',', array_column($data_daily["rows"], "MM50"))   ?>];
+    var ref_d_mm200  = [<?= implode(',', array_column($data_daily["rows"], "MM200"))  ?>];
+    var ref_d_rsi14  = [<?= implode(',', array_column($data_daily["rows"], "RSI14"))  ?>];
+    var ref_d_dm     = [<?= implode(',', array_column($data_daily["rows"], "DM"))     ?>];
     var ref_d_colors = [<?= implode(',', $data_daily["colrs"]) ?>];
 
     // Ref Weekly Data
-    var ref_w_days = [<?= '"' . implode('","', array_column($data_weekly["rows"], "day")) . '"' ?>];
-    var ref_w_vals = [<?= implode(',', array_column($data_weekly["rows"], "adjusted_close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
-    var ref_w_vols = [<?= implode(',', array_column($data_weekly["rows"], "volume")) ?>];
-    var ref_w_mm7 = [<?= implode(',', array_column($data_weekly["rows"], "MM7"))    ?>];
-    var ref_w_mm20 = [<?= implode(',', array_column($data_weekly["rows"], "MM20"))   ?>];
-    var ref_w_mm50 = [<?= implode(',', array_column($data_weekly["rows"], "MM50"))   ?>];
+    var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"], "day")) . '"' ?>];
+    var ref_w_vals  = [<?= implode(',', array_column($data_weekly["rows"], "adjusted_close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
+    var ref_w_vols  = [<?= implode(',', array_column($data_weekly["rows"], "volume")) ?>];
+    var ref_w_mm7   = [<?= implode(',', array_column($data_weekly["rows"], "MM7"))    ?>];
+    var ref_w_mm20  = [<?= implode(',', array_column($data_weekly["rows"], "MM20"))   ?>];
+    var ref_w_mm50  = [<?= implode(',', array_column($data_weekly["rows"], "MM50"))   ?>];
     var ref_w_mm200 = [<?= implode(',', array_column($data_weekly["rows"], "MM200"))  ?>];
     var ref_w_rsi14 = [<?= implode(',', array_column($data_weekly["rows"], "RSI14"))  ?>];
-    var ref_w_dm = [<?= implode(',', array_column($data_weekly["rows"], "DM"))     ?>];
+    var ref_w_dm    = [<?= implode(',', array_column($data_weekly["rows"], "DM"))     ?>];
 
     // Ref Monthly Data
-    var ref_m_days = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
-    var ref_m_vals = [<?= implode(',', array_column($data_monthly["rows"], "adjusted_close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
-    var ref_m_vols = [<?= implode(',', array_column($data_monthly["rows"], "volume")) ?>];
-    var ref_m_mm7 = [<?= implode(',', array_column($data_monthly["rows"], "MM7"))    ?>];
-    var ref_m_mm20 = [<?= implode(',', array_column($data_monthly["rows"], "MM20"))   ?>];
-    var ref_m_mm50 = [<?= implode(',', array_column($data_monthly["rows"], "MM50"))   ?>];
+    var ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
+    var ref_m_vals  = [<?= implode(',', array_column($data_monthly["rows"], "adjusted_close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
+    var ref_m_vols  = [<?= implode(',', array_column($data_monthly["rows"], "volume")) ?>];
+    var ref_m_mm7   = [<?= implode(',', array_column($data_monthly["rows"], "MM7"))    ?>];
+    var ref_m_mm20  = [<?= implode(',', array_column($data_monthly["rows"], "MM20"))   ?>];
+    var ref_m_mm50  = [<?= implode(',', array_column($data_monthly["rows"], "MM50"))   ?>];
     var ref_m_mm200 = [<?= implode(',', array_column($data_monthly["rows"], "MM200"))  ?>];
     var ref_m_rsi14 = [<?= implode(',', array_column($data_monthly["rows"], "RSI14"))  ?>];
-    var ref_m_dm = [<?= implode(',', array_column($data_monthly["rows"], "DM"))     ?>];
+    var ref_m_dm    = [<?= implode(',', array_column($data_monthly["rows"], "DM"))     ?>];
 
-    var g1_days = null;
-    var g1_vals = null;
-    var g1_vols = null;
-    var g1_mm7 = null;
-    var g1_mm20 = null;
-    var g1_mm50 = null;
-    var g1_mm200 = null;
+    var g1_days   = null;
+    var g1_vals   = null;
+    var g1_vols   = null;
+    var g1_mm7    = null;
+    var g1_mm20   = null;
+    var g1_mm50   = null;
+    var g1_mm200  = null;
     var g1_colors = null;
-    var g2_days = null;
-    var g2_rsi14 = null;
-    var g3_dm = null;
+    var g2_days   = null;
+    var g2_rsi14  = null;
+    var g3_dm     = null;
 
     // Transformation des 0/1 en rouge et vert
     for (var i = 0; i < ref_d_colors.length; i++) {
@@ -616,38 +663,49 @@ if (!$readonly) {
     var p = loadPrompt();
 
     <? if (!$readonly) { ?>
-        getFormValues = function() {
-            params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_categorie', 'f_distribution', 'f_link1', 'f_link2']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
-            return params;
-        }
 
-        Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
-            p = getFormValues();
-            go({
-                action: 'update',
-                id: 'main',
-                url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p,
-                loading_area: 'stock_edit_bt'
-            });
+    getFormValues = function() {
+
+        params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
+
+        var tags = '';
+        Dom.find('button.bt_tags').forEach(function(item) {
+            if (isCN(item.id, '<?= $bt_interval_colr ?>')) tags += item.innerHTML+'|';
         });
-        Dom.addListener(Dom.id('stock_sync_bt'), Dom.Event.ON_CLICK, function(event) {
-            p = getFormValues();
-            go({
-                action: 'update',
-                id: 'main',
-                url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>' + p,
-                loading_area: 'stock_sync_bt'
-            });
+        params += '&f_tags=' + tags;
+
+        return params;
+    }
+
+    Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
+        p = getFormValues();
+        go({
+            action: 'update',
+            id: 'main',
+            url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p,
+            loading_area: 'stock_edit_bt'
         });
-        Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) {
-            go({
-                action: 'update',
-                id: 'main',
-                url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>',
-                loading_area: 'stock_indic_bt'
-            });
+    });
+    Dom.addListener(Dom.id('stock_sync_bt'), Dom.Event.ON_CLICK, function(event) {
+        p = getFormValues();
+        go({
+            action: 'update',
+            id: 'main',
+            url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>' + p,
+            loading_area: 'stock_sync_bt'
         });
+    });
+    Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) {
+        go({
+            action: 'update',
+            id: 'main',
+            url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>',
+            loading_area: 'stock_indic_bt'
+        });
+    });
+
     <? } ?>
+
     Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
         go({
             action: 'home',
@@ -714,9 +772,12 @@ if (!$readonly) {
         });
     });
 
+    // Changement etat bouttons tags
     changeState = function(item) {
         switchColorElement(item.id, '<?= $bt_interval_colr ?>', '<?= $bt_grey_colr ?>');
     }
+
+    // Listener sur boutons tags
     Dom.find('button.bt_tags').forEach(function(item) {
         Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
             changeState(item);
