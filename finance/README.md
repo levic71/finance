@@ -69,4 +69,6 @@
 // https://blog.yomoni.fr/comment-est-calculee-la-performance-chez-yomoni
 // https://fr.emmtrade.com/dietz/-Modified-Dietz-Method/
 // https://www.prorealcode.com/prorealtime-indicators/trend-indicator-buy-sell-signals/
-
+// https://simplywall.st/dashboard
+// https://finviz.com/
+// https://www.nasdaq.com/

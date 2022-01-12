@@ -147,13 +147,13 @@ foreach($data2["stocks"] as $key => $val) {
 		<td>".$val['type']."</td>
 		<td>".sprintf("%.2f", $val['frais'])." %</td>
 		<td>".$val['actifs']." M</td>
-		<td><a class=\"ui circular tooltip2\" data-position2=\"left center\" data-tooltip2=\"".($val['day'] == NULL ? "N/A" : $val['day'])."\"><i class=\"inverted calendar alternate icon\"></i></a></td>
+		<td><span data-tootik-conf=\"left\" data-tootik=\"".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar alternate icon\"></i></a></span></td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
 		<td class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['DM']."\">".sprintf("%.2f", $val['DM'])." %</td>
 	";
 
-	echo "<td><a class=\"ui mini ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label tooltip2\" data-position2=\"right center\" data-tooltip2=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"></a></td>";
+	echo "<td><span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span></td>";
 
 	echo "<td></td>";
 	echo "</tr>";

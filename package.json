@@ -75,6 +75,7 @@
     ]
   },
   "dependencies": {
-    "swiper": "^6.8.1"
+    "swiper": "^6.8.1",
+    "tippy.js": "^6.3.7"
   }
 }

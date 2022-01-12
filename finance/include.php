@@ -1289,14 +1289,14 @@ class uimx {
     public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes' ];
     public static $invest_distribution = [ 0 => "Capitalisation", 1 => "Distribution" ];
     public static $invest_secteur   = [
-        0 => "Biens de consommation hors cyclique",
+        0  => "Biens de consommation hors cyclique",
         1  => "Biens de consommation cyclique",
         2  => "Télécommunication",
         3  => "Eau",
         4  => "Ecologie",
         5  => "Energie",
         6  => "Finances",
-        7  => "Indice",
+        7  => "ISR/ESG",
         8  => "Infrastuctures",
         9  => "Matériaux et Industrie",
         10 => "Métaux Précieux",
@@ -1426,8 +1426,8 @@ class uimx {
         $desc .= '</tbody></table>';
 
         $desc .= '<div style="bottom: 5px; position: absolute; width: 90%;">
-            <button class="ui small '.self::$invest_cycle[$strategie['cycle']]['colr'].' button badge tooltip2" data-tooltip2="'.self::$invest_cycle[$strategie['cycle']]['tip'].'">'.substr(self::$invest_cycle[$strategie['cycle']]['tip'], 0, 1).'</button>
-            <button class="ui small brown button badge tooltip2" data-tooltip2="'.self::$invest_methode[$strategie['methode']].'"><i class="inverted '.self::$invest_methode_icon[$strategie['methode']].' icon"></i></button>
+            <button class="ui small '.self::$invest_cycle[$strategie['cycle']]['colr'].' button badge" data-tootik="'.self::$invest_cycle[$strategie['cycle']]['tip'].'">'.substr(self::$invest_cycle[$strategie['cycle']]['tip'], 0, 1).'</button>
+            <button class="ui small brown button badge" data-tootik="'.self::$invest_methode[$strategie['methode']].'"><i class="inverted '.self::$invest_methode_icon[$strategie['methode']].' icon"></i></button>
             <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey icon button">Backtesting</button>
         </div>';
 

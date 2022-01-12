@@ -316,8 +316,6 @@ asort(uimx::$invest_factorielle);
 
 <?
 
-// ALTER TABLE `stocks` ADD `tags` TEXT NOT NULL AFTER `links`, ADD `rating` INT NOT NULL DEFAULT '6' AFTER `tags`;
-
 if (!$readonly) {
     $infos = calc::getDirectDM($data);
 ?>
