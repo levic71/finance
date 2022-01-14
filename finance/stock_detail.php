@@ -267,11 +267,12 @@ asort(uimx::$invest_factorielle);
     <h4 class="ui inverted dividing header">Tags</h4>
 <? } ?>
 <? foreach( [
+                "Classe d'actif"      => uimx::$invest_classe,
                 "Secteur"             => uimx::$invest_secteur,
                 "Zone géographique"   => uimx::$invest_zone_geo,
-                "Classe d'actif"      => uimx::$invest_classe,
-                "Critère factorielle" => uimx::$invest_factorielle,
-                "Taille"              => uimx::$invest_taille
+                "Critère factoriel"   => uimx::$invest_factorielle,
+                "Taille"              => uimx::$invest_taille,
+                "Thème"               => uimx::$invest_theme
             ] as $lib => $tab) { ?>
 
 <? if (!$readonly) { ?>
@@ -283,13 +284,13 @@ asort(uimx::$invest_factorielle);
             foreach ($tab as $key => $val) {
                 if ($readonly) {
                     
-                    if (isset($tags[$val])) { ?>
+                    if (isset($tags[$val['tag']])) { ?>
 
-                        <div class="item"><button class="item very small ui bt_tags <?= $bt_interval_colr ?> button"><?= $val ?></button></div>
+                        <div class="item"><button class="item very small ui bt_tags <?= $bt_interval_colr ?> button"><?= $val['tag'] ?></button></div>
 
                 <? } } else { ?>
     
-                    <div class="item"><button id="bt_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item very small ui bt_tags <?= isset($tags[$val]) ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val ?></button></div>
+                    <div class="item"><button id="bt_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item very small ui bt_tags <?= isset($tags[$val['tag']]) ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val['tag'] ?></button></div>
 
                 <? } ?>
 

@@ -18,6 +18,13 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
+// Recuperation des infos du portefeuille
+$req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
+$res = dbc::execSql($req);
+
+// Bye bye si inexistant
+if (!$row = mysqli_fetch_assoc($res)) exit(0);
+
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
 
@@ -43,7 +50,10 @@ $lst_orders    = $portfolio_data['orders'];
 
 <div class="ui container inverted segment">
 
-	<h2 class="ui left floated"><i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small></h2>
+	<h2 class="ui left floated">
+		<i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
+		<button id="portfolio_graph_bt" class=" ui right floated black button"><i class="ui inverted chart bar outline icon"></i></button>
+	</h2>
 	<div class="ui stackable column grid">
 		<div class="row">
 			<div class="ten wide column">
@@ -403,6 +413,7 @@ Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
 // Listener sur les boutons ADD et BACK
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
+Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
 
 // Listener possible sur SAVE et SELECT si pas portfolio synthese 
 <? if ($portfolio_data['infos']['synthese'] == 0) { ?>

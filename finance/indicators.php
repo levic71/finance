@@ -103,7 +103,7 @@ function insertIntoTimeSeries($symbol, $data, $table) {
 }
 
 function insertIntoIndicators($symbol, $day, $period, $item) {
-    $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM200, RSI14) VALUES('".$symbol."', '".$day."', '".strtoupper($period)."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM200"]."', '".$item["RSI14"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."'";
+    $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM100, MM200, RSI14) VALUES('".$symbol."', '".$day."', '".strtoupper($period)."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM100"]."', '".$item["MM200"]."', '".$item["RSI14"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM100='".$item["MM100"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."'";
     $res = dbc::execSql($req);
 }
 
@@ -120,6 +120,7 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
     $tab_MM7   = computeMMX($tab_close, 7);
     $tab_MM20  = computeMMX($tab_close, 20);
     $tab_MM50  = computeMMX($tab_close, 50);
+    $tab_MM100 = computeMMX($tab_close, 100);
     $tab_MM200 = computeMMX($tab_close, 200);
     $tab_RSI14 = computeRSIX($tab_close, 14);
     $tab_DM132 = computeDMX($data, 132);
@@ -131,6 +132,7 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
         $tab_MM7   = array_slice($tab_MM7,   count($tab_MM7)   - $all);
         $tab_MM20  = array_slice($tab_MM20,  count($tab_MM20)  - $all);
         $tab_MM50  = array_slice($tab_MM50,  count($tab_MM50)  - $all);
+        $tab_MM100 = array_slice($tab_MM100, count($tab_MM100) - $all);
         $tab_MM200 = array_slice($tab_MM200, count($tab_MM200) - $all);
         $tab_RSI14 = array_slice($tab_RSI14, count($tab_RSI14) - $all);
         $tab_DM132['DM']   = array_slice($tab_DM132['DM'],   count($tab_DM132['DM'])   - $all);
@@ -149,6 +151,7 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
         $item["MM7"]   = currentnext($tab_MM7);
         $item["MM20"]  = currentnext($tab_MM20);
         $item["MM50"]  = currentnext($tab_MM50);
+        $item["MM100"] = currentnext($tab_MM100);
         $item["MM200"] = currentnext($tab_MM200);
         $item["RSI14"] = currentnext($tab_RSI14);
         $item["DM"]    = currentnext($tab_DM132['DM']);
@@ -232,7 +235,7 @@ function aggregateWeeklyMonthlySymbol($symbol, $limited) {
 }
 
 // //////////////////////////////////////////////////////////////
-// Calcul DM, MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
+// Calcul DM, MM7, MM20, MM50, MM100, MM200, RSI14 en Daily/Weekly/Monthly
 // //////////////////////////////////////////////////////////////
 function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
 
@@ -259,7 +262,7 @@ function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
 }
 
 // //////////////////////////////////////////////////////////////
-// Calcul DM, MM7, MM20, MM50, MM200, RSI14 du jour (table quotes)
+// Calcul DM, MM7, MM20, MM50, MM100, MM200, RSI14 du jour (table quotes)
 // //////////////////////////////////////////////////////////////
 function computeQuoteIndicatorsSymbol($symbol) {
 
@@ -296,7 +299,7 @@ function computeQuoteIndicatorsSymbol($symbol) {
 }
 
 // //////////////////////////////////////////////////////////////
-// Calcul MM7, MM20, MM50, MM200, RSI14 en Daily/Weekly/Monthly
+// Calcul MM7, MM20, MM50, MM100, MM200, RSI14 en Daily/Weekly/Monthly
 // //////////////////////////////////////////////////////////////
 function computeIndicatorsForSymbolWithOptions($symbol, $options = array("aggregate" => false, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY'])) {
 

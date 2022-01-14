@@ -83,17 +83,21 @@ arsort($data2["perfs"]);
 		
 	</h2>
 
-	<div id="other_tags" class="ui horizontal list">
+	<div id="other_tags">
     <? foreach( [
+                "Classe d'actif"      => uimx::$invest_classe,
                 "Secteur"             => uimx::$invest_secteur,
                 "Zone géographique"   => uimx::$invest_zone_geo,
-                "Classe d'actif"      => uimx::$invest_classe,
-                "Critère factorielle" => uimx::$invest_factorielle,
-                "Taille"              => uimx::$invest_taille
-            ] as $lib => $tab) {
-                foreach ($tab as $key => $val) { ?>
-        <div class="item"><button id="bt_filter_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item mini ui bt_tags grey button"><?= $val ?></button></div>
-    <? } } ?>
+                "Critère factoriel"   => uimx::$invest_factorielle,
+                "Taille"              => uimx::$invest_taille,
+                "Thème"               => uimx::$invest_theme
+            ] as $lib => $tab) { ?>
+				<div class="ui horizontal list">
+                <? foreach ($tab as $key => $val) { ?>
+			        <div class="item"><button id="bt_filter_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item mini ui bt_tags grey button"><?= $val['tag'] ?></button></div>
+    			<? } ?>
+				</div>
+	<? } ?>
     </div>
 
 	<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>

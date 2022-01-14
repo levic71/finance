@@ -155,6 +155,8 @@ class calc {
 
     public static function aggregatePortfolio($id, $quotes = array()) {
 
+        // Penser à mettre en cache 10' le calcul ?
+
         global $sess_context;
 
         $portfolio      = array();
@@ -1288,63 +1290,64 @@ class uimx {
     public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA' ];
     public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes' ];
     public static $invest_distribution = [ 0 => "Capitalisation", 1 => "Distribution" ];
-    public static $invest_secteur   = [
-        0  => "Biens de consommation hors cyclique",
-        1  => "Biens de consommation cyclique",
-        2  => "Télécommunication",
-        3  => "Eau",
-        4  => "Ecologie",
-        5  => "Energie",
-        6  => "Finances",
-        7  => "ISR/ESG",
-        8  => "Infrastuctures",
-        9  => "Matériaux et Industrie",
-        10 => "Métaux Précieux",
-        11 => "Mixte",
-        12 => "Santé",
-        13 => "Services Publics",
-        14 => "Technologie",
-        15 => "Obligations",
-        16 => "Immobilier"
+    public static $invest_theme   = [
+        0  => [ "tag" => "Eau",      "desc" => "" ],
+        1  => [ "tag" => "Ecologie", "desc" => "" ],
+        2  => [ "tag" => "ISR/ESG",  "desc" => "" ]
     ];
+
+    public static $invest_secteur = [
+        0  => [ "tag" => "Services financiers", "desc" => "Se compose essentiellement de banques, de caisses d?épargne et de crédit, de compagnies d?assurance ainsi que de sociétés de fonds communs de placement." ],
+        1  => [ "tag" => "Énergie",             "desc" => "Constitué d?entreprises exerçant des activités d?exploration, de production, de commercialisation, de raffinage et de transport des produits du pétrole et du gaz. Ce secteur comprend aussi des sociétés qui prennent part au domaine des services liés à l?énergie." ],
+        2  => [ "tag" => "Matériaux",           "desc" => "Se compose d?entreprises appartenant à une vaste gamme d?industries manufacturières et minières axées sur les produits de base, notamment les métaux, les minéraux, les produits chimiques, les matériaux de construction, le verre, le papier et les produits forestiers." ],
+        3  => [ "tag" => "Industrie",           "desc" => "Comprend des entreprises dont le domaine d?activité principal est l?aérospatiale et la défense, la construction, l?outillage de précision et les produits de bâtiment ou encore les services de transport, y compris les lignes aériennes, les chemins de fer et les infrastructures de transport." ],
+        4  => [ "tag" => "Consommation discrétionnaire", "desc" => "Comprend des entreprises dans les domaines suivants : transport routier, objets ménagers et biens durables, textiles, habillement et équipements de loisirs. Les restaurants, les hôtels, les établissements de loisirs, les services médiatiques et la vente au détail relèvent du segment des services." ],
+        5  => [ "tag" => "Telecommunication",   "desc" => "Se compose d?entreprises qui offrent des services de communication principalement au moyen de lignes téléphoniques fixes ou de réseaux cellulaires, sans fil, à large bande passante et de câble à fibres optiques." ],
+        6  => [ "tag" => "Technologies",        "desc" => "Constitué d?entreprises appartenant aux trois domaines généraux suivants : technologie, logiciels et services." ],
+        7  => [ "tag" => "Biens de consommation de base", "desc" => "Se compose de fabricants et de distributeurs de denrées alimentaires, de boissons et de tabac, de même que de producteurs d?objets ménagers non durables et de produits personnels. Il comprend également les détaillants d?aliments et de médicaments ainsi que les centres commerciaux." ],
+        8  => [ "tag" => "Services publics",    "desc" => "Se compose de sociétés gazières, d?électricité et de services d?eau, ainsi que d?entreprises qui agissent à titre de producteurs ou de distributeurs d?énergie." ],
+        9  => [ "tag" => "Santé",               "desc" => "Comprend des entreprises qui fabriquent du matériel et des fournitures de soins de santé ou offrent des services de soins de santé. Il inclut aussi des sociétés qui se consacrent principalement à la recherche, au développement, à la production ainsi qu?à la commercialisation de produits pharmaceutiques et biotechnologiques." ],
+        10 => [ "tag" => "Immobilier",          "desc" => "" ]
+    ];
+
     public static $invest_zone_geo = [
-        0  => "Internationnal",
-        1  => "Europe",
-        2  => "Europe du Nord",
-        3  => "Europe de l'est",
-        4  => "Union Européenne",
-        5  => "Europe hors UK",
-        6  => "UK",
-        7  => "Moyen Orient",
-        8  => "Bric",
-        9  => "Afrique",
-        10 => "Europe méditerranéenne",
-        11 => "Amérique du Nord",
-        12 => "MENA",  // Afrique du nord + Moyen Orient
-        13 => "EMEA",
-        14 => "ASEAN"
+        0  => [ "tag" => "Internationnal",   "desc" => "" ],
+        1  => [ "tag" => "Europe",           "desc" => "" ],
+        2  => [ "tag" => "Europe du Nord",   "desc" => "" ],
+        3  => [ "tag" => "Europe de l'est",  "desc" => "" ],
+        4  => [ "tag" => "Union Européenne", "desc" => "" ],
+        5  => [ "tag" => "Europe hors UK",   "desc" => "" ],
+        6  => [ "tag" => "UK",               "desc" => "" ],
+        7  => [ "tag" => "Moyen Orient",     "desc" => "" ],
+        8  => [ "tag" => "Bric",             "desc" => "" ],
+        9  => [ "tag" => "Afrique",          "desc" => "" ],
+        10 => [ "tag" => "Europe méditerranéenne", "desc" => "" ],
+        11 => [ "tag" => "Amérique du Nord", "desc" => "" ],
+        12 => [ "tag" => "MENA",             "desc" => "" ], // Afrique du nord + Moyen Orient
+        13 => [ "tag" => "EMEA",             "desc" => "" ],
+        14 => [ "tag" => "ASEAN",            "desc" => "" ]
     ];
     public static $invest_taille = [
-        0  => "Large Cap",
-        1  => "Middle Cap",
-        2  => "Small Cap"
+        0  => [ "tag" => "Large Cap",  "desc" => "" ],
+        1  => [ "tag" => "Middle Cap", "desc" => "" ],
+        2  => [ "tag" => "Small Cap",  "desc" => "" ]
     ];
     public static $invest_classe = [
-        0  => "Actions",
-        1  => "Obligations",
-        2  => "Placement monétaires",
-        3  => "Matières premières",
-        4  => "Devises",
-        5  => "Indices"
+        0  => [ "tag" => "Actions",            "desc" => "" ],
+        1  => [ "tag" => "Obligations",        "desc" => "" ],
+        2  => [ "tag" => "Monétaires",         "desc" => "" ],
+        3  => [ "tag" => "Matières premières", "desc" => "" ],
+        4  => [ "tag" => "Immobiliers",        "desc" => "" ],
+        5  => [ "tag" => "Factorielles",       "desc" => "" ]
     ];
     public static $invest_factorielle = [
-        0  => "Value",     // Critère de sélection sur la valorisation de l'asset (recherche des actifs sous coté par rapport à la valeur intraséque)
-        1  => "Growth",    // Critère de sélection lié à la croissance du chiffre d?affaires et des résultats (recherche des actifs dont les bénéfices augmentent plus que le marché)
-        2  => "Momentum",  // Critère de sélection qui prend en compte la tendance positive sur les jours/semaines/mois précédents plus forte que le marché
-        3  => "Quality",   // Faible endettement et forte profitabilité
-        4  => "Low Volatility", // Faible volatilité
-        5  => "High Dividend Yield", // Rendement élevé et constant des dividendes
-        6  => "Equal Weight"  // Capitalisation plus petite
+        0  => [ "tag" => "Value",               "desc" => "Critère de sélection sur la valorisation de l'asset (recherche des actifs sous coté par rapport à la valeur intraséque)" ],
+        1  => [ "tag" => "Growth",              "desc" => "Critère de sélection lié à la croissance du chiffre d?affaires et des résultats (recherche des actifs dont les bénéfices augmentent plus que le marché)" ],
+        2  => [ "tag" => "Momentum",            "desc" => "Critère de sélection qui prend en compte la tendance positive sur les jours/semaines/mois précédents plus forte que le marché" ],
+        3  => [ "tag" => "Quality",             "desc" => "Faible endettement et forte profitabilité" ],
+        4  => [ "tag" => "Low Volatility",      "desc" => "Faible volatilité" ],
+        5  => [ "tag" => "High Dividend Yield", "desc" => "Rendement élevé et constant des dividendes" ],
+        6  => [ "tag" => "Equal Weight",        "desc" => "Capitalisation plus petite" ]
     ];
     public static $order_actions   = [
          2 => "Dépot",
