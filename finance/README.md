@@ -73,4 +73,5 @@
 // https://finviz.com/
 // https://www.nasdaq.com/
 // https://www6.royalbank.com/fr/di/reference/article/stock-market-sectors-and-sector-rotation/inkxp081
-// https://www.jack-fund.com/guides/choisir-etf
+// https://www.jack-fund.com/guides/choisir-etf (liste meilleurs ETF PEA)
+

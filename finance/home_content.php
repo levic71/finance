@@ -72,6 +72,8 @@ arsort($data2["perfs"]);
 	<h2 class="ui left floated">
 		<span><i class="inverted podcast icon"></i>Actifs suivis</span>
 		<div>
+			<button id="lst_filter7_bt" class="mini ui grey button">ETF</button>
+			<button id="lst_filter8_bt" class="mini ui grey button">Equity</button>
 			<button id="lst_filter1_bt" class="mini ui grey button">PEA</button>
 			<button id="lst_filter2_bt" class="mini ui grey button">EUR</button>
 			<button id="lst_filter3_bt" class="mini ui grey button">USD</button>
@@ -103,8 +105,8 @@ arsort($data2["perfs"]);
 	<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
 		<thead>
 			<tr>
-				<th></th>
 				<th>Symbole</th>
+				<th></th>
                 <th class="four wide">Nom</th>
                 <th>Type</th>
 				<th>Frais</th>
@@ -136,14 +138,21 @@ foreach($data2["stocks"] as $key => $val) {
 	$cache_filename = "cache/QUOTE_".$symbol.".json";
 	$cache_timestamp = file_exists($cache_filename) ? date("Y-m-d", filemtime($cache_filename)) : "xxxx-xx-xx";
 
+	$tags = array_flip(explode("|", utf8_decode($val['tags'])));
+	$tooltip = "Entreprise";
+
+	$icon = "copyright outline";
+	foreach(uimx::$invest_secteur as $key2 => $val2) {
+		if (isset($tags[$val2['tag']])) { $icon = $val2['icon']; $tooltip = $val2['tag']; }
+	}
+
 	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
 
-	echo "<tr onclick=\"gotoStockDetail('".$val['symbol']."');\" class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")."\" data-tags=\"".utf8_decode($val['tags'])."\">";
-
-	echo "<td class=\"collapsing\"><i class=\"inverted grey chevron right icon\"></i></td>";
+	echo "<tr onclick=\"gotoStockDetail('".$val['symbol']."');\" class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : "EQY")."\" data-tags=\"".utf8_decode($val['tags'])."\">";
 
 	echo "
 		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
+		<td data-tootik=\"".$tooltip."\" class=\"collapsing\"><i class=\"inverted grey ".$icon." icon\"></i></td>
 		<td>".utf8_decode($val['name'])."</td>
 	";
 	
@@ -230,6 +239,8 @@ foreach($data2["stocks"] as $key => $val) {
 		f3_on = Dom.hasClass(Dom.id('lst_filter3_bt'), 'orange');
 		f4_on = Dom.hasClass(Dom.id('lst_filter4_bt'), 'orange');
 		f5_on = Dom.hasClass(Dom.id('lst_filter5_bt'), 'orange');
+		f7_on = Dom.hasClass(Dom.id('lst_filter7_bt'), 'orange');
+		f8_on = Dom.hasClass(Dom.id('lst_filter8_bt'), 'orange');
 
 		var filter_tags = [];
 		Dom.find('button.bt_tags').forEach(function(item) {
@@ -241,7 +252,7 @@ foreach($data2["stocks"] as $key => $val) {
 		for (const element of tab) Dom.css(element, {'display' : 'table-row'});
 
 		// On passe en revue toutes les lignes et on cache celles qui ne correspondent pas aux boutons allumés
-		if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false)) {
+		if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false)) {
 			for (const element of tab) {
 
 				if (
@@ -249,7 +260,9 @@ foreach($data2["stocks"] as $key => $val) {
 					(!f2_on || (f2_on && Dom.hasClass(element, 'EUR')))    &&
 					(!f3_on || (f3_on && Dom.hasClass(element, 'USD')))    && 
 					(!f4_on || (f4_on && Dom.hasClass(element, 'FRAIS')))  && 
-					(!f5_on || (f5_on && Dom.hasClass(element, 'ACTIFS')))
+					(!f5_on || (f5_on && Dom.hasClass(element, 'ACTIFS'))) &&
+					(!f7_on || (f7_on && Dom.hasClass(element, 'ETF')))    && 
+					(!f8_on || (f8_on && Dom.hasClass(element, 'EQY')))
 				) continue;
 
 				Dom.css(element, {'display' : 'none'});
@@ -286,6 +299,9 @@ foreach($data2["stocks"] as $key => $val) {
 	Dom.addListener(Dom.id('lst_filter4_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter4_bt'); });
 	Dom.addListener(Dom.id('lst_filter5_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter5_bt'); });
 	Dom.addListener(Dom.id('lst_filter6_bt'), Dom.Event.ON_CLICK, function(event) { toogle('other_tags'); });
+	Dom.addListener(Dom.id('lst_filter7_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter8_bt', 'orange')) switchColorElement('lst_filter8_bt', 'orange', 'grey'); filterLstAction('lst_filter7_bt'); });
+	Dom.addListener(Dom.id('lst_filter8_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) switchColorElement('lst_filter7_bt', 'orange', 'grey'); filterLstAction('lst_filter8_bt'); });
+
 
 	<? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });

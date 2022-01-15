@@ -77,6 +77,9 @@ $quotes = calc::getIndicatorsLastQuote();
 	var swiper = new Swiper(".mySwiper", {
         loop: false,
         loopFillGroupWithBlank: true,
+		grid: {
+          rows: 2,
+        },
 		breakpoints: {
 			320: {
 				slidesPerView: 1,

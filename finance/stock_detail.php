@@ -269,6 +269,7 @@ asort(uimx::$invest_factorielle);
 <? foreach( [
                 "Classe d'actif"      => uimx::$invest_classe,
                 "Secteur"             => uimx::$invest_secteur,
+                "Marché"              => uimx::$invest_market,
                 "Zone géographique"   => uimx::$invest_zone_geo,
                 "Critère factoriel"   => uimx::$invest_factorielle,
                 "Taille"              => uimx::$invest_taille,
@@ -290,7 +291,7 @@ asort(uimx::$invest_factorielle);
 
                 <? } } else { ?>
     
-                    <div class="item"><button id="bt_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item very small ui bt_tags <?= isset($tags[$val['tag']]) ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val['tag'] ?></button></div>
+                    <div class="item"><button <?= isset($val['desc']) && $val['desc'] != "" ? "data-tootik-conf=\"multiline\" data-tootik=\"".$val['desc']."\"" : "" ?> id="bt_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item very small ui bt_tags <?= isset($tags[$val['tag']]) ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val['tag'] ?></button></div>
 
                 <? } ?>
 

@@ -18,10 +18,10 @@ foreach(['f_email'] as $key)
 <div class="ui inverted middle aligned center aligned grid segment container">
 	<div class="column">
 
-		<h2 class="ui image header">
+		<h1 class="ui image header">
     		<i class="ui inverted universal access icon"></i>
 			<div class="content"></div>
-		</h2>
+		</h1>
 
 		<form class="ui inverted large form">
 

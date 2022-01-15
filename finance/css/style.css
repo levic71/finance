@@ -22,6 +22,9 @@ h2 > i[class*="trash"] { color: black !important; }
 .perf_card button.badge i {
     margin: 0px !important;
 }
+.perf_card .description {
+    padding-bottom: 20px;
+}
 
 .login_page .ui.corner.label:after {
     right: -1px;
@@ -179,9 +182,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_stock td, #lst_stock th {
     text-align: center !important;
 }
-#lst_stock td:nth-child(1), #lst_stock th:nth-child(1) {
-    display: none;
-}
 #lst_stock td:nth-child(3) {
     text-align: left !important;
     width: 340px;
@@ -191,10 +191,11 @@ table th { color: burlywood !important; cursor: pointer !important; }
     white-space: nowrap;
 }
 
-#lst_stock th:nth-child(2), #lst_stock th:nth-child(6), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10), #lst_stock th:nth-child(11), #lst_stock th:nth-child(12),
-#lst_stock td:nth-child(2), #lst_stock td:nth-child(6), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
+#lst_stock th:nth-child(1), #lst_stock th:nth-child(6), #lst_stock th:nth-child(8), #lst_stock th:nth-child(9), #lst_stock th:nth-child(10), #lst_stock th:nth-child(11), #lst_stock th:nth-child(12),
+#lst_stock td:nth-child(1), #lst_stock td:nth-child(6), #lst_stock td:nth-child(8), #lst_stock td:nth-child(9), #lst_stock td:nth-child(10), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12) {
         text-align: right !important;
 }
+#lst_stock th:nth-child(2), #lst_stock td:nth-child(2) { padding-right: 0px !important; padding-left: 0px !important; }
 #lst_stock td:nth-child(3), #lst_stock th:nth-child(3) {
     text-align: left !important;
     color: deepskyblue;
@@ -526,6 +527,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(8), #lst_position tfoot td:nth-child(4), #lst_position tbody td:nth-child(9), #lst_position tfoot td:nth-child(5) {
     background: rgba(12, 158, 195, 0.1);
 }
+.stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {
+    min-width: 280px !important;
+    line-height: 16px;
+}
 
 @media only screen and (max-width: 1024px) {
 
@@ -576,7 +581,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     }
     .stock_detail_page span .ui.mini.button {
         margin: 2px !important;
-    }    
+    }
     #sim_card2 table td:nth-child(2) {
         display: none;
     }
