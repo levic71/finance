@@ -527,7 +527,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(8), #lst_position tfoot td:nth-child(4), #lst_position tbody td:nth-child(9), #lst_position tfoot td:nth-child(5) {
     background: rgba(12, 158, 195, 0.1);
 }
-.stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {
+#other_tags [data-tootik][data-tootik-conf*=multiline]:after, .stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {
     min-width: 280px !important;
     line-height: 16px;
 }

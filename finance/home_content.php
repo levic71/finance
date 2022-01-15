@@ -96,7 +96,7 @@ arsort($data2["perfs"]);
             ] as $lib => $tab) { ?>
 				<div class="ui horizontal list">
                 <? foreach ($tab as $key => $val) { ?>
-			        <div class="item"><button id="bt_filter_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item mini ui bt_tags grey button"><?= $val['tag'] ?></button></div>
+			        <div class="item"><button <?= $val['desc'] != "" ? "data-tootik-conf=\"multiline\" data-tootik=\"".$val['desc']."\"" : "" ?> id="bt_filter_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item mini ui bt_tags grey button"><?= $val['tag'] ?></button></div>
     			<? } ?>
 				</div>
 	<? } ?>
