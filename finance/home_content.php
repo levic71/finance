@@ -16,6 +16,8 @@ $data2 = calc::getIndicatorsLastQuote();
 
 // Tri décroissant des perf DM des stocks
 arsort($data2["perfs"]);
+
+$favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_context->getUser()['favoris'] : ""));
 	
 ?>
 
@@ -72,6 +74,7 @@ arsort($data2["perfs"]);
 	<h2 class="ui left floated">
 		<span><i class="inverted podcast icon"></i>Actifs suivis</span>
 		<div>
+			<button id="lst_filter9_bt" class="mini ui grey button"><i class="ui star grey inverted icon"></i></button>
 			<button id="lst_filter7_bt" class="mini ui grey button">ETF</button>
 			<button id="lst_filter8_bt" class="mini ui grey button">Equity</button>
 			<button id="lst_filter1_bt" class="mini ui grey button">PEA</button>
@@ -117,6 +120,7 @@ arsort($data2["perfs"]);
 				<th data-sortable-type="numeric">DM</th>
 				<th data-sortable="false"></th>
 				<th data-sortable="false"></th>
+				<th data-sortable="false"></th>
 			</tr>
 		</thead>
         <tbody id="lst_stock_body">
@@ -146,9 +150,10 @@ foreach($data2["stocks"] as $key => $val) {
 		if (isset($tags[$val2['tag']])) { $icon = $val2['icon']; $tooltip = $val2['tag']; }
 	}
 
-	$curr = $val['currency'] == "EUR" ? "&euro;" : "$";
+	$curr  = $val['currency'] == "EUR" ? "&euro;" : "$";
+	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : "EQY")." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
 
-	echo "<tr onclick=\"gotoStockDetail('".$val['symbol']."');\" class=\"".$val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : "EQY")."\" data-tags=\"".utf8_decode($val['tags'])."\">";
+	echo "<tr class=\"".$class."\" data-tags=\"".utf8_decode($val['tags'])."\">";
 
 	echo "
 		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
@@ -168,6 +173,8 @@ foreach($data2["stocks"] as $key => $val) {
 
 	echo "<td><span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span></td>";
 
+	echo "<td class=\"collapsing\"><i id=\"fav_".$val['symbol']."\" data-sym=\"".$val['symbol']."\" class=\"inverted ".(isset($favoris[$val['symbol']]) ? "yellow" : "black")." star icon\"></i></td>";
+
 	echo "<td></td>";
 	echo "</tr>";
 
@@ -182,6 +189,9 @@ foreach($data2["stocks"] as $key => $val) {
 <script>
 
 	var tags_colr = 'teal';
+
+	// On récupère toutes les lignes du tabeau
+	var tab = Dom.find("#lst_stock tbody tr");
 
 	var swiper = new Swiper(".mySwiper", {
         loop: false,
@@ -241,18 +251,18 @@ foreach($data2["stocks"] as $key => $val) {
 		f5_on = Dom.hasClass(Dom.id('lst_filter5_bt'), 'orange');
 		f7_on = Dom.hasClass(Dom.id('lst_filter7_bt'), 'orange');
 		f8_on = Dom.hasClass(Dom.id('lst_filter8_bt'), 'orange');
+		f9_on = Dom.hasClass(Dom.id('lst_filter9_bt'), 'orange');
 
 		var filter_tags = [];
 		Dom.find('button.bt_tags').forEach(function(item) {
 			if (isCN(item.id, tags_colr)) filter_tags.push(item.innerHTML);
 		});
 
-		// On récupère toutes les lignes  du tabeau et on les affiche toutes
-		tab = Dom.find("#lst_stock tbody tr");
+		// On affiche toutes les lignes du tableau
 		for (const element of tab) Dom.css(element, {'display' : 'table-row'});
 
 		// On passe en revue toutes les lignes et on cache celles qui ne correspondent pas aux boutons allumés
-		if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false)) {
+		if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false)) {
 			for (const element of tab) {
 
 				if (
@@ -262,7 +272,8 @@ foreach($data2["stocks"] as $key => $val) {
 					(!f4_on || (f4_on && Dom.hasClass(element, 'FRAIS')))  && 
 					(!f5_on || (f5_on && Dom.hasClass(element, 'ACTIFS'))) &&
 					(!f7_on || (f7_on && Dom.hasClass(element, 'ETF')))    && 
-					(!f8_on || (f8_on && Dom.hasClass(element, 'EQY')))
+					(!f8_on || (f8_on && Dom.hasClass(element, 'EQY')))    &&
+					(!f9_on || (f9_on && Dom.hasClass(element, 'FAV')))
 				) continue;
 
 				Dom.css(element, {'display' : 'none'});
@@ -301,6 +312,7 @@ foreach($data2["stocks"] as $key => $val) {
 	Dom.addListener(Dom.id('lst_filter6_bt'), Dom.Event.ON_CLICK, function(event) { toogle('other_tags'); });
 	Dom.addListener(Dom.id('lst_filter7_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter8_bt', 'orange')) switchColorElement('lst_filter8_bt', 'orange', 'grey'); filterLstAction('lst_filter7_bt'); });
 	Dom.addListener(Dom.id('lst_filter8_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) switchColorElement('lst_filter7_bt', 'orange', 'grey'); filterLstAction('lst_filter8_bt'); });
+	Dom.addListener(Dom.id('lst_filter9_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
 
 
 	<? if ($sess_context->isUserConnected()) { ?>
@@ -337,6 +349,23 @@ Dom.find('button.bt_tags').forEach(function(item) {
 		filterLstStocks('');
 	});
 });
+
+// Listener sur button detail ligne tableau
+var x = Dom.find("#lst_stock tbody tr td:nth-child(1) button");
+for (const element of x) {
+	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+		gotoStockDetail(element.innerHTML);
+	});
+}
+
+// Listener sur favoris ligne tableau
+var x = Dom.find("#lst_stock tbody tr td:nth-child(12) i");
+for (const element of x) {
+	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+		switchColorElement(element.id, 'yellow', 'black');
+		go({ action: 'user_fav', id: 'main', url: 'user_fav.php?action='+(isCN(element.id, 'yellow') ? 'add' : 'del')+'&symbol='+Dom.attribute(element, 'data-sym'), no_data: 1 });
+	});
+}
 
 hide('other_tags');
 

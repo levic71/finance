@@ -161,8 +161,11 @@ table th { color: burlywood !important; cursor: pointer !important; }
     position: relative;
     margin-left: 10px;
 }
+#stocks_box h2 #lst_filter9_bt i {
+    margin: 0px !important;
+}
 #stocks_box h2 #lst_filter1_bt, #stocks_box h2 #lst_filter2_bt, #stocks_box h2 #lst_filter3_bt, #stocks_box h2 #lst_filter4_bt, #stocks_box h2 #lst_filter5_bt  {
-    white-space: nowrap;
+        white-space: nowrap;
 }
 #strategie_container h2 span button {
     position: relative;

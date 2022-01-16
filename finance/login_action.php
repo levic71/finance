@@ -28,7 +28,7 @@ if ($action == "login") {
         if (password_verify($f_pwd, $row['pwd'])) {
             if ($row['status'] == 1 && $row['confirmation'] == 1) {
                 $connected = true;
-                $tab = [ "id" => $row['id'], "email" => $row['email'], "super_admin" => $row['super_admin'], "status" => $row['status'] ];
+                $tab = [ "id" => $row['id'], "email" => $row['email'], "favoris" => $row['favoris'], "super_admin" => $row['super_admin'], "status" => $row['status'] ];
                 $sess_context->setUserConnection($tab);
             }
             else

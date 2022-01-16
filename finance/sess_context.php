@@ -4,6 +4,7 @@ class sess_context
 {
 	public $connected;
 	public $user;
+	public $favoris;
 
 	const charset      = "ISO-8859-1";
 	const xhr_charset  = "ISO-8859-1";
