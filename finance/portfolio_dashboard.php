@@ -364,7 +364,7 @@ computeLines = function(opt) {
 
 		setColTab('sum_achat', sum_achat, ' &euro;');
 		setColTab('sum_valo',  sum_valo,  ' &euro;');
-		setColTab2('glob_perf', '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button>', '');
+		setColTab2('glob_perf', '<button class="tiny ui ' + (glob_perf > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button>', '');
 		setColTab('glob_gain', glob_gain, ' &euro;');
 
 		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
