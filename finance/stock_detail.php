@@ -448,6 +448,7 @@ if (!$readonly) {
             backgroundColor: bg,
             fill: myfill,
             pointRadius: myradius,
+            normalized: true
         };
 
         return ret;

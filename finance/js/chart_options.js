@@ -5,7 +5,8 @@ var options_Stock_Graphe = {
 	radius: 0,
 	responsive: true,
 	maintainAspectRatio: true,
-	plugins: {
+    animation: false,
+    plugins: {
 		legend: {
 			display: false
 		}

@@ -128,12 +128,14 @@ $lst_orders    = $portfolio_data['orders'];
 					<thead><tr>
 						<th class="center aligned">Actif</th>
 						<th class="right aligned">Qté</th>
-						<th class="right aligned">PRU</th>
+						<th class="center aligned">PRU</th>
 						<th class="center aligned">Cotation</th>
 						<th class="right aligned">% jour</th>
 						<th class="right aligned">Achat</th>
 						<th class="right aligned">Valorisation</th>
-						<th class="center aligned" colspan="2">Performance</th>
+						<th class="center aligned">Poids</th>
+						<th class="center aligned">Performance</th>
+						<th class="center aligned">+/-</th>
 					</tr></thead>
 					<tbody>
 	<?
@@ -151,13 +153,14 @@ $lst_orders    = $portfolio_data['orders'];
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
 						<td class="right aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
 						<td class="right aligned" id="f_pru_'.$i.'" data-pru="'.sprintf("%.2f", $val['pru']).'">'.sprintf("%.2f", $val['pru']).' &euro;</td>
-						<td class="right aligned"><div class="small ui right labeled input">
+						<td class="center aligned"><div class="small ui right labeled input">
 							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" />
 							<div class="ui basic label">&euro;</div>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
 						<td id="f_achat_'.$i.'" class="right aligned"></td>
 						<td id="f_valo_'.$i.'"  class="right aligned"></td>
-						<td id="f_perf_pru_'.$i.'" class="right aligned"></td>
+						<td id="f_poids_'.$i.'"  class="center aligned"></td>
+						<td id="f_perf_pru_'.$i.'" class="center aligned"></td>
 						<td id="f_gain_pru_'.$i.'" class="right aligned"></td>
 					</tr>';
 					$i++;
@@ -168,7 +171,8 @@ $lst_orders    = $portfolio_data['orders'];
 						<td colspan="5"></th>
 						<td id="sum_achat" class="right aligned"></td>
 						<td id="sum_valo"  class="right aligned"></td>
-						<td id="glob_perf" class="right aligned"></td>
+						<td class="center aligned">100 %</td>
+						<td id="glob_perf" class="center aligned"></td>
 						<td id="glob_gain" class="right aligned"></td>
 					</tr></tfoot>
 				</table>
@@ -269,6 +273,12 @@ setColTab = function(id, val, opt) {
 	addCN(id, val >= 0 ? "aaf-positive" : "aaf-negative");
 	Dom.id(id).innerHTML = val.toFixed(2) + opt;
 }
+setColTab2 = function(id, val, opt) {
+	rmCN(id, "aaf-positive");
+	rmCN(id, "aaf-negative");
+	addCN(id, val >= 0 ? "aaf-positive" : "aaf-negative");
+	Dom.id(id).innerHTML = val + opt;
+}
 
 computeLines = function(opt) {
 
@@ -323,7 +333,7 @@ computeLines = function(opt) {
 		Dom.id('f_achat_' + ind).innerHTML = achat.toFixed(2) + ' &euro;';
 		Dom.id('f_valo_'  + ind).innerHTML = valo.toFixed(2) + ' &euro;';
 
-		setColTab('f_perf_pru_' + ind, perf_pru, ' %');
+		setColTab2('f_perf_pru_' + ind, '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button>', '');
 		setColTab('f_gain_pru_' + ind, gain_pru, ' &euro;');
 
 		if (opt == 'change') {
@@ -339,8 +349,11 @@ computeLines = function(opt) {
 		price = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'value'));
 		nb    = parseFloat(el('f_nb_' + ind).innerHTML);
 		valo  = parseFloat(nb * price);
+		ratio = getRatio(sum_valo, valo).toFixed(2);
 
-		actifs_data.push(getRatio(sum_valo, valo).toFixed(2));
+		Dom.id('f_poids_' + ind).innerHTML = ratio + ' %';
+
+		actifs_data.push(ratio);
 	});
 
 	glob_perf = getPerf(sum_achat, sum_valo);
@@ -351,7 +364,7 @@ computeLines = function(opt) {
 
 		setColTab('sum_achat', sum_achat, ' &euro;');
 		setColTab('sum_valo',  sum_valo,  ' &euro;');
-		setColTab('glob_perf', glob_perf, ' %');
+		setColTab2('glob_perf', '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button>', '');
 		setColTab('glob_gain', glob_gain, ' &euro;');
 
 		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");

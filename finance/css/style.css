@@ -1,5 +1,7 @@
 td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
+button.aaf-positive { background: rgb(97, 194, 97) !important; color: white !important; }
+button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
 
 h3 { color: chocolate; }
 h2 > i { margin-right: 15px !important; }
@@ -494,6 +496,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 #lst_position thead th:nth-child(7),
 #lst_position tfoot td:nth-child(3),
+#lst_position thead th:nth-child(8),
+#lst_position tfoot td:nth-child(4),
 #dca_calc_form tfoot td:nth-child(6),
 #dca_calc_form tfoot td:nth-child(7),
 #dca_calc_form thead tr:nth-child(1) th:nth-child(5),
@@ -503,10 +507,19 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 255, 0, 0.05);
 }
 #lst_position tbody td:nth-child(7),
+#lst_position tbody td:nth-child(8),
 #dca_calc_form tbody td:nth-child(7),
 #dca_calc_form tbody td:nth-child(8),
 #dca_calc_form tbody td:nth-child(9) {
     background: rgba(255, 255, 0, 0.1);
+}
+
+#lst_position thead th:nth-child(8),
+#lst_position tfoot td:nth-child(4) {
+    background: rgba(191, 7, 93, 0.05);
+}
+#lst_position tbody td:nth-child(8) {
+    background: rgba(191, 7, 93, 0.1);
 }
 
 #dca_calc_form tfoot td:nth-child(8),
@@ -524,15 +537,24 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(0, 0, 255, 0.1);
     display: none;
 }
-#lst_position thead th:nth-child(8) {
+#lst_position thead th:nth-child(9), #lst_position thead th:nth-child(10) {
     background:rgba(12, 158, 195, 0.05);
 }
-#lst_position tbody td:nth-child(8), #lst_position tfoot td:nth-child(4), #lst_position tbody td:nth-child(9), #lst_position tfoot td:nth-child(5) {
+#lst_position tbody td:nth-child(9), #lst_position tfoot td:nth-child(5), #lst_position tbody td:nth-child(10), #lst_position tfoot td:nth-child(6) {
     background: rgba(12, 158, 195, 0.1);
+}
+#lst_position tbody td:nth-child(4) input, #lst_position tbody td:nth-child(4) .label {
+    background: rgba(255, 255, 255, 0.5);
+    color: white;
 }
 #other_tags [data-tootik][data-tootik-conf*=multiline]:after, .stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {
     min-width: 280px !important;
     line-height: 16px;
+    padding: 10px;
+}
+#lst_stock [data-tootik]:after {
+    min-width: 150px !important;
+    padding: 10px 20px;
 }
 
 @media only screen and (max-width: 1024px) {

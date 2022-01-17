@@ -114,7 +114,7 @@ $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_cont
                 <th>Type</th>
 				<th>Frais</th>
 				<th>Actifs</th>
-				<th>Cotation</th>
+				<th></th>
 				<th data-sortable-type="numeric">Prix</th>
 				<th data-sortable-type="numeric">Var</th>
 				<th data-sortable-type="numeric">DM</th>
@@ -165,7 +165,7 @@ foreach($data2["stocks"] as $key => $val) {
 		<td>".$val['type']."</td>
 		<td>".sprintf("%.2f", $val['frais'])." %</td>
 		<td>".$val['actifs']." M</td>
-		<td><span data-tootik-conf=\"left\" data-tootik=\"".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar alternate icon\"></i></a></span></td>
+		<td><span data-tootik-conf=\"left multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar alternate icon\"></i></a></span></td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
 		<td class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['DM']."\">".sprintf("%.2f", $val['DM'])." %</td>
