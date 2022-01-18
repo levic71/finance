@@ -41,31 +41,28 @@ $quotes = calc::getIndicatorsLastQuote();
 
 <div class="ui container inverted segment">
 
-	<h2 class="ui left floated">
-		<i class="inverted briefcase icon"></i>Mes Portefeuilles
-		<? if ($sess_context->isUserConnected()) { ?><button id="portfolio_add2_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Synthèse</button><? } ?>
-		<? if ($sess_context->isUserConnected()) { ?><button id="portfolio_add1_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Portefeuille</button><? } ?>
-	</h2>
+	<h2 class="ui left floated"><i class="inverted briefcase icon"></i>Mes Portefeuilles</h2>
 
-	<div class="ui stackable grid container" id="strategie_box">
-      	<div class="row">
-			<div class="ui centered cards">
+	<div class="ui stackable grid container" id="portfolio_box">
 <?
-				foreach($lst_portfolios as $key => $val) {
-
-					// Calcul synthese portefeuille
-					$portfolio_data = calc::aggregatePortfolio($val['id'], $quotes);
+			foreach($lst_portfolios as $key => $val) {
+				// Calcul synthese portefeuille
+				$portfolio_data = calc::aggregatePortfolio($val['id'], $quotes);
+				uimx::portfolioCard($val, $portfolio_data);
+			}
 ?>
-					<div class="four wide column">
-						<?= uimx::portfolioCard($val, $portfolio_data) ?>
-					</div>
-<?
-				}
-?>
-    		</div>
-
-		</div>
     </div>
+
+</div>
+
+
+<div class="ui container inverted segment">
+    <div class="ui inverted centered header">
+		<? if ($sess_context->isUserConnected()) { ?>
+			<button id="portfolio_add2_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Synthèse</button>
+			<button id="portfolio_add1_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Portefeuille</button>
+		<? } ?>
+		</div>
 </div>
 
 
