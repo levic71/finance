@@ -46,6 +46,8 @@ $tags = array_flip(explode("|", utf8_decode($row['tags'])));
 $data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
 $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
+$perf_indicator = calc::getPerfIndicator($data);
+
 ?>
 
 <div class="ui container inverted segment">
@@ -53,7 +55,7 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
     <h2 class="ui left">
         <span>
             <?= utf8_decode($row['name']) ?>
-            <button style="position: relative; left: 10px; top:-4px;" id="symbol_refresh_bt" class="mini ui floated right button"><?= $row['symbol'] ?></button>
+            <button style="position: relative; left: 10px; top:-4px;" id="symbol_refresh_bt" class="mini ui primary floated right button"><?= $row['symbol'] ?></button>
         </span>
         <? if ($sess_context->isSuperAdmin()) { ?>
             <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float small trash icon"></i>
@@ -63,7 +65,7 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
     <table id="detail_stock" class="ui selectable inverted single line table">
         <thead>
             <tr><?
-                foreach (['Devise', 'Type', 'Région', 'Marché', 'TZ', 'Cotation', 'Prix', '%', 'DM', 'MM200', 'MM7'] as $key)
+                foreach (['Devise', 'Type', 'Région', 'Marché', 'TZ', 'Cotation', 'Prix', '%', 'DM', 'MM200', 'MM7', ''] as $key)
                     echo "<th>" . $key . "</th>";
                 ?></tr>
         </thead>
@@ -80,6 +82,7 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
                 <td data-label="DM" class="<?= ($data['DM'] >= 0 ? "aaf-positive" : "aaf-negative") ?>"><?= $data['DM'] ?>%</td>
                 <td data-label="M200"><?= sprintf("%.2f", $data['MM200']) . $curr ?></td>
                 <td data-label="MM7"><?= sprintf("%.2f", $data['MM7']) . $curr ?></td>
+                <td data-label=""><span data-tootik-conf="left multiline" data-tootik="<?= uimx::$perf_indicator_libs[$perf_indicator] ?>"><a class="ui empty <?= uimx::$perf_indicator_colrs[$perf_indicator] ?> circular label"></a></span></td>
             </tr>
         </tbody>
     </table>
@@ -88,6 +91,7 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
 
 <?
+
 // /////////////////////
 // GRAPHES COURS
 // //////////////////////
@@ -142,17 +146,6 @@ asort(uimx::$invest_classe);
 asort(uimx::$invest_factorielle);
 
 ?>
-
-<style>
-    table td {
-        padding: 5px 20px !important;
-    }
-
-    table div.checkbox {
-        padding: 8px 0px !important;
-    }
-</style>
-
 
 <div id="canvas_area" class="ui container inverted segment">
     <span>
@@ -352,7 +345,7 @@ if (!$readonly) {
                                 <td><?= isset($data["DMD3"]) ? $data["DMD3"] : "N/A" ?> [<?= sprintf("%.2f", $infos['close']['DMD3']) ?>] [<?= sprintf("%2.2f", $infos['perf']['DMD3']) ?>%]</td>
                             </tr>
                             <tr>
-                                <td colspan="2"><div style="height: 140px; width: 450px; overflow: scroll;"><?= var_dump($data) ?></div></td>
+                                <td colspan="2"><div style="height: 185px; width: 470px; overflow: scroll;"><?= var_dump($data) ?></div></td>
                             </tr>
                         </tbody>
                     </table>

@@ -560,6 +560,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
     min-width: 150px !important;
     padding: 10px 20px;
 }
+.stock_detail_page #detail_stock th, .stock_detail_page #detail_stock td {
+    text-align: center;
+}
+.stock_detail_page div.checkbox {
+    padding: 8px 0px !important;
+}
 
 @media only screen and (max-width: 1024px) {
 
