@@ -366,10 +366,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255,255,255,.08)
 }
 
-#strategie_box .column {
-    margin: 10px !important;
-}
-
 .ribbon {
     line-height: 0.8em;
     font-size: 2em;
