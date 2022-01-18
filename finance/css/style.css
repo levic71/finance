@@ -178,7 +178,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 	align-content: space-around;
 }
 #portfolio_box .card {
-    max-width: 250px;
+    max-width: 260px;
     margin: 10px 0px !important;
 }
 #strategie_container h2 span button {
@@ -619,6 +619,11 @@ table th { color: burlywood !important; cursor: pointer !important; }
         padding: 10px 1px 0px !important;
     }
 
+    #portfolio_box .card {
+        max-width: 100%;
+        width: 100%;
+    }
+    
     #strategie_box, #home_card {
         width: 100% !important;
     }
