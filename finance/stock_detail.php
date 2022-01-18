@@ -351,6 +351,9 @@ if (!$readonly) {
                                 <td>DMD3</td>
                                 <td><?= isset($data["DMD3"]) ? $data["DMD3"] : "N/A" ?> [<?= sprintf("%.2f", $infos['close']['DMD3']) ?>] [<?= sprintf("%2.2f", $infos['perf']['DMD3']) ?>%]</td>
                             </tr>
+                            <tr>
+                                <td colspan="2"><div style="height: 140px; width: 450px; overflow: scroll;"><?= var_dump($data) ?></div></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

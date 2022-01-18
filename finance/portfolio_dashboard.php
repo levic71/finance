@@ -351,7 +351,7 @@ computeLines = function(opt) {
 		valo  = parseFloat(nb * price);
 		ratio = getRatio(sum_valo, valo).toFixed(2);
 
-		Dom.id('f_poids_' + ind).innerHTML = ratio + ' %';
+		Dom.id('f_poids_' + ind).innerHTML = Math.round(ratio) + ' %';
 
 		actifs_data.push(ratio);
 	});

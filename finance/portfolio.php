@@ -49,22 +49,19 @@ $quotes = calc::getIndicatorsLastQuote();
 
 	<div class="ui stackable grid container" id="strategie_box">
       	<div class="row">
-			<div class="swiper-container mySwiper">
-    			<div class="swiper-wrapper">
+			<div class="ui centered cards">
 <?
 				foreach($lst_portfolios as $key => $val) {
 
 					// Calcul synthese portefeuille
 					$portfolio_data = calc::aggregatePortfolio($val['id'], $quotes);
 ?>
-					<div class="four wide column swiper-slide">
+					<div class="four wide column">
 						<?= uimx::portfolioCard($val, $portfolio_data) ?>
 					</div>
 <?
 				}
 ?>
-    			</div>
-    			<div class="swiper-pagination"></div>
     		</div>
 
 		</div>
@@ -73,40 +70,6 @@ $quotes = calc::getIndicatorsLastQuote();
 
 
 <script>
-
-	var swiper = new Swiper(".mySwiper", {
-        loop: false,
-        loopFillGroupWithBlank: true,
-		grid: {
-          rows: 2,
-        },
-		breakpoints: {
-			320: {
-				slidesPerView: 1,
-				slidesPerGroup: 1,
-				spaceBetween: 0
-			},
-			640: {
-				slidesPerView: 2,
-				slidesPerGroup: 2,
-				spaceBetween: 5
-			},
-			720: {
-				slidesPerView: 3,
-				slidesPerGroup: 3,
-				spaceBetween: 5
-			},
-			1024: {
-				slidesPerView: 4,
-				slidesPerGroup: 4,
-				spaceBetween: 5
-			}
-		},
-		pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        }
-    });
 
 <?
 	foreach($lst_portfolios as $key => $val) { ?>

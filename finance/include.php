@@ -745,7 +745,7 @@ class calc {
         $MM7   = $data['MM7'];
         $MM20  = $data['MM20'];
         $MM50  = $data['MM50'];
-        $MM100 = ($data['MM200'] + $data['MM50']) / 2;
+        $MM100 = $data['MM100'] != "" ? $data['MM100'] : ($data['MM200'] + $data['MM50']) / 2;
         $MM200 = $data['MM200'];
         $close = $data['price'];
 
