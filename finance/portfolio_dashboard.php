@@ -31,6 +31,9 @@ $quotes = calc::getIndicatorsLastQuote();
 // Calcul synthese portefeuille
 $portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
 
+// Portfolio synthese ?
+$isPortfolioSynthese = $portfolio_data['infos']['synthese'] == 1 ? true : false;
+
 // On recupere les eventuelles saisies de cotation manuelles
 $save_quotes = array();
 $t = explode(',', $portfolio_data['infos']['quotes']);
@@ -74,7 +77,7 @@ $lst_orders    = $portfolio_data['orders'];
 								</div>
 							</div>
 							<div class="field">
-								<label>Gain/Perte</label>
+								<label>+/- Value</label>
 								<div class="field">
 									<input id="gain_perte" type="text" value="0 &euro;" readonly="" />
 								</div>
@@ -117,7 +120,7 @@ $lst_orders    = $portfolio_data['orders'];
 	<div class="ui hidden divider"></div>
 
 	<h2 class="ui left floated"><i class="inverted location arrow icon"></i>Positions
-		<? if ($portfolio_data['infos']['synthese'] == 0) { ?>
+		<? if (!$isPortfolioSynthese) { ?>
 		<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i> Save</button>
 		<? } ?>
 	</h2>
@@ -183,7 +186,9 @@ $lst_orders    = $portfolio_data['orders'];
 	<div class="ui hidden divider"></div>
 	
 	<h2 class="ui left floated"><i class="inverted history icon"></i>Historique ordres
-		<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ordre</button>
+<? if (!$isPortfolioSynthese) { ?>
+	<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ordre</button>
+<? } ?>
 	</h2>
 	<div class="ui stackable column grid">
       	<div class="row">
@@ -215,7 +220,7 @@ $lst_orders    = $portfolio_data['orders'];
 						<td>'.sprintf("%.2f", $val['quantity'] * $val['price']).' &euro;</td>
 						<td>'.sprintf("%.2f", $val['commission']).' &euro;</td>
 						<td class="collapsing">
-							<i id="order_edit_'.$val['id'].'_bt" class="edit inverted icon"></i>
+							'.($isPortfolioSynthese ? '' : '<i id="order_edit_'.$val['id'].'_bt" class="edit inverted icon"></i>').'
 						</td>
 					</tr>';
 				}
@@ -261,9 +266,11 @@ var options = {
 	};
 
 <?
-	foreach($lst_orders as $key => $val) { ?>
-		Dom.addListener(Dom.id('order_edit_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=upt&portfolio_id=<?= $portfolio_id ?>&order_id=<?= $val['id'] ?>', loading_area: 'main' }); });
+	if (!$isPortfolioSynthese) {
+		foreach($lst_orders as $key => $val) { ?>
+			Dom.addListener(Dom.id('order_edit_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=upt&portfolio_id=<?= $portfolio_id ?>&order_id=<?= $val['id'] ?>', loading_area: 'main' }); });
 <?	
+		}
 	}
 ?>
 
@@ -424,12 +431,14 @@ Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
 });
 
 // Listener sur les boutons ADD et BACK
+<? if (!$isPortfolioSynthese) { ?>
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+<? } ?>
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
 
 // Listener possible sur SAVE et SELECT si pas portfolio synthese 
-<? if ($portfolio_data['infos']['synthese'] == 0) { ?>
+<? if (!$isPortfolioSynthese) { ?>
 Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 	var quotes = '';
 	Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
