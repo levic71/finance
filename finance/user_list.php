@@ -29,6 +29,8 @@ $db = dbc::connect();
                 <th>Abonnement</th>
                 <th>Nb Strategies</th>
                 <th>Nb Portfolios</th>
+                <th>Last Cnx</th>
+                <th>Nb Cnxs</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -46,6 +48,8 @@ $db = dbc::connect();
 					<td><?= $row['abonnement'] ?></td>
 					<td><?= $row['total_strategies'] ?></td>
 					<td><?= $row['total_portfolios'] ?></td>
+					<td><?= $row['last_connexion'] ?></td>
+					<td><?= $row['nb_connexions'] ?></td>
 					<td>
 						<i class="ui inverted edit icon"  onclick="go({ action: 'user', id: 'main', url: 'user.php?action=upt&item_id=<?= $row['id'] ?>' });"></i>
 						<i class="ui inverted trash icon" onclick="go({ action: 'user', id: 'main', url: 'user_action.php?action=del&item_id=<?= $row['id'] ?>', confirmdel: 1 });"></i>

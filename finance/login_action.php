@@ -30,6 +30,10 @@ if ($action == "login") {
                 $connected = true;
                 $tab = [ "id" => $row['id'], "email" => $row['email'], "favoris" => $row['favoris'], "super_admin" => $row['super_admin'], "status" => $row['status'] ];
                 $sess_context->setUserConnection($tab);
+
+                // Update user info connexion
+                $req = "UPDATE users SET last_connexion=now(), nb_connexions=".($row['nb_connexions'] + 1)." WHERE email='".strtolower($f_email)."'";
+                $res = dbc::execSql($req);
             }
             else
                 $en_attente = true;
