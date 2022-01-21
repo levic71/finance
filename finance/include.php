@@ -217,8 +217,8 @@ class calc {
             // Recuperation de la date de debut du portefeuille
             if ($i == 0) {
                 $date_ref = new DateTime($row['date']);
-                $interval_ref = $today->diff($date_ref)->format("%a");
-                $interval_year = $today->diff($date_ref)->format("%y");
+                $interval_ref   = $today->diff($date_ref)->format("%a");
+                $interval_year  = $today->diff($date_ref)->format("%y");
                 $interval_month = $today->diff($date_ref)->format("%m");
                 $i++;
             }

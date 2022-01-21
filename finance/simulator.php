@@ -59,17 +59,16 @@ $params['strategie_data']    = $row['data'];
 $params['strategie_methode'] = $row['methode'];
 $params['montant_retrait']   = $f_montant_retrait;
 $params['delai_retrait']     = $f_delai_retrait;
-$params['compare_to']   = $f_compare_to;
-$params['capital_init'] = $f_capital_init;
-$params['date_start']   = $f_date_start;
-$params['date_end']     = $f_date_end;
-$params['retrait']      = $f_retrait;
-$params['invest']       = $f_invest;
-$params['cycle_invest'] = $f_cycle_invest;
+$params['compare_to']        = $f_compare_to;
+$params['capital_init']      = $f_capital_init;
+$params['date_start']        = $f_date_start;
+$params['date_end']          = $f_date_end;
+$params['retrait']           = $f_retrait;
+$params['invest']            = $f_invest;
+$params['cycle_invest']      = $f_cycle_invest;
 
 // Lancement de la simulation
 $sim = strategieSimulator($params);
-// var_dump($sim);
 
 $infos1 = '
 <table id="sim_input_card">
@@ -286,69 +285,35 @@ var valos    = [<?= implode(',', $sim['tab_valo'])    ?>];
 var valos_RC = [<?= implode(',', $sim['tab_valo_RC']) ?>];
 var invts    = [<?= implode(',', $sim['tab_invt'])    ?>];
 
+getDataset = function(mydata, mylabel, bc, bg, myfill) {
+
+    var ret = {
+        type: 'line',
+        data: mydata,
+        label: mylabel,
+        borderColor: bc,
+        backgroundColor: bg,
+        borderWidth: 0,
+        cubicInterpolationMode: 'monotone',
+        pointRadius: 1,
+        tension: 0.4,
+        borderWidth: 0.5,
+        fill: myfill
+    };
+
+    return ret;
+}
+
+var mydatasets = [];
+mydatasets.push(getDataset(invts,    'Investissement',        'rgba(97, 194, 97, 0.75)',  'rgba(97, 194, 97, 1)',    false));
+mydatasets.push(getDataset(valos_RC, '<?= $sim['sym_RC'] ?>', 'rgba(23, 109, 181, 0.75)', 'rgba(23, 109, 181, 1)',   false));
+mydatasets.push(getDataset(valos,    '<?= $row['title'] ?>',  'rgba(238, 130, 6, 0.75)',  'rgba(238, 130, 6, 0.05)', true));
+
 var ctx = document.getElementById('sim_canvas1').getContext('2d');
 el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
 
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: dates,
-        datasets: [
-            { 
-            data: invts,
-            label: "Investissement",
-            borderColor: "rgba(97, 194, 97, 0.75)",
-            backgroundColor: "rgba(97, 194, 97, 1)",
-            cubicInterpolationMode: 'monotone',
-            pointRadius: 1,
-            tension: 0.4,
-            borderWidth: 0.5,
-            fill: false
-        },
-        { 
-            data: valos_RC,
-            label: "<?= $sim['sym_RC'] ?>",
-            borderColor: "rgba(23, 109, 181, 0.75)",
-            backgroundColor: "rgba(23, 109, 181, 1)",
-            cubicInterpolationMode: 'monotone',
-            pointRadius: 1,
-            tension: 0.4,
-            borderWidth: 0.5,
-            fill: false
-        },
-        { 
-            data: valos,
-            label: "<?= $row['title'] ?>",
-            borderColor: "rgba(238, 130, 6, 0.75)",
-            backgroundColor: "rgba(238, 130, 6, 0.05)",
-            cubicInterpolationMode: 'monotone',
-            pointRadius: 1,
-            tension: 0.4,
-            borderWidth: 0.5,
-            fill: true
-        }
-    ]},
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        scales: {
-            x: {
-                gridLines: {
-                },
-                ticks: {
-                    minRotation: 45,
-                    maxRotation: 45,
-                    display: true
-                }
-                },
-            y: {
-                ticks: {
-                    beginAtZero:true
-                }
-            }
-        }
-    }
-});
+var myChart = new Chart(ctx, { type: 'line', data: { labels: dates, datasets: mydatasets }, options: options_simulator_graphe });
+
 </script>
 
 
@@ -387,7 +352,10 @@ var data2 = {
     ]
 }
 
+// Changement valeur dynamique option graphe
 options_DM_Graphe.plugins.legend.display = true;
+
+// Creation graphe
 var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options_DM_Graphe, plugins: [horizontalLines_DM_Graphe] } );
 
 </script>

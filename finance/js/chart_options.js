@@ -5,7 +5,7 @@ var options_Stock_Graphe = {
 	radius: 0,
 	responsive: true,
 	maintainAspectRatio: true,
-    animation: false,
+    animation: true,
     plugins: {
 		legend: {
 			display: false
@@ -175,6 +175,26 @@ const horizontalLines_DM_Graphe = {
     }
 };
 
+var options_simulator_graphe = {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: {
+        x: {
+            gridLines: {
+            },
+            ticks: {
+                minRotation: 45,
+                maxRotation: 45,
+                display: true
+            }
+        },
+        y: {
+            ticks: {
+                beginAtZero:true
+            }
+        }
+    }
+};
 
 /*         {
             "responsive": true,

@@ -125,36 +125,6 @@ function getTimeSeriesData($table_name, $period, $sym)
     return $ret;
 }
 
-// Format data
-function format_data($data, $period) {
-?>
-        new_data_<?= $period ?> = [
-<?
-        $i = 1;
-        $count = count($data["rows"]);
-
-        reset($data["colrs"]);
-        foreach($data["rows"] as $key => $val) {
-            echo sprintf("{ x: '%s', y: %s, v: %s, m1: %s, m2: %s, m3: %s, m4: %s, r: %s, d: %s, c: '%s' }%s",
-                $val["day"],
-                $val["adjusted_close"],
-                $val["volume"] == "" ? 0 : $val["volume"],
-                $val["MM200"],
-                $val["MM50"],
-                $val["MM20"],
-                $val["MM7"],
-                $val["RSI14"],
-                $val["DM"],
-                current($data["colrs"]),
-                $i++ == $count ? '' : ','
-            );
-            next($data["colrs"]);
-        }
-?>
-    ];
-<?
-}
-
 // Recuperation de tous les indicateurs DAILY de l'actif
 $data_daily = getTimeSeriesData("daily_time_series_adjusted", "DAILY", $symbol);
 
@@ -426,15 +396,34 @@ if (!$readonly) {
 
     // 1y=280d, 55w, 12m
     var interval_period_days = {
-        'D': { 'ALL': 0, '3Y': 840, '1Y': 280, '1T': 10 },
-        'W': { 'ALL': 0, '3Y': 165, '1Y': 55,  '1T': 14 },
-        'M': { 'ALL': 0, '3Y': 36,  '1Y': 12,  '1T': 3 }
+        'D': {
+            'ALL': 0,
+            '3Y': 840,
+            '1Y': 280,
+            '1T': 10
+        },
+        'W': {
+            'ALL': 0,
+            '3Y': 165,
+            '1Y': 55,
+            '1T': 14
+        },
+        'M': {
+            'ALL': 0,
+            '3Y': 36,
+            '1Y': 12,
+            '1T': 3
+        }
     };
 
-    // Couleurs des MMX
-    var mmx_colors = { 'MM7': '<?= $sess_context->getSpectreColor(4) ?>', 'MM20': '<?= $sess_context->getSpectreColor(2) ?>', 'MM50': '<?= $sess_context->getSpectreColor(1) ?>', 'MM200': '<?= $sess_context->getSpectreColor(6) ?>' };
+    var mmx_colors = {
+        'MM7': '<?= $sess_context->getSpectreColor(4) ?>',
+        'MM20': '<?= $sess_context->getSpectreColor(2) ?>',
+        'MM50': '<?= $sess_context->getSpectreColor(1) ?>',
+        'MM200': '<?= $sess_context->getSpectreColor(6) ?>'
+    };
 
-    // Fonction de gestoion des tableaux de valeurs
+
     min_slice = function(tab, size) {
         return (tab.length - size - 1) > 0 ? (tab.length - size - 1) : 0;
     }
@@ -449,22 +438,18 @@ if (!$readonly) {
         return size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));
     }
 
-    // Creation de Dataset generique
-    newDataset2 = function(mydata, mytype, yaxeid, yaxekey, mylabel, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0) {
+    newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0) {
 
         var ret = {
             type: mytype,
             data: mydata,
             label: mylabel,
             borderColor: mycolor,
-            backgroundColor: bg,
             borderWidth: myborderwith,
             yAxisID: yaxeid,
-            parsing: {
-                yAxisKey: yaxekey
-            },
             cubicInterpolationMode: 'monotone',
             tension: mytension,
+            backgroundColor: bg,
             fill: myfill,
             pointRadius: myradius,
             normalized: true
@@ -473,63 +458,95 @@ if (!$readonly) {
         return ret;
     }
 
-    // Creation de Dataset generique
-    newDatasetVols = function(mydata, mytype, yaxeid, yaxekey, mylabel) {
-
-        var ret = {
-            type: mytype,
-            data: mydata,
-            label: mylabel,
-            borderColor: 0,
-            backgroundColor: mydata.map(function(item) { return item.c == 1 ? 'green' : 'red'; }),
-            borderWidth: 0,
-            yAxisID: yaxeid,
-            parsing: {
-                yAxisKey: yaxekey
-            },
-            fill: true,
-            normalized: true
-        };
-
-        return ret;
-    }
-
-    // Creation de Datasets specifiques
     getDatasetVals = function(vals) {
-        return newDataset2(vals, 'line', 'y1', 'y', 'Cours', '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>', true);
+        return newDataset(vals, 'line', 'y1', 'Cours', '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>', true);
     }
-    getDatasetVols = function(vals, l) {
-        return newDatasetVols(vals, 'bar', 'y2', 'v', l);
+    getDatasetVols = function(vals, l, c) {
+        return newDataset(vals, 'bar', 'y2', l, c, c, true);
     }
-    getDatasetMMX = function(vals, k, l) {
-        return newDataset2(vals, 'line', 'y1', k, l, mmx_colors[l], '', false);
+    getDatasetMMX = function(vals, l) {
+        return newDataset(vals, 'line', 'y1', l, mmx_colors[l], '', false);
     }
     getDatasetRSI14 = function(vals) {
-        return newDataset2(vals, 'line', 'y', 'r', "RSI14", 'violet', 'violet', false);
+        return newDataset(vals, 'line', 'y', "RSI14", 'violet', 'violet', false);
     }
     getDatasetDM = function(vals) {
-        return newDataset2(vals, 'line', 'y', 'd', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
+        return newDataset(vals, 'line', 'y', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
     }
 
     var graphe_size_days = 0;
-    var new_data_daily   = [];
-    var new_data_weekly  = [];
-    var new_data_monthly = [];
 
+    var new_data = [
 <?
-    format_data($data_daily,   "daily");
-    format_data($data_weekly,  "weekly");
-    format_data($data_monthly, "monthly");
+    reset($data_daily["colrs"]);
+    foreach($data_daily["rows"] as $key => $val) {
+        echo sprintf("{ x: '%s', y: %s, v: %s, m1: %s, m2: %s, m3: %s, m4: %s, r: %s, d: %s, c: %s },",
+            $val["day"],
+            $val["adjusted_close"],
+            $val["volume"],
+            $val["MM200"],
+            $val["MM50"],
+            $val["MM20"],
+            $val["MM7"],
+            $val["RSI14"],
+            $val["DM"],
+            current($data_daily["colrs"])
+        );
+        next($data_daily["colrs"]);
+    }
 ?>
+    ];
 
-    // Ref Day Data
-    var ref_d_days  = [<?= '"' . implode('","', array_column($data_daily["rows"],   "day")) . '"' ?>];
-    var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
+    // Ref Daily data
+    var ref_d_days   = [<?= '"' . implode('","', array_column($data_daily["rows"], "day")) . '"' ?>];
+    var ref_d_vals   = [<?= implode(',', array_column($data_daily["rows"], "adjusted_close"))  ?>];
+    var ref_d_vols   = [<?= implode(',', array_column($data_daily["rows"], "volume")) ?>];
+    var ref_d_mm7    = [<?= implode(',', array_column($data_daily["rows"], "MM7"))    ?>];
+    var ref_d_mm20   = [<?= implode(',', array_column($data_daily["rows"], "MM20"))   ?>];
+    var ref_d_mm50   = [<?= implode(',', array_column($data_daily["rows"], "MM50"))   ?>];
+    var ref_d_mm200  = [<?= implode(',', array_column($data_daily["rows"], "MM200"))  ?>];
+    var ref_d_rsi14  = [<?= implode(',', array_column($data_daily["rows"], "RSI14"))  ?>];
+    var ref_d_dm     = [<?= implode(',', array_column($data_daily["rows"], "DM"))     ?>];
+    var ref_d_colors = [<?= implode(',', $data_daily["colrs"]) ?>];
+
+    // Ref Weekly Data
+    var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"], "day")) . '"' ?>];
+    var ref_w_vals  = [<?= implode(',', array_column($data_weekly["rows"], "adjusted_close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
+    var ref_w_vols  = [<?= implode(',', array_column($data_weekly["rows"], "volume")) ?>];
+    var ref_w_mm7   = [<?= implode(',', array_column($data_weekly["rows"], "MM7"))    ?>];
+    var ref_w_mm20  = [<?= implode(',', array_column($data_weekly["rows"], "MM20"))   ?>];
+    var ref_w_mm50  = [<?= implode(',', array_column($data_weekly["rows"], "MM50"))   ?>];
+    var ref_w_mm200 = [<?= implode(',', array_column($data_weekly["rows"], "MM200"))  ?>];
+    var ref_w_rsi14 = [<?= implode(',', array_column($data_weekly["rows"], "RSI14"))  ?>];
+    var ref_w_dm    = [<?= implode(',', array_column($data_weekly["rows"], "DM"))     ?>];
+
+    // Ref Monthly Data
     var ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
+    var ref_m_vals  = [<?= implode(',', array_column($data_monthly["rows"], "adjusted_close"))  ?>]; // On prend close et pas adjusted_close car le cumul est tjs mis dans close quelque soit le champ choisit
+    var ref_m_vols  = [<?= implode(',', array_column($data_monthly["rows"], "volume")) ?>];
+    var ref_m_mm7   = [<?= implode(',', array_column($data_monthly["rows"], "MM7"))    ?>];
+    var ref_m_mm20  = [<?= implode(',', array_column($data_monthly["rows"], "MM20"))   ?>];
+    var ref_m_mm50  = [<?= implode(',', array_column($data_monthly["rows"], "MM50"))   ?>];
+    var ref_m_mm200 = [<?= implode(',', array_column($data_monthly["rows"], "MM200"))  ?>];
+    var ref_m_rsi14 = [<?= implode(',', array_column($data_monthly["rows"], "RSI14"))  ?>];
+    var ref_m_dm    = [<?= implode(',', array_column($data_monthly["rows"], "DM"))     ?>];
 
-    // Current data
-    var g_new_data = null;
-    var g_days     = null;
+    var g1_days   = null;
+    var g1_vals   = null;
+    var g1_vols   = null;
+    var g1_mm7    = null;
+    var g1_mm20   = null;
+    var g1_mm50   = null;
+    var g1_mm200  = null;
+    var g1_colors = null;
+    var g2_days   = null;
+    var g2_rsi14  = null;
+    var g3_dm     = null;
+
+    // Transformation des 0/1 en rouge et vert
+    for (var i = 0; i < ref_d_colors.length; i++) {
+        ref_d_colors[i] = (ref_d_colors[i] == 1) ? "green" : "red";
+    }
 
     var ctx1 = document.getElementById('stock_canvas1').getContext('2d');
     el("stock_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
@@ -541,8 +558,8 @@ if (!$readonly) {
     el("stock_canvas3").height = document.body.offsetWidth > 700 ? 50 : 150;
 
 
-    getMMXKey = function(label) {
-        return label == "MM7" ? 'm4' : (label == "MM20" ? 'm3' : (label == "MM50" ? 'm2' : 'm1'));
+    getMMXData = function(label) {
+        return label == "MM7" ? g1_mm7 : (label == "MM20" ? g1_mm20 : (label == "MM50" ? g1_mm50 : g1_mm200));
     }
 
     toogleMMX = function(chart, label) {
@@ -555,9 +572,9 @@ if (!$readonly) {
             });
         } else {
             if (label.toLowerCase() == "volume")
-                chart.data.datasets.push(getDatasetVols(g_new_data, 'VOLUME'));
+                chart.data.datasets.push(getDatasetVols(g1_vols, 'VOLUME', g1_colors));
             else
-                chart.data.datasets.push(getDatasetMMX(g_new_data, getMMXKey(label), label));
+                chart.data.datasets.push(getDatasetMMX(getMMXData(label), label));
         }
         chart.update();
         rmCN(bt, 'loading');
@@ -575,10 +592,27 @@ if (!$readonly) {
 
         interval = getIntervalStatus();
 
-        g_new_data = getSlicedData2(interval, new_data_daily, new_data_weekly, new_data_monthly, size);
-        g_days     = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
+        // Graphe Stock
+        g1_days = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
+        g1_vals = getSlicedData2(interval, ref_d_vals, ref_w_vals, ref_m_vals, size);
+        g1_vols = getSlicedData2(interval, ref_d_vols, ref_w_vols, ref_m_vols, size);
 
-        return g_days.length;
+        g1_mm7 = getSlicedData2(interval, ref_d_mm7, ref_w_mm7, ref_m_mm7, size);
+        g1_mm20 = getSlicedData2(interval, ref_d_mm20, ref_w_mm20, ref_m_mm20, size);
+        g1_mm50 = getSlicedData2(interval, ref_d_mm50, ref_w_mm50, ref_m_mm50, size);
+        g1_mm200 = getSlicedData2(interval, ref_d_mm200, ref_w_mm200, ref_m_mm200, size);
+
+        g1_colors = getSlicedData2(interval, ref_d_colors, ref_d_colors, ref_d_colors, size); // Couleurs peut etre a revoir !!!!
+
+        // Graphe RSI
+        g2_days = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
+        g2_rsi14 = getSlicedData2(interval, ref_d_rsi14, ref_w_rsi14, ref_m_rsi14, size);
+
+        // Graphe DM
+        g3_days = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
+        g3_dm = getSlicedData2(interval, ref_d_dm, ref_w_dm, ref_m_dm, size);
+
+        return g1_days.length;
     }
 
     update_graphe_buttons = function(bt) {
@@ -623,34 +657,27 @@ if (!$readonly) {
         // Ajustement des données
         var nb_items = update_data(interval_period_days[getIntervalStatus()][getPeriodStatus()]);
 
-        // Changement dynamique option graphe
-        if (g_new_data.length > 2000) {
-            options_Stock_Graphe.animation = false;
-            options_RSI_Graphe.animation = false;
-            options_DM_Graphe.animation = false;
-        }
-
         // Update Chart Stock
         var datasets1 = [];
-        datasets1.push(getDatasetVals(g_new_data));
-        if (isCN('graphe_mm7_bt',    '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm4', 'MM7'));
-        if (isCN('graphe_mm20_bt',   '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm3', 'MM20'));
-        if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
-        if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
-        if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
-        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [{}]);
+        datasets1.push(getDatasetVals(g1_vals));
+        if (isCN('graphe_mm7_bt', '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g1_mm7, 'MM7'));
+        if (isCN('graphe_mm20_bt', '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g1_mm20, 'MM20'));
+        if (isCN('graphe_mm50_bt', '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g1_mm50, 'MM50'));
+        if (isCN('graphe_mm200_bt', '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g1_mm200, 'MM200'));
+        if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g1_vols, 'VOLUME', g1_colors));
+        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g1_days, datasets1, [{}]);
 
         // Update Chart RSI
         var datasets2 = [];
-        datasets2.push(getDatasetRSI14(g_new_data));
-        myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [horizontalLines_RSI_Graphe]);
+        datasets2.push(getDatasetRSI14(g2_rsi14));
+        myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g2_days, datasets2, [horizontalLines_RSI_Graphe]);
 
         // Update Chart DM
         if (myChart3 == null) { // On le dessine une fois en daily pour l'instant (pb perf et data)
             var datasets3 = [];
-            datasets3.push(getDatasetDM(g_new_data));
+            datasets3.push(getDatasetDM(g3_dm));
             options_DM_Graphe.scales.y.position = 'right';
-            myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [horizontalLines_DM_Graphe]);
+            myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g3_days, datasets3, [horizontalLines_DM_Graphe]);
         }
 
         rmCN(bt, 'loading');

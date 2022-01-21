@@ -37,13 +37,15 @@ function strategieSimulator($params) {
     $sum_invest = $capital_init;
 
     // Initialisations diverses
-    $nb_mois = 0;
-    $valo_pf = 0;
-    $perf_pf = 0;
-    $maxdd_min = 999999999999;
-    $maxdd_max = 0;
-    $maxdd = 0;
+    $nb_mois     = 0;
+    $valo_pf     = 0;
+    $perf_pf     = 0;
+    $maxdd_min   = 999999999999;
+    $maxdd_max   = 0;
+    $maxdd       = 0;
     $retrait_sum = 0;
+    $ampplt      = 0; // Apports moyen ponderes par le temps
+
 
     // Tableau pour mémoriser les ordres achats/ventes
     // $ordres["2021-08-01"] = '{ "date": "2021-08-01", "symbol": "PUST.PAR", "quantity": "20", "price": "80" }';
@@ -312,6 +314,9 @@ function strategieSimulator($params) {
                     // Recap actifs dans portefeuille
                     // if ($nb_actions2buy > 0)
                     $recap_actifs_portefeuille .= ($recap_actifs_portefeuille == "" ? "" : ", ").$lst_actifs_achetes_nb[$key]." [".$key."] à ".sprintf("%.2f", $lst_actifs_achetes_pu[$key]).$curr;
+
+//                    $ampplt += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+
                 }
 
                 // Performance 
