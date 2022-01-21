@@ -229,7 +229,7 @@ asort(uimx::$invest_factorielle);
                             ?>
                         </select>
                     <? } else { ?>
-                        <input type="text" id="f_categorie" value="<?= $row['categorie'] == "" ? "" : uimx::$invest_secteur[$row['categorie']] ?>" placeholder="Catégorie">
+                        <input type="text" id="f_rating" value="<?= $row['rating'] ?>" placeholder="Rating">
                     <? } ?>
                 </div>
             </div>
@@ -436,17 +436,21 @@ if (!$readonly) {
 
     // Fonction de gestoion des tableaux de valeurs
     min_slice = function(tab, size) {
-        return (tab.length - size - 1) > 0 ? (tab.length - size - 1) : 0;
+        var ret = (tab.length - size - 1) > 0 ? (tab.length - size - 1) : 0;
+        return ret;
     }
     max_slice = function(tab) {
-        return tab.length > 0 ? tab.length : 0;
+        var ret = tab.length > 0 ? tab.length : 0;
+        return ret;
     }
     getSlicedData = function(tab, size) {
-        return size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));
+        var ret = size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));
+        return ret;
     }
     getSlicedData2 = function(interval, t_d, t_w, t_m, size) {
-        tab = interval == 'D' ? t_d : (interval == 'W' ? t_w : t_m);
-        return size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));
+        var tab = interval == 'D' ? t_d : (interval == 'W' ? t_w : t_m);
+        var ret = size == 0 ? tab : tab.slice(min_slice(tab, size), max_slice(tab));
+        return ret;
     }
 
     // Creation de Dataset generique
