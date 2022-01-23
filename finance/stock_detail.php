@@ -138,7 +138,7 @@ function format_data($data, $period) {
             echo sprintf("{ x: '%s', y: %s, v: %s, m1: %s, m2: %s, m3: %s, m4: %s, r: %s, d: %s, c: '%s' }%s",
                 $val["day"],
                 $val["adjusted_close"],
-                $val["volume"] == "" ? 0 : $val["volume"],
+                $val["volume"] == "" ? 0 : round($val["volume"]/1000),
                 $val["MM200"],
                 $val["MM50"],
                 $val["MM20"],

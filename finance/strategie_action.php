@@ -66,5 +66,5 @@ if ($action == "upt" && isset($strategie_id) && $strategie_id != "") {
 <script>
     go({ action: 'home_content', id: 'main', url: 'home_content.php' });
     var p = loadPrompt();
-    p.success('Stratégie <?= $f_name.($action == "new" || $action == "copy"? " ajoutée": ($action == "upt" ? " modifiée" : " supprimée")) ?>');
+    p.success('Stratégie <?= utf8_decode($f_name).($action == "new" || $action == "copy"? " ajoutée": ($action == "upt" ? " modifiée" : " supprimée")) ?>');
 </script>

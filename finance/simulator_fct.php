@@ -239,7 +239,7 @@ function strategieSimulator($params) {
                     $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_sum - $sum_invest)*100/$sum_invest, 2);
 
                     $detail["td_cash"]          = sprintf("%.2f", round($cash, 2)).$curr;
-                    $detail["td_valo_pf"]       = sprintf("%.2f", $valo_pf).$curr;
+                    $detail["td_valo_pf"]       = sprintf("%.2f", round($valo_pf)).$curr;
                     $detail["td_perf_glob"]     = sprintf("%.2f", $perf_pf)."%";
                     $detail["td_perf_glob_val"] = $perf_pf;
 
@@ -336,7 +336,7 @@ function strategieSimulator($params) {
 
                 $tab_detail[] = $detail;
                 $tab_date[] = $day;
-                $tab_valo[] = $valo_pf;
+                $tab_valo[] = round($valo_pf, 2);
                 $tab_invt[] = $sum_invest;
 
             }
@@ -373,7 +373,7 @@ function strategieSimulator($params) {
 
             // Valorisation portefeuille RC
             $valo_pf_RC = ($nb_actions_RC * $pu_action_RC) + $cash_RC;
-            $tab_valo_RC[] = $valo_pf_RC;
+            $tab_valo_RC[] = round($valo_pf_RC, 2);
 
             // Performance 
             $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC + $retrait_sum - $sum_invest)*100/$sum_invest, 2);

@@ -204,10 +204,13 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 		}
 		rmCN('f_name_error', 'red');
 
+		t_assets = [];
 		sum_pct = 0;
 		for(i=1; i <= parseInt(valof('f_nb_symbol_max')); i++) {
 
-			if (valof('f_symbol_choice_'+i) == "") {
+			var l_val = valof('f_symbol_choice_'+i);
+
+			if (l_val == "") {
 				Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Choisir un actif' });
 				addCN('f_symbol_choice_'+i+'_error', 'red');
 				return;
@@ -221,11 +224,19 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 			}
 			rmCN('f_symbol_choice_'+i+'_error', 'red');
 
+			t_assets[l_val] = l_val in t_assets ? t_assets[l_val]+1 : 1;
+
+			if (t_assets[l_val] > 1) {
+				Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Actif en doublon' });
+				addCN('f_symbol_choice_'+i+'_error', 'red');
+				return;
+			}
+
 			sum_pct += parseInt(valof('f_symbol_choice_pct_'+i));
 		}
 
-		if (sum_pct > 100) {
-			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'La somme des répartitiond doit être inférieur à 100%' });
+		if (sum_pct != 100) {
+			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'La somme des répartitiond n\'est pas égale à 100% [' + (sum_pct) + ']' });
 			addCN('f_name_error', 'red');
 			return;
 		}

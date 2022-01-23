@@ -169,7 +169,7 @@ $infos2 = '
 <input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted <?= $row['methode'] == 2 ? 'cubes' : 'diamond' ?> icon"></i><?= $row['title'] ?></h2>
+    <h2><i class="inverted <?= $row['methode'] == 2 ? 'cubes' : 'diamond' ?> icon"></i><?= utf8_decode($row['title']) ?></h2>
     <div class="ui stackable grid container">
           <div class="row">
           <div class="eight wide column">
@@ -197,7 +197,7 @@ $final_info = '
         <th>Duree</th>
     </tr>
     <tr>
-        <td>'.$row['title'].'</td>
+        <td>'.utf8_decode($row['title']).'</td>
         <td>'.sprintf("%.2f", $sim['valo_pf']).' &euro;</td>
         <td>'.sprintf("%.2f", $sim['sum_invest']).' &euro;</td>
         <td class="'.($sim['perf_pf'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $sim['perf_pf']).' %</td>

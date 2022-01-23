@@ -9,7 +9,23 @@ var options_Stock_Graphe = {
     plugins: {
 		legend: {
 			display: false
-		}
+		},
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    let label = context.dataset.label || '';
+                    let ext = context.datasetIndex == 2 ? "K " : "";
+                    if (label) {
+                        label += ':  ';
+                    }
+                    if (context.parsed.y !== null) {
+//                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                        label += context.parsed.y.toLocaleString() + ext;
+                    }
+                    return label;
+                }
+            }
+        }
 	},
 	scales: {
 		x: {
