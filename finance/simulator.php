@@ -190,7 +190,7 @@ $final_info = '
     <tr>
         <th>Portfolio</th>
         <th>Valorisation</th>
-        <th>Capital investit</th>
+        <th>Capital investi</th>
         <th>Performance</th>
         <th>Max DD</th>
         <th>Retrait</th>

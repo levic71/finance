@@ -25,7 +25,11 @@ $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_cont
 <div id="strategie_container" class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<i class="inverted chess icon"></i><span><?= $sess_context->isUserConnected() ? "Mes Stratégies" : "Stratégies" ?> <button id="strategie_default_bt" class="mini ui grey button"><i class="ui inverted thumbtack icon"></i></button></span>
+		<i class="inverted chess icon"></i>
+		<span>
+			<?= $sess_context->isUserConnected() ? "Mes Stratégies" : "Stratégies" ?>
+			<button id="strategie_default_bt" class="mini ui grey button <?= $sess_context->isUserConnected() ? "" : "hidden" ?>"><i class="ui inverted thumbtack icon"></i></button>
+		</span>
 
 		<? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Stratégie</button><? } ?>
 	</h2>
@@ -349,8 +353,10 @@ Sortable.initTable(el("lst_stock"));
 // Init affichage default strategies
 addCN("strategie_swiper", "showmine");
 <? if ($sess_context->isSuperAdmin() || !$sess_context->isUserConnected()) { ?>
-	if (getCookie('strategie_default_bt') != 1) filterLstStrategies('strategie_default_bt');
-		filterLstStrategies('strategie_default_bt');
+	<? if ($sess_context->isUserConnected()) { ?>
+		if (getCookie('strategie_default_bt') != 1) filterLstStrategies('strategie_default_bt');
+	<? } ?>
+	filterLstStrategies('strategie_default_bt');
 <? } ?>
 
 // Changement etat bouttons tags
