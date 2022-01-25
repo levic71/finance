@@ -70,8 +70,8 @@
 // https://fr.emmtrade.com/dietz/-Modified-Dietz-Method/
 // https://www.prorealcode.com/prorealtime-indicators/trend-indicator-buy-sell-signals/
 // https://simplywall.st/dashboard
-// https://finviz.com/
 // https://www.nasdaq.com/
 // https://www6.royalbank.com/fr/di/reference/article/stock-market-sectors-and-sector-rotation/inkxp081
 // https://www.jack-fund.com/guides/choisir-etf (liste meilleurs ETF PEA)
 // https://www.youtube.com/watch?v=oz3zPY8G6Lo&ab_channel=WiBourse n
+// https://finviz.com/map.ashx?t=etf
