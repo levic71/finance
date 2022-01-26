@@ -2,6 +2,9 @@
 
 function strategieSimulator($params) {
 
+    $use_ampplt   = false;
+    $use_new_perf = true;
+
     // Initialisation du tableau de valeurs a retourner
     $ret = array();
 
@@ -45,6 +48,9 @@ function strategieSimulator($params) {
     $maxdd       = 0;
     $retrait_sum = 0;
     $ampplt      = 0; // Apports moyen ponderes par le temps
+    $ampplt_RC   = 0; // Apports moyen ponderes par le temps
+    $valo_prev   = 0; // Valorisation précédente pour calcul perf entre 2 valo successives
+    $valo_RC_prev = 0;
 
 
     // Tableau pour mémoriser les ordres achats/ventes
@@ -82,6 +88,10 @@ function strategieSimulator($params) {
     $maxdd_RC_max = 0;
     $maxdd_RC = 0;
 
+    $dt_start = new DateTime($date_start);
+    $dt_end   = new DateTime($date_end);
+    $interval_ref = $dt_end->diff($dt_start)->format("%a");
+
     // /////////////////////////////////////////////////////////////
     // On boucle sur les mois depuis date_start jusqu'a date_end
     // /////////////////////////////////////////////////////////////
@@ -96,6 +106,10 @@ function strategieSimulator($params) {
 
         // Recuperation du numero du mois
         $month = date("n", strtotime(substr($i, 0, 4)."-".substr($i, 4, 2)."-01"));
+
+        // Interval entre la date en cours de trt et la date de fin de la simulation
+        $dt_ref   = new DateTime($day);
+        $interval = $dt_end->diff($dt_ref)->format("%a");
 
         // Recuperation du premier jour du mois 
         // $day = substr($i, 0, 4)."-".substr($i, 4, 2)."-01";
@@ -235,9 +249,21 @@ function strategieSimulator($params) {
                         $detail["td_pu_achat"]     = "-";
                     }
 
-                    $valo_pf = round($cash+($actifs_achetes_nb * $actifs_achetes_pu), 2);
-                    $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_sum - $sum_invest)*100/$sum_invest, 2);
+                    $valo_pf = round($cash + ($actifs_achetes_nb * $actifs_achetes_pu), 2);
 
+                    // Apports moyen ponderes par le temps
+                    $ampplt += $interval_ref == 0 ? 0 : ($actifs_achetes_nb * $actifs_achetes_pu) * ($interval / $interval_ref);
+                    if ($use_ampplt) echo $ampplt."-";
+
+                    $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
+                    if ($use_ampplt) $perf_pf = $ampplt == 0 ? 0 : round((($valo_pf + $retrait_sum - $sum_invest) / $ampplt) * 100, 2);
+                    if ($use_new_perf) {
+                        $valo_prev += $invest;
+                        $valo_new  = $valo_pf + $cash + $retrait_sum;
+                        $perf_pf   = $valo_prev == 0 ? 0 : round((($valo_new - $valo_prev) * 100 ) / $valo_prev, 2);
+                        $valo_prev = $valo_new;
+                    }
+    
                     $detail["td_cash"]          = sprintf("%.2f", round($cash, 2)).$curr;
                     $detail["td_valo_pf"]       = sprintf("%.2f", round($valo_pf)).$curr;
                     $detail["td_perf_glob"]     = sprintf("%.2f", $perf_pf)."%";
@@ -291,6 +317,7 @@ function strategieSimulator($params) {
                     // Combien on achete de chaque actif en DCA
                     $panier = calc::getAchatActifsDCAInvest($day, $lst_decode_symbols['quotes'], $lst_actifs_achetes_pu, $cash);
 
+                    $nbbuy = [];
                     // Intégration des achats au portefeuille
                     foreach($panier["buy"] as $key => $val) {
                         $symbol = $val['sym'];
@@ -300,6 +327,7 @@ function strategieSimulator($params) {
 
                         // Cumul des actions acquises + achetees
                         $lst_actifs_achetes_nb[$symbol] += $val['nb'];
+                        $nbbuy[$symbol] = $val['nb'];
 
                         // Calcul cash restant
                         $cash -= $val['nb'] * $val['pu'];
@@ -308,19 +336,32 @@ function strategieSimulator($params) {
 
                 $valo_pf = 0;
                 foreach($lst_decode_symbols['quotes'] as $key => $val) { 
-                    // Calcul de la valorisation du portefeuille
-                    $valo_pf += $lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key];
+
+                    // Valorisation de l'actif
+                    $valo_actif = $lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key];
+
+                    // Valorisation du portefeuille
+                    $valo_pf += $valo_actif;
 
                     // Recap actifs dans portefeuille
                     // if ($nb_actions2buy > 0)
                     $recap_actifs_portefeuille .= ($recap_actifs_portefeuille == "" ? "" : ", ").$lst_actifs_achetes_nb[$key]." [".$key."] à ".sprintf("%.2f", $lst_actifs_achetes_pu[$key]).$curr;
 
-//                    $ampplt += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+                    // Apports moyen ponderes par le temps
+                    $ampplt += $interval_ref == 0 ? 0 : ($nbbuy[$key] * $lst_actifs_achetes_pu[$key]) * ($interval / $interval_ref);
+                    if ($use_ampplt) echo $ampplt."-";
 
                 }
 
-                // Performance 
-                $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_sum - $sum_invest)*100/$sum_invest, 2);
+                // Performance (on ajoute les sommes retirées pour garder en perf les gains/pertes qui auraient été retirées)
+                $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $cash + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
+                if ($use_ampplt) $perf_pf = $ampplt == 0 ? 0 : round((($valo_pf + $cash + $retrait_sum - $sum_invest) / $ampplt) * 100, 2);
+                if ($use_new_perf) {
+                    $valo_prev += $invest;
+                    $valo_new  = $valo_pf + $cash + $retrait_sum;
+                    $perf_pf   = $valo_prev == 0 ? 0 : round((($valo_new - $valo_prev) * 100 ) / $valo_prev, 2);
+                    $valo_prev = $valo_new;
+                }
                 
                 $detail['tr_onclick']   = "";
                 $detail['td_day']       = $day;
@@ -375,9 +416,20 @@ function strategieSimulator($params) {
             $valo_pf_RC = ($nb_actions_RC * $pu_action_RC) + $cash_RC;
             $tab_valo_RC[] = round($valo_pf_RC, 2);
 
-            // Performance 
-            $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC + $retrait_sum - $sum_invest)*100/$sum_invest, 2);
+            // Apports moyen ponderes par le temps
+            $ampplt_RC += $interval_ref == 0 ? 0 : ($nb_actions_RC * $pu_action_RC) * ($interval / $interval_ref);
 
+            // Performance 
+            $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC + $cash_RC + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
+            if ($use_ampplt) $perf_pf_RC = $ampplt_RC == 0 ? 0 : round((($valo_pf_RC + $retrait_sum - $sum_invest) / $ampplt_RC) * 100, 2);
+            if ($use_new_perf) {
+                $valo_RC_prev += $invest;
+                $valo_RC_new  = $valo_pf_RC + $cash_RC + $retrait_sum;
+                $perf_pf_RC   = $valo_RC_prev == 0 ? 0 : round((($valo_RC_new - $valo_RC_prev) * 100 ) / $valo_RC_prev, 2);
+                $valo_RC_prev = $valo_RC_new;
+            }
+
+            // MaxDrawdown
             $maxdd_RC = min($maxdd_RC, $perf_pf_RC);
 
             // End Calcul pour le rendement comparatif
@@ -397,11 +449,22 @@ function strategieSimulator($params) {
 
     }
 
+    // DM
     if ($strategie_methode == 1) {
-        $valo_pf = round($cash+($actifs_achetes_nb * $actifs_achetes_pu), 2);
+        $valo_pf = round($cash + ($actifs_achetes_nb * $actifs_achetes_pu), 2);
     }
 
-    $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_sum - $sum_invest)*100/$sum_invest, 2);
+    // Synthese Performance
+    $perf_pf    = $sum_invest == 0 ? 0 : round(($valo_pf + $cash + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
+    $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC + $cash_RC + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
+
+    if ($use_ampplt) {
+        echo ($valo_pf + $cash + $retrait_sum - $sum_invest);
+        echo "-";
+        echo ($ampplt);
+        echo "-";
+        echo $perf_pf;
+    }
 
     $ret['valo_pf']      = $valo_pf;
     $ret['sum_invest']   = $sum_invest;
