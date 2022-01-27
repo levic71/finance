@@ -264,7 +264,7 @@ function strategieSimulator($params) {
                         $detail["td_pu_achat"]     = "-";
                     }
 
-                    $valo_pf = round($cash + ($actifs_achetes_nb * $actifs_achetes_pu), 2);
+                    $valo_pf = $cash + ($actifs_achetes_nb * $actifs_achetes_pu);
 
                     // Apports moyen ponderes par le temps
                     $ampplt += $interval_ref == 0 ? 0 : ($actifs_achetes_nb * $actifs_achetes_pu) * ($interval / $interval_ref);
@@ -273,7 +273,7 @@ function strategieSimulator($params) {
                     if ($use_ampplt) $perf_pf = $ampplt == 0 ? 0 : round((($valo_pf + $retrait_sum - $sum_invest) / $ampplt) * 100, 2);
                     if ($use_new_perf) {
                         $valo_prev += $invest;
-                        $valo_new  = $valo_pf + $cash + $retrait_sum;
+                        $valo_new  = $valo_pf + $retrait_sum;
                         $perf_pf   = $valo_prev == 0 ? 0 : round((($valo_new - $valo_prev) * 100 ) / $valo_prev, 2);
                         $valo_prev = $valo_new;
                     }
