@@ -35,14 +35,12 @@ function strategieSimulator($params) {
 
         // Tri décroissant des perf DM des stocks
         arsort($data2["perfs"]);
-        
+
         foreach($data2['stocks'] as $key => $val)
-            if ($val['pea'] == 1 && $val['type'] == 'ETF') {
-                $lst_symbols[] = $key;
+            if ($val['pea'] == 1 && $val['type'] == 'ETF' && intval($val['actifs']) >= 150) {
                 $lst_decode_symbols['quotes'][$key] = 0;
             }
-
-        }
+    }
 
     // Recherche de la plage de donnees communes a tous les actifs
     foreach($lst_decode_symbols['quotes'] as $key => $val) {
