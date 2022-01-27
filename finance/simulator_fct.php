@@ -13,17 +13,36 @@ function strategieSimulator($params) {
     $strategie_methode = isset($params['strategie_methode']) ? $params['strategie_methode'] : 1;
     $montant_retrait   = isset($params['montant_retrait'])   ? $params['montant_retrait']   : 500;
     $delai_retrait     = isset($params['delai_retrait'])     ? $params['delai_retrait']     : 1;
-    $invest       = isset($params['invest'])       ? $params['invest']  : ($strategie_methode == 1 ? 1000 : 6000);
-    $cycle_invest = isset($params['cycle_invest']) ? $params['cycle_invest'] : ($strategie_methode == 1 ? 1 : 6);
-    $compare_to   = isset($params['compare_to'])   ? $params['compare_to']   : "SPY";
-    $capital_init = isset($params['capital_init']) ? $params['capital_init'] : 0;
-    $date_start   = isset($params['date_start'])   ? $params['date_start']   : "0000-00-00";
-    $date_end     = isset($params['date_end'])     ? $params['date_end']     : date("Y-m-d");
-    $retrait      = isset($params['retrait'])      ? $params['retrait']      : 0;
+    $invest            = isset($params['invest'])            ? $params['invest']            : ($strategie_methode == 1 ? 1000 : 6000);
+    $cycle_invest      = isset($params['cycle_invest'])      ? $params['cycle_invest']      : ($strategie_methode == 1 ? 1 : 6);
+    $compare_to        = isset($params['compare_to'])        ? $params['compare_to']        : "SPY";
+    $capital_init      = isset($params['capital_init'])      ? $params['capital_init']      : 0;
+    $date_start        = isset($params['date_start'])        ? $params['date_start']        : "2000-00-00";
+    $date_end          = isset($params['date_end'])          ? $params['date_end']          : date("Y-m-d");
+    $retrait           = isset($params['retrait'])           ? $params['retrait']           : 0;
 
     // Recuperation des actifs de la strategie sous forme de tableau
     $lst_symbols = array();
     $lst_decode_symbols = json_decode($strategie_data, true);
+
+    // Dans le cas de la methode Super DM prendre tous les actifs selon certains critères (pea, etf, ...)
+    if ($strategie_methode == 3) {
+
+        $lst_decode_symbols['quotes'] = array();
+
+        // Recuperation des DM en BD
+        $data2 = calc::getIndicatorsLastQuote();
+
+        // Tri décroissant des perf DM des stocks
+        arsort($data2["perfs"]);
+        
+        foreach($data2['stocks'] as $key => $val)
+            if ($val['pea'] == 1 && $val['type'] == 'ETF') {
+                $lst_symbols[] = $key;
+                $lst_decode_symbols['quotes'][$key] = 0;
+            }
+
+        }
 
     // Recherche de la plage de donnees communes a tous les actifs
     foreach($lst_decode_symbols['quotes'] as $key => $val) {
@@ -84,8 +103,6 @@ function strategieSimulator($params) {
     $valo_pf_RC = 0;
     $perf_pf_RC = 0;
     $tab_valo_RC = array();
-    $maxdd_RC_min = 99999999999999;
-    $maxdd_RC_max = 0;
     $maxdd_RC = 0;
 
     $dt_start = new DateTime($date_start);
@@ -137,7 +154,7 @@ function strategieSimulator($params) {
             // //////////////////////////////////////////////////////////////
             // BEST DM
             // //////////////////////////////////////////////////////////////
-            if ($strategie_methode == 1) {
+            if ($strategie_methode == 1 || $strategie_methode == 3) {
 
                 // Calcul du DM sur les valeurs selectionnees
                 $data = calc::getLastDayMonthQuoteIndicators($lst_symbols, $day);
@@ -253,7 +270,6 @@ function strategieSimulator($params) {
 
                     // Apports moyen ponderes par le temps
                     $ampplt += $interval_ref == 0 ? 0 : ($actifs_achetes_nb * $actifs_achetes_pu) * ($interval / $interval_ref);
-                    if ($use_ampplt) echo $ampplt."-";
 
                     $perf_pf = $sum_invest == 0 ? 0 : round(($valo_pf + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
                     if ($use_ampplt) $perf_pf = $ampplt == 0 ? 0 : round((($valo_pf + $retrait_sum - $sum_invest) / $ampplt) * 100, 2);
@@ -348,9 +364,10 @@ function strategieSimulator($params) {
                     $recap_actifs_portefeuille .= ($recap_actifs_portefeuille == "" ? "" : ", ").$lst_actifs_achetes_nb[$key]." [".$key."] à ".sprintf("%.2f", $lst_actifs_achetes_pu[$key]).$curr;
 
                     // Apports moyen ponderes par le temps
-                    $ampplt += $interval_ref == 0 ? 0 : ($nbbuy[$key] * $lst_actifs_achetes_pu[$key]) * ($interval / $interval_ref);
-                    if ($use_ampplt) echo $ampplt."-";
-
+                    if (!isset($nbbuy[$key]))
+                        uimx::staticInfoMsg("Actif ".$key." manquant dans la liste des actifs suivis", "comment outline", "orange");
+                    else
+                        $ampplt += $interval_ref == 0 ? 0 : ($nbbuy[$key] * $lst_actifs_achetes_pu[$key]) * ($interval / $interval_ref);
                 }
 
                 // Performance (on ajoute les sommes retirées pour garder en perf les gains/pertes qui auraient été retirées)
@@ -400,12 +417,12 @@ function strategieSimulator($params) {
                 // Retrait de l'invest precedent ajouté
                 $cash_RC -= $invest;
                 // Vente actifs pour retrait
-                $nb_actions2sell = floor($montant_retrait / $pu_action_RC);
+                $nb_actions2sell = $pu_action_RC == 0 ? 0 : floor($montant_retrait / $pu_action_RC);
                 // Ajustement du nb d'actifs en possession
                 $nb_actions_RC -= $nb_actions2sell > $nb_actions_RC ? $nb_actions_RC : $nb_actions2sell;
             } else {
                 // Achat nouveaux actifs
-                $nb_actions2buy = floor($cash_RC / $pu_action_RC);
+                $nb_actions2buy = $pu_action_RC == 0 ? 0 : floor($cash_RC / $pu_action_RC);
                 // Ajustement du cash dispo
                 $cash_RC -= $nb_actions2buy*$pu_action_RC;
                 // Ajustement du nb d'actifs en possession
@@ -458,14 +475,10 @@ function strategieSimulator($params) {
     $perf_pf    = $sum_invest == 0 ? 0 : round(($valo_pf + $cash + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
     $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC + $cash_RC + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
 
-    if ($use_ampplt) {
-        echo ($valo_pf + $cash + $retrait_sum - $sum_invest);
-        echo "-";
-        echo ($ampplt);
-        echo "-";
-        echo $perf_pf;
-    }
-
+    $ret['lst_decode_symbols'] =  $lst_decode_symbols;
+    $ret['lst_symbols']        =  $lst_symbols;
+    $ret['date_start']         =  $date_start;
+    $ret['date_end']           =  $date_end;
     $ret['valo_pf']      = $valo_pf;
     $ret['sum_invest']   = $sum_invest;
     $ret['perf_pf']      = $perf_pf;

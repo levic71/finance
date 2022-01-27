@@ -26,9 +26,6 @@ arsort($data2["perfs"]);
 $tab_strat = array("1" => array(), "2" => array());
 $tab_perfs = array("1" => array(), "2" => array());
 
-$req = "SELECT * FROM strategies WHERE defaut=1";
-$res = dbc::execSql($req);
-
 if ($range == 4)
 	$date_start = date('Y-m-d', strtotime('-6 month'));
 else
@@ -36,18 +33,10 @@ else
 
 $date_end   = date("Y-m-d");
 
+$req = "SELECT * FROM strategies WHERE defaut=1";
+$res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
-		
-	$lst_symbols = array();
-	$lst_decode_symbols = json_decode($row['data'], true);
 
-	// Recherche de la date min qui contient le max de data pour tous les actifs de la strategie
-	foreach($lst_decode_symbols['quotes'] as $key => $val) {
-		$lst_symbols[] = $key;
-		$d = calc::getMaxDailyHistoryQuoteDate($key);
-		if ($d > $date_start) $date_start = $d;
-	}
-	
 	// Initialisation des parametres pour la simulation
 	$params = array();
 	$params['strategie_data']    = $row['data'];
@@ -65,8 +54,8 @@ while($row = mysqli_fetch_array($res)) {
 	// Lancement de la simulation
 	$row['sim'] = strategieSimulator($params);
 	
-	$tab_strat[$row['methode']][$row['id']] = $row;
-	$tab_perfs[$row['methode']][$row['id']] = $row['sim']['perf_pf'];
+	$tab_strat[$row['methode'] == 3 ? 1 : $row['methode']][$row['id']] = $row;
+	$tab_perfs[$row['methode'] == 3 ? 1 : $row['methode']][$row['id']] = $row['sim']['perf_pf'];
 }
 
 arsort($tab_perfs["1"]);

@@ -1287,8 +1287,8 @@ class logger {
 class uimx {
 
     public static $invest_cycle        = [ 1 => [ "tip" => "Mensuel", "colr" => "orange" ], 3 => [ "tip" => "Trimestriel", "colr" => "green" ], 6 => [ "tip" => "Semestriel", "colr" => "yellow" ], 12 => [ "tip" => "Annuel", "colr" => "purple" ] ];
-    public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA' ];
-    public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes' ];
+    public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA', 3 => 'Super Dual Momemtum' ];
+    public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes', 3 => 'paper plane' ];
     public static $invest_distribution = [ 0 => "Capitalisation", 1 => "Distribution" ];
     public static $invest_market = [
         0 => [ "tag" => "Marché développé", "desc" => "" ],
@@ -1420,15 +1420,26 @@ class uimx {
         global $sess_context;
 
         $t = json_decode($strategie['data'], true);
+        
+        // Perfs contient toutes les perfs DM
+        // var_dump($perfs);
 
         $desc = '<table class="ui inverted single line very compact unstackable table"><tbody>';
         
         $x = 0;
-        foreach($perfs as $key => $val) {
-            if (isset($t["quotes"][$key])) {
-                $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.sprintf("%.2f", $val).'%</td></tr>';
-                $x++;
+        if ($strategie['methode'] != 3) {
+            foreach($perfs as $key => $val) {
+                if (isset($t["quotes"][$key])) {
+                    $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.sprintf("%.2f", $val).'%</td></tr>';
+                    $x++;
+                }
             }
+        } else {
+            foreach($perfs as $key => $val) {
+                $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.sprintf("%.2f", $val).'%</td></tr>';
+                if ($x++ == 5) break;
+            }
+
         }
 
         $desc .= '</tbody></table>';

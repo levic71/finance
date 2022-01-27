@@ -31,27 +31,17 @@ $res = dbc::execSql($req);
 $row = mysqli_fetch_assoc($res);
 
 // Initialisation
-$f_invest = $row['cycle'] * 1000;
-$f_cycle_invest = $row['cycle'];
-$f_capital_init = 0;
-$f_date_start = "0000-00-00";
-$f_date_end = date("Y-m-d");
-$f_retrait = 0;
+$f_invest          = $row['cycle'] * 1000;
+$f_cycle_invest    = $row['cycle'];
+$f_capital_init    = 0;
+$f_date_start      = date("2000-01-01");
+$f_date_end        = date("Y-m-d");
+$f_retrait         = 0;
 $f_montant_retrait = 500;
-$f_delai_retrait = 1;
+$f_delai_retrait   = 1;
 
 foreach(['f_retrait', 'f_montant_retrait', 'f_delai_retrait', 'strategie_id', 'f_invest', 'f_cycle_invest', 'f_date_start', 'f_date_end', 'f_capital_init'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
-
-$lst_symbols = array();
-$lst_decode_symbols = json_decode($row['data'], true);
-
-// Recherche de la date min qui contient le max de data pour tous les actifs de la strategie
-foreach($lst_decode_symbols['quotes'] as $key => $val) {
-    $lst_symbols[] = $key;
-    $d = calc::getMaxDailyHistoryQuoteDate($key);
-    if ($d > $f_date_start) $f_date_start = $d;
-}
 
 // Initialisation des parametres pour la simulation
 $params = array();
@@ -70,6 +60,15 @@ $params['cycle_invest']      = $f_cycle_invest;
 // Lancement de la simulation
 $sim = strategieSimulator($params);
 
+// Si dates recalculees
+$f_date_start = $sim['date_start'];
+$f_date_end   = $sim['date_end'];
+
+// On recupere des infos sur les actifs
+$lst_decode_symbols = $sim['lst_decode_symbols'];
+$lst_symbols = $sim['lst_symbols'];
+
+// Donnees d'affichage
 $infos1 = '
 <table id="sim_input_card">
     <tr>
@@ -169,7 +168,7 @@ $infos2 = '
 <input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted <?= $row['methode'] == 2 ? 'cubes' : 'diamond' ?> icon"></i><?= utf8_decode($row['title']) ?></h2>
+    <h2><i class="inverted <?= uimx::$invest_methode_icon[$row['methode']] ?> icon"></i><?= utf8_decode($row['title']) ?></h2>
     <div class="ui stackable grid container">
           <div class="row">
           <div class="eight wide column">
@@ -307,7 +306,7 @@ getDataset = function(mydata, mylabel, bc, bg, myfill) {
 var mydatasets = [];
 mydatasets.push(getDataset(invts,    'Investissement',        'rgba(97, 194, 97, 0.75)',  'rgba(97, 194, 97, 1)',    false));
 mydatasets.push(getDataset(valos_RC, '<?= $sim['sym_RC'] ?>', 'rgba(23, 109, 181, 0.75)', 'rgba(23, 109, 181, 1)',   false));
-mydatasets.push(getDataset(valos,    '<?= $row['title'] ?>',  'rgba(238, 130, 6, 0.75)',  'rgba(238, 130, 6, 0.05)', true));
+mydatasets.push(getDataset(valos,    '<?= utf8_decode($row['title']) ?>',  'rgba(238, 130, 6, 0.75)',  'rgba(238, 130, 6, 0.05)', true));
 
 var ctx = document.getElementById('sim_canvas1').getContext('2d');
 el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
@@ -319,7 +318,7 @@ var myChart = new Chart(ctx, { type: 'line', data: { labels: dates, datasets: my
 
 <!-- GRAPHE 2 : EVOLUTION DM -->
 
-<? if ($row['methode'] == 1) { ?>
+<? if ($row['methode'] == 1  || $row['methode'] == 3) { ?>
 
 <div class="ui container inverted segment">
     <h2><i class="inverted line graph icon"></i>Evolution DM</h2>
@@ -373,7 +372,7 @@ var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options_DM_
                 <th>Date</th>
                 <th>Cash</th>
 
-<? if ($row['methode'] == 1)
+<? if ($row['methode'] == 1  || $row['methode'] == 3)
     echo '<th>Vente</th><th>Nb</th><th>PU</th><th>Perf</th><th>Achat</th><th>Nb</th><th>PU</th>';
 else
     echo '<th>Actifs en portefeuille</th><th></th><th></th><th></th><th></th><th></th><th></th>';
@@ -385,8 +384,8 @@ else
         <tbody>
 <?
 foreach($sim['tab_detail'] as $key => $val) {
-    echo "<tr class=\"".($val[$row['methode'] == 1 ? "td_perf_vendu_val" : "td_perf_glob_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\" onclick=\"".$val['tr_onclick']."\">";
-    if ($row['methode'] == 1) {
+    echo "<tr class=\"".($val[$row['methode'] == 1 || $row['methode'] == 3 ? "td_perf_vendu_val" : "td_perf_glob_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\" onclick=\"".$val['tr_onclick']."\">";
+    if ($row['methode'] == 1 || $row['methode'] == 3) {
         foreach(['td_day', 'td_cash', 'td_symbol_vendu', 'td_nb_vendu', 'td_pu_vendu', 'td_perf_vendu', 'td_symbol_achat', 'td_nb_achat', 'td_pu_achat', 'td_valo_pf', 'td_perf_glob'] as $ind)
            echo "<td ".($ind == 'td_perf_vendu' || $ind == 'td_perf_glob' ? "class=\"".($val[$ind."_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\"" : "" ).">".$val[$ind]."</td>";
     } else {
@@ -434,6 +433,7 @@ foreach($sim['ordres'] as $key => $val) {
     const datepicker1 = new TheDatepicker.Datepicker(el('f_date_start'));
     datepicker1.options.setInputFormat("Y-m-d")
     datepicker1.render();
+
     const datepicker2 = new TheDatepicker.Datepicker(el('f_date_end'));
     datepicker2.options.setInputFormat("Y-m-d")
     datepicker2.render();
