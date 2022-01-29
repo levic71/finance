@@ -39,7 +39,7 @@ logger::info("CRON", "BEGIN", "#################################################
 // Parcours des actifs suivis
 // ////////////////////////////////////////////////////////
 $req = "SELECT * FROM stocks ORDER BY symbol";
-$req = "SELECT * FROM stocks WHERE symbol='AWAT.PAR' ORDER BY symbol";
+//$req = "SELECT * FROM stocks WHERE symbol='AWAT.PAR' ORDER BY symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
