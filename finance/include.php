@@ -801,7 +801,7 @@ class aafinance {
     public static $apikey = "ZFO6Y0QL00YIG7RH";
     public static $apikey_local = "X6K6Z794TD321PTH";
     public static $premium = false;
-    public static $cache_load = true;
+    public static $cache_load = true; // Mettre à true et republier le code + lancer cron via le site
 
     public static function getData($function, $symbol, $options) {
 
