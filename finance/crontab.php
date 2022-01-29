@@ -38,18 +38,33 @@ logger::info("CRON", "BEGIN", "#################################################
 // ////////////////////////////////////////////////////////
 // Parcours des actifs suivis
 // ////////////////////////////////////////////////////////
-$req = "SELECT * FROM stocks WHERE symbol='BRE.PAR' ORDER BY symbol";
+$req = "SELECT * FROM stocks ORDER BY symbol";
+$req = "SELECT * FROM stocks WHERE symbol='BNP.PAR' ORDER BY symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
+    $full_data = false;
+    $limited_computing = 1;
+
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
+        if (aafinance::$cache_load) {
+            $full_data = true;
+            $limited_computing = 0;
+            foreach(['daily_time_series_adjusted'] as $key) {
+                $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
+                $res2 = dbc::execSql($req2);
+            }    
+            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='DAILY'";
+            $res2 = dbc::execSql($req2);    
+    }
+
         // Mise a jour des caches : Si full = false => compact (aucun impact sur le calcul des indicateurs) 
-        $ret = cacheData::buildDailyCachesSymbol($row['symbol'], false);
+        $ret = cacheData::buildDailyCachesSymbol($row['symbol'], $full_data);
 
         // Mise à jour des data daily
         if ($ret['daily'])
-            computePeriodIndicatorsSymbol($row['symbol'], 1, "DAILY");
+            computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
         else
             logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
 
@@ -65,16 +80,29 @@ while($row = mysqli_fetch_array($res)) {
 
     } else {
 
+        if (aafinance::$cache_load) {
+            $full_data = true;
+            $limited_computing = 0;
+            foreach(['weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
+                $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
+                $res2 = dbc::execSql($req2);    
+            }    
+            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='WEEKLY'";
+            $res2 = dbc::execSql($req2);    
+            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='MONTHLY'";
+            $res2 = dbc::execSql($req2);    
+        }
+
         // Mise a jour des caches : full = false => compact (aucun impact sur le calcul des indicateurs) 
-        $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], false);
+         $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], $full_data);
 
         if ($ret['weekly'])
-            computePeriodIndicatorsSymbol($row['symbol'], 1, "WEEKLY");
+            computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "WEEKLY");
         else
             logger::info("INDIC", $row['symbol'], "[computeWeeklyIndicators] [Cache] [No computing]");
 
         if ($ret['monthly'])
-            computePeriodIndicatorsSymbol($row['symbol'], 1, "MONTHLY");
+            computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "MONTHLY");
         else
             logger::info("INDIC", $row['symbol'], "[computeMonthlyIndicators] [Cache] [No computing]");
     }

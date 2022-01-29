@@ -801,6 +801,7 @@ class aafinance {
     public static $apikey = "ZFO6Y0QL00YIG7RH";
     public static $apikey_local = "X6K6Z794TD321PTH";
     public static $premium = false;
+    public static $cache_load = true;
 
     public static function getData($function, $symbol, $options) {
 
@@ -923,6 +924,7 @@ class cacheData {
     }
     
     public static function readCacheData($file) {
+        logger::info("CACHE", "", "[READ]{".$file."}");    
         return json_decode(file_get_contents($file), true);
     }
 
@@ -949,6 +951,9 @@ class cacheData {
         } else 
             $update_cache = true;
 
+        // Si on force a reloader le cache local
+        if (aafinance::$cache_load) $update_cache = true;
+
         return $update_cache;
     }
 
@@ -963,6 +968,9 @@ class cacheData {
         } else 
             $update_cache = true;
 
+        // Si on force a reloader le cache local
+        if (aafinance::$cache_load) $update_cache = true;
+
         return $update_cache;
     }
 
@@ -973,7 +981,13 @@ class cacheData {
         $file_cache = 'cache/OVERVIEW_'.$symbol.'.json';
 
         if (self::refreshOnceADayCache($file_cache)) {
-            $data = aafinance::getOverview($symbol);
+
+            if (aafinance::$cache_load && file_exists($file_cache)) {
+                $data = cacheData::readCacheData($file_cache);
+            } else {
+                $data = aafinance::getOverview($symbol);
+            }
+
             if ($data['status'] == 0) {
                 cacheData::writeData($file_cache, $data);
                 $ret = true;
@@ -992,7 +1006,12 @@ class cacheData {
         $file_cache = 'cache/INTRADAY_'.$symbol.'.json';
         if (self::refreshCache($file_cache, 600)) {
             try {
-                $data = aafinance::getIntraday($symbol, "interval=60min&outputsize=compact");
+
+                if (aafinance::$cache_load && file_exists($file_cache)) {
+                    $data = cacheData::readCacheData($file_cache);
+                } else {
+                    $data = aafinance::getIntraday($symbol, "interval=60min&outputsize=compact");
+                }
 
                 // Delete old entries for symbol before insert new ones ?
         
@@ -1024,10 +1043,14 @@ class cacheData {
         if (self::refreshOnceADayCache($file_cache)) {
             try {
 
-                if (aafinance::$premium)
-                    $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                else
-                    $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                if (aafinance::$cache_load && file_exists($file_cache)) {
+                    $data = cacheData::readCacheData($file_cache);
+                } else {
+                    if (aafinance::$premium)
+                        $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                    else
+                        $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                }
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
@@ -1072,10 +1095,14 @@ class cacheData {
         if (self::refreshOnceADayCache($file_cache)) {
             try {
 
-                if (aafinance::$premium)
-                    $data = aafinance::getWeeklyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                else
-                    $data = aafinance::getWeeklyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                if (aafinance::$cache_load && file_exists($file_cache)) {
+                    $data = cacheData::readCacheData($file_cache);
+                } else {
+                    if (aafinance::$premium)
+                        $data = aafinance::getWeeklyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                    else
+                        $data = aafinance::getWeeklyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                }
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
@@ -1093,7 +1120,6 @@ class cacheData {
 
                         $update = "INSERT INTO weekly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."'";
                         $res2 = dbc::execSql($update);
-                        logger::info("CACHE", $symbol, "[WEEKLY] ".$update);
                     }
 
                     $fp = fopen($file_cache, 'w');
@@ -1123,10 +1149,14 @@ class cacheData {
         if (self::refreshOnceADayCache($file_cache)) {
             try {
 
-                if (aafinance::$premium)
-                    $data = aafinance::getMonthlyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                else
-                    $data = aafinance::getMonthlyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                if (aafinance::$cache_load && file_exists($file_cache)) {
+                    $data = cacheData::readCacheData($file_cache);
+                } else {
+                    if (aafinance::$premium)
+                        $data = aafinance::getMonthlyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                    else
+                        $data = aafinance::getMonthlyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                }
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
@@ -1169,7 +1199,12 @@ class cacheData {
         $file_cache = 'cache/QUOTE_'.$symbol.'.json';
         if (self::refreshOnceADayCache($file_cache)) {
             try {
-                $data = aafinance::getQuote($symbol);
+
+                if (aafinance::$cache_load && file_exists($file_cache)) {
+                    $data = cacheData::readCacheData($file_cache);
+                } else {
+                    $data = aafinance::getQuote($symbol);
+                }
         
                 if (isset($data["Global Quote"])) {
                     $val = $data["Global Quote"];

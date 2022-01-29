@@ -393,8 +393,10 @@ if (!$readonly) {
                     <table id="detail3_stock" class="ui selectable inverted single line table">
                         <tbody>
                             <?
-                            foreach (cacheData::$lst_cache as $key)
-                                echo "<tr><td style=\"padding: 0px 0px 0px 10px !important;\">" . (file_exists("cache/" . $key . "_" . $symbol . ".json") ? "<i class=\"ui icon inverted green check\"></i>" : "<i class=\"ui icon inverted red x\"></i>") . "</td><td>" . $key . "_" . $symbol . ".json</td></tr>";
+                            foreach (cacheData::$lst_cache as $key) {
+                                $fn = "cache/" . $key . "_" . $symbol . ".json";
+                                echo "<tr data-tootik=\"".$key."_".$symbol.".json\"><td style=\"padding: 0px 0px 0px 10px !important;\">".(file_exists($fn) ? "<i class=\"ui icon inverted green check\"></i>" : "<i class=\"ui icon inverted red x\"></i>")."</td><td>[".(file_exists($fn) ? date("Y-m-d H:i", filemtime($fn)) : "")."] ".str_replace("_TIME_SERIES_ADJUSTED_", "::", $key)."</td></tr>";
+                            }
                             ?>
                         </tbody>
                     </table>
