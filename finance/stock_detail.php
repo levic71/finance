@@ -799,7 +799,7 @@ if (!$readonly) {
             go({
                 action: 'delete',
                 id: 'main',
-                url: 'stock_action.php?action=del&symbol=<?= $symbol ?>)',
+                url: 'stock_action.php?action=del&symbol=<?= $symbol ?>',
                 loading_area: 'main',
                 confirmdel: 1
             });
