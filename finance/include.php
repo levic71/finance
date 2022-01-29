@@ -882,7 +882,7 @@ class cacheData {
 
         $ret = false;
 
-        if (tools::isLocalHost()) return true;
+        // if (tools::isLocalHost()) return true;
 
         // Si on n'est pas en semaine
         if (date("N") >= 6) return false;
@@ -1415,9 +1415,13 @@ class uimx {
     <?
 }
 
-    public static function perfCard($user_id, $strategie, $day, $perfs) {
+    public static function perfCard($user_id, $strategie, $data) {
 
         global $sess_context;
+
+        $day    = $data['day'];
+        $perfs  = $data['perfs'];
+        $stocks = $data['stocks'];
 
         $t = json_decode($strategie['data'], true);
         
@@ -1436,8 +1440,10 @@ class uimx {
             }
         } else {
             foreach($perfs as $key => $val) {
-                $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.sprintf("%.2f", $val).'%</td></tr>';
-                if ($x++ == 5) break;
+                if ($stocks[$key]['pea'] == 1 && $stocks[$key]['type'] == 'ETF' && intval($stocks[$key]['actifs']) >= 150) {
+                    $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.sprintf("%.2f", $val).'%</td></tr>';
+                    if ($x++ == 5) break;
+                }
             }
 
         }

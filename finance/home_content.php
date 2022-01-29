@@ -22,7 +22,7 @@ $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_cont
 	
 ?>
 
-<div id="strategie_container" class="ui container inverted segment">
+<div id="strategie_container" class="ui container inverted">
 
 	<h2 class="ui left floated">
 		<i class="inverted chess icon"></i>
@@ -60,9 +60,9 @@ $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_cont
 					"copy" => !($row['user_id'] == $sess_context->getUserId())
 				];
 ?>
-        	<div class="four wide column swiper-slide <?= $row['defaut'] == 1 ? "defaut" : "" ?>">
-				<?= uimx::perfCard($sess_context->getUserId(), $row, $data2["day"], $data2["perfs"]) ?>
-			</div>
+					<div class="four wide column swiper-slide <?= $row['defaut'] == 1 ? "defaut" : "" ?>">
+						<?= uimx::perfCard($sess_context->getUserId(), $row, $data2) ?>
+					</div>
 <? } ?>
 
     			</div>
@@ -169,7 +169,7 @@ foreach($data2["stocks"] as $key => $val) {
 
 	echo "
 		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
-		<td data-tootik=\"".$tooltip."\" class=\"collapsing\"><i data-secteur=\"".$icon_tag."\" class=\"inverted grey ".$icon." icon\"></i></td>
+		<td data-value=\"".$icon_tag."\" data-tootik=\"".$tooltip."\" class=\"collapsing\"><i data-secteur=\"".$icon_tag."\" class=\"inverted grey ".$icon." icon\"></i></td>
 		<td>".utf8_decode($val['name'])."</td>
 	";
 	

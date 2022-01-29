@@ -45,7 +45,7 @@ $quotes = calc::getIndicatorsLastQuote();
     <input type="hidden" id="order_id" value="<?= $order_id ?>" />
     <input type="hidden" id="portfolio_id" value="<?= $portfolio_id ?>" />
 
-    <div class="ui inverted clearing">
+    <div class="ui inverted clearing segment">
 		<h2 class="ui inverted left floated header"><i class="inverted briefcase icon"></i>Mon Ordre</h2>
 
         <? if ($action == "upt") { ?>

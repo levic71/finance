@@ -83,7 +83,7 @@ arsort($tab_perfs["2"]);
 				$ribbon_color = $i == 1 ? "ribbon--orange" : ($i == 2 ? "ribbon--green" : ($i == 3 ? "ribbon--blue" : "ribbon--gray"));
 ?>
         	<div class="four wide column swiper-slide">
-				<?= uimx::perfCard(0, $tab_strat["1"][$key], $data2["day"], $data2["perfs"]) ?>
+				<?= uimx::perfCard(0, $tab_strat["1"][$key], $data2) ?>
 				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i ?><br /><small><?= $tab_strat["1"][$key]['sim']['perf_pf'] ?>%</small></div>
 			</div>
 <?
@@ -112,7 +112,7 @@ arsort($tab_perfs["2"]);
 				$ribbon_color = $i == 1 ? "ribbon--orange" : ($i == 2 ? "ribbon--green" : ($i == 3 ? "ribbon--blue" : "ribbon--gray"));
 ?>
         	<div class="four wide column swiper-slide">
-				<?= uimx::perfCard(0, $tab_strat["2"][$key], $data2["day"], $data2["perfs"]) ?>
+				<?= uimx::perfCard(0, $tab_strat["2"][$key], $data2) ?>
 				<div class="ribbon <?= $ribbon_color ?>">N°<?= $i ?><br /><small><?= $tab_strat["2"][$key]['sim']['perf_pf'] ?>%</small></div>
 			</div>
 <?

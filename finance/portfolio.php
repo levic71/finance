@@ -39,7 +39,7 @@ $quotes = calc::getIndicatorsLastQuote();
 
 ?>
 
-<div class="ui container inverted segment">
+<div class="ui container inverted">
 
 	<h2 class="ui left floated"><i class="inverted briefcase icon"></i>Mes Portefeuilles</h2>
 
