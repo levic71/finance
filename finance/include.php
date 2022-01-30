@@ -1076,9 +1076,9 @@ class cacheData {
     
                     $ret = true;
                 } else {
-                    logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [NOK]".print_r($data, true));
+                    logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [NOK]".print_r($data, true));
                 }
-            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."]".$e->getMessage()); }
         }
         else
             logger::info("CACHE", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
@@ -1105,13 +1105,14 @@ class cacheData {
                 }
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
-    
-                $key = aafinance::$premium ? "Weekly Adjusted Time Series" : "Weekly Time Series";
 
-                if (isset($data[$key])) {
-                    foreach($data[$key] as $key => $val) {
+//                Pour mieux ancien format vs nouveau format notament qd reload from local cache
+//                $key = aafinance::$premium ? "Weekly Adjusted Time Series" : "Weekly Time Series";
+//                if (isset($data[$key])) {
+                if (isset($data["Weekly Adjusted Time Series"]) || isset($data["Weekly Time Series"])) {
+                    foreach($data[isset($data["Weekly Adjusted Time Series"]) ? "Weekly Adjusted Time Series" : "Weekly Time Series"] as $key => $val) {
 
-                        if (!aafinance::$premium) {
+                        if (isset($data["Weekly Time Series"])) {
                             $val['5. adjusted close']    = $val['4. close'];
                             $val['6. volume']            = $val['5. volume'];
                             $val['7. dividend amount']   = 0;
@@ -1129,10 +1130,10 @@ class cacheData {
                     $ret = true;
 
                 } else {
-                    logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [NOK]".print_r($data, true));
+                    logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [NOK]".print_r($data, true));
                 }
 
-            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."]".$e->getMessage()); }
         }
         else
             logger::info("CACHE", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
@@ -1157,15 +1158,17 @@ class cacheData {
                     else
                         $data = aafinance::getMonthlyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
                 }
-    
+
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
     
-                $key = aafinance::$premium ? "Monthly Adjusted Time Series" : "Monthly Time Series";
-                
-                if (isset($data[$key])) {
-                    foreach($data[$key] as $key => $val) {
+//                Pour mieux ancien format vs nouveau format notament qd reload from local cache
+//                $key = aafinance::$premium ? "Monthly Adjusted Time Series" : "Monthly Time Series";
+//                if (isset($data[$key])) {
+                if (isset($data["Monthly Adjusted Time Series"]) || isset($data["Monthly Time Series"])) {
+                    foreach($data[isset($data["Monthly Adjusted Time Series"]) ? "Monthly Adjusted Time Series" : "Monthly Time Series"] as $key => $val) {
 
-                        if (!aafinance::$premium) {
+//                        if (!aafinance::$premium) {
+                        if (isset($data["Monthly Time Series"])) {
                             $val['5. adjusted close']    = $val['4. close'];
                             $val['6. volume']            = $val['5. volume'];
                             $val['7. dividend amount']   = 0;
@@ -1182,9 +1185,9 @@ class cacheData {
     
                     $ret = true;
                 } else {
-                    logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [NOK]".print_r($data, true));
+                    logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [NOK]".print_r($data, true));
                 }
-            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED]".$e->getMessage()); }
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."]".$e->getMessage()); }
         }
         else
             logger::info("CACHE", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
