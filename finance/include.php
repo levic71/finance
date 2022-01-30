@@ -1046,10 +1046,10 @@ class cacheData {
                 if (aafinance::$cache_load && file_exists($file_cache)) {
                     $data = cacheData::readCacheData($file_cache);
                 } else {
-                    if (aafinance::$premium)
+//                    if (aafinance::$premium)
                         $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                    else
-                        $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+//                    else
+//                        $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
                 }
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
@@ -1098,10 +1098,10 @@ class cacheData {
                 if (aafinance::$cache_load && file_exists($file_cache)) {
                     $data = cacheData::readCacheData($file_cache);
                 } else {
-                    if (aafinance::$premium)
+//                    if (aafinance::$premium)
                         $data = aafinance::getWeeklyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                    else
-                        $data = aafinance::getWeeklyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+//                    else
+//                        $data = aafinance::getWeeklyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
                 }
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
