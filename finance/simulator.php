@@ -397,6 +397,7 @@ foreach($sim['tab_detail'] as $key => $val) {
 ?>
         </tbody>
     </table>
+    <div id="lst_sim_box"></div>
 </div>
 
 <div class="ui container inverted segment">
@@ -412,30 +413,41 @@ foreach($sim['ordres'] as $key => $val) {
 ?>
         </tbody>
     </table>
+    <div id="lst_ordres_box"></div>
 </div>
 
 <script>
 
-    launcher = function() {
-		params = attrs(['f_delai_retrait', 'f_montant_retrait', 'strategie_id', 'f_capital_init', 'f_invest', 'f_cycle_invest', 'f_date_start', 'f_date_end', 'f_compare_to' ]);
-        go({ action: 'sim', id: 'main', url: 'simulator.php?'+params+'&f_retrait='+(valof('f_retrait') == 0 ? 0 : 1), loading_area: 'sim_go_bt' });
-    }
-    
-    Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher(); });
-    Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher(); });
-    Dom.addListener(Dom.id('f_retrait'),  Dom.Event.ON_CHANGE, function(event) { toogle('retrait_option1'); });
+launcher = function() {
+    params = attrs(['f_delai_retrait', 'f_montant_retrait', 'strategie_id', 'f_capital_init', 'f_invest', 'f_cycle_invest', 'f_date_start', 'f_date_end', 'f_compare_to' ]);
+    go({ action: 'sim', id: 'main', url: 'simulator.php?'+params+'&f_retrait='+(valof('f_retrait') == 0 ? 0 : 1), loading_area: 'sim_go_bt' });
+}
 
-    hide('retrait_option1');
-    <? if ($f_retrait == 1) { ?>
-    toogle('retrait_option1');
-    <? } ?>
+Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher(); });
+Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher(); });
+Dom.addListener(Dom.id('f_retrait'),  Dom.Event.ON_CHANGE, function(event) { toogle('retrait_option1'); });
 
-    const datepicker1 = new TheDatepicker.Datepicker(el('f_date_start'));
-    datepicker1.options.setInputFormat("Y-m-d")
-    datepicker1.render();
+hide('retrait_option1');
+<? if ($f_retrait == 1) { ?>
+toogle('retrait_option1');
+<? } ?>
 
-    const datepicker2 = new TheDatepicker.Datepicker(el('f_date_end'));
-    datepicker2.options.setInputFormat("Y-m-d")
-    datepicker2.render();
+const datepicker1 = new TheDatepicker.Datepicker(el('f_date_start'));
+datepicker1.options.setInputFormat("Y-m-d")
+datepicker1.render();
+
+const datepicker2 = new TheDatepicker.Datepicker(el('f_date_end'));
+datepicker2.options.setInputFormat("Y-m-d")
+datepicker2.render();
+
+paginator({
+    table: document.getElementById("lst_sim"),
+    box: document.getElementById("lst_sim_box")
+});
+
+paginator({
+    table: document.getElementById("lst_ordres"),
+    box: document.getElementById("lst_ordres_box")
+});
 
 </script>

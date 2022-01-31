@@ -196,6 +196,7 @@ foreach($data2["stocks"] as $key => $val) {
 ?>
 		</tbody>
 	</table>
+	<div id="lst_stock_box"></div>
 </div>
 
 <script>
@@ -398,5 +399,10 @@ Dom.find("#lst_stock tbody tr td:nth-child(12) i").forEach(function(element) {
 });
 
 hide('other_tags');
+
+paginator({
+  table: document.getElementById("lst_stock"),
+  box: document.getElementById("lst_stock_box")
+});
 
 </script>

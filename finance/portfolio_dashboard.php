@@ -233,6 +233,7 @@ $lst_orders    = $portfolio_data['orders'];
 							<td></td>
 					</tfoot>
 				</table>
+				<div id="lst_order_box"></div>
 
 			</div>
 		</div>
@@ -460,5 +461,8 @@ computeLines('init');
 Sortable.initTable(el("lst_position"));
 Sortable.initTable(el("lst_order"));
 
-
+paginator({
+  table: document.getElementById("lst_order"),
+  box: document.getElementById("lst_order_box")
+});
 </script>

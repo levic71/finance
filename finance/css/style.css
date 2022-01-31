@@ -3,6 +3,32 @@ td.aaf-negative { color: rgb(247, 95, 90) !important; }
 button.aaf-positive { background: rgb(97, 194, 97) !important; color: white !important; }
 button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
 
+.tabnav {
+    display: flex;
+    justify-content: flex-end;
+    margin: 5px 15px;
+}
+.tabnav button {
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0;
+    margin: 0 2px;
+    text-align: center;
+}
+.tabnav button.active {
+    background-color: teal;
+}
+.tabnav select {
+    border-radius: 50px;
+    padding: 0px 10px;
+    background: grey;
+}
+
 .hidden { display: none !important; }
 
 h3 { color: chocolate; }
