@@ -60,10 +60,16 @@ $db = dbc::connect();
 ?>
 		</tbody>
 	</table>
+	<div id="lst_users_box"></div>
 </div>
 
 <script>
-	Dom.addListener(Dom.id('user_add_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'user', id: 'main', url: 'user.php?action=new', loading_area: 'user_add_bt' }); });
-	change_wide_menu_state('wide_menu', 'm1_users_bt');
-	Sortable.initTable(el("lst_users"));
+Dom.addListener(Dom.id('user_add_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'user', id: 'main', url: 'user.php?action=new', loading_area: 'user_add_bt' }); });
+change_wide_menu_state('wide_menu', 'm1_users_bt');
+Sortable.initTable(el("lst_users"));
+
+paginator({
+  table: document.getElementById("lst_users"),
+  box: document.getElementById("lst_users_box")
+});
 </script>

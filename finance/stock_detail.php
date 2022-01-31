@@ -409,7 +409,7 @@ if (!$readonly) {
 <? } ?>
 
 <div class="ui container inverted segment">
-    <h2 class="ui inverted right aligned header">
+    <h2 class="ui inverted right aligned header foot_buttons">
         <? if (!$readonly) { ?>
             <button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
             <button id="stock_sync_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white retweet icon"></i> &nbsp;&nbsp;Modifier & Sync</button>
@@ -633,8 +633,8 @@ if (!$readonly) {
         // Changement dynamique option graphe
         if (g_new_data.length > 2000) {
             options_Stock_Graphe.animation = false;
-            options_RSI_Graphe.animation = false;
-            options_DM_Graphe.animation = false;
+            options_RSI_Graphe.animation   = false;
+            options_DM_Graphe.animation    = false;
         }
 
         // En attendant d'avoir un plugin ou de corriger le pb de volumetrie on limite le daily a max 3000 inputs
@@ -660,12 +660,10 @@ if (!$readonly) {
         myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [horizontalLines_RSI_Graphe]);
 
         // Update Chart DM
-        if (myChart3 == null) { // On le dessine une fois en daily pour l'instant (pb perf et data)
-            var datasets3 = [];
-            datasets3.push(getDatasetDM(g_new_data));
-            options_DM_Graphe.scales.y.position = 'right';
-            myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [horizontalLines_DM_Graphe]);
-        }
+        var datasets3 = [];
+        datasets3.push(getDatasetDM(g_new_data));
+        options_DM_Graphe.scales.y.position = 'right';
+        myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [horizontalLines_DM_Graphe]);
 
         rmCN(bt, 'loading');
     }

@@ -137,6 +137,7 @@ const horizontalLines_RSI_Graphe = {
 var options_DM_Graphe = {
     responsive: true,
     maintainAspectRatio: true,
+    animation: true,
 	plugins: {
 		legend: {
 			display: false

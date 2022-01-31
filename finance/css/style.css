@@ -6,6 +6,7 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
 .tabnav {
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
     margin: 5px 15px;
 }
 .tabnav button {
@@ -53,7 +54,7 @@ h2 > i[class*="trash"] { color: black !important; }
     margin: 0px !important;
 }
 .perf_card .description {
-    padding-bottom: 20px;
+    padding-bottom: 15px;
 }
 
 .login_page .ui.corner.label:after {
@@ -124,7 +125,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 .swiper-container {
     width: 100%;
     height: 100%;
-    padding: 0px 5px 25px !important;
+    padding: 0px 5px 35px !important;
 }
 .swiper-slide {
     margin: 2px 0px;
@@ -639,6 +640,24 @@ table th { color: burlywood !important; cursor: pointer !important; }
         padding: 0px !important;
         margin: 0px !important;
     }
+
+    .perf_card .description {
+        padding-bottom: 0px;
+    }
+    .swiper-container {
+        padding: 0px 5px 50px !important;
+    }
+
+    .foot_buttons {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-content: space-around;
+    }
+    .foot_buttons {
+        margin-bottom: 5px;
+    }
+        
     #home_card .content, #sim_card1 .content, #sim_card2 .content {
         padding: 10px 1px 0px !important;
     }
