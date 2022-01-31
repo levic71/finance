@@ -649,6 +649,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     }
 
     .foot_buttons {
+        background: transparent;
         display: flex;
         flex-wrap: wrap;
         flex-direction: column;
@@ -720,23 +721,27 @@ table th { color: burlywood !important; cursor: pointer !important; }
         display: table-cell !important;
     }
 
-    #lst_ordres th:nth-child(2) div, #lst_ordres td:nth-child(2) div {
+    #lst_ordres th:nth-child(3) div, #lst_ordres td:nth-child(3) div {
         display: none;
     }
-    #lst_ordres th:nth-child(2)::after, #lst_ordres td:nth-child(2)::after {
+    #lst_ordres th:nth-child(3)::after, #lst_ordres td:nth-child(3)::after {
         text-align: center;
     }
-    #lst_ordres th:nth-child(2)::after {
+    #lst_ordres th:nth-child(3)::after {
         content: "+/-";
     }
-    #lst_ordres .Achat td:nth-child(2)::after {
+    #lst_ordres .Achat td:nth-child(3)::after {
         content: "+";
     }
-    #lst_ordres .Vente td:nth-child(2)::after {
+    #lst_ordres .Vente td:nth-child(3)::after {
         content: "-";
     }
     #lst_ordres td, #lst_sim td {
         font-size: 12px;
+    }
+
+    #dca_box {
+        margin-top: 25px;
     }
         
     .row-detail td:nth-child(2) > div {
@@ -822,6 +827,19 @@ table th { color: burlywood !important; cursor: pointer !important; }
         background: #333;
         padding: 5px;
     }
+
+    #lst_position th:nth-child(2), #lst_position th:nth-child(3), #lst_position th:nth-child(5), #lst_position th:nth-child(6), #lst_position th:nth-child(7), #lst_position th:nth-child(8), #lst_position th:nth-child(10),
+    #lst_position td:nth-child(2), #lst_position td:nth-child(3), #lst_position td:nth-child(5), #lst_position td:nth-child(6), #lst_position td:nth-child(7), #lst_position td:nth-child(8), #lst_position td:nth-child(10),
+    #lst_position tfoot td {
+        display: none;
+    }
+    
+    #lst_order th:nth-child(4), #lst_order th:nth-child(5), #lst_order th:nth-child(6), #lst_order th:nth-child(8),
+    #lst_order td:nth-child(4), #lst_order td:nth-child(5), #lst_order td:nth-child(6), #lst_order td:nth-child(8),
+    #lst_order tfoot td {
+            display: none;
+    }
+    
     
 }
 

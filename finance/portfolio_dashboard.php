@@ -63,7 +63,7 @@ $lst_orders    = $portfolio_data['orders'];
 				<div class="ui stackable two column grid container">
 					<div class="row">
 
-						<div class="ui inverted column readonly form" style="padding-left: 0px;">
+						<div class="ui inverted column readonly form">
 							<div class="field">
 								<label>Estimation Portefeuille</label>
 								<div class="field">
@@ -107,7 +107,6 @@ $lst_orders    = $portfolio_data['orders'];
 
 					</div>
 				</div>
-				<!-- div id="perf_ribbon1" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div> -->
 				<div id="perf_ribbon3" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
 			</div>
 			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
@@ -193,7 +192,7 @@ $lst_orders    = $portfolio_data['orders'];
 	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
-				<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal tototo" id="lst_order" data-sortable>
+				<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_order" data-sortable>
 					<thead><tr>
 						<th></th>
 						<th>Date</th>

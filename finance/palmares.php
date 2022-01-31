@@ -63,7 +63,7 @@ arsort($tab_perfs["2"]);
 
 ?>
 
-<div class="ui container inverted">
+<div class="ui container inverted" id="dm_box">
 
 	<h2 class="ui left floated">
 		<i class="inverted diamond icon"></i>Dual Momemtum
@@ -98,7 +98,7 @@ arsort($tab_perfs["2"]);
     </div>
 </div>
 
-<div class="ui container inverted">
+<div class="ui container inverted" id="dca_box">
 
 	<h2><i class="inverted cubes icon"></i>DCA</h2>
 
