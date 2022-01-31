@@ -79,7 +79,7 @@ if ($action == "add") {
 
 if ($action == "indic") {
 
-    logger::info("STOCK", "UPDATE", "###########################################################");
+    logger::info("STOCK", "INDIC", "###########################################################");
 
     $req = "SELECT * FROM stocks WHERE symbol='".$symbol."'";
     $res = dbc::execSql($req);
@@ -88,6 +88,42 @@ if ($action == "indic") {
         updateSymbolData($symbol);
 
         logger::info("STOCK", $symbol, "[OK]");
+    }
+}
+
+if ($action == "reload") {
+
+    logger::info("STOCK", "RELOAD", "###########################################################");
+
+    $req = "SELECT * FROM stocks WHERE symbol='".$symbol."'";
+    $res = dbc::execSql($req);
+
+    if ($row = mysqli_fetch_array($res)) {
+
+        $limited_computing = 0;
+
+        foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
+            $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
+            $res2 = dbc::execSql($req2);    
+        }
+        $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='DAILY'";
+        $res2 = dbc::execSql($req2);    
+        $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='WEEKLY'";
+        $res2 = dbc::execSql($req2);    
+        $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='MONTHLY'";
+        $res2 = dbc::execSql($req2);
+        
+        aafinance::$cache_load = true;
+    
+        // Mise a jour des caches : full = false => compact, sinon full (on fait les 2 dans le sens ci dessous)
+        $ret = cacheData::buildCachesSymbol($row['symbol'], false, array("daily" => 1, "weekly" => 1, "monthly" => 1));
+        $ret = cacheData::buildCachesSymbol($row['symbol'], true,  array("daily" => 1, "weekly" => 1, "monthly" => 1));
+        
+        if ($ret['daily'])   computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
+        if ($ret['weekly'])  computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "WEEKLY");
+        if ($ret['monthly']) computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "MONTHLY");
+
+        cacheData::deleteCacheSymbol($symbol);
     }
 }
 
@@ -157,7 +193,7 @@ if ($action == "del") {
 
 <script>
 var p = loadPrompt();
-<? if ($action == "upt" || $action == "indic" || $action == "sync") { ?>
+<? if ($action == "upt" || $action == "indic" || $action == "sync" || $action == "reload") { ?>
     go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
     p.success('Actif <?= $symbol ?> mis à jour');
 <? } ?>

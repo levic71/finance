@@ -1059,7 +1059,8 @@ class cacheData {
                 if (isset($data[$key])) {
                     foreach($data[$key] as $key => $val) {
 
-                        if (!aafinance::$premium) {
+//                        if (!aafinance::$premium) {
+                        if (!isset($val['5. adjusted close'])) {
                             $val['5. adjusted close']    = $val['4. close'];
                             $val['6. volume']            = $val['5. volume'];
                             $val['7. dividend amount']   = 0;

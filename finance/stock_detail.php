@@ -414,6 +414,7 @@ if (!$readonly) {
             <button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
             <button id="stock_sync_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white retweet icon"></i> &nbsp;&nbsp;Modifier & Sync</button>
             <button id="stock_indic_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white settings icon"></i> &nbsp;&nbsp;Rebuild Indicators</button>
+            <button id="stock_reload_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white recycle icon"></i> &nbsp;&nbsp;Reload cache data</button>
         <? } ?>
         <button id="stock_back_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white reply icon"></i> Back</button>
     </h2>
@@ -695,7 +696,7 @@ if (!$readonly) {
             action: 'update',
             id: 'main',
             url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p,
-            loading_area: 'stock_edit_bt'
+            loading_area: 'main'
         });
     });
     Dom.addListener(Dom.id('stock_sync_bt'), Dom.Event.ON_CLICK, function(event) {
@@ -704,7 +705,7 @@ if (!$readonly) {
             action: 'update',
             id: 'main',
             url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>' + p,
-            loading_area: 'stock_sync_bt'
+            loading_area: 'main'
         });
     });
     Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) {
@@ -712,7 +713,15 @@ if (!$readonly) {
             action: 'update',
             id: 'main',
             url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>',
-            loading_area: 'stock_indic_bt'
+            loading_area: 'main'
+        });
+    });
+    Dom.addListener(Dom.id('stock_reload_bt'), Dom.Event.ON_CLICK, function(event) {
+        go({
+            action: 'update',
+            id: 'main',
+            url: 'stock_action.php?action=reload&symbol=<?= $symbol ?>',
+            loading_area: 'main'
         });
     });
 
