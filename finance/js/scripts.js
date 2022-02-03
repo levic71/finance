@@ -1,5 +1,7 @@
 var js_debug = true;
 
+error = function(e) { alert(e); }
+
 isTouch = function() { return ( (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i))  || (navigator.userAgent.match(/Android/i))); }
 isIE8   = function() { return (document.all && document.querySelector && !document.addEventListener); }
 
@@ -56,6 +58,7 @@ go = function(args) {
 	var menu=opt.menu||'';
 	var confirmdel=opt.confirmdel||0;
 	var no_data=opt.no_data||'0';
+	var no_chg_cn=opt.no_chg_cn||'0';
 	var msg=opt.msg||'';
 	var loading_area=opt.loading_area||'';
 
@@ -72,8 +75,8 @@ go = function(args) {
 			opt.url,
 			function(data) {
 				myconsole('----> go jx in  : action='+action+' -- url='+opt.url);
-				setCN(id, (id == 'main' ? 'ui container inverted segment main ' : '')+action+'_page');
-				if (no_data == 0) cc(id, data);
+				if (no_chg_cn == 0) setCN(id, (id == 'main' ? 'ui container inverted segment main ' : '')+action+'_page');
+				if (no_data == 0)   cc(id, data);
 				if (msg != '') {
 					var p = loadPrompt();
 					p.success(msg);

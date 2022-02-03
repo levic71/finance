@@ -7,28 +7,50 @@ session_start();
 include "common.php";
 include "simulator_fct.php";
 
+$option_sim = "simulator";
 $strategie_id = -1;
 $f_compare_to = "SPY";
 
-foreach(['strategie_id', 'f_compare_to'] as $key)
+foreach(['option_sim', 'strategie_id', 'f_compare_to'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
 
-// Test existence stratégie
-$req = "SELECT count(*) total FROM strategies WHERE id=".$strategie_id;
-$res = dbc::execSql($req);
-$row = mysqli_fetch_assoc($res);
+if ($option_sim != "backtest") {
 
-if ($row['total'] != 1) {
-    echo '<div class="ui container inverted segment"><h2>Strategies not found !!!</h2></div>';
-    exit(0);
+    // Test existence stratégie
+    $req = "SELECT count(*) total FROM strategies WHERE id=".$strategie_id;
+    $res = dbc::execSql($req);
+    $row = mysqli_fetch_assoc($res);
+
+    if ($row['total'] != 1) {
+        echo '<div class="ui container inverted segment"><h2>Strategies not found !!!</h2></div>';
+        exit(0);
+    }
+
+    // Recupération infos strategie
+    $req = "SELECT * FROM strategies WHERE id=".$strategie_id;
+    $res = dbc::execSql($req);
+    $row = mysqli_fetch_assoc($res);
+
+} else {
+
+    // On recupere les donnees du formulaire
+    foreach(['f_common', 'strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7'] as $key)
+        $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+
+    // On recree la valeur data
+    $tab_sym = array();
+    foreach(range(1, $f_nb_symbol_max) as $number) {
+        $v1 = "f_symbol_choice_".$number;
+        $v2 = "f_symbol_choice_pct_".$number;
+        $tab_sym[] = '"'.$$v1.'" : '.($f_methode == 1 ? 1 : $$v2);
+    }
+    $data = '{ "quotes" : { '.implode(', ', $tab_sym).' } }';
+
+    // Initialisation des donnees de la strategie
+    $row = [ 'methode' => $f_methode, 'title' => $f_name, 'cycle' => $f_cycle, 'data' => $data ];
 }
-
-// Recupération infos strategie
-$req = "SELECT * FROM strategies WHERE id=".$strategie_id;
-$res = dbc::execSql($req);
-$row = mysqli_fetch_assoc($res);
 
 // Initialisation
 $f_invest          = $row['cycle'] * 1000;
@@ -163,29 +185,8 @@ $infos2 = '
 </table>
 ';
 
-?>
-
-<input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
-
-<div class="ui container inverted segment">
-    <h2><i class="inverted <?= uimx::$invest_methode_icon[$row['methode']] ?> icon"></i><?= utf8_decode($row['title']) ?></h2>
-    <div class="ui stackable grid container">
-          <div class="row">
-          <div class="eight wide column">
-                <?= uimx::genCard('sim_card2', implode(', ', $lst_symbols), '', $infos1); ?>
-            </div>
-            <div class="eight wide column">
-                <?= uimx::genCard('sim_card2', '&nbsp;', '', $infos2); ?>
-            </div>
-
-            <div class="center aligned sixteen wide column" id="sim_card_bt">
-                <button id="sim_go_bt2" class="ui pink float right button">Go</button>
-            </div>
-
-<?
-
 $final_info = '
-    <table id="sim_final_info">
+    <table class="ui selectable inverted striped single line very compact unstackable table" id="sim_final_info">
     <tr>
         <th>Portfolio</th>
         <th>Valorisation</th>
@@ -257,28 +258,107 @@ $final_info2 = '
 ';
 
 ?>
-            <div class="sixteen wide column" style="margin-top: 15px;" id="synthese_bloc1">
-                <?= uimx::genCard('sim_card1', '', '', $final_info); ?>
-            </div>
-            <div class="sixteen wide column" style="margin-top: 15px;" id="synthese_bloc2">
-                <?= uimx::genCard('sim_card12', '', '', $final_info2); ?>
-            </div>
 
+<input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
+
+<div class="ui inverted grid container segment">
+    <? if ($option_sim != "backtest") { ?>
+        <div class="sixteen wide column">
+            <h2><i class="inverted <?= uimx::$invest_methode_icon[$row['methode']] ?> icon"></i><?= utf8_decode($row['title']) ?></h2>
         </div>
+    <? } ?>
+
+    <div class="ui eight wide column inverted">
+        <?= uimx::genCard('sim_card2', implode(', ', $lst_symbols), '', $infos1); ?>
     </div>
+
+    <div class="ui eight wide column inverted">
+        <?= uimx::genCard('sim_card2', '&nbsp;', '', $infos2); ?>
+    </div>
+
+    <div class="ui center aligned sixteen wide column inverted" id="sim_card_bt">
+        <button id="sim_go_bt2" class="ui pink float right button">Go</button>
+    </div>
+
+    <div class="ui sixteen wide column inverted" id="synthese_bloc1">
+        <?= uimx::genCard('sim_card1', '', '', $final_info); ?>
+    </div>
+
+    <div class="ui sixteen wide column inverted" id="synthese_bloc2">
+        <?= uimx::genCard('sim_card12', '', '', $final_info2); ?>
+    </div>
+
+    <div class="ui sixteen wide column inverted">
+        <h2><i class="inverted money icon"></i>Valorisation du portefeuille</h2>
+        <canvas id="sim_canvas1" height="100"></canvas>
+    </div>
+
+    <? if ($row['methode'] == 1  || $row['methode'] == 3) { ?>
+    <div class="ui sixteen wide column inverted">
+        <h2><i class="inverted line graph icon"></i>Evolution DM</h2>
+        <canvas id="sim_canvas2" height="100"></canvas>
+    </div>
+    <? } ?>
+
+    <div class="ui sixteen wide column inverted">
+        <h2><i class="inverted grid layout icon"></i>Composition portefeuille</h2>
+        <table id="lst_sim" class="ui striped selectable inverted very compact unstackable table lst_sim_<?= $row['methode'] ?>">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Cash</th>
+                    <? if ($row['methode'] == 1  || $row['methode'] == 3)
+                        echo '<th>Vente</th><th>Nb</th><th>PU</th><th>Perf</th><th>Achat</th><th>Nb</th><th>PU</th>';
+                    else
+                        echo '<th>Actifs en portefeuille</th><th></th><th></th><th></th><th></th><th></th><th></th>';
+                    ?>
+                    <th>Valorisation</th>
+                    <th>Perf</th>
+                </tr>
+            </thead>
+            <tbody>
+    <?
+    foreach($sim['tab_detail'] as $key => $val) {
+        echo "<tr class=\"".($val[$row['methode'] == 1 || $row['methode'] == 3 ? "td_perf_vendu_val" : "td_perf_glob_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\" onclick=\"".$val['tr_onclick']."\">";
+        if ($row['methode'] == 1 || $row['methode'] == 3) {
+            foreach(['td_day', 'td_cash', 'td_symbol_vendu', 'td_nb_vendu', 'td_pu_vendu', 'td_perf_vendu', 'td_symbol_achat', 'td_nb_achat', 'td_pu_achat', 'td_valo_pf', 'td_perf_glob'] as $ind)
+            echo "<td ".($ind == 'td_perf_vendu' || $ind == 'td_perf_glob' ? "class=\"".($val[$ind."_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\"" : "" ).">".$val[$ind]."</td>";
+        } else {
+            foreach(['td_day', 'td_cash', 'td_ordres', 'td_valo_pf', 'td_perf_glob'] as $ind)
+                echo "<td ".($ind == 'td_ordres' ? "colspan=\"7\"" : "" )." ".($ind == 'td_perf_glob' ? "class=\"".($val[$ind."_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\"" : "" ).">".$val[$ind]."</td>";
+        }
+        echo "</tr>";
+    }
+    ?>
+            </tbody>
+        </table>
+        <div id="lst_sim_nav"></div>
+    </div>
+
+    <div class="ui sixteen wide column inverted">
+        <h2><i class="inverted exchange icon"></i>Ordres boursiers</h2>
+        <table id="lst_ordres" class="ui striped selectable inverted single line very compact unstackable table">
+            <thead><tr><th style="width: 50px;"></th><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Nb</th><th>Prix</th></tr></thead>
+            <tbody>
+                <?
+                foreach($sim['ordres'] as $key => $val) {
+                    $o = json_decode($val);
+                    echo "<tr class=\"".$o->{"action"}."\"><td><i class=\"inverted long arrow alternate ".($o->{"action"} == 'Achat' ? "right green" : "left orange")." icon\"></i></td><td>".$o->{"date"}."</td><td><div>".$o->{"action"}."</div></td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".sprintf("%.2f", $o->{"price"}).$o->{"currency"}."</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+        <div id="lst_ordres_nav"></div>
+    </div>
+
 </div>
 
-
-<!-- GRAPHE 1 -->
-
-<div class="ui container inverted segment">
-    <h2><i class="inverted money icon"></i>Valorisation du portefeuille</h2>
-    <canvas id="sim_canvas1" height="100"></canvas>
-</div>
 
 <script>
+
 // Our labels along the x-axis
 var dates    = [<?= '"'.implode('","', $sim['tab_date']).'"' ?>];
+
 // For drawing the lines
 var valos    = [<?= implode(',', $sim['tab_valo'])    ?>];
 var valos_RC = [<?= implode(',', $sim['tab_valo_RC']) ?>];
@@ -313,20 +393,9 @@ el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
 
 var myChart = new Chart(ctx, { type: 'line', data: { labels: dates, datasets: mydatasets }, options: options_simulator_graphe });
 
-</script>
-
-
-<!-- GRAPHE 2 : EVOLUTION DM -->
 
 <? if ($row['methode'] == 1  || $row['methode'] == 3) { ?>
 
-<div class="ui container inverted segment">
-    <h2><i class="inverted line graph icon"></i>Evolution DM</h2>
-    <canvas id="sim_canvas2" height="100"></canvas>
-</div>
-
-<script>
-// For drawing the lines
 <?
     $x = 0; 
     foreach($lst_symbols as $key => $val) {
@@ -357,74 +426,21 @@ options_DM_Graphe.plugins.legend.display = true;
 // Creation graphe
 var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options_DM_Graphe, plugins: [horizontalLines_DM_Graphe] } );
 
-</script>
-
 <? } ?>
 
 
-<!-- TABLEAU DETAIL -->
+launcher = function(option) {
 
-<div class="ui container inverted segment">
-    <h2><i class="inverted grid layout icon"></i>Composition portefeuille</h2>
-    <table id="lst_sim" class="ui selectable inverted very compact unstackable table lst_sim_<?= $row['methode'] ?>">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Cash</th>
-
-<? if ($row['methode'] == 1  || $row['methode'] == 3)
-    echo '<th>Vente</th><th>Nb</th><th>PU</th><th>Perf</th><th>Achat</th><th>Nb</th><th>PU</th>';
-else
-    echo '<th>Actifs en portefeuille</th><th></th><th></th><th></th><th></th><th></th><th></th>';
-?>
-                <th>Valorisation</th>
-                <th>Perf</th>
-            </tr>
-        </thead>
-        <tbody>
-<?
-foreach($sim['tab_detail'] as $key => $val) {
-    echo "<tr class=\"".($val[$row['methode'] == 1 || $row['methode'] == 3 ? "td_perf_vendu_val" : "td_perf_glob_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\" onclick=\"".$val['tr_onclick']."\">";
-    if ($row['methode'] == 1 || $row['methode'] == 3) {
-        foreach(['td_day', 'td_cash', 'td_symbol_vendu', 'td_nb_vendu', 'td_pu_vendu', 'td_perf_vendu', 'td_symbol_achat', 'td_nb_achat', 'td_pu_achat', 'td_valo_pf', 'td_perf_glob'] as $ind)
-           echo "<td ".($ind == 'td_perf_vendu' || $ind == 'td_perf_glob' ? "class=\"".($val[$ind."_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\"" : "" ).">".$val[$ind]."</td>";
-    } else {
-        foreach(['td_day', 'td_cash', 'td_ordres', 'td_valo_pf', 'td_perf_glob'] as $ind)
-            echo "<td ".($ind == 'td_ordres' ? "colspan=\"7\"" : "" )." ".($ind == 'td_perf_glob' ? "class=\"".($val[$ind."_val"] >= 0 ? "aaf-positive" : "aaf-negative")."\"" : "" ).">".$val[$ind]."</td>";
-    }
-    echo "</tr>";
-}
-?>
-        </tbody>
-    </table>
-    <div id="lst_sim_box"></div>
-</div>
-
-<div class="ui container inverted segment">
-    <h2><i class="inverted exchange icon"></i>Ordres boursiers</h2>
-    <table id="lst_ordres" class="ui striped selectable inverted single line very compact unstackable table">
-        <thead><tr><th style="width: 50px;"></th><th>Date</th><th><div>Action</div></th><th>Symbole</th><th>Nb</th><th>Prix</th></tr></thead>
-        <tbody>
-<?
-foreach($sim['ordres'] as $key => $val) {
-    $o = json_decode($val);
-    echo "<tr class=\"".$o->{"action"}."\"><td><i class=\"inverted long arrow alternate ".($o->{"action"} == 'Achat' ? "right green" : "left orange")." icon\"></i></td><td>".$o->{"date"}."</td><td><div>".$o->{"action"}."</div></td><td>".$o->{"symbol"}."</td><td>".$o->{"quantity"}."</td><td>".sprintf("%.2f", $o->{"price"}).$o->{"currency"}."</td></tr>";
-}
-?>
-        </tbody>
-    </table>
-    <div id="lst_ordres_box"></div>
-</div>
-
-<script>
-
-launcher = function() {
     params = attrs(['f_delai_retrait', 'f_montant_retrait', 'strategie_id', 'f_capital_init', 'f_invest', 'f_cycle_invest', 'f_date_start', 'f_date_end', 'f_compare_to' ]);
-    go({ action: 'sim', id: 'main', url: 'simulator.php?'+params+'&f_retrait='+(valof('f_retrait') == 0 ? 0 : 1), loading_area: 'sim_go_bt' });
+
+    if (option == 'backtest')
+        params += attrs(['f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
+
+    go({ action: 'sim', id: option == 'backtest' ? 'simulation_area' : 'main', url: 'simulator.php?option_sim='+option+params+'&f_retrait='+(valof('f_retrait') == 0 ? 0 : 1), no_chg_cn: option == 'backtest' ? 1 : 0 });
 }
 
-Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher(); });
-Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher(); });
+Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher('<?= $option_sim ?>'); });
+Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher('<?= $option_sim ?>'); });
 Dom.addListener(Dom.id('f_retrait'),  Dom.Event.ON_CHANGE, function(event) { toogle('retrait_option1'); });
 
 hide('retrait_option1');
@@ -442,12 +458,12 @@ datepicker2.render();
 
 paginator({
     table: document.getElementById("lst_sim"),
-    box: document.getElementById("lst_sim_box")
+    box: document.getElementById("lst_sim_nav")
 });
 
 paginator({
     table: document.getElementById("lst_ordres"),
-    box: document.getElementById("lst_ordres_box")
+    box: document.getElementById("lst_ordres_nav")
 });
 
 </script>

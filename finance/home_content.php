@@ -402,7 +402,8 @@ hide('other_tags');
 
 paginator({
   table: document.getElementById("lst_stock"),
-  box: document.getElementById("lst_stock_box")
+  box: document.getElementById("lst_stock_box"),
+  rows_per_page: 20
 });
 
 </script>

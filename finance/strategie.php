@@ -80,32 +80,29 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 ?>
 
 <style type="text/css">
-	.column { max-width: 90%; }
-	.label { width: 150px; text-align: left; background: #333 !important; }
-	.ui.selection.dropdown { height: 45px !important; border-bottom-left-radius: 0px !important; }
-	#symbol_area .hide { display: none; }
-	#symbol_area .label { width: 50px; text-align: center; }
-	.bestof .input_pct { display: none; }
+.label { width: 150px; text-align: left; background: #333 !important; }
+.ui.selection.dropdown { height: 45px !important; border-bottom-left-radius: 0px !important; }
+#symbol_area .hide { display: none; }
+#symbol_area .label { width: 50px; text-align: center; }
+.bestof .input_pct { display: none; }
+#simulation_area .card { width: 100%; height: 100%; }
+#simulation_area .card table { width: 100%; }
+#simulation_area .tabnav select { width: auto !important; }
+#simulation_area { padding: 0px !important; }
 </style>
 
-<div class="ui inverted middle aligned center aligned grid segment container">
-    <div class="column">
+<form class="ui inverted large form">
+<input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
+<div class="ui grid">
 
-		<div class="ui inverted clearing segment">
+		<div class="ui sixteen wide column inverted clearing">
 			<h2 class="ui inverted left floated header">Stratégie</h2>
 <? if ($action == "upt") { ?>
 			<h3 class="ui right floated header"><i id="strategie_delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
 <? } ?>
 		</div>
 
-		<form class="ui inverted large form">
-
-			<input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
-
-			<div class="ui inverted stackable two column grid container">
-
-				<div class="wide column">
-
+			<div class="eight wide column">
 					<div class="inverted field">
 	                    <div class="ui corner inverted labeled input">
                         	<div class="ui inverted basic label">Nom</div><input type="text" id="f_name" value="<?= utf8_decode($row['title']) ?>" placeholder="Nom stratégie" />
@@ -164,39 +161,42 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 <? } else { ?>
 					<input id="f_common" type="hidden" value="0" />
 <? } ?>
-                </div>
+            </div>
 
-				<div id="symbol_area" class="wide column <?= $row['methode'] == 1 ? "bestof" : "" ?>">
+			<div id="symbol_area" class="eight wide column<?= $row['methode'] == 1 ? " bestof" : "" ?>">
 <? foreach (range(1, 7) as $number) { ?>
 					<div id="symbol_choice_<?= $number ?>" class="inverted field <?= $number > $nb_symbol ? "hide" : "" ?>">
 						<div class="ui inverted labeled input">
 							<div id="f_symbol_choice_<?= $number ?>_error" class="ui inverted basic label"><?= $number ?></div>
 							<select id="f_symbol_choice_<?= $number ?>" class="ui mini selection dropdown">
 								<option value=""></option>
-<? foreach($lst_all_symbol as $key => $val) { echo "<option id=\"symbol_choice_".$number."\" value=\"".$val['symbol']."\" ".($lst_symbol_strategie[$number] == $val['symbol'] ? "selected=\"selected\"" : "")." >".$val['symbol']."</option>"; } ?>
+<? foreach($lst_all_symbol as $key => $val) { echo "<option id=\"symbol_choice_".$number."\" value=\"".$val['symbol']."\" ".(isset($lst_symbol_strategie[$number]) && $lst_symbol_strategie[$number] == $val['symbol'] ? "selected=\"selected\"" : "")." >".$val['symbol']."</option>"; } ?>
 							</select>
 							<input type="text" id="f_symbol_choice_pct_<?= $number ?>" class="input_pct" value="<?= $row['methode'] == 2 && isset($lst_symbol_strategie_pct[$number]) ? $lst_symbol_strategie_pct[$number] : "" ?>" size="3" placeholder="0" />
                     	</div>
 					</div>
 <? } ?>
-				</div>
-
 			</div>
 
+			<div class="sixteen wide column">
 			<div class="ui inverted stackable two column grid container">
 
 				<div class="wide column"></div>
 
 				<div class="wide right aligned column">
 					<div id="strategie_cancel_bt" class="ui grey submit button">Cancel</div>
+					<div id="strategie_backtest_bt" class="ui teal submit button">Backtesting</div>
                     <div id="strategie_<?= $libelle_action_bt ?>_bt" class="ui floated right teal submit button"><?= $libelle_action_bt ?></div>
 				</div>
 
 			</div>
+			</div>
 
-		</form>
-    </div>
+			<div class="sixteen wide column" id="simulation_area"></div>
+			<div class="sixteen wide column" id="simulation_area2"></div>
 </div>
+</form>
+
 
 <script>
 
@@ -213,18 +213,12 @@ filter_form = function(opt) {
 	}
 }
 
-Dom.addListener(Dom.id('f_methode'), Dom.Event.ON_CHANGE, function(event) { filter_form(this.value); });
-Dom.addListener(Dom.id('f_nb_symbol_max'), Dom.Event.ON_CHANGE, function(event) {
-	for(i = 1; i <= 7; i++) { rmCN('symbol_choice_'+i, 'hide'); }
-	for(i = parseInt(this.value)+1; i <= 7; i++) { addCN('symbol_choice_'+i, 'hide'); }
-});
-Dom.addListener(Dom.id('strategie_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'strategie_cancel_bt' }); });
-Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
+check_form = function() {
 
 	if (valof('f_name') == "") {
 		Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Saisir un nom stratégie' });
 		addCN('f_name_error', 'red');
-		return;
+		return false;
 	}
 	rmCN('f_name_error', 'red');
 
@@ -238,14 +232,14 @@ Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_C
 			if (l_val == "") {
 				Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Choisir un actif' });
 				addCN('f_symbol_choice_'+i+'_error', 'red');
-				return;
+				return false;
 			}
 			rmCN('f_symbol_choice_'+i+'_error', 'red');
 
 			if (valof('f_methode') == 2 && valof('f_symbol_choice_pct_'+i) == "") {
 				Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Saisir un nombre' });
 				addCN('f_symbol_choice_'+i+'_error', 'red');
-				return;
+				return false;
 			}
 			rmCN('f_symbol_choice_'+i+'_error', 'red');
 
@@ -254,21 +248,48 @@ Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_C
 			if (t_assets[l_val] > 1) {
 				Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Actif en doublon' });
 				addCN('f_symbol_choice_'+i+'_error', 'red');
-				return;
+				return false;
 			}
 
 			sum_pct += parseInt(valof('f_symbol_choice_pct_'+i));
 		}
 
-		if (sum_pct != 100) {
+		if (valof('f_methode') == 2 && sum_pct != 100) {
 			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'La somme des répartitiond n\'est pas égale à 100% [' + (sum_pct) + ']' });
 			addCN('f_name_error', 'red');
-			return;
+			return false;
 		}
 	}
 
-	params = '?action=<?= $action ?>&'+attrs(['strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
-	go({ action: 'home', id: 'main', url: 'strategie_action.php'+params, loading_area: 'strategie_<?= $libelle_action_bt ?>_bt' });
+	return true;
+}
+
+get_params_form = function(option) {
+	params = '?option_sim=' + option + attrs(['strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
+	return params;
+}
+
+Dom.addListener(Dom.id('f_methode'), Dom.Event.ON_CHANGE, function(event) { filter_form(this.value); });
+
+Dom.addListener(Dom.id('f_nb_symbol_max'), Dom.Event.ON_CHANGE, function(event) {
+	for(i = 1; i <= 7; i++) { rmCN('symbol_choice_'+i, 'hide'); }
+	for(i = parseInt(this.value)+1; i <= 7; i++) { addCN('symbol_choice_'+i, 'hide'); }
+});
+
+Dom.addListener(Dom.id('strategie_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'strategie_cancel_bt' }); });
+
+Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
+	if (check_form()) {
+		params = get_params_form('strategie');
+		go({ action: 'home', id: 'main', url: 'strategie_action.php'+params, loading_area: 'strategie_<?= $libelle_action_bt ?>_bt' });
+	}
+});
+
+Dom.addListener(Dom.id('strategie_backtest_bt'), Dom.Event.ON_CLICK, function(event) {
+	if (check_form()) {
+		params = get_params_form('backtest');
+		go({ action: 'home', id: 'simulation_area', url: 'sim.php'+params, no_chg_cn: 1 });
+	}
 });
 
 <? if ($action == "upt") { ?>

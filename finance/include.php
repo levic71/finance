@@ -1445,7 +1445,7 @@ class uimx {
 
     public static function genCard($id, $header, $meta, $desc, $cn = "") {
     ?>
-        <div class="ui inverted card <?= $cn ?>" id="<?= $id ?>" style="height: 100%; background: rgba(255, 255, 255, 0.05);">
+        <div class="ui inverted card <?= $cn ?>" id="<?= $id ?>">
             <div class="content">
                 <div class="header"><?= $header ?></div>
                 <div class="meta"><?= $meta ?></div>

@@ -39,12 +39,18 @@ h2 > i:not([class*="trash"]), h2 > span > i { color: antiquewhite !important; }
 h2 > i[class*="trash"] { color: black !important; }
 .clearing h2 { background: none; }
 
-.sim_page #synthese_bloc2 {
+.sim_page #synthese_bloc2, #simulation_area #synthese_bloc2 {
     display: none;
 }
 
 .align_right, .perf_card td:nth-child(2) {
     text-align: right !important;
+}
+
+.perf_card {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .perf_card button.badge {
@@ -810,7 +816,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
         display: none;
     }
 
-    .sim_page #synthese_bloc2 {
+    .sim_page #synthese_bloc2, #simulation_area #synthese_bloc2 {
         display: inline;
     }
 
