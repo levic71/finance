@@ -92,123 +92,138 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 </style>
 
 <form class="ui inverted large form">
-<input type="hidden" id="strategie_id"  value="<?= $strategie_id ?>" />
-<input type="hidden" id="backtest_call" value="0" />
-<div class="ui grid">
+	<input type="hidden" id="strategie_id"  value="<?= $strategie_id ?>" />
+	<input type="hidden" id="backtest_call" value="0" />
+	<div class="ui grid">
 
 		<div class="ui sixteen wide column inverted clearing">
-			<h2 class="ui inverted left floated header">Stratégie</h2>
-<? if ($action == "upt") { ?>
-			<h3 class="ui right floated header"><i id="strategie_delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
-<? } ?>
+			<h2 class="ui inverted left floated header"><i class="inverted chess icon"></i> Stratégie</h2>
+			<? if ($action == "upt") { ?>
+				<h3 class="ui right floated header"><i id="strategie_delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
+			<? } ?>
 		</div>
 
-			<div class="eight wide column">
-					<div class="inverted field">
-	                    <div class="ui corner inverted labeled input">
-                        	<div class="ui inverted basic label">Nom</div><input type="text" id="f_name" value="<?= utf8_decode($row['title']) ?>" placeholder="Nom stratégie" />
-							<div id="f_name_error" class="ui inverted corner label"><i class="asterisk inverted icon"></i></div>
-                    	</div>
-					</div>
-				
-	                <div class="inverted field">
-						<div class="ui inverted labeled input">
-							<div class="ui inverted basic label">Méthode</div>
-							<select id="f_methode" class="ui selection dropdown">
-								<option value="2" <?= $row['methode'] == 2 ? "selected=\"selected\"" : "" ?>>DCA</option>
-								<option value="1" <?= $row['methode'] == 1 ? "selected=\"selected\"" : "" ?>>Meilleur DM</option>
-<? if ($sess_context->isSuperAdmin()) { ?>
-								<option value="3" <?= $row['methode'] == 3 ? "selected=\"selected\"" : "" ?>>Super DM</option>
-<? } ?>
-							</select>
-                    	</div>
-					</div>
-
-	                <div class="inverted field">
-						<div class="ui inverted labeled input">
-							<div class="ui inverted basic label">Rebalancing</div>
-							<select id="f_cycle" class="ui selection dropdown">
-								<option value="1"  <?= $row['cycle'] == 1  ? "selected=\"selected\"" : "" ?>>Mensuel</option>
-								<option value="3"  <?= $row['cycle'] == 3  ? "selected=\"selected\"" : "" ?>>Trimestriel</option>
-								<option value="6"  <?= $row['cycle'] == 6  ? "selected=\"selected\"" : "" ?>>Semestriel</option>
-								<option value="12" <?= $row['cycle'] == 12 ? "selected=\"selected\"" : "" ?>>Annuel</option>
-							</select>
-                    	</div>
-					</div>
-
-					<div class="inverted field" id="form_nb_actifs">
-						<div class="ui inverted labeled input">
-							<div class="ui inverted basic label">Nb actifs</div>
-							<select id="f_nb_symbol_max" class="ui selection dropdown">
-								<? foreach (range(1, 7) as $number) echo "<option value=\"".$number."\" ".($number == $nb_symbol ? "selected=\"selected\"" : "").">".$number."</option>"; ?>
-							</select>
-                    	</div>
-					</div>
-
-<? if ($sess_context->isSuperAdmin()) { ?>
-	                <div class="inverted field">
-						<table><tr>
-						<td><div class="ui inverted labeled input">
-							<div class="ui inverted basic label">Par défaut</div>
-                    	</div></td>
-						<td><div class="ui inverted labeled checkbox">
-                            <div class="ui fitted toggle checkbox">
-                                <input id="f_common" type="checkbox" <?= $row["defaut"] == 1 ? 'checked="checked"' : '' ?>>
-                                <label></label>
-                            </div>
-                    	</div></td>
-						</tr></table>
-					</div>
-<? } else { ?>
-					<input id="f_common" type="hidden" value="0" />
-<? } ?>
-            </div>
-
-			<div id="symbol_area" class="eight wide column<?= $row['methode'] == 1 ? " bestof" : "" ?>">
-<? foreach (range(1, 7) as $number) { ?>
-					<div id="symbol_choice_<?= $number ?>" class="inverted field <?= $number > $nb_symbol ? "hide" : "" ?>">
-						<div class="ui inverted labeled input">
-							<div id="f_symbol_choice_<?= $number ?>_error" class="ui inverted basic label"><?= $number ?></div>
-							<select id="f_symbol_choice_<?= $number ?>" class="ui mini selection dropdown">
-								<option value=""></option>
-<? foreach($lst_all_symbol as $key => $val) { echo "<option id=\"symbol_choice_".$number."\" value=\"".$val['symbol']."\" ".(isset($lst_symbol_strategie[$number]) && $lst_symbol_strategie[$number] == $val['symbol'] ? "selected=\"selected\"" : "")." >".$val['symbol']."</option>"; } ?>
-							</select>
-							<input type="text" id="f_symbol_choice_pct_<?= $number ?>" class="input_pct" value="<?= $row['methode'] == 2 && isset($lst_symbol_strategie_pct[$number]) ? $lst_symbol_strategie_pct[$number] : "" ?>" size="3" placeholder="0" />
-                    	</div>
-					</div>
-<? } ?>
+		<div class="eight wide column">
+			<div class="inverted field">
+				<div class="ui corner inverted labeled input">
+					<div class="ui inverted basic label">Nom</div><input type="text" id="f_name" value="<?= utf8_decode($row['title']) ?>" placeholder="Nom stratégie" />
+					<div id="f_name_error" class="ui inverted corner label"><i class="asterisk inverted icon"></i></div>
+				</div>
+			</div>
+		
+			<div class="inverted field">
+				<div class="ui inverted labeled input">
+					<div class="ui inverted basic label">Méthode</div>
+					<select id="f_methode" class="ui selection dropdown">
+						<option value="2" <?= $row['methode'] == 2 ? "selected=\"selected\"" : "" ?>>DCA</option>
+						<option value="1" <?= $row['methode'] == 1 ? "selected=\"selected\"" : "" ?>>Meilleur DM</option>
+						<? if ($sess_context->isSuperAdmin()) { ?>
+							<option value="3" <?= $row['methode'] == 3 ? "selected=\"selected\"" : "" ?>>Super DM</option>
+						<? } ?>
+					</select>
+				</div>
 			</div>
 
-			<div class="sixteen wide column">
+			<div class="inverted field">
+				<div class="ui inverted labeled input">
+					<div class="ui inverted basic label">Rebalancing</div>
+					<select id="f_cycle" class="ui selection dropdown">
+						<option value="1"  <?= $row['cycle'] == 1  ? "selected=\"selected\"" : "" ?>>Mensuel</option>
+						<option value="3"  <?= $row['cycle'] == 3  ? "selected=\"selected\"" : "" ?>>Trimestriel</option>
+						<option value="6"  <?= $row['cycle'] == 6  ? "selected=\"selected\"" : "" ?>>Semestriel</option>
+						<option value="12" <?= $row['cycle'] == 12 ? "selected=\"selected\"" : "" ?>>Annuel</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="inverted field" id="form_nb_actifs">
+				<div class="ui inverted labeled input">
+					<div class="ui inverted basic label">Nb actifs</div>
+					<select id="f_nb_symbol_max" class="ui selection dropdown">
+						<? foreach (range(1, 7) as $number) echo "<option value=\"".$number."\" ".($number == $nb_symbol ? "selected=\"selected\"" : "").">".$number."</option>"; ?>
+					</select>
+				</div>
+			</div>
+
+			<? if ($sess_context->isSuperAdmin()) { ?>
+			<div class="inverted field">
+				<table><tr>
+				<td><div class="ui inverted labeled input">
+					<div class="ui inverted basic label">Par défaut</div>
+				</div></td>
+				<td><div class="ui inverted labeled checkbox">
+					<div class="ui fitted toggle checkbox">
+						<input id="f_common" type="checkbox" <?= $row["defaut"] == 1 ? 'checked="checked"' : '' ?>>
+						<label></label>
+					</div>
+				</div></td>
+				</tr></table>
+			</div>
+			<? } else { ?>
+				<input id="f_common" type="hidden" value="0" />
+			<? } ?>
+
+		</div>
+
+		<div id="symbol_area" class="eight wide column<?= $row['methode'] == 1 ? " bestof" : "" ?>">
+			<? foreach (range(1, 7) as $number) { ?>
+			<div id="symbol_choice_<?= $number ?>" class="inverted field <?= $number > $nb_symbol ? "hide" : "" ?>">
+				<div class="ui inverted labeled input">
+					<div id="f_symbol_choice_<?= $number ?>_error" class="ui inverted basic label"><?= $number ?></div>
+					<select id="f_symbol_choice_<?= $number ?>" class="ui mini selection dropdown">
+						<option value=""></option>	
+						<? foreach($lst_all_symbol as $key => $val) { echo "<option id=\"symbol_choice_".$number."\" value=\"".$val['symbol']."\" ".(isset($lst_symbol_strategie[$number]) && $lst_symbol_strategie[$number] == $val['symbol'] ? "selected=\"selected\"" : "")." >".$val['symbol']."</option>"; } ?>
+					</select>
+					<input type="text" id="f_symbol_choice_pct_<?= $number ?>" class="input_pct" value="<?= $row['methode'] == 2 && isset($lst_symbol_strategie_pct[$number]) ? $lst_symbol_strategie_pct[$number] : "" ?>" size="3" placeholder="0" />
+				</div>
+			</div>
+			<? } ?>
+		</div>
+
+		<div id="super_dm_area" class="eight wide column">
+			<div id="super_dm_bt1" class="ui grey submit button">ETF</div>
+			<div id="super_dm_bt2" class="ui grey submit button">EQUITY</div>
+			<div id="super_dm_bt3" class="ui grey submit button">PEA</div>
+			<div id="super_dm_bt4" class="ui grey submit button">EUR</div>
+			<div id="super_dm_bt5" class="ui grey submit button">USD</div>
+			<div id="super_dm_bt6" class="ui grey submit button">> 150M</div>
+		</div>
+
+		<div class="sixteen wide column">
 			<div class="ui inverted stackable two column grid container">
 
 				<div class="wide column"></div>
 
 				<div class="wide right aligned column">
 					<div id="strategie_cancel_bt" class="ui grey submit button">Cancel</div>
-					<div id="strategie_backtest_bt" class="ui teal submit button">Backtesting</div>
-                    <div id="strategie_<?= $libelle_action_bt ?>_bt" class="ui floated right teal submit button"><?= $libelle_action_bt ?></div>
+					<div id="strategie_backtest_bt" class="ui grey submit button">Backtesting</div>
+					<div id="strategie_<?= $libelle_action_bt ?>_bt" class="ui floated right teal submit button"><?= $libelle_action_bt ?></div>
 				</div>
 
 			</div>
-			</div>
+		</div>
 
-			<div class="sixteen wide column" id="simulation_area"></div>
-			<div class="sixteen wide column" id="simulation_area2"></div>
-</div>
+		<div class="sixteen wide column" id="simulation_area"></div>
+
+	</div>
 </form>
 
 
 <script>
 
 filter_form = function(opt) {
+
 	rmCN('symbol_area', 'bestof');
 	showelt('symbol_area');
 	showelt('form_nb_actifs');
+	hide('super_dm_area');
+
 	if (opt == 1) {
 		addCN('symbol_area', 'bestof');
 	}
+
 	if (opt == 3) {
+		show('super_dm_area');
 		hide('symbol_area');
 		hide('form_nb_actifs');
 	}
@@ -279,15 +294,26 @@ get_params_form = function(option) {
 	return params;
 }
 
+// Listener sur changement de type de strategie
 Dom.addListener(Dom.id('f_methode'), Dom.Event.ON_CHANGE, function(event) { filter_form(this.value); });
 
+// Listener sur changement nb d'actif a selectionner
 Dom.addListener(Dom.id('f_nb_symbol_max'), Dom.Event.ON_CHANGE, function(event) {
 	for(i = 1; i <= 7; i++) { rmCN('symbol_choice_'+i, 'hide'); }
 	for(i = parseInt(this.value)+1; i <= 7; i++) { addCN('symbol_choice_'+i, 'hide'); }
 });
 
+// Listener sur bt zone area super SM
+Dom.find('#super_dm_area div').forEach(function(item) {
+	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
+		switchColorElement(item.id, 'blue', 'grey'); 
+	});
+});
+
+// Listener sur bt cancel
 Dom.addListener(Dom.id('strategie_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'strategie_cancel_bt' }); });
 
+// Listener sur bt ajouter/modifier
 Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
 	if (check_form()) {
 		params = get_params_form('strategie');
@@ -295,6 +321,7 @@ Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_C
 	}
 });
 
+// Listener sur bt backtest
 Dom.addListener(Dom.id('strategie_backtest_bt'), Dom.Event.ON_CLICK, function(event) {
 	if (check_form()) {
 		params = get_params_form('backtest');
@@ -302,6 +329,7 @@ Dom.addListener(Dom.id('strategie_backtest_bt'), Dom.Event.ON_CLICK, function(ev
 	}
 });
 
+// Listener sur bt supprimer
 <? if ($action == "upt") { ?>
 Dom.addListener(Dom.id('strategie_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'strategie_action.php?action=del&strategie_id=<?= $strategie_id ?>', loading_area: 'strategie_delete_bt', confirmdel: 1 }); });
 <? } ?>

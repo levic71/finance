@@ -428,16 +428,13 @@ var myChart2 = new Chart(ctx2, { type: 'line', data: data2, options: options_DM_
 
 <? } ?>
 
-
-launcher = function() {
-
+launcher = function(option) {
     params = attrs(['f_delai_retrait', 'f_montant_retrait', 'strategie_id', 'f_capital_init', 'f_invest', 'f_cycle_invest', 'f_date_start', 'f_date_end', 'f_compare_to' ]);
-
     go({ action: 'sim', id: option == 'backtest' ? 'simulation_area' : 'main', url: 'simulator.php?option_sim='+option+params+'&f_retrait='+(valof('f_retrait') == 0 ? 0 : 1), no_chg_cn: option == 'backtest' ? 1 : 0 });
 }
 
-Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher(); });
-Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher(); });
+Dom.addListener(Dom.id('sim_go_bt1'), Dom.Event.ON_CLICK, function(event) { launcher('<?= $option_sim ?>'); });
+Dom.addListener(Dom.id('sim_go_bt2'), Dom.Event.ON_CLICK, function(event) { launcher('<?= $option_sim ?>'); });
 Dom.addListener(Dom.id('f_retrait'),  Dom.Event.ON_CHANGE, function(event) { toogle('retrait_option1'); });
 
 hide('retrait_option1');
