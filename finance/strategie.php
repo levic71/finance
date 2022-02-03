@@ -92,7 +92,8 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 </style>
 
 <form class="ui inverted large form">
-<input type="hidden" id="strategie_id" value="<?= $strategie_id ?>" />
+<input type="hidden" id="strategie_id"  value="<?= $strategie_id ?>" />
+<input type="hidden" id="backtest_call" value="0" />
 <div class="ui grid">
 
 		<div class="ui sixteen wide column inverted clearing">
@@ -265,7 +266,16 @@ check_form = function() {
 }
 
 get_params_form = function(option) {
+
+	// On recupere les valeurs du formulaire de la strategie
 	params = '?option_sim=' + option + attrs(['strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
+
+	// On recupere les valeurs du formulaire de la simulation
+	if (valof('backtest_call') == 1)
+		params += attrs(['f_delai_retrait', 'f_montant_retrait', 'strategie_id', 'f_capital_init', 'f_invest', 'f_cycle_invest', 'f_date_start', 'f_date_end', 'f_compare_to' ]);
+	else
+		el('backtest_call').value = 1;
+
 	return params;
 }
 
@@ -288,7 +298,7 @@ Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_C
 Dom.addListener(Dom.id('strategie_backtest_bt'), Dom.Event.ON_CLICK, function(event) {
 	if (check_form()) {
 		params = get_params_form('backtest');
-		go({ action: 'home', id: 'simulation_area', url: 'sim.php'+params, no_chg_cn: 1 });
+		go({ action: 'home', id: 'simulation_area', url: 'simulator.php'+params, no_chg_cn: 1 });
 	}
 });
 

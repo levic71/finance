@@ -369,6 +369,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
         content: "i";
 }
 
+.strat_upt_page #sim_card_bt, .strat_upt_page #sim_go_bt1 {
+    display: none;
+}
+
 .sim_page .ui.card, .sim_page .ui.card table {
     width: 100% !important;
 }

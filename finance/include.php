@@ -7,6 +7,7 @@ ini_set('error_log', './finance.log');
 
 //header( 'content-type: text/html; charset=iso-8859-1' );
 header( 'content-type: text/html; charset=iso-8859-1' );
+header('Access-Control-Allow-Origin: *');
 
 $dbg = false;
 $dbg_data = false;
