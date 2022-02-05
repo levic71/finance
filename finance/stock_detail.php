@@ -411,12 +411,16 @@ if (!$readonly) {
 <div class="ui container inverted segment">
     <h2 class="ui inverted right aligned header foot_buttons">
         <? if (!$readonly) { ?>
+            <button id="nav_menu_bt" class="dropbtn circular ui right floated grey button icon_action"><i class="inverted white ellipsis vertical icon"></i></button>
+            <div class="ui vertical menu nav nav_menu_top" id="nav_menu">
+                <a class="item" id="stock_sync_bt"><span>Modifier & Sync</span></a>
+                <a class="item" id="stock_indic_bt"><span>Rebuild Indicators</span></a>
+                <a class="item" id="stock_reload_bt"><span>Reload cache data</span></a>
+            </div>
             <button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
-            <button id="stock_sync_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white retweet icon"></i> &nbsp;&nbsp;Modifier & Sync</button>
-            <button id="stock_indic_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white settings icon"></i> &nbsp;&nbsp;Rebuild Indicators</button>
-            <button id="stock_reload_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white recycle icon"></i> &nbsp;&nbsp;Reload cache data</button>
         <? } ?>
-        <button id="stock_back_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white reply icon"></i> Back</button>
+        <button id="stock_back_bt" class="circular ui icon very small right floated grey labelled button"><i class="inverted white reply icon"></i></button>
+
     </h2>
 </div>
 
@@ -722,6 +726,9 @@ if (!$readonly) {
             loading_area: 'main'
         });
     });
+
+    // Gestion menu secondaire
+	Dom.addListener(Dom.id('nav_menu_bt'), Dom.Event.ON_CLICK, function(event) { el('nav_menu').style.top = "-150px"; toogleCN('nav_menu', 'on'); });
 
     <? } ?>
 

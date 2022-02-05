@@ -31,7 +31,7 @@ $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_cont
 			<button id="strategie_default_bt" class="mini ui grey button <?= $sess_context->isUserConnected() ? "" : "hidden" ?>"><i class="ui inverted thumbtack icon"></i></button>
 		</span>
 
-		<? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Stratégie</button><? } ?>
+		<? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="ui circular right floated pink button icon_action" data-tootik-conf="left" data-tootik="Nouvelle stratégie"><i class="inverted white add icon"></i></button><? } ?>
 	</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
@@ -89,7 +89,7 @@ $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_cont
 			<button id="lst_filter5_bt" class="mini ui grey button">&gt; 150 M</button>
 			<button id="lst_filter6_bt" class="mini ui grey button"><i class="inverted ellipsis horizontal icon"></i></button>
 		</div>
-		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui icon very small right floated pink button"><i class="inverted white add icon"></i> Actif</button><? } ?>
+		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui right floated pink button icon_action" data-tootik-conf="left" data-tootik="Nouveau actif"><i class="inverted white add icon"></i></button><? } ?>
 		
 	</h2>
 

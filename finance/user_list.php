@@ -17,7 +17,7 @@ $db = dbc::connect();
 
 <div class="ui container inverted segment">
 
-	<h2>Comptes <button id="user_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Utilisateur</button></h2>
+	<h2>Comptes <button id="user_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i></button></h2>
 
 	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_users" data-sortable>
 		<thead>

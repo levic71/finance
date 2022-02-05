@@ -41,7 +41,20 @@ $quotes = calc::getIndicatorsLastQuote();
 
 <div class="ui container inverted">
 
-	<h2 class="ui left floated"><i class="inverted briefcase icon"></i>Mes Portefeuilles</h2>
+	<h2 class="ui left floated">
+	<? if ($sess_context->isUserConnected()) { ?>
+		<i class="inverted briefcase icon"></i>Mes Portefeuilles
+
+		<button id="nav_menu_bt" class="dropbtn circular ui right floated grey button icon_action"><i class="inverted white ellipsis vertical icon"></i></button>
+
+		<div class="ui vertical menu nav" id="nav_menu" data-right="20">
+			<a class="item" id="portfolio_add1_bt"><span>Ajouter un portefeuille</span></a>
+			<a class="item" id="portfolio_add2_bt"><span>Ajouter une Synthèse</span></a>
+		</div>
+
+	<? } ?>
+
+	</h2>
 
 	<div class="ui stackable grid container" id="portfolio_box">
 <?
@@ -56,16 +69,6 @@ $quotes = calc::getIndicatorsLastQuote();
 </div>
 
 
-<div class="ui container inverted segment">
-    <div class="ui inverted centered header">
-		<? if ($sess_context->isUserConnected()) { ?>
-			<button id="portfolio_add2_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Synthèse</button>
-			<button id="portfolio_add1_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Portefeuille</button>
-		<? } ?>
-		</div>
-</div>
-
-
 <script>
 
 <?
@@ -76,7 +79,11 @@ $quotes = calc::getIndicatorsLastQuote();
 	}
 ?>
 
+<? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('portfolio_add1_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_detail.php?action=new', loading_area: 'main' }); });
 	Dom.addListener(Dom.id('portfolio_add2_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_detail.php?action=new_synthese', loading_area: 'main' }); });
+	Dom.addListener(Dom.id('nav_menu_bt'), Dom.Event.ON_CLICK, function(event) { toogleCN('nav_menu', 'on'); });
+<? } ?>
+
 
 </script>

@@ -2,6 +2,33 @@ td.aaf-positive { color: rgb(97, 194, 97) !important; }
 td.aaf-negative { color: rgb(247, 95, 90) !important; }
 button.aaf-positive { background: rgb(97, 194, 97) !important; color: white !important; }
 button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
+.icon_action { padding: 11px !important; }
+.icon_action i { margin: 0px !important; }
+
+.nav {
+	right: 20px;
+	opacity: 0;
+    visibility: hidden;
+	transition: all 0.4s ease-in-out;
+	background: #fff;
+	width: 100%;
+	border-radius: 5px;
+	transform: translateY(0%);
+	box-shadow: 2px 3px 10px 0 rgba(81, 81, 81, 0.1);
+	border: 1px solid #e4e4e4;
+	padding: 10px;
+	position: absolute;
+	margin: 0 auto;
+	z-index: 9999;
+}
+.nav a {
+	text-align: center;
+}
+
+.nav.on {
+    opacity: 1;
+    visibility: visible;
+}
 
 .tabnav {
     display: flex;

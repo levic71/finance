@@ -55,7 +55,7 @@ $lst_orders    = $portfolio_data['orders'];
 
 	<h2 class="ui left floated">
 		<i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
-		<button id="portfolio_graph_bt" class=" ui right floated black button"><i class="ui inverted chart bar outline icon"></i></button>
+		<button id="portfolio_graph_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chart bar outline icon"></i></button>
 	</h2>
 	<div class="ui stackable column grid">
 		<div class="row">
@@ -120,7 +120,7 @@ $lst_orders    = $portfolio_data['orders'];
 
 	<h2 class="ui left floated"><i class="inverted location arrow icon"></i>Positions
 		<? if (!$isPortfolioSynthese) { ?>
-		<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i> Save</button>
+		<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i></button>
 		<? } ?>
 	</h2>
 	<div class="ui stackable column grid">
@@ -186,7 +186,7 @@ $lst_orders    = $portfolio_data['orders'];
 	
 	<h2 class="ui left floated"><i class="inverted history icon"></i>Historique ordres
 <? if (!$isPortfolioSynthese) { ?>
-	<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i> Ordre</button>
+	<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i></button>
 <? } ?>
 	</h2>
 	<div class="ui stackable column grid">
