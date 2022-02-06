@@ -676,6 +676,7 @@ if (!$readonly) {
         rmCN(bt, 'loading');
     }
 
+<? if (false) { ?>
     // Initialisation des graphes
     update_all_charts('graphe_all_bt');
 
@@ -735,6 +736,11 @@ if (!$readonly) {
 	Dom.addListener(Dom.id('nav_menu_bt'), Dom.Event.ON_CLICK, function(event) { el('nav_menu').style.top = "-150px"; toogleCN('nav_menu', 'on'); });
 
     <? } ?>
+
+
+    
+    <? } ?>
+
 
     Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
         go({
