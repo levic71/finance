@@ -691,7 +691,6 @@ if (!$readonly) {
         rmCN(bt, 'loading');
     }
 
-<? if (false) { ?>
     // Initialisation des graphes
     update_all_charts('graphe_all_bt');
 
@@ -700,8 +699,6 @@ if (!$readonly) {
     <? if (!$readonly) { ?>
 
     getFormValues = function() {
-
-
         alert('toto');
         params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
 
@@ -717,7 +714,6 @@ if (!$readonly) {
     // Listenet sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
         alert('titi');
-
         p = getFormValues();
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p, loading_area: 'main' });
     });
@@ -739,19 +735,13 @@ if (!$readonly) {
     });
 
     // Gestion menu secondaire
-	Dom.addListener(Dom.id('nav_menu_bt'), Dom.Event.ON_CLICK, function(event) { el('nav_menu').style.top = "-150px"; toogleCN('nav_menu', 'on'); });
+	Dom.addListener(Dom.id('nav_menu_bt'), Dom.Event.ON_CLICK, function(event) {
+        el('nav_menu').style.top = "-150px"; toogleCN('nav_menu', 'on');
+    });
 
     <? } ?>
 
-<<<<<<< HEAD
-
-    
-    <? } ?>
-
-
-=======
-    // Listenet sur bt back
->>>>>>> develop
+    // Listener sur bt back
     Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'main' });
     });
