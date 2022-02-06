@@ -65,6 +65,26 @@ h2 { padding: 10px 10px 10px 0px; color: antiquewhite !important; background: li
 h2 > i:not([class*="trash"]), h2 > span > i { color: antiquewhite !important; }
 h2 > i[class*="trash"] { color: black !important; }
 .clearing h2 { background: none; }
+.swal2-container h2 { color: black !important; background: white !important; }
+
+#super_dm_area { 
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: start;
+    align-items: auto;
+    align-content: start
+}
+#super_dm_area:before {
+    display: block;
+    content: "Critères : ";
+    margin: 10px;
+    flex: 999 999 auto;
+}
+#super_dm_area .button {
+    flex: 0 0 auto;
+    margin: 10px;
+}
 
 .sim_page #synthese_bloc2, #simulation_area #synthese_bloc2 {
     display: none;

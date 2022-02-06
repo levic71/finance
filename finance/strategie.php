@@ -34,8 +34,10 @@ if ($action == "upt" || $action == "copy") {
 	
 	if ($row = mysqli_fetch_array($res)) {
 
+		$criteres = array();
+		$t = json_decode($row['data'], true);
 		if ($row['methode'] != 3) {
-			$t = json_decode($row['data'], true);
+
 			$i = 1;
 			foreach($t['quotes'] as $key => $val) {
 				$lst_symbol_strategie[$i] = $key;
@@ -43,6 +45,13 @@ if ($action == "upt" || $action == "copy") {
 			}
 
 			$nb_symbol = count($lst_symbol_strategie);
+
+		} else {
+
+			$t_criteres = explode('|', isset($t['criteres']) ? $t['criteres'] : "");
+			$criteres = count($t_criteres) == 0 ? array() : array_flip($t_criteres);
+			$nb_symbol = 1;
+
 		}
 		
 	} else {
@@ -181,12 +190,12 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 		</div>
 
 		<div id="super_dm_area" class="eight wide column">
-			<div id="super_dm_bt1" class="ui grey submit button">ETF</div>
-			<div id="super_dm_bt2" class="ui grey submit button">EQUITY</div>
-			<div id="super_dm_bt3" class="ui grey submit button">PEA</div>
-			<div id="super_dm_bt4" class="ui grey submit button">EUR</div>
-			<div id="super_dm_bt5" class="ui grey submit button">USD</div>
-			<div id="super_dm_bt6" class="ui grey submit button">> 150M</div>
+			<div id="super_dm_bt1" class="ui <?= isset($criteres['super_dm_bt1']) ? "blue" : "grey" ?> submit button">ETF</div>
+			<div id="super_dm_bt2" class="ui <?= isset($criteres['super_dm_bt2']) ? "blue" : "grey" ?> submit button">EQUITY</div>
+			<div id="super_dm_bt3" class="ui <?= isset($criteres['super_dm_bt3']) ? "blue" : "grey" ?> submit button">PEA</div>
+			<div id="super_dm_bt4" class="ui <?= isset($criteres['super_dm_bt4']) ? "blue" : "grey" ?> submit button">EUR</div>
+			<div id="super_dm_bt5" class="ui <?= isset($criteres['super_dm_bt5']) ? "blue" : "grey" ?> submit button">USD</div>
+			<div id="super_dm_bt6" class="ui <?= isset($criteres['super_dm_bt6']) ? "blue" : "grey" ?> submit button">> 150M</div>
 		</div>
 
 		<div class="sixteen wide column">
@@ -277,13 +286,35 @@ check_form = function() {
 		}
 	}
 
+	if (valof('f_methode') == 3) {
+
+		var criteres = Array();
+		Dom.find('#super_dm_area div').forEach(function(item) {
+			if (isCN(item.id, 'blue')) criteres.push(item.id); 
+		});
+
+		if (criteres.length == 0) {
+			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Sélectionner au moins un critère !' });
+			return false;
+		}
+	}
+
+
 	return true;
 }
 
 get_params_form = function(option) {
 
 	// On recupere les valeurs du formulaire de la strategie
-	params = '?option_sim=' + option + attrs(['strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
+	params = '?action=<?= $action ?>&option_sim=' + option + attrs(['strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7']) + '&f_common='+(valof('f_common') == 0 ? 0 : 1);
+
+	// on recupere les criteres super DM
+	var criteres = '';
+	Dom.find('#super_dm_area div').forEach(function(item) {
+		if (isCN(item.id, 'blue')) criteres += item.id + '|'; 
+	});
+
+	params += '&criteres=' + criteres;
 
 	// On recupere les valeurs du formulaire de la simulation
 	if (valof('backtest_call') == 1)

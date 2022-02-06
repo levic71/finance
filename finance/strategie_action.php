@@ -10,7 +10,7 @@ if (!$sess_context->isUserConnected()) tools::do_redirect("index.php");
 
 $f_common = 0;
 
-foreach(['action', 'f_common', 'strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7'] as $key)
+foreach(['action', 'criteres', 'f_common', 'strategie_id', 'f_name', 'f_methode', 'f_cycle', 'f_nb_symbol_max', 'f_symbol_choice_1', 'f_symbol_choice_pct_1', 'f_symbol_choice_2', 'f_symbol_choice_pct_2', 'f_symbol_choice_3', 'f_symbol_choice_pct_3', 'f_symbol_choice_4', 'f_symbol_choice_pct_4', 'f_symbol_choice_5', 'f_symbol_choice_pct_5', 'f_symbol_choice_6', 'f_symbol_choice_pct_6', 'f_symbol_choice_7', 'f_symbol_choice_pct_7'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 // On force à 0 pour les petits malins qui essaierai de forcer
@@ -19,11 +19,13 @@ if (!$sess_context->isSuperAdmin()) $f_common = 0;
 if ($action != "del") {
     $tab_sym = array();
     foreach(range(1, $f_nb_symbol_max) as $number) {
-        $v1 = "f_symbol_choice_".$number;
-        $v2 = "f_symbol_choice_pct_".$number;
-        $tab_sym[] = '"'.$$v1.'" : '.($f_methode == 1 ? 1 : $$v2);
+        if ($f_methode != 3) {
+            $v1 = "f_symbol_choice_".$number;
+            $v2 = "f_symbol_choice_pct_".$number;
+            $tab_sym[] = '"'.$$v1.'" : '.($f_methode == 1 ? 1 : $$v2);
+        }
     }
-    $data = '{ "quotes" : { '.implode(', ', $tab_sym).' } }';
+    $data = '{ "quotes" : { '.(count($tab_sym) == 0 ? "" : implode(', ', $tab_sym)).' }, "criteres" : "'.$criteres.'" }';
 }
 
 $db = dbc::connect();

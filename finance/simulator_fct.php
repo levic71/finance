@@ -23,12 +23,13 @@ function strategieSimulator($params) {
 
     // Recuperation des actifs de la strategie sous forme de tableau
     $lst_symbols = array();
-    $lst_decode_symbols = json_decode($strategie_data, true);
+    $data_decode = json_decode($strategie_data, true);
 
     // Dans le cas de la methode Super DM prendre tous les actifs selon certains critères (pea, etf, ...)
     if ($strategie_methode == 3) {
 
-        $lst_decode_symbols['quotes'] = array();
+
+        $data_decode['quotes'] = array();
 
         // Recuperation des DM en BD
         $data2 = calc::getIndicatorsLastQuote();
@@ -38,12 +39,12 @@ function strategieSimulator($params) {
 
         foreach($data2['stocks'] as $key => $val)
             if ($val['pea'] == 1 && $val['type'] == 'ETF' && intval($val['actifs']) >= 150) {
-                $lst_decode_symbols['quotes'][$key] = 0;
+                $data_decode['quotes'][$key] = 0;
             }
     }
 
     // Recherche de la plage de donnees communes a tous les actifs
-    foreach($lst_decode_symbols['quotes'] as $key => $val) {
+    foreach($data_decode['quotes'] as $key => $val) {
         $lst_symbols[] = $key;
         $d = calc::getMaxDailyHistoryQuoteDate($key);
         if ($d > $date_start) $date_start = $d;
@@ -84,7 +85,7 @@ function strategieSimulator($params) {
     // Pour la gestion Par Répartition
     $lst_actifs_achetes_pu = array();
     $lst_actifs_achetes_nb = array();
-    foreach($lst_decode_symbols['quotes'] as $key => $val) {
+    foreach($data_decode['quotes'] as $key => $val) {
         $lst_actifs_achetes_pu[$key] = 0;
         $lst_actifs_achetes_nb[$key] = 0;
     }
@@ -313,7 +314,7 @@ function strategieSimulator($params) {
                     $retrait_sum += intval($montant_retrait);
 
                     // Il faut determiner combien de chaque action il faut vendre et les retirer du portfolio pour un montant de montant_retrait
-                    $panier = calc::getAchatActifsDCAInvest($day, $lst_decode_symbols['quotes'], $lst_actifs_achetes_pu, $montant_retrait);
+                    $panier = calc::getAchatActifsDCAInvest($day, $data_decode['quotes'], $lst_actifs_achetes_pu, $montant_retrait);
 
                     // Intégration des ventes au portefeuille
                     foreach($panier["buy"] as $key => $val) {
@@ -329,7 +330,7 @@ function strategieSimulator($params) {
                 } else {
 
                     // Combien on achete de chaque actif en DCA
-                    $panier = calc::getAchatActifsDCAInvest($day, $lst_decode_symbols['quotes'], $lst_actifs_achetes_pu, $cash);
+                    $panier = calc::getAchatActifsDCAInvest($day, $data_decode['quotes'], $lst_actifs_achetes_pu, $cash);
 
                     $nbbuy = [];
                     // Intégration des achats au portefeuille
@@ -349,7 +350,7 @@ function strategieSimulator($params) {
                 }
 
                 $valo_pf = 0;
-                foreach($lst_decode_symbols['quotes'] as $key => $val) { 
+                foreach($data_decode['quotes'] as $key => $val) { 
 
                     // Valorisation de l'actif
                     $valo_actif = $lst_actifs_achetes_nb[$key] * $lst_actifs_achetes_pu[$key];
@@ -473,10 +474,10 @@ function strategieSimulator($params) {
     $perf_pf    = $sum_invest == 0 ? 0 : round(($valo_pf + $cash + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
     $perf_pf_RC = $sum_invest == 0 ? 0 : round(($valo_pf_RC + $cash_RC + $retrait_sum - $sum_invest) * 100 / $sum_invest, 2);
 
-    $ret['lst_decode_symbols'] =  $lst_decode_symbols;
-    $ret['lst_symbols']        =  $lst_symbols;
-    $ret['date_start']         =  $date_start;
-    $ret['date_end']           =  $date_end;
+    $ret['data_decode']  =  $data_decode;
+    $ret['lst_symbols']  =  $lst_symbols;
+    $ret['date_start']   =  $date_start;
+    $ret['date_end']     =  $date_end;
     $ret['valo_pf']      = $valo_pf;
     $ret['sum_invest']   = $sum_invest;
     $ret['perf_pf']      = $perf_pf;

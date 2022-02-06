@@ -324,7 +324,7 @@ class calc {
         return $portfolio;
     } 
 
-    public static function getAchatActifsDCAInvest($day, $lst_decode_symbols, $lst_actifs_achetes_pu, $invest_montant) {
+    public static function getAchatActifsDCAInvest($day, $data_decode_symbols, $lst_actifs_achetes_pu, $invest_montant) {
 
         $ret = array();
 
@@ -332,13 +332,13 @@ class calc {
         $ret['buy'] = array();
         $ret['valo_achats'] = 0;
 
-        foreach($lst_decode_symbols as $key => $val) {
+        foreach($data_decode_symbols as $key => $val) {
 
             // Si on n'a pas d'histo pour cet actif a cette date on passe ...
             if ($lst_actifs_achetes_pu[$key] == 0) continue;
 
             // Montant par actif à posséder
-            $montant2get = floor(intval($invest_montant) * $lst_decode_symbols[$key] / 100);
+            $montant2get = floor(intval($invest_montant) * $data_decode_symbols[$key] / 100);
 
             // Nombre d'actions à acheter
             $nb_actions2buy = 0;
