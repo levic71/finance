@@ -807,6 +807,4 @@ if (!$readonly) {
     // Top de page
     scroll(0,0);
 
-    
-
 </script>
