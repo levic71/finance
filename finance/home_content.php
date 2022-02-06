@@ -400,10 +400,27 @@ Dom.find("#lst_stock tbody tr td:nth-child(12) i").forEach(function(element) {
 
 hide('other_tags');
 
+var row_per_page = 20;
+<? if ($sess_context->isUserConnected()) { ?>
+	if (getCookie('home_stock_row_per_page') != "") row_per_page = getCookie('home_stock_row_per_page');
+<? } ?>
+
+memRowPerPage = function() {
+	Dom.find("#lst_stock_box select").forEach(function(element) {
+		Dom.addListener(element, Dom.Event.ON_CHANGE, function(event) {
+			var nb = 20;
+			for (i=0; i < element.length; i++) if (element[i].selected) nb = element[i].value;
+			setCookie('home_stock_row_per_page', nb, 10000);
+		});
+	});
+}
+
 paginator({
   table: document.getElementById("lst_stock"),
   box: document.getElementById("lst_stock_box"),
-  rows_per_page: 20
+  rows_per_page: row_per_page,
+  tail_call: memRowPerPage
 });
+
 
 </script>

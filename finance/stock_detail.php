@@ -699,7 +699,6 @@ if (!$readonly) {
     <? if (!$readonly) { ?>
 
     getFormValues = function() {
-        alert('toto');
         params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
 
         var tags = '';
@@ -713,7 +712,6 @@ if (!$readonly) {
 
     // Listenet sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
-        alert('titi');
         p = getFormValues();
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p, loading_area: 'main' });
     });
