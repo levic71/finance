@@ -438,6 +438,14 @@ if (!$readonly) {
         'M': { 'ALL': 0, '3Y': 36,  '1Y': 12,  '1T': 3 }
     };
 
+    var mm_bts = {
+        'graphe_mm7_bt'   : 'MM7',
+        'graphe_mm20_bt'  : 'MM20',
+        'graphe_mm50_bt'  : 'MM50',
+        'graphe_mm200_bt' : 'MM200',
+        'graphe_volume_bt': 'VOLUME'
+    };
+
     // Couleurs des MMX
     var mmx_colors = { 'MM7': '<?= $sess_context->getSpectreColor(4) ?>', 'MM20': '<?= $sess_context->getSpectreColor(2) ?>', 'MM50': '<?= $sess_context->getSpectreColor(1) ?>', 'MM200': '<?= $sess_context->getSpectreColor(6) ?>' };
 
@@ -689,13 +697,12 @@ if (!$readonly) {
 
     var p = loadPrompt();
 
-
-
-
     <? if (!$readonly) { ?>
 
     getFormValues = function() {
 
+
+        alert('toto');
         params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
 
         var tags = '';
@@ -707,39 +714,28 @@ if (!$readonly) {
         return params;
     }
 
+    // Listenet sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
+        alert('titi');
+
         p = getFormValues();
-        go({
-            action: 'update',
-            id: 'main',
-            url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p,
-            loading_area: 'main'
-        });
+        go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p, loading_area: 'main' });
     });
+    
+    // Listenet sur bt synchronisation
     Dom.addListener(Dom.id('stock_sync_bt'), Dom.Event.ON_CLICK, function(event) {
         p = getFormValues();
-        go({
-            action: 'update',
-            id: 'main',
-            url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>' + p,
-            loading_area: 'main'
-        });
+        go({ action: 'update', id: 'main', url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>' + p, loading_area: 'main' });
     });
+
+    // Listenet sur indicators
     Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({
-            action: 'update',
-            id: 'main',
-            url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>',
-            loading_area: 'main'
-        });
+        go({ action: 'update', id: 'main', url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>', loading_area: 'main' });
     });
+
+    // Listenet sur bt reload
     Dom.addListener(Dom.id('stock_reload_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({
-            action: 'update',
-            id: 'main',
-            url: 'stock_action.php?action=reload&symbol=<?= $symbol ?>',
-            loading_area: 'main'
-        });
+        go({ action: 'update', id: 'main', url: 'stock_action.php?action=reload&symbol=<?= $symbol ?>', loading_area: 'main' });
     });
 
     // Gestion menu secondaire
@@ -747,58 +743,33 @@ if (!$readonly) {
 
     <? } ?>
 
+<<<<<<< HEAD
 
     
     <? } ?>
 
 
+=======
+    // Listenet sur bt back
+>>>>>>> develop
     Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({
-            action: 'home',
-            id: 'main',
-            url: 'home_content.php',
-            loading_area: 'main'
+        go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'main' });
+    });
+
+    // Listener sur bt MMX et volume
+    Object.entries(mm_bts).forEach(([key, val]) => {
+        Dom.addListener(Dom.id(key), Dom.Event.ON_CLICK, function(event) {
+            toogleMMX(myChart1, val);
         });
     });
 
-    Dom.addListener(Dom.id('graphe_mm7_bt'), Dom.Event.ON_CLICK, function(event) {
-        toogleMMX(myChart1, 'MM7');
-    });
-    Dom.addListener(Dom.id('graphe_mm20_bt'), Dom.Event.ON_CLICK, function(event) {
-        toogleMMX(myChart1, 'MM20');
-    });
-    Dom.addListener(Dom.id('graphe_mm50_bt'), Dom.Event.ON_CLICK, function(event) {
-        toogleMMX(myChart1, 'MM50');
-    });
-    Dom.addListener(Dom.id('graphe_mm200_bt'), Dom.Event.ON_CLICK, function(event) {
-        toogleMMX(myChart1, 'MM200');
-    });
-    Dom.addListener(Dom.id('graphe_volume_bt'), Dom.Event.ON_CLICK, function(event) {
-        toogleMMX(myChart1, 'VOLUME');
+    // Listenet sur bt 1T, 1Y, 3Y, ALL, D, W, M
+    ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt', 'graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((item) => {
+        Dom.addListener(Dom.id(item), Dom.Event.ON_CLICK, function(event) {
+            update_all_charts(item);
+        });
     });
 
-    Dom.addListener(Dom.id('graphe_all_bt'), Dom.Event.ON_CLICK, function(event) {
-        update_all_charts('graphe_all_bt');
-    });
-    Dom.addListener(Dom.id('graphe_3Y_bt'), Dom.Event.ON_CLICK, function(event) {
-        update_all_charts('graphe_3Y_bt');
-    });
-    Dom.addListener(Dom.id('graphe_1Y_bt'), Dom.Event.ON_CLICK, function(event) {
-        update_all_charts('graphe_1Y_bt');
-    });
-    Dom.addListener(Dom.id('graphe_1T_bt'), Dom.Event.ON_CLICK, function(event) {
-        update_all_charts('graphe_1T_bt');
-    });
-
-    Dom.addListener(Dom.id('graphe_D_bt'), Dom.Event.ON_CLICK, function(event) {
-        update_all_charts('graphe_D_bt');
-    });
-    Dom.addListener(Dom.id('graphe_W_bt'), Dom.Event.ON_CLICK, function(event) {
-        update_all_charts('graphe_W_bt');
-    });
-    Dom.addListener(Dom.id('graphe_M_bt'), Dom.Event.ON_CLICK, function(event) {
-        update_all_charts('graphe_M_bt');
-    });
     /* Dom.addListener(Dom.id('graphe_L_bt'),  Dom.Event.ON_CLICK, function(event) {
         if (isCN('graphe_L_bt', 'grey'))
             p.error('Les graphes sont liés (pas encore implémenté)');
@@ -809,13 +780,9 @@ if (!$readonly) {
         switchCN('graphe_L_bt_icon', 'unlink', 'linkify');
     }); */
 
+    // Refresh button
     Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({
-            action: 'stock_detail',
-            id: 'main',
-            url: 'stock_detail.php?symbol=<?= $symbol ?>',
-            loading_area: 'main'
-        });
+        go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
     });
 
     // Changement etat bouttons tags
@@ -831,15 +798,13 @@ if (!$readonly) {
     });
 
     <? if ($sess_context->isSuperAdmin()) { ?>
-        Dom.addListener(Dom.id('stock_delete_bt'), Dom.Event.ON_CLICK, function(event) {
-            go({
-                action: 'delete',
-                id: 'main',
-                url: 'stock_action.php?action=del&symbol=<?= $symbol ?>',
-                loading_area: 'main',
-                confirmdel: 1
-            });
-        });
+    // Listener sur bt delete
+    Dom.addListener(Dom.id('stock_delete_bt'), Dom.Event.ON_CLICK, function(event) {
+        go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol=<?= $symbol ?>', loading_area: 'main', confirmdel: 1 });
+    });
     <? } ?>
+    
+    // Top de page
     scroll(0,0);
+
 </script>
