@@ -527,10 +527,6 @@ if (!$readonly) {
     var new_data_weekly  = [];
     var new_data_monthly = [];
 
-
-
- <?   if (false) { ?>
-
     try {
 <?
     format_data($data_daily,   "daily");
@@ -546,6 +542,8 @@ if (!$readonly) {
     // Current data
     var g_new_data = null;
     var g_days     = null;
+
+    <?   if (false) { ?>
 
     var ctx1 = document.getElementById('stock_canvas1').getContext('2d');
     el("stock_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
