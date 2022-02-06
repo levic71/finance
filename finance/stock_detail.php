@@ -527,35 +527,34 @@ if (!$readonly) {
     var new_data_weekly  = [];
     var new_data_monthly = [];
 
-    try {
 <?
     format_data($data_daily,   "daily");
     format_data($data_weekly,  "weekly");
     format_data($data_monthly, "monthly");
 ?>
 
-    // Ref Day Data
-    var ref_d_days  = [<?= '"' . implode('","', array_column($data_daily["rows"],   "day")) . '"' ?>];
-    var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
-    var ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
+    try {
 
-    // Current data
-    var g_new_data = null;
-    var g_days     = null;
+        // Ref Day Data
+        var ref_d_days  = [<?= '"' . implode('","', array_column($data_daily["rows"],   "day")) . '"' ?>];
+        var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
+        var ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
 
-    <?   if (false) { ?>
+        // Current data
+        var g_new_data = null;
+        var g_days     = null;
 
-    var ctx1 = document.getElementById('stock_canvas1').getContext('2d');
-    el("stock_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
+        var ctx1 = document.getElementById('stock_canvas1').getContext('2d');
+        el("stock_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
 
-    var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
-    el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 90;
+        var ctx2 = document.getElementById('stock_canvas2').getContext('2d');
+        el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 90;
 
-    var ctx3 = document.getElementById('stock_canvas3').getContext('2d');
-    el("stock_canvas3").height = document.body.offsetWidth > 700 ? 50 : 150;
+        var ctx3 = document.getElementById('stock_canvas3').getContext('2d');
+        el("stock_canvas3").height = document.body.offsetWidth > 700 ? 50 : 150;
 
     } catch(e) {
-        alert('Graphe error');
+        alert('Graphe data error');
     }
 
     getMMXKey = function(label) {
@@ -617,17 +616,23 @@ if (!$readonly) {
     }
 
     update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
-        if (c) c.destroy();
-        c = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: lbls,
-                datasets: dtsts
-            },
-            options: opts,
-            plugins: plg
-        });
-        c.update();
+
+        try {
+            if (c) c.destroy();
+            c = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: lbls,
+                    datasets: dtsts
+                },
+                options: opts,
+                plugins: plg
+            });
+            c.update();
+
+        } catch(e) {
+            alert('update_graphe_chart error !')
+        }
 
         return c;
     }
@@ -680,10 +685,6 @@ if (!$readonly) {
 
     // Initialisation des graphes
     update_all_charts('graphe_all_bt');
-
-
-    <? } ?>
-
 
     var p = loadPrompt();
 
