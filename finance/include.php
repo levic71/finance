@@ -808,6 +808,11 @@ class aafinance {
 
         global $dbg, $dbg_data;
 
+        if (tools::isLocalHost()) {
+            ini_set('default_socket_timeout', 300); // 5 Minutes
+            ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        }
+
         $url  = 'https://www.alphavantage.co/query?function='.$function.'&'.$options.'&apikey='.(tools::isLocalHost() ? self::$apikey_local : self::$apikey);
         $json = file_get_contents($url);
         $data = json_decode($json,true);

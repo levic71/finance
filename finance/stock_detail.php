@@ -527,6 +527,7 @@ if (!$readonly) {
     var new_data_weekly  = [];
     var new_data_monthly = [];
 
+    try {
 <?
     format_data($data_daily,   "daily");
     format_data($data_weekly,  "weekly");
@@ -551,6 +552,9 @@ if (!$readonly) {
     var ctx3 = document.getElementById('stock_canvas3').getContext('2d');
     el("stock_canvas3").height = document.body.offsetWidth > 700 ? 50 : 150;
 
+    } catch(e) {
+        alert('Graphe error');
+    }
 
     getMMXKey = function(label) {
         return label == "MM7" ? 'm4' : (label == "MM20" ? 'm3' : (label == "MM50" ? 'm2' : 'm1'));
