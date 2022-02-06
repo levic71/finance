@@ -527,6 +527,10 @@ if (!$readonly) {
     var new_data_weekly  = [];
     var new_data_monthly = [];
 
+
+
+ <?   if (false) { ?>
+
     try {
 <?
     format_data($data_daily,   "daily");
@@ -679,7 +683,14 @@ if (!$readonly) {
     // Initialisation des graphes
     update_all_charts('graphe_all_bt');
 
+
+    <? } ?>
+
+
     var p = loadPrompt();
+
+
+
 
     <? if (!$readonly) { ?>
 
