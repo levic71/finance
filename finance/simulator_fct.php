@@ -1,5 +1,19 @@
 <?
 
+function areCriteresMatching($criteres, $val) {
+    
+    $selected = true;
+
+    if (isset($criteres['super_dm_bt1'])) $selected = $selected && ($val['type']     == 'ETF'    ? true : false);
+    if (isset($criteres['super_dm_bt2'])) $selected = $selected && ($val['type']     == 'Equity' ? true : false);
+    if (isset($criteres['super_dm_bt3'])) $selected = $selected && ($val['pea']      == 1        ? true : false);
+    if (isset($criteres['super_dm_bt4'])) $selected = $selected && ($val['currency'] == 'EUR'    ? true : false);
+    if (isset($criteres['super_dm_bt5'])) $selected = $selected && ($val['currency'] == 'USD'    ? true : false);
+    if (isset($criteres['super_dm_bt6'])) $selected = $selected && ($val['actifs']   >= 150      ? true : false);
+
+    return $selected;
+}
+
 function strategieSimulator($params) {
 
     $use_ampplt   = false;
@@ -28,6 +42,7 @@ function strategieSimulator($params) {
     // Dans le cas de la methode Super DM prendre tous les actifs selon certains critères (pea, etf, ...)
     if ($strategie_methode == 3) {
 
+        $criteres = array_flip(explode('|', $data_decode['criteres']));
 
         $data_decode['quotes'] = array();
 
@@ -38,9 +53,9 @@ function strategieSimulator($params) {
         arsort($data2["perfs"]);
 
         foreach($data2['stocks'] as $key => $val)
-            if ($val['pea'] == 1 && $val['type'] == 'ETF' && intval($val['actifs']) >= 150) {
+            if (areCriteresMatching($criteres, $val))
                 $data_decode['quotes'][$key] = 0;
-            }
+
     }
 
     // Recherche de la plage de donnees communes a tous les actifs
@@ -486,7 +501,6 @@ function strategieSimulator($params) {
     $ret['valo_pf_RC']   = $valo_pf_RC;
     $ret['perf_pf_RC']   = $perf_pf_RC;
     $ret['maxdd_RC']     = $maxdd_RC;
-
 
     $ret['tab_date']    = $tab_date;
     $ret['tab_valo']    = $tab_valo;

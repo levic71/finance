@@ -314,11 +314,9 @@ get_params_form = function(option) {
 		if (isCN(item.id, 'blue')) criteres += item.id + '|'; 
 	});
 
-	params += '&criteres=' + criteres;
-
 	// On recupere les valeurs du formulaire de la simulation
 	if (valof('backtest_call') == 1)
-		params += attrs(['f_delai_retrait', 'f_montant_retrait', 'strategie_id', 'f_capital_init', 'f_invest', 'f_cycle_invest', 'f_date_start', 'f_date_end', 'f_compare_to' ]);
+		params += '&criteres=' + criteres + attrs(['f_delai_retrait', 'f_montant_retrait', 'strategie_id', 'f_capital_init', 'f_invest', 'f_cycle_invest', 'f_date_start', 'f_date_end', 'f_compare_to' ]);
 	else
 		el('backtest_call').value = 1;
 
@@ -337,7 +335,11 @@ Dom.addListener(Dom.id('f_nb_symbol_max'), Dom.Event.ON_CHANGE, function(event) 
 // Listener sur bt zone area super SM
 Dom.find('#super_dm_area div').forEach(function(item) {
 	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
-		switchColorElement(item.id, 'blue', 'grey'); 
+		switchColorElement(item.id, 'blue', 'grey');
+		if (item.id == "super_dm_bt1" && isCN('super_dm_bt1', 'blue')) { replaceCN('super_dm_bt2', 'blue', 'grey'); }
+		if (item.id == "super_dm_bt2" && isCN('super_dm_bt2', 'blue')) { replaceCN('super_dm_bt1', 'blue', 'grey'); }
+		if (item.id == "super_dm_bt4" && isCN('super_dm_bt4', 'blue')) { replaceCN('super_dm_bt5', 'blue', 'grey'); }
+		if (item.id == "super_dm_bt5" && isCN('super_dm_bt5', 'blue')) { replaceCN('super_dm_bt4', 'blue', 'grey'); }
 	});
 });
 

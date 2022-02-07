@@ -72,7 +72,7 @@ class sess_context
 	}
 
 	public function getSpectreColor($i, $transparency = 0.75) {
-		return "rgba(".$this->colors_spectre[$i].", ".$transparency.")";
+		return "rgba(".(isset($this->colors_spectre[$i]) ? $this->colors_spectre[$i] : $this->colors_spectre[0]).", ".$transparency.")";
 	}
 
 	public function getUser() {
