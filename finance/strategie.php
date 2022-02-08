@@ -361,7 +361,7 @@ Dom.addListener(Dom.id('strategie_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_C
 Dom.addListener(Dom.id('strategie_backtest_bt'), Dom.Event.ON_CLICK, function(event) {
 	if (check_form()) {
 		params = get_params_form('backtest', nb_call_backtest);
-		go({ action: 'home', id: 'simulation_area', url: 'simulator.php'+params, no_chg_cn: 1 });
+		go({ action: 'home', id: 'simulation_area', url: 'simulator.php'+params, no_chg_cn: 1, loading_area: 'strategie_backtest_bt' });
 		nb_call_backtest += 1;
 	}
 });

@@ -462,4 +462,8 @@ paginator({
     box: document.getElementById("lst_ordres_nav")
 });
 
+<? if ($option_sim == "backtest") { ?>
+rmCN('strategie_backtest_bt', 'loading');
+<? } ?>
+
 </script>
