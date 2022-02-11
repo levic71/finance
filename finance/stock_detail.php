@@ -562,7 +562,7 @@ if (!$readonly) {
         el("stock_canvas3").height = document.body.offsetWidth > 700 ? 50 : 150;
 
     } catch(e) {
-        alert('Graphe data error');
+        alert('stock_detail.php: Graphe data error' + e);
     }
 
     getMMXKey = function(label) {
@@ -639,7 +639,7 @@ if (!$readonly) {
             c.update();
 
         } catch(e) {
-            alert('update_graphe_chart error !')
+            alert('update_graphe_chart error !' + e);
         }
 
         return c;

@@ -398,9 +398,7 @@ computeLines = function(opt) {
 		actifs_labels.push('None');
 		actifs_bg.push('rgb(200, 200, 200)');
 	} else {
-		[
-			'#118ab2', '#ef476f', '#ffd166', '#06d6a0', '#073b4c'
-		].forEach((item) => { actifs_bg.push(item); });
+		[ '#9b59b6', '#2980b9', '#1abc9c', '#27ae60', '#f1c40f', '#e67e22', '#7d3c98', '#e74c3c' ].forEach((item) => { actifs_bg.push(item); });
 	}
 
 	const data = {

@@ -1,6 +1,6 @@
 var js_debug = true;
 
-error = function(e) { alert(e); }
+error = function(e) { alert('error=' + e); }
 
 isTouch = function() { return ( (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i))  || (navigator.userAgent.match(/Android/i))); }
 isIE8   = function() { return (document.all && document.querySelector && !document.addEventListener); }
