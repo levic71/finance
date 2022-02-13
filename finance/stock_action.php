@@ -21,7 +21,7 @@ if ($symbol == "") tools::do_redirect("index.php");
 $db = dbc::connect();
 
 
-function updateSymbolData($mysymbol, $force = false) {
+function updateSymbolData($mysymbol) {
 
     if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
@@ -30,10 +30,7 @@ function updateSymbolData($mysymbol, $force = false) {
     $ret = cacheData::buildAllCachesSymbol($mysymbol, true);
 
     // Recalcul des indicateurs en fct maj cache
-    if ($force)
-        foreach(['daily', 'weekly', 'monthly'] as $key) $periods[] = strtoupper($key);
-    else
-        foreach(['daily', 'weekly', 'monthly'] as $key) if ($ret[$key]) $periods[] = strtoupper($key);
+    foreach(['daily', 'weekly', 'monthly'] as $key) $periods[] = strtoupper($key);
 
     computeIndicatorsForSymbolWithOptions($mysymbol, array("aggregate" => false, "limited" => $force ? 0 : 1, "periods" => $periods));
 
@@ -69,11 +66,11 @@ if ($action == "add") {
         $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
         $res = dbc::execSql($req);
 
-        updateSymbolData($symbol, true);
+        updateSymbolData($symbol);
 
         logger::info("STOCK", $symbol, "[OK]");
     } else {
-        updateSymbolData($symbol, true);
+        updateSymbolData($symbol);
     }
 }
 

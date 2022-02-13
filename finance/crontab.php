@@ -43,8 +43,9 @@ $req = "SELECT * FROM stocks ORDER BY symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
-    $full_data = false;     // false => COMPACT, true => FULL
-    $limited_computing = 1; // 0 => pas de limite, 1 => on calcule que sur les 300 dernières valeurs
+    $full_data = true;     // false => COMPACT, true => FULL
+    $limited_computing = 0; // 0 => pas de limite, 1 => on calcule que sur les 300 dernières valeurs
+    // bug si 1 ???
 
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
