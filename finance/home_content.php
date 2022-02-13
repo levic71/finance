@@ -77,7 +77,7 @@ $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_cont
 <div id="stocks_box" class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<span><i class="inverted podcast icon"></i>Actifs suivis</span>
+		<span><i class="inverted podcast icon"></i>Screener</span>
 		<div>
 			<button id="lst_filter9_bt" class="mini ui grey button"><i class="ui star grey inverted icon"></i></button>
 			<button id="lst_filter7_bt" class="mini ui grey button">ETF</button>
@@ -312,6 +312,7 @@ filterLstStrategies = function(elt) {
 filterLstAction = function(elt) {
 	if (elt != 'lst_filter6_bt') switchColorElement(elt, 'grey', 'orange');
 	filterLstStocks();
+	setCookie(elt, isCN(elt, 'grey') ? 0 : 1, 1000);
 }
 
 // Listener sur bouton filtre default strategie
@@ -319,13 +320,13 @@ Dom.addListener(Dom.id('strategie_default_bt'),   Dom.Event.ON_CLICK, function(e
 
 // Listener sur les boutons de filte tableau assets
 Dom.addListener(Dom.id('lst_filter1_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
-Dom.addListener(Dom.id('lst_filter2_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter3_bt', 'orange')) switchColorElement('lst_filter3_bt', 'orange', 'grey'); filterLstAction('lst_filter2_bt'); });
-Dom.addListener(Dom.id('lst_filter3_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter2_bt', 'orange')) switchColorElement('lst_filter2_bt', 'orange', 'grey'); filterLstAction('lst_filter3_bt'); });
+Dom.addListener(Dom.id('lst_filter2_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter3_bt', 'orange')) { switchColorElement('lst_filter3_bt', 'orange', 'grey'); setCookie('lst_filter3_bt', 0 , 1000); }; filterLstAction('lst_filter2_bt'); });
+Dom.addListener(Dom.id('lst_filter3_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter2_bt', 'orange')) { switchColorElement('lst_filter2_bt', 'orange', 'grey'); setCookie('lst_filter2_bt', 0 , 1000); }; filterLstAction('lst_filter3_bt'); });
 Dom.addListener(Dom.id('lst_filter4_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter4_bt'); });
 Dom.addListener(Dom.id('lst_filter5_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter5_bt'); });
 Dom.addListener(Dom.id('lst_filter6_bt'), Dom.Event.ON_CLICK, function(event) { toogle('other_tags'); });
-Dom.addListener(Dom.id('lst_filter7_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter8_bt', 'orange')) switchColorElement('lst_filter8_bt', 'orange', 'grey'); filterLstAction('lst_filter7_bt'); });
-Dom.addListener(Dom.id('lst_filter8_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) switchColorElement('lst_filter7_bt', 'orange', 'grey'); filterLstAction('lst_filter8_bt'); });
+Dom.addListener(Dom.id('lst_filter7_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter8_bt', 'orange')) { switchColorElement('lst_filter8_bt', 'orange', 'grey'); setCookie('lst_filter8_bt', 0 , 1000); }; filterLstAction('lst_filter7_bt'); });
+Dom.addListener(Dom.id('lst_filter8_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) { switchColorElement('lst_filter7_bt', 'orange', 'grey'); setCookie('lst_filter7_bt', 0 , 1000); }; filterLstAction('lst_filter8_bt'); });
 Dom.addListener(Dom.id('lst_filter9_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
 
 // Listener sur bouton ajout strategie
@@ -351,13 +352,17 @@ change_wide_menu_state('wide_menu', 'm1_home_bt');
 // Init tri tableau
 Sortable.initTable(el("lst_stock"));
 
-// Init affichage default strategies
+// Init affichage default strategies + bt screener
 addCN("strategie_swiper", "showmine");
 <? if ($sess_context->isSuperAdmin() || !$sess_context->isUserConnected()) { ?>
 	<? if ($sess_context->isUserConnected()) { ?>
+		[ 'lst_filter1_bt', 'lst_filter2_bt', 'lst_filter3_bt', 'lst_filter4_bt', 'lst_filter5_bt', 'lst_filter6_bt', 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter9_bt' ].forEach(function(elt) {
+			if (getCookie(elt) == 1) switchColorElement(elt, 'orange', 'grey');
+		});
 		if (getCookie('strategie_default_bt') != 1) filterLstStrategies('strategie_default_bt');
 	<? } ?>
 	filterLstStrategies('strategie_default_bt');
+	filterLstStocks();
 <? } ?>
 
 // Changement etat bouttons tags
