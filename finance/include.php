@@ -1160,10 +1160,10 @@ class cacheData {
                 if (aafinance::$cache_load && file_exists($file_cache)) {
                     $data = cacheData::readCacheData($file_cache);
                 } else {
-                    if (aafinance::$premium)
+//                    if (aafinance::$premium)
                         $data = aafinance::getMonthlyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                    else
-                        $data = aafinance::getMonthlyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+//                    else
+//                        $data = aafinance::getMonthlyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
                 }
 
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");

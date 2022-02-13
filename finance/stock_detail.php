@@ -714,22 +714,26 @@ if (!$readonly) {
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
         p = getFormValues();
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p, loading_area: 'main' });
+        toogleCN('nav_menu', 'on'); scroll(0,0);
     });
     
     // Listenet sur bt synchronisation
     Dom.addListener(Dom.id('stock_sync_bt'), Dom.Event.ON_CLICK, function(event) {
         p = getFormValues();
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=sync&symbol=<?= $symbol ?>' + p, loading_area: 'main' });
+        toogleCN('nav_menu', 'on'); scroll(0,0);
     });
 
     // Listenet sur indicators
     Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>', loading_area: 'main' });
+        toogleCN('nav_menu', 'on'); scroll(0,0);
     });
 
     // Listenet sur bt reload
     Dom.addListener(Dom.id('stock_reload_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=reload&symbol=<?= $symbol ?>', loading_area: 'main' });
+        toogleCN('nav_menu', 'on'); scroll(0,0);
     });
 
     // Gestion menu secondaire
