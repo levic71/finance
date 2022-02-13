@@ -32,7 +32,7 @@ function updateSymbolData($mysymbol) {
     // Recalcul des indicateurs en fct maj cache
     foreach(['daily', 'weekly', 'monthly'] as $key) $periods[] = strtoupper($key);
 
-    computeIndicatorsForSymbolWithOptions($mysymbol, array("aggregate" => false, "limited" => $force ? 0 : 1, "periods" => $periods));
+    computeIndicatorsForSymbolWithOptions($mysymbol, array("aggregate" => false, "limited" => 0, "periods" => $periods));
 
     // Mise à jour de la cote de l'actif avec la donnée GSheet
     if (isset($values[$mysymbol])) {
