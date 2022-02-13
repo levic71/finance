@@ -1265,7 +1265,7 @@ class cacheData {
         $options = array("weekly" => 0, "monthly" => 0);
 
         // Le samedi on fait les weekly
-        if (date("N") == 6) $options['weekly'] = 1;
+        if (date("N") == 6 || date("N") == 7) $options['weekly'] = 1;
 
         // Le dimanche on fait les monthly
         if (date("N") == 7) $options['monthly'] = 1;
