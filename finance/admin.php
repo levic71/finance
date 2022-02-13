@@ -10,7 +10,7 @@ if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
 $db = dbc::connect();
 
-$nb_lignes = tools::isLocalHost() ? 100 : 200;
+$nb_lignes = tools::isLocalHost() ? 100 : 400;
 
 foreach(['nb_lignes', 'action'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");

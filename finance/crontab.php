@@ -80,6 +80,7 @@ while($row = mysqli_fetch_array($res)) {
 
     } else {
 
+        // Si l'option cache load est positionnee
         if (aafinance::$cache_load) {
             $full_data = true;
             $limited_computing = 0;
@@ -93,8 +94,11 @@ while($row = mysqli_fetch_array($res)) {
             $res2 = dbc::execSql($req2);    
         }
 
+        // On forece à true !!!!
+        $full_data = true;
+
         // Mise a jour des caches : full = false => compact (aucun impact sur le calcul des indicateurs) 
-         $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], $full_data);
+         $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], $fulfyl_data);
 
         if ($ret['weekly'])
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "WEEKLY");

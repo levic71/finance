@@ -398,7 +398,9 @@ computeLines = function(opt) {
 		actifs_labels.push('None');
 		actifs_bg.push('rgb(200, 200, 200)');
 	} else {
-		[ '#9b59b6', '#2980b9', '#1abc9c', '#27ae60', '#f1c40f', '#e67e22', '#7d3c98', '#e74c3c' ].forEach((item) => { actifs_bg.push(item); });
+		var colrs = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'];
+		// var colrs = [ '#9b59b6', '#2980b9', '#1abc9c', '#27ae60', '#f1c40f', '#e67e22', '#7d3c98', '#e74c3c' ];
+		colrs.forEach((item) => { actifs_bg.push(item); });
 	}
 
 	const data = {
