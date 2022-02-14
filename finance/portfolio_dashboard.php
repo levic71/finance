@@ -207,17 +207,17 @@ $lst_orders    = $portfolio_data['orders'];
 					<tbody>
 <?
 				$hide_save_bt = true;
-				foreach($lst_orders as $key => $val) {
+				foreach(array_reverse($lst_orders) as $key => $val) {
 					if ($val['other_name']) $hide_save_bt = false;
 					echo '<tr>
 						<td><i class="inverted long arrow alternate '.($val['action'] >= 0 ? "right green" : "left orange").' icon"></i></td>
 						<td>'.$val['date'].'</td>
 						<td>'.$val['product_name'].'</td>
 						<td class="center aligned">'.uimx::$order_actions[$val['action']].'</td>
-						<td>'.$val['quantity'].'</td>
-						<td>'.sprintf("%.2f", $val['price']).' &euro;</td>
-						<td>'.sprintf("%.2f", $val['quantity'] * $val['price']).' &euro;</td>
-						<td>'.sprintf("%.2f", $val['commission']).' &euro;</td>
+						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>
+						<td data-value="'.$val['price'].'">'.sprintf("%.2f", $val['price']).' &euro;</td>
+						<td data-value="'.sprintf("%.2f", $val['quantity'] * $val['price']).'">'.sprintf("%.2f", $val['quantity'] * $val['price']).' &euro;</td>
+						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;</td>
 						<td class="collapsing">
 							'.($isPortfolioSynthese ? '' : '<i id="order_edit_'.$val['id'].'_bt" class="edit inverted icon"></i>').'
 						</td>
