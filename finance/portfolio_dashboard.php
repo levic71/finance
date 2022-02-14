@@ -380,21 +380,25 @@ computeLines = function(opt) {
 	addCN('perf_ribbon3', perf_ptf2 >= 0 ? "ribbon--green" : "ribbon--red");
 	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf2.toFixed(2) + ' %';
 
+	var nb_actifs = actifs_data.length;
+	if (nb_actifs == 0) {
 
-	if (actifs_data.length == 0) {
 		actifs_data.push(100);
 		actifs_labels.push('None');
 		actifs_bg.push('rgb(200, 200, 200)');
+
 	} else {
 		var colrs = [];
 		// var colrs = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'];
 		// var colrs = [ '#9b59b6', '#2980b9', '#1abc9c', '#27ae60', '#f1c40f', '#e67e22', '#7d3c98', '#e74c3c' ];
+
 		var h = 225;
-		for (var n = 0; n < 10; n++) {
+		for (var n = 0; n < nb_actifs; n++) {
 			var c = new KolorWheel([h, 63, 62]);
 			colrs.push(c.getHex());
-			h += 45;
+			h += Math.round(360 / nb_actifs);
 		}
+
 		colrs.forEach((item) => { actifs_bg.push(item); });
 	}
 
