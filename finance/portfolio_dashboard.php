@@ -153,15 +153,15 @@ $lst_orders    = $portfolio_data['orders'];
 					$pname = $val['other_name'] ? $key : '<button class="tiny ui primary button">'.$key.'</button>';
 					echo '<tr id="tr_item_'.$i.'">
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
-						<td class="right aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
-						<td class="right aligned" id="f_pru_'.$i.'" data-pru="'.sprintf("%.2f", $val['pru']).'">'.sprintf("%.2f", $val['pru']).' &euro;</td>
-						<td class="center aligned"><div class="small ui right labeled input">
+						<td class="right  aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
+						<td class="right  aligned" id="f_pru_'.$i.'" data-pru="'.sprintf("%.2f", $val['pru']).'">'.sprintf("%.2f", $val['pru']).' &euro;</td>
+						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right labeled input">
 							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" />
 							<div class="ui basic label">&euro;</div>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
-						<td id="f_achat_'.$i.'" class="right aligned"></td>
-						<td id="f_valo_'.$i.'"  class="right aligned"></td>
-						<td id="f_poids_'.$i.'"  class="center aligned"></td>
+						<td id="f_achat_'.$i.'"    class="right aligned"></td>
+						<td id="f_valo_'.$i.'"     class="right aligned"></td>
+						<td id="f_poids_'.$i.'"    class="center aligned"></td>
 						<td id="f_perf_pru_'.$i.'" class="center aligned"></td>
 						<td id="f_gain_pru_'.$i.'" class="right aligned"></td>
 					</tr>';
@@ -274,19 +274,6 @@ var options = {
 	}
 ?>
 
-setColTab = function(id, val, opt) {
-	rmCN(id, "aaf-positive");
-	rmCN(id, "aaf-negative");
-	addCN(id, val >= 0 ? "aaf-positive" : "aaf-negative");
-	Dom.id(id).innerHTML = val.toFixed(2) + opt;
-}
-setColTab2 = function(id, val, opt) {
-	rmCN(id, "aaf-positive");
-	rmCN(id, "aaf-negative");
-	addCN(id, val >= 0 ? "aaf-positive" : "aaf-negative");
-	Dom.id(id).innerHTML = val + opt;
-}
-
 computeLines = function(opt) {
 
 	sum_achat = 0;
@@ -316,10 +303,11 @@ computeLines = function(opt) {
 		Dom.id('dividendes').value = Dom.id('dividendes').value.replace("0", dividendes.toFixed(2));
 		Dom.id('retraits_transferts').value = Dom.id('retraits_transferts').value.replace("0x", retraits.toFixed(2));
 		Dom.id('retraits_transferts').value = Dom.id('retraits_transferts').value.replace("0y", transferts.toFixed(2));
-		setColTab('sum_comm', commissions, ' &euro;');
+		setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + ' &euro;');
 		Dom.id('subtitle').innerHTML = ' (<?= $portfolio_data['interval_year'] > 0 ? $portfolio_data['interval_year'].($portfolio_data['interval_year'] > 1 ? " ans " : " an") : "" ?> <?= $portfolio_data['interval_month'] ?> mois)';
 	}
 
+	// On parcours les lignes du tableau positions pour calculer valo, perf, gain, ...
 	Dom.find('#lst_position tbody tr').forEach(function(item) {
 
 		ind = Dom.attribute(item, 'id').split('_')[2];
@@ -337,11 +325,10 @@ computeLines = function(opt) {
 		sum_achat += achat;
 		sum_valo  += valo;
 
-		Dom.id('f_achat_' + ind).innerHTML = achat.toFixed(2) + ' &euro;';
-		Dom.id('f_valo_'  + ind).innerHTML = valo.toFixed(2) + ' &euro;';
-
-		setColTab2('f_perf_pru_' + ind, '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button>', '');
-		setColTab('f_gain_pru_' + ind, gain_pru, ' &euro;');
+		setColNumericTab('f_achat_' + ind, achat, achat.toFixed(2) + ' &euro;');
+		setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
+		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button>');
+		setColNumericTab('f_gain_pru_' + ind, gain_pru, gain_pru.toFixed(2) + ' &euro;');
 
 		if (opt == 'change') {
 			Dom.id('f_pct_jour_'  + ind).innerHTML = 'N/A';
@@ -349,6 +336,7 @@ computeLines = function(opt) {
 		}
 	});
 
+	// On reparcours les lignes du tableau positions pour le % de chaque actif dans le portefeuille
 	Dom.find('#lst_position tbody tr').forEach(function(item) {
 
 		ind = Dom.attribute(item, 'id').split('_')[2];
@@ -358,7 +346,7 @@ computeLines = function(opt) {
 		valo  = parseFloat(nb * price);
 		ratio = getRatio(sum_valo, valo).toFixed(2);
 
-		Dom.id('f_poids_' + ind).innerHTML = Math.round(ratio) + ' %';
+		setColNumericTab('f_poids_' + ind, Math.round(ratio), Math.round(ratio) + ' %');
 
 		actifs_data.push(ratio);
 	});
@@ -369,10 +357,10 @@ computeLines = function(opt) {
 
 	if (actifs_data.length > 0) {
 
-		setColTab('sum_achat', sum_achat, ' &euro;');
-		setColTab('sum_valo',  sum_valo,  ' &euro;');
-		setColTab2('glob_perf', '<button class="tiny ui ' + (glob_perf > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button>', '');
-		setColTab('glob_gain', glob_gain, ' &euro;');
+		setColNumericTab('sum_achat', sum_achat, sum_achat.toFixed(2) + ' &euro;');
+		setColNumericTab('sum_valo',  sum_valo,  sum_valo.toFixed(2)  + ' &euro;');
+		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button>');
+		setColNumericTab('glob_gain', glob_gain, glob_gain.toFixed(2) + ' &euro;');
 
 		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';

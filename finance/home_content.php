@@ -175,12 +175,12 @@ foreach($data2["stocks"] as $key => $val) {
 	
 	echo "
 		<td>".$val['type']."</td>
-		<td>".sprintf("%.2f", $val['frais'])." %</td>
-		<td>".$val['actifs']." M</td>
+		<td data-value=\"".$val['frais']."\">".sprintf("%.2f", $val['frais'])." %</td>
+		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
 		<td><span data-tootik-conf=\"left multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['day'] == date("Y-m-d") ? "grey" : "black")." alternate icon\"></i></a></span></td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
-		<td class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
-		<td class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\" data-value=\"".$val['DM']."\">".sprintf("%.2f", $val['DM'])." %</td>
+		<td data-value=\"".$val['percent']."\" class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
+		<td data-value=\"".$val['DM']."\"      class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['DM'])." %</td>
 	";
 
 	echo "<td><span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span></td>";
