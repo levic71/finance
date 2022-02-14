@@ -126,10 +126,10 @@ $lst_orders    = $portfolio_data['orders'];
 	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
-				<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_position" data-sortable>
+				<table class="ui selectable inverted single line unstackable very compact sortable-theme-minimal table" id="lst_position" data-sortable>
 					<thead><tr>
 						<th class="center aligned">Actif</th>
-						<th class="right aligned">Qté</th>
+						<th class="center aligned">Qté</th>
 						<th class="center aligned">PRU</th>
 						<th class="center aligned">Cotation</th>
 						<th class="right aligned">% jour</th>
