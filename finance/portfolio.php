@@ -11,8 +11,11 @@ foreach([''] as $key)
 
 $db = dbc::connect();
 
-if (!$sess_context->isUserConnected()) {
-	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
+if (!$sess_context->isUserConnected()) { ?>
+<script>
+go({ action: 'login', id: 'toto', url: 'login.php?redirect=1' });
+</script>
+<?
 	exit(0);
 }
 

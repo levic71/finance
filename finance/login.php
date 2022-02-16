@@ -6,7 +6,7 @@ session_start();
 
 include "common.php";
 
-foreach(['f_email'] as $key)
+foreach(['f_email', 'redirect'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 ?>
@@ -61,6 +61,10 @@ foreach(['f_email'] as $key)
 
 	</div>
 </div>
+
+<? if ($redirect == 1) {
+	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
+} ?>
 
 <script>
 	
