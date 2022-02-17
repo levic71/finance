@@ -133,7 +133,7 @@ $lst_orders    = $portfolio_data['orders'];
 						<th class="center aligned">PRU</th>
 						<th class="center aligned">Cotation</th>
 						<th class="right aligned">% jour</th>
-						<th class="right aligned">Achat</th>
+						<th class="center aligned">Stop</th>
 						<th class="right aligned">Valorisation</th>
 						<th class="center aligned">Poids</th>
 						<th class="center aligned">Performance</th>
@@ -158,8 +158,12 @@ $lst_orders    = $portfolio_data['orders'];
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right labeled input">
 							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" />
 							<div class="ui basic label">&euro;</div>
+						</div></td>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
-						<td id="f_achat_'.$i.'"    class="right aligned"></td>
+						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right labeled input">
+							<input id="f_stop_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" />
+							<div class="ui basic label">&euro;</div>
+						</div></td>
 						<td id="f_valo_'.$i.'"     class="right aligned"></td>
 						<td id="f_poids_'.$i.'"    class="center aligned"></td>
 						<td id="f_perf_pru_'.$i.'" class="center aligned"></td>
@@ -325,7 +329,7 @@ computeLines = function(opt) {
 		sum_achat += achat;
 		sum_valo  += valo;
 
-		setColNumericTab('f_achat_' + ind, achat, achat.toFixed(2) + ' &euro;');
+		//setColNumericTab('f_achat_' + ind, achat, achat.toFixed(2) + ' &euro;');
 		setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
 		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button>');
 		setColNumericTab('f_gain_pru_' + ind, gain_pru, gain_pru.toFixed(2) + ' &euro;');

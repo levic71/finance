@@ -308,7 +308,8 @@ class calc {
 
         $portfolio['valo_ptf']   = $valo_ptf + $cash;
         $portfolio['cash']       = $cash;
-        $portfolio['gain_perte'] = $portfolio['valo_ptf'] + $transfert_out - $sum_depot - $transfert_in;
+        // J'enlève les commissions pour etre au plus pres de la réalité
+        $portfolio['gain_perte'] = $portfolio['valo_ptf'] + $transfert_out - $sum_depot - $transfert_in - $sum_commission;
         $portfolio['ampplt']     = $ampplt;
         $portfolio['perf_ptf']   = $ampplt == 0 ? 0 : ($portfolio['gain_perte'] / $ampplt) * 100;
         $portfolio['transfert_in']  = $transfert_in;
