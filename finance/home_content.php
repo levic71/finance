@@ -237,10 +237,6 @@ var swiper = new Swiper(".mySwiper", {
 	}
 });
 
-gotoStockDetail = function(sym) {
-	go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+sym, loading_area: 'main' });
-}
-
 match_tags = function(tags, filters) {
 
 	ret = false;
@@ -381,7 +377,7 @@ Dom.find('button.bt_tags').forEach(function(item) {
 // Listener sur button detail ligne tableau
 Dom.find("#lst_stock tbody tr td:nth-child(1) button").forEach(function(element) {
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
-		gotoStockDetail(element.innerHTML);
+		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+element.innerHTML, loading_area: 'main' });
 	});
 });
 

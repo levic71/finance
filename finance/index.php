@@ -23,9 +23,9 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.3.89";
+$ver = tools::isLocalHost() ? rand() : "1.3.90";
 
-foreach(['action'] as $key)
+foreach(['action', 'goto'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 ?>
@@ -62,7 +62,7 @@ foreach(['action'] as $key)
 		<script>
 		window.onload = function() {
 
-			go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: '' });
+			go({ action: 'home', id: 'main', url: '<?= $goto == "" ? "home_content.php" : $goto.".php" ?>', loading_area: '' <?= $goto == "" ? "" : ", menu: '".($goto == "portfolio" ? "m1_pft_bt" : $goto)."'" ?> });
 
 			Dom.addListener(Dom.id('m1_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
 			Dom.addListener(Dom.id('m2_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { rmCN('sidebar_menu', 'visible'); });
@@ -103,7 +103,7 @@ foreach(['action'] as $key)
 		</script>
     </head>
 
-	<body class="ui fluid inverted segment container">
+	<body class="ui fluid inverted segment container" id="mybody">
 
 	<!-- Sidebar Menu -->
 	<div class="ui vertical inverted sidebar menu" id="sidebar_menu">

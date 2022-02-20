@@ -6,7 +6,7 @@ session_start();
 
 include "common.php";
 
-foreach(['f_email', 'redirect'] as $key)
+foreach(['f_email', 'redirect', 'goto'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 ?>
@@ -124,6 +124,7 @@ foreach(['f_email', 'redirect'] as $key)
 		return true;
 	}
 
+	// Listener bt Sign Up
 	Dom.addListener(Dom.id('login_signup_bt'), Dom.Event.ON_CLICK, function(event) {
 		if (check_form(true)) {
 			params = '?action=signup&'+attrs(['f_email', 'f_pwd']);
@@ -131,9 +132,10 @@ foreach(['f_email', 'redirect'] as $key)
 		}
 	});
 
+	// Listener bt Login
 	Dom.addListener(Dom.id('login_login_bt'), Dom.Event.ON_CLICK, function(event) {
 		if (check_form(false)) {
-			params = '?action=login&'+attrs(['f_email', 'f_pwd']);
+			params = '?action=login&'+attrs(['f_email', 'f_pwd'])+'&goto=<?= $goto ?>';
 			go({ action: 'home', id: 'main', url: 'login_action.php'+params, loading_area: 'login_login_bt' });
 		}
 	});

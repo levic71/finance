@@ -175,6 +175,7 @@ class calc {
         $portfolio['orders']    = array();
         $portfolio['positions'] = array();
 
+        // Récupération des infos du portefeuille
         $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND id=".$id;
         $res = dbc::execSql($req);
         if (!$row = mysqli_fetch_array($res)) {
@@ -183,6 +184,12 @@ class calc {
         }
         $portfolio['infos'] = $row;
 
+        // Récupération des alarmes de l'utilisateur
+        $portfolio['alarms'] = array();
+        $req = "SELECT * FROM alarms WHERE user_id=".$sess_context->getUserId();
+        $res = dbc::execSql($req);
+        while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) $portfolio['alarms'][$row['symbol']."::".$row['type']] = $row;
+        
         // Si portefeuille synthese on fusionne les eventuelles saisies de cotation
         if ($portfolio['infos']['synthese'] == 1) {
             $local_quotes = '';
@@ -209,6 +216,7 @@ class calc {
         $interval_month = 0;
         $today = new DateTime(date("Y-m-d"));
 
+        // Récupération et TRT des ordres passes
         $req = "SELECT * FROM orders WHERE portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $id).") ORDER BY date, datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {

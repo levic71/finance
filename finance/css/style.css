@@ -66,6 +66,7 @@ h2 > i:not([class*="trash"]), h2 > span > i { color: antiquewhite !important; }
 h2 > i[class*="trash"] { color: black !important; }
 .clearing h2 { background: none; }
 .swal2-container h2 { color: black !important; background: white !important; }
+.swal2-container .ui label { text-align: left; }
 
 #super_dm_area { 
     display: flex;
@@ -592,10 +593,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(1) {
     color: deepskyblue;
 }
-#lst_position thead th:nth-child(7),
-#lst_position tfoot td:nth-child(3),
-#lst_position thead th:nth-child(8),
-#lst_position tfoot td:nth-child(4),
 #dca_calc_form tfoot td:nth-child(6),
 #dca_calc_form tfoot td:nth-child(7),
 #dca_calc_form thead tr:nth-child(1) th:nth-child(5),
@@ -604,9 +601,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #dca_calc_form thead tr:nth-child(2) th:nth-child(6) {
     background: rgba(255, 255, 0, 0.05);
 }
-#lst_position tbody td:nth-child(7),
-#lst_position tbody td:nth-child(8),
-#dca_calc_form tbody td:nth-child(7),
 #dca_calc_form tbody td:nth-child(8),
 #dca_calc_form tbody td:nth-child(9) {
     background: rgba(255, 255, 0, 0.1);
@@ -614,10 +608,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
 
 #lst_position thead th:nth-child(8),
 #lst_position tfoot td:nth-child(4) {
-    background: rgba(191, 7, 93, 0.05);
+    background: rgba(0, 255, 221, 0.05);
 }
 #lst_position tbody td:nth-child(8) {
-    background: rgba(191, 7, 93, 0.1);
+    background: rgba(0, 255, 221, 0.1);
 }
 
 #dca_calc_form tfoot td:nth-child(8),
@@ -646,6 +640,14 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 255, 255, 0.3);
     color: white;
 }
+
+#lst_position tbody td:nth-child(6) div:nth-child(1) {
+    z-index: 10; background: rgb(247,143,31); padding: 4px 5px; top: -9px; right: 0px;
+}
+#lst_position tbody td:nth-child(6) div:nth-child(2) {
+    z-index: 10; background: rgb(181 87 87); padding: 4px 5px; top: 13px; right: 2px;
+}
+
 #other_tags [data-tootik][data-tootik-conf*=multiline]:after, .stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {
     min-width: 280px !important;
     line-height: 16px;

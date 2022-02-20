@@ -13,7 +13,7 @@ $db = dbc::connect();
 
 if (!$sess_context->isUserConnected()) { ?>
 <script>
-go({ action: 'login', id: 'main', url: 'login.php?redirect=1' });
+go({ action: 'login', id: 'main', url: 'login.php?redirect=1&goto=portfolio' });
 </script>
 <?
 	exit(0);

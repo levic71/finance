@@ -6,7 +6,7 @@ session_start();
 
 include "common.php";
 
-foreach(['action', 'f_email', 'f_pwd'] as $key)
+foreach(['action', 'f_email', 'f_pwd', 'goto'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -106,7 +106,7 @@ if ($action == "del" && isset($strategie_id) && $strategie_id != "") {
             go({ action: 'home', id: 'main', url: 'login.php?f_email=<?= $f_email ?>' });
             </script>
 <?      } else {
-            tools::do_redirect("index.php");
+            tools::do_redirect("index.php".($goto == "" ? "" : "?goto=".$goto));
         }
     }
 ?>

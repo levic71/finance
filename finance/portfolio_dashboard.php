@@ -48,6 +48,7 @@ if ($t[0] != '') {
 $my_portfolio  = $portfolio_data['infos'];
 $lst_positions = $portfolio_data['positions'];
 $lst_orders    = $portfolio_data['orders'];
+$lst_alarms    = $portfolio_data['alarms'];
 
 ?>
 
@@ -133,9 +134,9 @@ $lst_orders    = $portfolio_data['orders'];
 						<th class="center aligned">PRU</th>
 						<th class="center aligned">Cotation</th>
 						<th class="right aligned">% jour</th>
-						<th class="center aligned">Stop</th>
-						<th class="right aligned">Valorisation</th>
+						<th class="center aligned">Stop/Alerte</th>
 						<th class="center aligned">Poids</th>
+						<th class="right aligned">Valorisation</th>
 						<th class="center aligned">Performance</th>
 						<th class="center aligned">+/-</th>
 					</tr></thead>
@@ -151,6 +152,10 @@ $lst_orders    = $portfolio_data['orders'];
 					$valo  = sprintf("%.2f", $val['nb'] * $quote);
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
 					$pname = $val['other_name'] ? $key : '<button class="tiny ui primary button">'.$key.'</button>';
+
+					$stop_loss   = isset($lst_alarms[$key."::STOP-LOSS"]) ? $lst_alarms[$key."::STOP-LOSS"]['valeur'] : 0;
+					$stop_profit = isset($lst_alarms[$key."::STOP-PROFIT"]) ? $lst_alarms[$key."::STOP-PROFIT"]['valeur'] : 0;
+
 					echo '<tr id="tr_item_'.$i.'">
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
 						<td class="right  aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
@@ -160,12 +165,12 @@ $lst_orders    = $portfolio_data['orders'];
 							<div class="ui basic label">&euro;</div>
 						</div></td>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
-						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right labeled input">
-							<input id="f_stop_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" />
-							<div class="ui basic label">&euro;</div>
+						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
+							<div class="floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
+							<div class="floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
 						</div></td>
-						<td id="f_valo_'.$i.'"     class="right aligned"></td>
 						<td id="f_poids_'.$i.'"    class="center aligned"></td>
+						<td id="f_valo_'.$i.'"     class="right aligned"></td>
 						<td id="f_perf_pru_'.$i.'" class="center aligned"></td>
 						<td id="f_gain_pru_'.$i.'" class="right aligned"></td>
 					</tr>';
@@ -176,8 +181,8 @@ $lst_orders    = $portfolio_data['orders'];
 					<tfoot><tr>
 						<td colspan="5"></th>
 						<td id="sum_achat" class="right aligned"></td>
+						<td class="center aligned"></td>
 						<td id="sum_valo"  class="right aligned"></td>
-						<td class="center aligned">100 %</td>
 						<td id="glob_perf" class="center aligned"></td>
 						<td id="glob_gain" class="right aligned"></td>
 					</tr></tfoot>
@@ -361,7 +366,7 @@ computeLines = function(opt) {
 
 	if (actifs_data.length > 0) {
 
-		setColNumericTab('sum_achat', sum_achat, sum_achat.toFixed(2) + ' &euro;');
+		// setColNumericTab('sum_achat', sum_achat, sum_achat.toFixed(2) + ' &euro;');
 		setColNumericTab('sum_valo',  sum_valo,  sum_valo.toFixed(2)  + ' &euro;');
 		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button>');
 		setColNumericTab('glob_gain', glob_gain, glob_gain.toFixed(2) + ' &euro;');
@@ -458,6 +463,47 @@ hide('order_save_bt');
 
 // Init du calcul
 computeLines('init');
+
+// Listener sur button detail ligne tableau
+Dom.find("#lst_position tbody tr td:nth-child(1) button").forEach(function(element) {
+	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+element.innerHTML, loading_area: 'main' });
+	});
+});
+
+// Listener sur button detail ligne tableau
+Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(element) {
+	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+
+		// Pas tres beau !!!
+		var divs = element.getElementsByTagName("div");
+		var stoploss   = divs[0].innerHTML;
+		var stopprofit = divs[1].innerHTML;
+
+		Swal.fire({
+				title: '',
+				html: '<div class="ui form"><div class="field"><label>Stop loss</label><input type="text"<input id="f_stoploss" class="swal2-input" type="text" placeholder="0.00" value="' + stoploss + '" /><label>Stop Profit</label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" /></div></div>',
+				showCancelButton: true,
+				confirmButtonText: 'Valider',
+				cancelButtonText: 'Annuler',
+				showLoaderOnConfirm: true,
+				preConfirm: () => {
+					// alert(valof('f_stop'));
+					// Swal.showValidationMessage('Erreur saisie');
+				},
+				allowOutsideClick: () => !Swal.isLoading()
+			}).then((result) => {
+				if (result.isConfirmed) {
+					var symbol = Dom.attribute(element, 'data-pname');
+					var params = attrs([ 'f_stoploss', 'f_stopprofit' ]) + '&symbol=' + symbol;
+					go({ action: 'main', id: 'main', url: 'alarm_action.php?action=stops&' + params, no_data: 1 });
+					divs[0].innerHTML = valof('f_stoploss');
+					divs[1].innerHTML = valof('f_stopprofit');
+					Swal.fire('Données modifiées');
+				}
+			});
+	});
+});
 
 // Tri sur tableau
 Sortable.initTable(el("lst_position"));
