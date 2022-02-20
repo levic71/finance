@@ -647,6 +647,9 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(6) div:nth-child(2) {
     z-index: 10; background: rgb(181 87 87); padding: 4px 5px; top: 13px; right: 2px;
 }
+#lst_position tbody td:nth-child(6) div.grey {
+    background: rgb(87, 87, 87); color: rgb(48, 48, 48);
+}
 
 #other_tags [data-tootik][data-tootik-conf*=multiline]:after, .stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {
     min-width: 280px !important;

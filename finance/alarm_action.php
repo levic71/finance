@@ -15,10 +15,10 @@ $db = dbc::connect();
 
 if ($action == "stops") {
 
-    $req = "INSERT INTO alarms (user_id, symbol, type, date, valeur) VALUES (".$sess_context->getUserId().", '".$symbol."', 'STOP-LOSS', now(), '".$f_stop."') ON DUPLICATE KEY UPDATE date=now(), valeur='".$f_stoploss."'";
+    $req = "INSERT INTO alarms (user_id, symbol, type, date, valeur) VALUES (".$sess_context->getUserId().", '".$symbol."', 'STOP-LOSS', now(), '".sprintf("%2.f", $f_stoploss)."') ON DUPLICATE KEY UPDATE date=now(), valeur='".sprintf("%2.f", $f_stoploss)."'";
     $res = dbc::execSql($req);
 
-    $req = "INSERT INTO alarms (user_id, symbol, type, date, valeur) VALUES (".$sess_context->getUserId().", '".$symbol."', 'STOP-PROFIT', now(), '".$f_stop."') ON DUPLICATE KEY UPDATE date=now(), valeur='".$f_stopprofit."'";
+    $req = "INSERT INTO alarms (user_id, symbol, type, date, valeur) VALUES (".$sess_context->getUserId().", '".$symbol."', 'STOP-PROFIT', now(), '".sprintf("%2.f", $f_stopprofit)."') ON DUPLICATE KEY UPDATE date=now(), valeur='".sprintf("%2.f", $f_stopprofit)."'";
     $res = dbc::execSql($req);
 
 }

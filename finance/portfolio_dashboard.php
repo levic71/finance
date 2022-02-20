@@ -166,8 +166,8 @@ $lst_alarms    = $portfolio_data['alarms'];
 						</div></td>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
-							<div class="floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
-							<div class="floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
+							<div class="'.(intval($stop_loss) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
+							<div class="'.(intval($stop_loss) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
 						</div></td>
 						<td id="f_poids_'.$i.'"    class="center aligned"></td>
 						<td id="f_valo_'.$i.'"     class="right aligned"></td>
@@ -487,13 +487,11 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 				confirmButtonText: 'Valider',
 				cancelButtonText: 'Annuler',
 				showLoaderOnConfirm: true,
-				preConfirm: () => {
-					// alert(valof('f_stop'));
-					// Swal.showValidationMessage('Erreur saisie');
-				},
 				allowOutsideClick: () => !Swal.isLoading()
 			}).then((result) => {
 				if (result.isConfirmed) {
+					if (!check_num(valof('f_stoploss'), 'Stop loss', 0, 999999)) return false;
+					if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) return false;
 					var symbol = Dom.attribute(element, 'data-pname');
 					var params = attrs([ 'f_stoploss', 'f_stopprofit' ]) + '&symbol=' + symbol;
 					go({ action: 'main', id: 'main', url: 'alarm_action.php?action=stops&' + params, no_data: 1 });
