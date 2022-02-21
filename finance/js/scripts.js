@@ -189,10 +189,10 @@ setInputValueAndKeepLastCar = function(id, str) {
 	Dom.id(id).value = str + " " + Dom.id(id).value.substring(Dom.id(id).value.length - 1);
 }
 
-setColNumericTab = function(id, val, innerHTML) {
+setColNumericTab = function(id, val, innerHTML, colored = true) {
 	rmCN(id, "aaf-positive");
 	rmCN(id, "aaf-negative");
-	addCN(id, val >= 0 ? "aaf-positive" : "aaf-negative");
+	if (colored) addCN(id, val >= 0 ? "aaf-positive" : "aaf-negative");
 	Dom.id(id).innerHTML = innerHTML;
 	Dom.attribute(Dom.id(id), { 'data-value': val.toFixed(2) } );
 }

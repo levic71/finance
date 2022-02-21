@@ -135,15 +135,17 @@ $lst_alarms    = $portfolio_data['alarms'];
 						<th class="center aligned">Cotation</th>
 						<th class="right aligned">% jour</th>
 						<th class="center aligned">Stop/Alerte</th>
+						<th class="center aligned">DM</th>
+						<th class="center aligned">Tendance</th>
 						<th class="center aligned">Poids</th>
 						<th class="right aligned">Valorisation</th>
 						<th class="center aligned">Performance</th>
-						<th class="center aligned">+/-</th>
 					</tr></thead>
 					<tbody>
 	<?
 				$i = 1;
 				foreach($lst_positions as $key => $val) {
+
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
 					// Si on n'a pas la cotation en base on prend le pru
 					$quote_from_pru = isset($quotes['stocks'][$key]['price']) && !isset($save_quotes[$key]) ? false : true;
@@ -156,6 +158,9 @@ $lst_alarms    = $portfolio_data['alarms'];
 					$stop_loss   = isset($lst_alarms[$key."::STOP-LOSS"]) ? $lst_alarms[$key."::STOP-LOSS"]['valeur'] : 0;
 					$stop_profit = isset($lst_alarms[$key."::STOP-PROFIT"]) ? $lst_alarms[$key."::STOP-PROFIT"]['valeur'] : 0;
 
+					$perf_indicator = calc::getPerfIndicator($quotes['stocks'][$key]);
+					$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
+
 					echo '<tr id="tr_item_'.$i.'">
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
 						<td class="right  aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
@@ -166,25 +171,25 @@ $lst_alarms    = $portfolio_data['alarms'];
 						</div></td>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
-							<div class="'.(intval($stop_loss) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
+							<div data-tootik="toto" class="'.(intval($stop_loss) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
 							<div class="'.(intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
 						</div></td>
+						<td id="f_dm_'.$i.'"       class="center aligned '.($quotes['stocks'][$key]['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$quotes['stocks'][$key]['DM'].' %</td>
+						<td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
 						<td id="f_poids_'.$i.'"    class="center aligned"></td>
 						<td id="f_valo_'.$i.'"     class="right aligned"></td>
 						<td id="f_perf_pru_'.$i.'" class="center aligned"></td>
-						<td id="f_gain_pru_'.$i.'" class="right aligned"></td>
 					</tr>';
 					$i++;
 				}
 	?>
 					</tbody>
 					<tfoot><tr>
-						<td colspan="5"></th>
+						<td colspan="7"></th>
 						<td id="sum_achat" class="right aligned"></td>
 						<td class="center aligned"></td>
 						<td id="sum_valo"  class="right aligned"></td>
 						<td id="glob_perf" class="center aligned"></td>
-						<td id="glob_gain" class="right aligned"></td>
 					</tr></tfoot>
 				</table>
 			</div>
@@ -336,8 +341,8 @@ computeLines = function(opt) {
 
 		//setColNumericTab('f_achat_' + ind, achat, achat.toFixed(2) + ' &euro;');
 		setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
-		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button>');
-		setColNumericTab('f_gain_pru_' + ind, gain_pru, gain_pru.toFixed(2) + ' &euro;');
+		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru > 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label>');
+		//setColNumericTab('f_gain_pru_' + ind, gain_pru, gain_pru.toFixed(2) + ' &euro;');
 
 		if (opt == 'change') {
 			Dom.id('f_pct_jour_'  + ind).innerHTML = 'N/A';
@@ -355,7 +360,7 @@ computeLines = function(opt) {
 		valo  = parseFloat(nb * price);
 		ratio = getRatio(sum_valo, valo).toFixed(2);
 
-		setColNumericTab('f_poids_' + ind, Math.round(ratio), Math.round(ratio) + ' %');
+		setColNumericTab('f_poids_' + ind, Math.round(ratio), Math.round(ratio) + ' %', false);
 
 		actifs_data.push(ratio);
 	});
@@ -368,8 +373,8 @@ computeLines = function(opt) {
 
 		// setColNumericTab('sum_achat', sum_achat, sum_achat.toFixed(2) + ' &euro;');
 		setColNumericTab('sum_valo',  sum_valo,  sum_valo.toFixed(2)  + ' &euro;');
-		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button>');
-		setColNumericTab('glob_gain', glob_gain, glob_gain.toFixed(2) + ' &euro;');
+		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button><label>' + (glob_gain > 0 ? '+' : '') + glob_gain.toFixed(2) + ' &euro;</label>');
+		// setColNumericTab('glob_gain', glob_gain, glob_gain.toFixed(2) + ' &euro;');
 
 		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';

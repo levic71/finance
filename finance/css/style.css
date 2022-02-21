@@ -606,14 +606,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 255, 0, 0.1);
 }
 
-#lst_position thead th:nth-child(8),
-#lst_position tfoot td:nth-child(4) {
-    background: rgba(0, 255, 221, 0.05);
-}
-#lst_position tbody td:nth-child(8) {
-    background: rgba(0, 255, 221, 0.1);
-}
-
 #dca_calc_form tfoot td:nth-child(8),
 #dca_calc_form tfoot td:nth-child(9),
 #dca_calc_form thead tr:nth-child(1) th:nth-child(6),
@@ -629,10 +621,14 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(0, 0, 255, 0.1);
     display: none;
 }
-#lst_position thead th:nth-child(9), #lst_position thead th:nth-child(10) {
+
+#lst_position tfoot td:nth-child(4) {
+    background: rgba(0, 255, 221, 0.05);
+}
+#lst_position thead th:nth-child(10) {
     background:rgba(12, 158, 195, 0.05);
 }
-#lst_position tbody td:nth-child(9), #lst_position tfoot td:nth-child(5), #lst_position tbody td:nth-child(10), #lst_position tfoot td:nth-child(6) {
+#lst_position tbody td:nth-child(10), #lst_position tfoot td:nth-child(6) {
     background: rgba(12, 158, 195, 0.1);
 }
 #lst_position tbody td:nth-child(4) input, #lst_position tbody td:nth-child(4) .label,
@@ -640,7 +636,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 255, 255, 0.3);
     color: white;
 }
-
 #lst_position tbody td:nth-child(6) div:nth-child(1) {
     z-index: 10; background: rgb(247,143,31); padding: 4px 5px; top: -9px; right: 0px;
 }
@@ -649,6 +644,17 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 #lst_position tbody td:nth-child(6) div.grey {
     background: rgb(87, 87, 87); color: rgb(48, 48, 48);
+}
+#lst_position td:nth-child(11), #lst_position tfoot td:nth-child(5) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#lst_position td:nth-child(11) button, #lst_position tfoot td:nth-child(5) button {
+    padding: 5px 10px;
+}
+#lst_position td:nth-child(11) label, #lst_position tfoot td:nth-child(5) label {
+    font-size: 11px;
 }
 
 #other_tags [data-tootik][data-tootik-conf*=multiline]:after, .stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {
