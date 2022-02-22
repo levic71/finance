@@ -31,6 +31,8 @@ $quotes = calc::getIndicatorsLastQuote();
 // Calcul synthese portefeuille
 $portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
 
+var_dump($portfolio_data);
+
 // Portfolio synthese ?
 $isPortfolioSynthese = $portfolio_data['infos']['synthese'] == 1 ? true : false;
 
@@ -146,11 +148,14 @@ $lst_alarms    = $portfolio_data['alarms'];
 				$i = 1;
 				foreach($lst_positions as $key => $val) {
 
+					// Infos sur actif courant
+					$qs = $quotes['stocks'][$key];
+
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
 					// Si on n'a pas la cotation en base on prend le pru
-					$quote_from_pru = isset($quotes['stocks'][$key]['price']) && !isset($save_quotes[$key]) ? false : true;
-					$quote = $quote_from_pru ? (isset($save_quotes[$key]) ? $save_quotes[$key] : $val['pru']) : $quotes['stocks'][$key]['price'];
-					$pct   = isset($quotes['stocks'][$key]['percent']) ? $quotes['stocks'][$key]['percent'] : 0;
+					$quote_from_pru = isset($qs[$key]['price']) && !isset($save_quotes[$key]) ? false : true;
+					$quote = $quote_from_pru ? (isset($save_quotes[$key]) ? $save_quotes[$key] : $val['pru']) : $qs['price'];
+					$pct   = isset($qs['percent']) ? $qs['percent'] : 0;
 					$valo  = sprintf("%.2f", $val['nb'] * $quote);
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
 					$pname = $val['other_name'] ? $key : '<button class="tiny ui primary button">'.$key.'</button>';
@@ -158,7 +163,7 @@ $lst_alarms    = $portfolio_data['alarms'];
 					$stop_loss   = isset($lst_alarms[$key."::STOP-LOSS"]) ? $lst_alarms[$key."::STOP-LOSS"]['valeur'] : 0;
 					$stop_profit = isset($lst_alarms[$key."::STOP-PROFIT"]) ? $lst_alarms[$key."::STOP-PROFIT"]['valeur'] : 0;
 
-					$perf_indicator = calc::getPerfIndicator($quotes['stocks'][$key]);
+					$perf_indicator = calc::getPerfIndicator($qs);
 					$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
 
 					echo '<tr id="tr_item_'.$i.'">
@@ -171,10 +176,10 @@ $lst_alarms    = $portfolio_data['alarms'];
 						</div></td>
 						<td id="f_pct_jour_'.$i.'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
-							<div data-tootik="toto" class="'.(intval($stop_loss) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
+							<div class="'.(intval($stop_loss) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
 							<div class="'.(intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
 						</div></td>
-						<td id="f_dm_'.$i.'"       class="center aligned '.($quotes['stocks'][$key]['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$quotes['stocks'][$key]['DM'].' %</td>
+						<td id="f_dm_'.$i.'"       class="center aligned '.($qs['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$qs['DM'].' %</td>
 						<td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
 						<td id="f_poids_'.$i.'"    class="center aligned"></td>
 						<td id="f_valo_'.$i.'"     class="right aligned"></td>
