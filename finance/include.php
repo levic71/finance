@@ -178,7 +178,7 @@ class calc {
         // Récupération des infos du portefeuille
         $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND id=".$id;
         $res = dbc::execSql($req);
-        if (!$row = mysqli_fetch_array($res)) {
+        if (!$row = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
             uimx::staticInfoMsg("Bad data !", "alarm", "red");
             exit(0);
         }

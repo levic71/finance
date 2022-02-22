@@ -31,8 +31,6 @@ $quotes = calc::getIndicatorsLastQuote();
 // Calcul synthese portefeuille
 $portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
 
-var_dump($portfolio_data);
-
 // Portfolio synthese ?
 $isPortfolioSynthese = $portfolio_data['infos']['synthese'] == 1 ? true : false;
 
