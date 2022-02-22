@@ -184,11 +184,11 @@ class calc {
         }
         $portfolio['infos'] = $row;
 
-        // Récupération des alarmes de l'utilisateur
-        $portfolio['alarms'] = array();
-        $req = "SELECT * FROM alarms WHERE user_id=".$sess_context->getUserId();
+        // Récupération des données de trend_following de l'utilisateur
+        $portfolio['trend_following'] = array();
+        $req = "SELECT * FROM trend_following WHERE user_id=".$sess_context->getUserId();
         $res = dbc::execSql($req);
-        while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) $portfolio['alarms'][$row['symbol']."::".$row['type']] = $row;
+        while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) $portfolio['trend_following'][$row['symbol']] = $row;
         
         // Si portefeuille synthese on fusionne les eventuelles saisies de cotation
         if ($portfolio['infos']['synthese'] == 1) {

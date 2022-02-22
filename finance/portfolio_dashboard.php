@@ -32,7 +32,9 @@ $quotes = calc::getIndicatorsLastQuote();
 $portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
 
 // Portfolio synthese ?
-$isPortfolioSynthese = $portfolio_data['infos']['synthese'] == 1 ? true : false;
+$isPortfolioSynthese = $portfolio_data['infos']['synthese'];
+
+echo $isPortfolioSynthese;
 
 // On recupere les eventuelles saisies de cotation manuelles
 $save_quotes = array();
@@ -48,7 +50,7 @@ if ($t[0] != '') {
 $my_portfolio  = $portfolio_data['infos'];
 $lst_positions = $portfolio_data['positions'];
 $lst_orders    = $portfolio_data['orders'];
-$lst_alarms    = $portfolio_data['alarms'];
+$lst_trend_following = $portfolio_data['trend_following'];
 
 ?>
 
@@ -158,8 +160,8 @@ $lst_alarms    = $portfolio_data['alarms'];
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
 					$pname = $val['other_name'] ? $key : '<button class="tiny ui primary button">'.$key.'</button>';
 
-					$stop_loss   = isset($lst_alarms[$key."::STOP-LOSS"]) ? $lst_alarms[$key."::STOP-LOSS"]['valeur'] : 0;
-					$stop_profit = isset($lst_alarms[$key."::STOP-PROFIT"]) ? $lst_alarms[$key."::STOP-PROFIT"]['valeur'] : 0;
+					$stop_loss   = isset($lst_trend_following[$key]['stop_loss'])   ? $lst_trend_following[$key]['stop_loss']   : 0;
+					$stop_profit = isset($lst_trend_following[$key]['stop_profit']) ? $lst_trend_following[$key]['stop_profit'] : 0;
 
 					$perf_indicator = calc::getPerfIndicator($qs);
 					$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
@@ -502,7 +504,7 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 					if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) return false;
 					var symbol = Dom.attribute(element, 'data-pname');
 					var params = attrs([ 'f_stoploss', 'f_stopprofit' ]) + '&symbol=' + symbol;
-					go({ action: 'main', id: 'main', url: 'alarm_action.php?action=stops&' + params, no_data: 1 });
+					go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=stops&' + params, no_data: 1 });
 					divs[0].innerHTML = valof('f_stoploss');
 					divs[1].innerHTML = valof('f_stopprofit');
 					Swal.fire('Données modifiées');
