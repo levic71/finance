@@ -184,6 +184,8 @@ class calc {
         }
         $portfolio['infos'] = $row;
 
+        var_dump($portfolio['infos']);
+
         // Récupération des alarmes de l'utilisateur
         $portfolio['alarms'] = array();
         $req = "SELECT * FROM alarms WHERE user_id=".$sess_context->getUserId();
