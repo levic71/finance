@@ -151,7 +151,7 @@ $lst_alarms    = $portfolio_data['alarms'];
 
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
 					// Si on n'a pas la cotation en base on prend le pru
-					$quote_from_pru = isset($qs[$key]['price']) && !isset($save_quotes[$key]) ? false : true;
+					$quote_from_pru = isset($qs['price']) && !isset($save_quotes[$key]) ? false : true;
 					$quote = $quote_from_pru ? (isset($save_quotes[$key]) ? $save_quotes[$key] : $val['pru']) : $qs['price'];
 					$pct   = isset($qs['percent']) ? $qs['percent'] : 0;
 					$valo  = sprintf("%.2f", $val['nb'] * $quote);
@@ -344,7 +344,7 @@ computeLines = function(opt) {
 
 		//setColNumericTab('f_achat_' + ind, achat, achat.toFixed(2) + ' &euro;');
 		setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
-		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<button class="tiny ui ' + (perf_pru > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru > 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label>');
+		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label>');
 		//setColNumericTab('f_gain_pru_' + ind, gain_pru, gain_pru.toFixed(2) + ' &euro;');
 
 		if (opt == 'change') {
@@ -376,7 +376,7 @@ computeLines = function(opt) {
 
 		// setColNumericTab('sum_achat', sum_achat, sum_achat.toFixed(2) + ' &euro;');
 		setColNumericTab('sum_valo',  sum_valo,  sum_valo.toFixed(2)  + ' &euro;');
-		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf > 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button><label>' + (glob_gain > 0 ? '+' : '') + glob_gain.toFixed(2) + ' &euro;</label>');
+		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + ' &euro;</label>');
 		// setColNumericTab('glob_gain', glob_gain, glob_gain.toFixed(2) + ' &euro;');
 
 		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
