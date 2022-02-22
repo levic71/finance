@@ -32,9 +32,7 @@ $quotes = calc::getIndicatorsLastQuote();
 $portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
 
 // Portfolio synthese ?
-$isPortfolioSynthese = $portfolio_data['infos']['synthese'];
-
-echo $isPortfolioSynthese;
+$isPortfolioSynthese = $portfolio_data['infos']['synthese'] == 1 ? true : false;
 
 // On recupere les eventuelles saisies de cotation manuelles
 $save_quotes = array();
@@ -122,9 +120,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	<div class="ui hidden divider"></div>
 
 	<h2 class="ui left floated"><i class="inverted location arrow icon"></i>Positions
-		<? if ($isPortfolioSynthese != 1) { ?>
 		<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i></button>
-		<? } ?>
 	</h2>
 	<div class="ui stackable column grid">
       	<div class="row">
