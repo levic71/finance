@@ -122,7 +122,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	<div class="ui hidden divider"></div>
 
 	<h2 class="ui left floated"><i class="inverted location arrow icon"></i>Positions
-		<? if ($isPortfolioSynthese == 0) { ?>
+		<? if ($isPortfolioSynthese != 1) { ?>
 		<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i></button>
 		<? } ?>
 	</h2>
