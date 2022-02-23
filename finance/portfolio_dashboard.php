@@ -127,9 +127,9 @@ $lst_trend_following = $portfolio_data['trend_following'];
 			<div class="column">
 				<table class="ui selectable inverted single line unstackable very compact sortable-theme-minimal table" id="lst_position" data-sortable>
 					<thead><tr>
+						<th class="center aligned"></th>
 						<th class="center aligned">Actif</th>
-						<th class="center aligned">Qté</th>
-						<th class="center aligned">PRU</th>
+						<th class="center aligned">PRU/Qté</th>
 						<th class="center aligned">Cotation</th>
 						<th class="right aligned">% jour</th>
 						<th class="center aligned">Stop/Alerte</th>
@@ -141,8 +141,11 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					</tr></thead>
 					<tbody>
 	<?
+				$hide_save_bt = true;
 				$i = 1;
 				foreach($lst_positions as $key => $val) {
+
+					if ($val['other_name']) $hide_save_bt = false;
 
 					// Infos sur actif courant
 					$qs = $quotes['stocks'][$key];
@@ -162,10 +165,17 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					$perf_indicator = calc::getPerfIndicator($qs);
 					$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
 
+					$tooltip = "Entreprise";
+
+					$icon = "copyright outline";
+					$icon_tag = "bt_filter_SEC_99999";
+				
 					echo '<tr id="tr_item_'.$i.'">
+						<td data-value="'.$icon_tag.'" data-tootik="'.$tooltip.'" class="center align collapsing">
+							<i data-secteur="'.$icon_tag.'" class="inverted grey '.$icon.' icon"></i>
+						</td>
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
-						<td class="right  aligned" id="f_nb_'.$i.'">'.$val['nb'].'</td>
-						<td class="right  aligned" id="f_pru_'.$i.'" data-pru="'.sprintf("%.2f", $val['pru']).'">'.sprintf("%.2f", $val['pru']).' &euro;</td>
+						<td class="right  aligned" id="f_pru_'.$i.'" data-nb="'.$val['nb'].'" data-pru="'.sprintf("%.2f", $val['pru']).'"><button class="tiny ui button">'.sprintf("%.2f", $val['pru']).' &euro;</button><label>'.$val['nb'].'</label></td>
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right labeled input">
 							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" />
 							<div class="ui basic label">&euro;</div>
@@ -221,9 +231,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					</tr></thead>
 					<tbody>
 <?
-				$hide_save_bt = true;
 				foreach(array_reverse($lst_orders) as $key => $val) {
-					if ($val['other_name']) $hide_save_bt = false;
 					echo '<tr>
 						<td><i class="inverted long arrow alternate '.($val['action'] >= 0 ? "right green" : "left orange").' icon"></i></td>
 						<td>'.$val['date'].'</td>
@@ -330,7 +338,7 @@ computeLines = function(opt) {
 		actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
 		pru      = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-pru'));
 		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'value'));
-		nb       = parseFloat(el('f_nb_' + ind).innerHTML);
+		nb       = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-nb'));
 		achat    = parseFloat(nb * pru);
 		valo     = parseFloat(nb * price);
 		perf_pru = parseFloat(getPerf(pru, price));
@@ -357,7 +365,7 @@ computeLines = function(opt) {
 		ind = Dom.attribute(item, 'id').split('_')[2];
 
 		price = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'value'));
-		nb    = parseFloat(el('f_nb_' + ind).innerHTML);
+		nb    = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-nb'));
 		valo  = parseFloat(nb * price);
 		ratio = getRatio(sum_valo, valo).toFixed(2);
 
@@ -460,10 +468,6 @@ Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 	});
 	go({ action: 'order', id: 'main', url: 'order_action.php?action=save&portfolio_id=<?= $portfolio_id ?>&quotes=' + quotes, no_data: 1, msg: 'Portfolio sauvegardé' });
 });
-
-<? if ($hide_save_bt) { ?>
-hide('order_save_bt');
-<? } ?>
 
 <? } ?>
 

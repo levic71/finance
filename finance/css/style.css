@@ -645,15 +645,15 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(6) div.grey {
     background: rgb(87, 87, 87); color: rgb(48, 48, 48);
 }
-#lst_position td:nth-child(11), #lst_position tfoot td:nth-child(5) {
+#lst_position td:nth-child(3), #lst_position td:nth-child(11), #lst_position tfoot td:nth-child(5) {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-#lst_position td:nth-child(11) button, #lst_position tfoot td:nth-child(5) button {
+#lst_position td:nth-child(3) button, #lst_position td:nth-child(11) button, #lst_position tfoot td:nth-child(5) button {
     padding: 5px 10px;
 }
-#lst_position td:nth-child(11) label, #lst_position tfoot td:nth-child(5) label {
+#lst_position td:nth-child(3) label, #lst_position td:nth-child(11) label, #lst_position tfoot td:nth-child(5) label {
     font-size: 11px;
 }
 
