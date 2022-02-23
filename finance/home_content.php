@@ -148,19 +148,7 @@ foreach($data2["stocks"] as $key => $val) {
 	$cache_filename = "cache/QUOTE_".$symbol.".json";
 	$cache_timestamp = file_exists($cache_filename) ? date("Y-m-d", filemtime($cache_filename)) : "xxxx-xx-xx";
 
-	$tags = array_flip(explode("|", utf8_decode($val['tags'])));
-	$tooltip = "Entreprise";
-
-	$icon = "copyright outline";
-	$icon_tag = "bt_filter_SEC_99999";
-	foreach(uimx::$invest_secteur as $key2 => $val2) {
-		if (isset($tags[$val2['tag']])) {
-			$icon     = $val2['icon'];
-			$tooltip  = $val2['tag'];
-			$icon_tag = "bt_filter_SEC_".$key2;
-		}
-	}
-	if ($tooltip == "Entreprise") $val['tags'] .= "|Entreprise";
+	$tags_infos = uimx::getIconTooltipTag($val['tags']);
 
 	$curr  = $val['currency'] == "EUR" ? "&euro;" : "$";
 	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : "EQY")." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
@@ -169,7 +157,7 @@ foreach($data2["stocks"] as $key => $val) {
 
 	echo "
 		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
-		<td data-value=\"".$icon_tag."\" data-tootik=\"".$tooltip."\" class=\"collapsing\"><i data-secteur=\"".$icon_tag."\" class=\"inverted grey ".$icon." icon\"></i></td>
+		<td data-value=\"".$tags_infos['icon_tag']."\" data-tootik=\"".$tags_infos['tooltip']."\" class=\"collapsing\"><i data-secteur=\"".$tags_infos['icon_tag']."\" class=\"inverted grey ".$tags_infos['icon']." icon\"></i></td>
 		<td>".utf8_decode($val['name'])."</td>
 	";
 	

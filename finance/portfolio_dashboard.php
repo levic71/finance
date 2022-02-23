@@ -169,10 +169,12 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 					$icon = "copyright outline";
 					$icon_tag = "bt_filter_SEC_99999";
+
+					$tags_infos = uimx::getIconTooltipTag($qs['tags']);
 				
 					echo '<tr id="tr_item_'.$i.'">
-						<td data-value="'.$icon_tag.'" data-tootik="'.$tooltip.'" class="center align collapsing">
-							<i data-secteur="'.$icon_tag.'" class="inverted grey '.$icon.' icon"></i>
+						<td data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
+							<i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
 						</td>
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
 						<td class="right  aligned" id="f_pru_'.$i.'" data-nb="'.$val['nb'].'" data-pru="'.sprintf("%.2f", $val['pru']).'"><button class="tiny ui button">'.sprintf("%.2f", $val['pru']).' &euro;</button><label>'.$val['nb'].'</label></td>

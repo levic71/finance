@@ -1445,8 +1445,36 @@ class uimx {
         9 => "Baissier prix sous moyenne mobile 200"
     ];
 
+    public static function getIconTooltipTag(&$tags) {
+
+        $ret = array();
+
+        $tab_tags = array_flip(explode("|", utf8_decode($tags)));
+
+        // default values
+        $tooltip = "Entreprise";
+        $icon = "copyright outline";
+        $icon_tag = "bt_filter_SEC_99999";
+
+        foreach(uimx::$invest_secteur as $key => $val) {
+            if (isset($tab_tags[$val['tag']])) {
+                $icon     = $val['icon'];
+                $tooltip  = $val['tag'];
+                $icon_tag = "bt_filter_SEC_".$key;
+            }
+        }
+
+        if ($tooltip == "Entreprise") $tags .= "|Entreprise";
+
+        $ret['icon'] = $icon;
+        $ret['icon_tag'] = $icon_tag;
+        $ret['tooltip'] = $tooltip;
+
+        return $ret;
+    }
+
     public static function staticInfoMsg($msg, $icon, $color) {
-?>
+            ?>
         <div class="ui icon <?= $color ?> message">
         <i class="<?= $icon ?> <?= $color ?> inverted icon"></i>
         <div class="content">
