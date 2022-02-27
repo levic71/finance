@@ -129,10 +129,10 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					<thead><tr>
 						<th class="center aligned"></th>
 						<th class="center aligned">Actif</th>
-						<th class="center aligned">PRU/Qté</th>
-						<th class="center aligned">Cotation</th>
-						<th class="right aligned">% jour</th>
-						<th class="center aligned">Stop/Alerte</th>
+						<th class="center aligned">PRU<br />Qté</th>
+						<th class="center aligned">Cotation<br />%</th>
+						<th class="center aligned">MM7<br />MM200</th>
+						<th class="center aligned">Stop<br />Alerte</th>
 						<th class="center aligned">DM</th>
 						<th class="center aligned">Tendance</th>
 						<th class="center aligned">Poids</th>
@@ -176,17 +176,29 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
 							<i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
 						</td>
+
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
-						<td class="right  aligned" id="f_pru_'.$i.'" data-nb="'.$val['nb'].'" data-pru="'.sprintf("%.2f", $val['pru']).'"><button class="tiny ui button">'.sprintf("%.2f", $val['pru']).' &euro;</button><label>'.$val['nb'].'</label></td>
-						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right labeled input">
-							<input id="f_price_'.$i.'" type="text" class="align_right" size="4" value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" />
-							<div class="ui basic label">&euro;</div>
+
+						<td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$val['nb'].'" data-pru="'.sprintf("%.2f", $val['pru']).'"><div>
+							<button class="tiny ui button">'.sprintf("%.2f", $val['pru']).' &euro;</button>
+							<label>'.$val['nb'].'</label>
 						</div></td>
-						<td id="f_pct_jour_'.$i.'" data-value="'.sprintf("%.2f", $pct).'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</td>
+
+						<td class="center aligned" data-value="'.$quote.'"><div>
+							<button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f", $quote).' &euro;</button>
+							<label class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
+						</div></td>
+					
+						<td id="f_pct_jour_'.$i.'" data-value="'.sprintf("%.2f", $pct).'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'"><div>
+							<button class="tiny ui button">'.sprintf("%.2f", $qs['MM7']).' &euro;</button>
+							<button class="tiny ui button">'.sprintf("%.2f", $qs['MM200']).' &euro;</button>
+						</div></td>
+
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
-							<div class="'.(intval($stop_loss) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
+							<div class="'.(intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
 							<div class="'.(intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
 						</div></td>
+
 						<td id="f_dm_'.$i.'"       class="center aligned '.($qs['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$qs['DM'].' %</td>
 						<td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
 						<td id="f_poids_'.$i.'"    class="center aligned"></td>
@@ -339,7 +351,7 @@ computeLines = function(opt) {
 
 		actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
 		pru      = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-pru'));
-		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'value'));
+		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
 		nb       = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-nb'));
 		achat    = parseFloat(nb * pru);
 		valo     = parseFloat(nb * price);
@@ -352,7 +364,7 @@ computeLines = function(opt) {
 
 		//setColNumericTab('f_achat_' + ind, achat, achat.toFixed(2) + ' &euro;');
 		setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
-		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label>');
+		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label></div>');
 		//setColNumericTab('f_gain_pru_' + ind, gain_pru, gain_pru.toFixed(2) + ' &euro;');
 
 		if (opt == 'change') {
@@ -366,7 +378,7 @@ computeLines = function(opt) {
 
 		ind = Dom.attribute(item, 'id').split('_')[2];
 
-		price = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'value'));
+		price = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
 		nb    = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-nb'));
 		valo  = parseFloat(nb * price);
 		ratio = getRatio(sum_valo, valo).toFixed(2);
