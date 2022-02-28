@@ -1456,7 +1456,7 @@ class uimx {
     public static function getRedGreenColr($x, $y) {
 
         $colr = 6;
-        $ratio = ((($x - $y) * 100) / $y);
+        $ratio = ((($y - $x) * 100) / $x);
     
         if ($ratio >= 20)
             $colr = 1;
@@ -1468,7 +1468,7 @@ class uimx {
             $colr = 4;
         else if ($ratio >= -20)
             $colr = 5;
-        else if ($ratio < -20)
+        else if ($ratio >= 20)
             $colr = 6;
         
         return uimx::$redgreen_colrs[$colr];
