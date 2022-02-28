@@ -190,8 +190,8 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						</div></td>
 					
 						<td class="center aligned"><div>
-							<button class="tiny ui button '.($qs['MM7']   >= $quote ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $qs['MM7']).' &euro;</button>
-							<button class="tiny ui button '.($qs['MM200'] >= $quote ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $qs['MM200']).' &euro;</button>
+							<button class="tiny ui button '.($qs['MM7']   < $quote ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $qs['MM7']).' &euro;</button>
+							<button class="tiny ui button '.($qs['MM200'] < $quote ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $qs['MM200']).' &euro;</button>
 						</div></td>
 
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
