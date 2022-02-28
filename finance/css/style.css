@@ -1,5 +1,5 @@
-td.aaf-positive { color: rgb(97, 194, 97) !important; }
-td.aaf-negative { color: rgb(247, 95, 90) !important; }
+td.aaf-positive, label.aaf-positive { color: rgb(97, 194, 97) !important; }
+td.aaf-negative, label.aaf-negative { color: rgb(247, 95, 90) !important; }
 button.aaf-positive { background: rgb(97, 194, 97) !important; color: white !important; }
 button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
 .icon_action { padding: 11px !important; }
@@ -625,6 +625,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
     display: none;
 }
 
+#lst_position th {
+    font-size: 12px;
+    line-height: 12px;
+}
 #lst_position tfoot td:nth-child(4) {
     background: rgba(0, 255, 221, 0.05);
 }
@@ -639,24 +643,34 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 255, 255, 0.3);
     color: white;
 }
+#lst_position tbody td:nth-child(5) button {
+    margin-bottom: 2px;
+    font-size: 11px;
+}
 #lst_position tbody td:nth-child(6) div:nth-child(1) {
-    z-index: 10; background: rgb(247,143,31); padding: 4px 10px; top: -9px; right: 0px;
+    z-index: 10; background: rgb(247,143,31); padding: 4px 10px; top: -9px; right: 3px;
 }
 #lst_position tbody td:nth-child(6) div:nth-child(2) {
-    z-index: 10; background: rgb(181 87 87); padding: 4px 10px; top: 13px; right: 2px;
+    z-index: 10; background: rgb(181 87 87); padding: 4px 10px; top: 13px; right: 5px;
+}
+#lst_position tbody td:nth-child(4) button {
+    background: black; color: grey;
 }
 #lst_position tbody td:nth-child(6) div.grey {
     background: rgb(87, 87, 87); color: rgb(48, 48, 48);
 }
-#lst_position tbody td:nth-child(3), #lst_position td:nth-child(11), #lst_position tfoot td:nth-child(5) {
+#lst_position tbody td:nth-child(3) div, #lst_position tbody td:nth-child(4) div, #lst_position tbody td:nth-child(5) div, #lst_position td:nth-child(11) div, #lst_position tfoot td:nth-child(5) {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-#lst_position tbody td:nth-child(3) button, #lst_position td:nth-child(11) button, #lst_position tfoot td:nth-child(5) button {
+#lst_position tbody td:nth-child(3) button, #lst_position tbody td:nth-child(4) button, #lst_position tbody td:nth-child(5) button, #lst_position td:nth-child(11) button, #lst_position tfoot td:nth-child(5) button {
     padding: 5px 10px;
 }
-#lst_position tbody td:nth-child(3) label, #lst_position td:nth-child(11) label, #lst_position tfoot td:nth-child(5) label {
+#lst_position tbody td:nth-child(4) button {   
+    border: 1px solid grey;
+}
+#lst_position tbody td:nth-child(3) label, #lst_position tbody td:nth-child(4) label, #lst_position tbody td:nth-child(5) label, #lst_position td:nth-child(11) label, #lst_position tfoot td:nth-child(5) label {
     font-size: 11px;
 }
 
