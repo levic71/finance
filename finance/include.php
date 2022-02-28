@@ -1341,6 +1341,14 @@ class logger {
 //
 class uimx {
 
+    public static $redgreen_colrs = [
+        1 => "#62BD18",
+        2 => "#8DDD00",
+        3 => "#A3EE3F",
+        4 => "#FFCE00",
+        5 => "#FF7200",
+        6 => "#FC3D31"
+    ];
     public static $invest_cycle        = [ 1 => [ "tip" => "Mensuel", "colr" => "orange" ], 3 => [ "tip" => "Trimestriel", "colr" => "green" ], 6 => [ "tip" => "Semestriel", "colr" => "yellow" ], 12 => [ "tip" => "Annuel", "colr" => "purple" ] ];
     public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA', 3 => 'Super Dual Momemtum' ];
     public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes', 3 => 'paper plane' ];
@@ -1444,6 +1452,28 @@ class uimx {
         8 => "Rebond technique",
         9 => "Baissier prix sous moyenne mobile 200"
     ];
+
+    public static function getRedGreenColr($x, $y) {
+
+        $colr = 6;
+        $ratio = ((($x - $y) * 100) / $y);
+    
+        if ($ratio >= 20)
+            $colr = 1;
+        else if ($ratio >= 10)
+            $colr = 2;
+        else if ($ratio >= 0)
+            $colr = 3;
+        else if ($ratio >= -10)
+            $colr = 4;
+        else if ($ratio >= -20)
+            $colr = 5;
+        else if ($ratio < -20)
+            $colr = 6;
+        
+        return uimx::$redgreen_colrs[$colr];
+            
+    }
 
     public static function getIconTooltipTag(&$tags) {
 
