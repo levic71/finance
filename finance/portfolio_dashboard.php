@@ -184,7 +184,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 							<label>'.$val['nb'].'</label>
 						</div></td>
 
-						<td class="center aligned" data-value="'.$quote.'"><div>
+						<td class="center aligned" data-value="'.$pct.'"><div>
 							<button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f", $quote).' &euro;</button>
 							<label class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
 						</div></td>
