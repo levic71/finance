@@ -129,14 +129,14 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					<thead><tr>
 						<th class="center aligned"></th>
 						<th class="center aligned">Actif</th>
-						<th class="center aligned">PRU<br />Qté</th>
+						<th class="center aligned" data-sortable="false">PRU<br />Qté</th>
 						<th class="center aligned">Cotation<br />%</th>
-						<th class="center aligned">MM7<br />MM200</th>
-						<th class="center aligned">Stop<br />Alerte</th>
+						<th class="center aligned" data-sortable="false">MM7<br />MM200</th>
+						<th class="center aligned" data-sortable="false">Stop<br />Alerte</th>
 						<th class="center aligned">DM</th>
 						<th class="center aligned">Tendance</th>
 						<th class="center aligned">Poids</th>
-						<th class="right aligned">Valorisation</th>
+						<th class="right  aligned">Valorisation</th>
 						<th class="center aligned">Performance</th>
 					</tr></thead>
 					<tbody>
@@ -186,12 +186,12 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 						<td class="center aligned" data-value="'.$pct.'"><div>
 							<button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f", $quote).' &euro;</button>
-							<label class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
+							<label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
 						</div></td>
 					
-						<td id="f_pct_jour_'.$i.'" data-value="'.sprintf("%.2f", $pct).'" class="align_right '.($pct >= 0 ? "aaf-positive" : "aaf-negative").'"><div>
-							<button class="tiny ui button">'.sprintf("%.2f", $qs['MM7']).' &euro;</button>
-							<button class="tiny ui button">'.sprintf("%.2f", $qs['MM200']).' &euro;</button>
+						<td class="center aligned"><div>
+							<button class="tiny ui button '.($qs['MM7']   >= $quote ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $qs['MM7']).' &euro;</button>
+							<button class="tiny ui button '.($qs['MM200'] >= $quote ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $qs['MM200']).' &euro;</button>
 						</div></td>
 
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
