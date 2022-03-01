@@ -1364,7 +1364,6 @@ class uimx {
         3  => [ "tag" => "Eolien",   "icon" => "recycle", "desc" => "" ],
         4  => [ "tag" => "Solaire",  "icon" => "sun",     "desc" => "" ]
     ];
-
     public static $invest_secteur = [
         0  => [ "tag" => "Services financiers", "icon" => "university", "desc" => "Se compose essentiellement de banques, de caisses d'épargne et de crédit, de compagnies d'assurance ainsi que de sociétés de fonds communs de placement." ],
         1  => [ "tag" => "Énergie",             "icon" => "fire", "desc" => "Constitué d'entreprises exerçant des activités d'exploration, de production, de commercialisation, de raffinage et de transport des produits du pétrole et du gaz. Ce secteur comprend aussi des sociétés qui prennent part au domaine des services liés à l'énergie." ],
@@ -1378,7 +1377,6 @@ class uimx {
         9  => [ "tag" => "Santé",               "icon" => "first aid", "desc" => "Comprend des entreprises qui fabriquent du matériel et des fournitures de soins de santé ou offrent des services de soins de santé. Il inclut aussi des sociétés qui se consacrent principalement à la recherche, au développement, à la production ainsi qu'à la commercialisation de produits pharmaceutiques et biotechnologiques." ],
         10 => [ "tag" => "Immobilier",          "icon" => "building outline", "desc" => "" ]
     ];
-
     public static $invest_zone_geo = [
         0  => [ "tag" => "Monde",            "desc" => "" ],
         1  => [ "tag" => "Amérique du Nord", "desc" => "" ],
@@ -1426,7 +1424,6 @@ class uimx {
          5 => "Transfert IN",
         -5 => "Transfert OUT"
     ];
-
     public static $perf_indicator_colrs = [
         0 => "black",
         1 => "purple",
@@ -1439,7 +1436,6 @@ class uimx {
         8 => "orange",
         9 => "red"
     ];
-
     public static $perf_indicator_libs = [
         0 => "N/A",
         1 => "Consolidation",
