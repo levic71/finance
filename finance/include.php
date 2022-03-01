@@ -1337,7 +1337,7 @@ class logger {
 
 
 //
-// Log
+// UIMX
 //
 class uimx {
 
