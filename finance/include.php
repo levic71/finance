@@ -147,6 +147,23 @@ class dbc {
         $res = mysqli_query(self::$link, $requete) or die("Error on request : " . $requete);
         return $res;
     }
+
+    public static function addColTable($table, $column, $requete)
+    {
+        $ret = 0;
+
+        $req = "SELECT count(*) total FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '".$table."' AND column_name LIKE '".$column."'";
+        $res = dbc::execSql($req);
+        $row = mysqli_fetch_assoc($res);
+
+        if ($row['total'] == 0) {
+            $res = dbc::execSql($requete);
+            echo $requete." OK";
+            $ret = 1;
+        }
+
+        return $ret;
+    }
 }
 
 //

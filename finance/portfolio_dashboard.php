@@ -18,6 +18,8 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
+$ret = dbc::addColTable("orders", "confirme", "ALTER TABLE `orders` ADD `confirme` INT NOT NULL DEFAULT '1' AFTER `datetime`");
+
 // Recuperation des infos du portefeuille
 $req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
