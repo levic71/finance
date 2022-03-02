@@ -26,13 +26,14 @@ if ($action == "upt") {
     $res = dbc::execSql($req);
     if (!$row = mysqli_fetch_assoc($res)) exit(0);
 } else {
-    $row['date'] = date('Y-m-d');
-    $row['id'] = 0;
+    $row['date']         = date('Y-m-d');
+    $row['id']           = 0;
     $row['product_name'] = "Cash";
-    $row['action'] = 0;
-    $row['quantity'] = 0;
-    $row['price'] = 0;
-    $row['commission'] = 0;
+    $row['action']       = 0;
+    $row['quantity']     = 0;
+    $row['price']        = 0;
+    $row['commission']   = 0;
+    $row['confirme']     = 1;
 }
 
 // Recuperation de tous les actifs
@@ -98,6 +99,13 @@ $quotes = calc::getIndicatorsLastQuote();
                 <i class="inverted black euro icon"></i>
             </div>
         </div>
+        <div class="field">
+            <label>Confirmé</label>
+            <div class="ui toggle inverted checkbox" onclick="toogleCheckBox('f_confirme');">
+                <input type="checkbox" id="f_confirme" <?= $row['confirme'] == 1 ? 'checked="checked' : '' ?> tabindex="0" class="hidden">
+                <label></label>
+            </div>
+        </div>
     </div>
 
     <div class="ui grid">
@@ -143,7 +151,7 @@ Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK
     item = Dom.id('f_product_name');
     n = item.options[item.selectedIndex].value;
 
-    params = '?action=<?= $action ?>&'+attrs(['order_id', 'portfolio_id', 'f_date', 'f_action', 'f_quantity', 'f_price', 'f_commission' ]);
+    params = '?action=<?= $action ?>&'+attrs(['order_id', 'portfolio_id', 'f_date', 'f_action', 'f_quantity', 'f_price', 'f_commission' ]) + '&f_confirme='+(valof('f_confirme') == 0 ? 0 : 1);
     params += '&f_product_name=' + (n == 'AUTRE' ? 'AUTRE:' + encodeURIComponent(valof('f_other_name')) : encodeURIComponent(valof('f_product_name')));
 
 	go({ action: 'order', id: 'main', url: 'order_action.php'+params, loading_area: 'main' });

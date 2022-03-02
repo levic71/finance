@@ -258,6 +258,9 @@ class calc {
 
             // Tableau des ordres
             $portfolio['orders'][] = $row;
+
+            // Si ordre non confirme
+            if ($row['confirme'] == 0) continue;
             
             // Achat/Vente
             if ($row['action'] == 1 || $row['action'] == -1) {

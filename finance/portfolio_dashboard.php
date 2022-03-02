@@ -244,6 +244,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<th>Total</th>
 						<th>Comm</th>
 						<th></th>
+						<th></th>
 					</tr></thead>
 					<tbody>
 <?
@@ -257,6 +258,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td data-value="'.$val['price'].'">'.sprintf("%.2f", $val['price']).' &euro;</td>
 						<td data-value="'.sprintf("%.2f", $val['quantity'] * $val['price']).'">'.sprintf("%.2f", $val['quantity'] * $val['price']).' &euro;</td>
 						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;</td>
+						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
 						<td class="collapsing">
 							'.($isPortfolioSynthese ? '' : '<i id="order_edit_'.$val['id'].'_bt" class="edit inverted icon"></i>').'
 						</td>
