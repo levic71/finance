@@ -37,9 +37,6 @@ $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 
-// Recuperation de tous les actifs
-$quotes = calc::getIndicatorsLastQuote();
-
 ?>
 
 <div class="ui container inverted">
@@ -63,7 +60,7 @@ $quotes = calc::getIndicatorsLastQuote();
 <?
 			foreach($lst_portfolios as $key => $val) {
 				// Calcul synthese portefeuille
-				$portfolio_data = calc::aggregatePortfolio($val['id'], $quotes);
+				$portfolio_data = calc::aggregatePortfolioById($val['id']);
 				uimx::portfolioCard($val, $portfolio_data);
 			}
 ?>

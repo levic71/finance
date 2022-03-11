@@ -34,16 +34,22 @@ while($row = mysqli_fetch_assoc($res)) {
 // Initialistaion des data du formulaire
 if ($f_portfolio_id != 0) {
 
-    $req = "SELECT * FROM portfolios WHERE id=".$f_portfolio_id;
-    $res = dbc::execSql($req);
-    if ($row = mysqli_fetch_assoc($res)) {
-        $f_strategie_id    = $row['strategie_id'];
-        $portfolio_name    = $row['name'];
-        $strategie_defined = $f_strategie_id == 0 ? false : true;
-        $portfolio_actif   = true;
-    }
+    if ($sess_context->isUserConnected()) {
+        $req = "SELECT * FROM portfolios WHERE id=".$f_portfolio_id;
+        $res = dbc::execSql($req);
+        if ($row = mysqli_fetch_assoc($res)) {
+            $f_strategie_id    = $row['strategie_id'];
+            $portfolio_name    = $row['name'];
+            $strategie_defined = $f_strategie_id == 0 ? false : true;
+            $portfolio_actif   = true;
+        }
 
-    $portfolio_data = calc::aggregatePortfolio($f_portfolio_id);
+        $portfolio_data = calc::aggregatePortfolioById($f_portfolio_id);
+    }
+    else {
+        echo "Bad data !!!";
+        exit(0);
+    }
 
 }
 

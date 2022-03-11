@@ -1,3 +1,47 @@
+const vertical = {
+    id: 'vertical',
+    beforeDraw(chart, args, options) {
+        const {
+            ctx,
+            chartArea: { top, right, bottom, left, width, height },
+            scales: { x, y1 },
+        } = chart;
+
+        ctx.save();
+
+        if (options.length > 0) {
+            options.forEach(function(item){
+                ctx.strokeStyle = item.lineColor;
+                ctx.strokeRect(left, y1.getPixelForValue(item.yPosition), width, 0);
+            });
+        }
+
+        ctx.restore();
+    }
+}
+  
+const horizontal = {
+    id: 'horizontal',
+    beforeDraw(chart, args, options) {
+        const {
+            ctx,
+            chartArea: { top, right, bottom, left, width, height },
+            scales: { x, y1 },
+        } = chart;
+
+        ctx.save();
+
+        if (options.length > 0) {
+            options.forEach(function(item){
+                ctx.strokeStyle = item.lineColor;
+                ctx.strokeRect(x.getPixelForValue(item.xPosition), top, 0, height);
+            });
+        }
+
+        ctx.restore();
+    }
+}
+  
 var options_Stock_Graphe = {
     interaction: {
 		intersect: false
@@ -7,7 +51,15 @@ var options_Stock_Graphe = {
 	maintainAspectRatio: true,
     animation: true,
     plugins: {
-		legend: {
+        horizontal: {
+            lineColor: 'blue',
+            xPosition: 10,
+        },
+        vertical: {
+            lineColor: 'green',
+            yPosition: 50,
+        },
+        legend: {
 			display: false
 		},
         tooltip: {
@@ -112,7 +164,7 @@ var options_RSI_Graphe = {
 };
 
 const horizontalLines_RSI_Graphe = {
-	id: 'horizontalLines',
+	id: 'horizontalLines_RSI_Graphe',
 	beforeDraw(chart, args, options) {
 		const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
 		ctx.save();
@@ -174,8 +226,9 @@ var options_DM_Graphe = {
 };
 
 const horizontalLines_DM_Graphe = {
-    id: 'horizontalLines',
+    id: 'horizontalLines_DM_Graphe',
     beforeDraw(chart, args, options) {
+//        console.log(chart);
         const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
         ctx.save();
 //		alert(chart.scales.y.max);
@@ -212,130 +265,3 @@ var options_simulator_graphe = {
         }
     }
 };
-
-/*         {
-            "responsive": true,
-            "maintainAspectRatio": true,
-            "scales": {
-                "x": {
-                    "axis": "x",
-                    "gridLines": {
-                        "color": "red"
-                    },
-                    "ticks": {
-                        "minRotation": 90,
-                        "maxRotation": 90,
-                        "display": true,
-                        "mirror": false,
-                        "textStrokeWidth": 0,
-                        "textStrokeColor": "",
-                        "padding": 3,
-                        "autoSkip": true,
-                        "autoSkipPadding": 3,
-                        "labelOffset": 0,
-                        "minor": {},
-                        "major": {},
-                        "align": "center",
-                        "crossAlign": "near",
-                        "showLabelBackdrop": false,
-                        "backdropColor": "rgba(255, 255, 255, 0.75)",
-                        "backdropPadding": 2,
-                        "color": "#666"
-                    },
-                    "type": "category",
-                    "display": true,
-                    "offset": false,
-                    "reverse": false,
-                    "beginAtZero": false,
-                    "bounds": "ticks",
-                    "grace": 0,
-                    "grid": {
-                        "display": true,
-                        "lineWidth": 1,
-                        "drawBorder": true,
-                        "drawOnChartArea": true,
-                        "drawTicks": true,
-                        "tickLength": 8,
-                        "offset": false,
-                        "borderDash": [],
-                        "borderDashOffset": 0,
-                        "borderWidth": 1,
-                        "color": "rgba(0,0,0,0.1)",
-                        "borderColor": "rgba(0,0,0,0.1)"
-                    },
-                    "title": {
-                        "display": false,
-                        "text": "",
-                        "padding": {
-                            "top": 4,
-                            "bottom": 4
-                        },
-                        "color": "#666"
-                    },
-                    "id": "x",
-                    "position": "bottom"
-                },
-                "y": {
-                    "axis": "y",
-                    "grid": {
-                        "color": "rgba(255, 255, 255, 0.05)",
-                        "display": true,
-                        "lineWidth": 1,
-                        "drawBorder": true,
-                        "drawOnChartArea": true,
-                        "drawTicks": true,
-                        "tickLength": 8,
-                        "offset": false,
-                        "borderDash": [],
-                        "borderDashOffset": 0,
-                        "borderWidth": 1,
-                        "borderColor": "rgba(0,0,0,0.1)"
-                    },
-                    "ticks": {
-                        "suggestedMin": -40,
-                        "suggestedMax": 40,
-                        "max": 40,
-                        "min": -40,
-                        "stepSize": 10,
-                        "minRotation": 0,
-                        "maxRotation": 50,
-                        "mirror": false,
-                        "textStrokeWidth": 0,
-                        "textStrokeColor": "",
-                        "padding": 3,
-                        "display": true,
-                        "autoSkip": true,
-                        "autoSkipPadding": 3,
-                        "labelOffset": 0,
-                        "minor": {},
-                        "major": {},
-                        "align": "center",
-                        "crossAlign": "near",
-                        "showLabelBackdrop": false,
-                        "backdropColor": "rgba(255, 255, 255, 0.75)",
-                        "backdropPadding": 2,
-                        "color": "#666"
-                    },
-                    "type": "linear",
-                    "display": true,
-                    "offset": false,
-                    "reverse": false,
-                    "beginAtZero": false,
-                    "bounds": "ticks",
-                    "grace": 0,
-                    "title": {
-                        "display": false,
-                        "text": "",
-                        "padding": {
-                            "top": 4,
-                            "bottom": 4
-                        },
-                        "color": "#666"
-                    },
-                    "id": "y",
-                    "position": "left"
-                }
-            },
-            "plugins": {}
-        }
- */

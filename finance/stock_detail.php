@@ -10,7 +10,7 @@ $symbol = "";
 $rsi_choice = 0;
 $volume_choice = 1;
 
-foreach (['symbol'] as $key)
+foreach (['symbol', 'ptf_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 // Affichage par defaut des MMX
@@ -43,6 +43,17 @@ $row['link2'] = isset($links['link2']) ? $links['link2'] : "";
 
 $tags = array_flip(explode("|", utf8_decode($row['tags'])));
 
+// Recuperation des min/max des cotations
+$minmax = calc::getMinMaxQuotations();
+
+// Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
+$aggregate_ptf = calc::getAggregatePortfoliosByUser($sess_context->getUserId());
+
+$pru = isset($aggregate_ptf['positions'][$symbol]['pru']) ? $aggregate_ptf['positions'][$symbol]['pru'] : 0;
+
+// Nb positions en portefeuille
+$ptf_nb_positions = isset($aggregate_ptf['positions']) ? count($aggregate_ptf['positions']) : 0;
+
 // Recuperation des indicateurs de l'actif de la derniere cotation
 $data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
 $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
@@ -59,6 +70,14 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
         <? if ($sess_context->isSuperAdmin()) { ?>
             <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float small trash icon"></i>
         <? } ?>
+        <?
+            if ($ptf_nb_positions > 0) {
+                echo '<select id="ptf_select_bt" style="float: right; top: -4px; right: 10px;" class="ui dropdown"><option />';
+                foreach($aggregate_ptf['positions'] as $key => $val)
+                    if (!$val['other_name']) echo "<option>$key</option>";
+                echo "</select>";
+            }
+        ?>
     </h2>
 
     <table id="detail_stock" class="ui selectable inverted single line table">
@@ -675,7 +694,9 @@ if (!$readonly) {
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
-        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [{}]);
+        options_Stock_Graphe.plugins.horizontal = [ ];
+        options_Stock_Graphe.plugins.vertical   = [ <?= $pru == 0 ? "" : "{ lineColor: 'red', yPosition: ".$pru." }" ?> ];
+        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ horizontal, vertical ]);
 
         // Update Chart RSI
         var datasets2 = [];
@@ -745,7 +766,7 @@ if (!$readonly) {
 
     // Listener sur bt back
     Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'home', id: 'main', url: 'home_content.php', loading_area: 'main' });
+        go({ action: 'home', id: 'main', url: '<?= $ptf_id == "" ?  "home_content.php" : "portfolio_dashboard.php?portfolio_id=".$ptf_id ?>', loading_area: 'main' });
     });
 
     // Listener sur bt MMX et volume
@@ -776,6 +797,17 @@ if (!$readonly) {
     Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
     });
+
+    // Choix actif dans select actif ptf
+    <? if ($ptf_nb_positions > 0) { ?>
+        Dom.addListener(Dom.id('ptf_select_bt'), Dom.Event.ON_CHANGE, function(event) {
+            element = Dom.id('ptf_select_bt');
+            var selection = "";
+            for (i=0; i < element.length; i++) if (element[i].selected) selection = element[i].value;
+            if (selection != "") go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=' + selection, loading_area: 'main' });
+        });
+    <? } ?>
+
 
     // Changement etat bouttons tags
     changeState = function(item) {

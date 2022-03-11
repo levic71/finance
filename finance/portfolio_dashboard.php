@@ -31,7 +31,7 @@ if (!$row = mysqli_fetch_assoc($res)) exit(0);
 $quotes = calc::getIndicatorsLastQuote();
 
 // Calcul synthese portefeuille
-$portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
+$portfolio_data = calc::aggregatePortfolioById($portfolio_id);
 
 // Portfolio synthese ?
 $isPortfolioSynthese = $portfolio_data['infos']['synthese'] == 1 ? true : false;
@@ -493,13 +493,14 @@ Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
 computeLines('init');
 
 // Listener sur button detail ligne tableau
-Dom.find("#lst_position tbody tr td:nth-child(1) button").forEach(function(element) {
+Dom.find("#lst_position tbody tr td:nth-child(2) button").forEach(function(element) {
+	pru = Dom.attribute(Dom.id('f_pru_' + element.parentNode.id.split('_')[2]), 'data-pru');
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
-		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+element.innerHTML, loading_area: 'main' });
+		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?ptf_id=<?= $portfolio_id ?>&symbol=' + element.innerHTML, loading_area: 'main' });
 	});
 });
 
-// Listener sur button detail ligne tableau
+// Listener sur buttons stoploss/stoplimit ligne tableau
 Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(element) {
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 

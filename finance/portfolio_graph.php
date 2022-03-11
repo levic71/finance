@@ -25,11 +25,8 @@ $res = dbc::execSql($req);
 // Bye bye si inexistant
 if (!$row = mysqli_fetch_assoc($res)) exit(0);
 
-// Recuperation de tous les actifs
-$quotes = calc::getIndicatorsLastQuote();
-
 // Calcul synthese portefeuille
-$portfolio_data = calc::aggregatePortfolio($portfolio_id, $quotes);
+$portfolio_data = calc::aggregatePortfolioById($portfolio_id);
 
 // On recupere les eventuelles saisies de cotation manuelles
 $save_quotes = array();

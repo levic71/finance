@@ -6,27 +6,17 @@ session_start();
 
 include "common.php";
 
-$date = "";
-
 $db = dbc::connect();
 
-// Recuperation des DM en BD
-$data2 = calc::getIndicatorsLastQuote();
-
-// Tri décroissant des perf DM des stocks
-arsort($data2["perfs"]);
-
-// Recuperation de tous les actifs
-$quotes = calc::getIndicatorsLastQuote();
-
 // On récupère les portefeuilles de l'utilisateur
-$req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND id=3";
+$req = "SELECT * FROM users";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
-	$portfolio_data = calc::aggregatePortfolio($row['id'], $quotes);
+	$portfolio_data = calc::getAggregatePortfoliosByUser($row['id']);
 
-	var_dump($portfolio_data);
+	if (count($portfolio_data) == 0) continue;
+
 }
 	
 ?>

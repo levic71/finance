@@ -171,7 +171,7 @@ class dbc {
 //
 class calc {
 
-    public static function aggregatePortfolio($id, $quotes = array()) {
+    public static function aggregatePortfolio($infos) {
 
         // Penser à mettre en cache 10' le calcul ?
 
@@ -192,25 +192,22 @@ class calc {
         $portfolio['orders']    = array();
         $portfolio['positions'] = array();
 
-        // Récupération des infos du portefeuille
-        $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND id=".$id;
-        $res = dbc::execSql($req);
-        if (!$row = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
-            uimx::staticInfoMsg("Bad data !", "alarm", "red");
-            exit(0);
-        }
-        $portfolio['infos'] = $row;
+        $portfolio['infos'] = $infos;
+        $user_id = $infos['user_id'];
+
+        // Recuperation de tous les actifs
+        $quotes = calc::getIndicatorsLastQuote();
 
         // Récupération des données de trend_following de l'utilisateur
         $portfolio['trend_following'] = array();
-        $req = "SELECT * FROM trend_following WHERE user_id=".$sess_context->getUserId();
+        $req = "SELECT * FROM trend_following WHERE user_id=".$user_id;
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) $portfolio['trend_following'][$row['symbol']] = $row;
         
         // Si portefeuille synthese on fusionne les eventuelles saisies de cotation
         if ($portfolio['infos']['synthese'] == 1) {
             $local_quotes = '';
-            $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND id IN (".$portfolio['infos']['all_ids'].")";
+            $req = "SELECT * FROM portfolios WHERE user_id=".$user_id." AND id IN (".$portfolio['infos']['all_ids'].")";
             $res = dbc::execSql($req);
             while($row = mysqli_fetch_array($res)) $local_quotes .= ($local_quotes ==  '' ? '' : ',').$row['quotes'];
             $portfolio['infos']['quotes'] = $local_quotes;
@@ -223,7 +220,7 @@ class calc {
             foreach($t as $key2 => $val2) {
                 $x = explode('|', $val2);
                 if (!isset($quotes['stocks'][$x[0]])) $quotes['stocks'][$x[0]] = array();
-                $quotes['stocks'][$x[0]]['price'] = $x[1];
+                if (isset($x[1])) $quotes['stocks'][$x[0]]['price'] = $x[1];
             }
         }
 
@@ -234,7 +231,7 @@ class calc {
         $today = new DateTime(date("Y-m-d"));
 
         // Récupération et TRT des ordres passes
-        $req = "SELECT * FROM orders WHERE portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $id).") ORDER BY date, datetime ASC";
+        $req = "SELECT * FROM orders WHERE portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") ORDER BY date, datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
 
@@ -352,6 +349,49 @@ class calc {
 
         return $portfolio;
     } 
+
+    public static function aggregatePortfolioById($id) {
+
+        // Récupération des infos du portefeuille
+        $req = "SELECT * FROM portfolios WHERE id=".$id;
+        $res = dbc::execSql($req);
+
+        if (!$row = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
+            uimx::staticInfoMsg("Bad data !", "alarm", "red");
+            exit(0);
+        }
+
+        return calc::aggregatePortfolio($row);
+    }
+
+    public static function aggregatePortfolioByUser($user_id) {
+
+        $ret = array();
+
+        // Récupération des infos du portefeuille
+        $req = "SELECT * FROM portfolios WHERE user_id=".$user_id;
+        $res = dbc::execSql($req);
+
+        $infos = array();
+        $infos['all_ids'] = "";
+
+        while ($row = mysqli_fetch_array($res, MYSQLI_ASSOC))
+            $infos['all_ids'] .= ($infos['all_ids'] == "" ? "" : ",").$row['id'];
+
+        $infos['id']           = "";
+        $infos['user_id']      = $user_id;
+        $infos['name']         = "Synthese User";
+        $infos['strategie_id'] = "";
+        $infos['synthese']     = 1;
+        $infos['valo_date']    = "";
+        $infos['valo_sum']     = "";
+        $infos['quotes']       = "";
+        $infos['ordre']        = "";
+
+        if ($infos['all_ids'] != "") $ret = calc::aggregatePortfolio($infos);
+
+        return $ret;
+    }
 
     public static function getAchatActifsDCAInvest($day, $data_decode_symbols, $lst_actifs_achetes_pu, $invest_montant) {
 
@@ -691,11 +731,77 @@ class calc {
         return $row;
     }
 
+    public static function getMinMaxQuotations() {
+
+        $file_cache = 'cache/TMP_MIN_MAX_QUOTATIONS.json';
+
+        $ret = array();
+        $tab = array();
+
+        if (tools::isLocalHost() || cacheData::refreshOnceADayCache($file_cache)) {
+
+            foreach([ "all" => "", "3Y" => "WHERE day >= DATE_SUB(NOW(), INTERVAL 3 YEAR)", "1Y" => "WHERE day >= DATE_SUB(NOW(), INTERVAL 1 YEAR)" ] as $key => $where) {
+                $req = "SELECT symbol, max(close) max, min(close) min FROM `daily_time_series_adjusted` ".$where." group by symbol";
+                $res = dbc::execSql($req);
+
+                while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
+
+                    $req2 = "SELECT symbol, day, close FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND close=".$row['min']." ".str_replace('WHERE', "AND", $where);
+                    $res2 = dbc::execSql($req2);
+                    $row2 = mysqli_fetch_array($res2, MYSQLI_ASSOC);
+
+                    $ret[$row2['symbol']][$key.'_min_price'] = $row2['close'];
+                    $ret[$row2['symbol']][$key.'_min_day']   = $row2['day'];
+
+                    $req2 = "SELECT symbol, day, close FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND close=".$row['max']." ".str_replace("WHERE", "AND", $where);
+                    $res2 = dbc::execSql($req2);
+                    $row2 = mysqli_fetch_array($res2, MYSQLI_ASSOC);
+
+                    $ret[$row2['symbol']][$key.'_max_price'] = $row2['close'];
+                    $ret[$row2['symbol']][$key.'_max_day']   = $row2['day'];
+
+                }
+            }
+
+            cacheData::writeCacheData($file_cache, $ret);
+
+        } else {
+            $ret = cacheData::readCacheData($file_cache);
+        }
+
+        return $ret;
+    }
+
+    public static function getAggregatePortfoliosByUser($user_id) {
+
+        $file_cache = 'cache/TMP_AGGREGATE_USER_PTF_'.$user_id.'_.json';
+
+        $ret = array();
+
+        if (tools::isLocalHost() || cacheData::refreshCache($file_cache, 900)) { // Cache de 15'
+
+            // Recuperation de tous les actifs
+            $quotes = calc::getIndicatorsLastQuote();
+
+            // Aggregation de tous les portefeuilles de l'utilisateur connecte
+            $ret = calc::aggregatePortfolioByUser($user_id, $quotes);
+            unset($ret['orders']);
+
+            // On met en cache uniquement s'il y a des data
+            if (count($ret) > 0) cacheData::writeCacheData($file_cache, $ret);
+
+        } else {
+            $ret = cacheData::readCacheData($file_cache);
+        }
+
+        return $ret;
+    }
+
     public static function getIndicatorsLastQuote() {
 
         $file_cache = 'cache/TMP_CURRENT_DUAL_MOMENTUM_.json';
 
-        $ret = array( 'stocks' => array(), 'perfs' => array(), 'day' => date("Y-m-d"), 'compute_time' => date("Y-d-m H:i:s") );
+        $ret = array('stocks' => array(), 'perfs' => array(), 'day' => date("Y-m-d"), 'compute_time' => date("Y-d-m H:i:s"));
 
         if (cacheData::refreshCache($file_cache, 600)) { // Cache de 10 min
 
@@ -964,7 +1070,11 @@ class cacheData {
     }
 
     public static function writeCacheData($file, $data) {
-        file_put_contents($file, json_encode($data));
+        $json = json_encode($data);
+        if ($json)
+            file_put_contents($file, json_encode($data));
+        else
+            echo "Pb encodage json";
     }
 
     public static function writeData($file, $data) {
