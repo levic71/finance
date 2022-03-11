@@ -1,25 +1,3 @@
-const vertical = {
-    id: 'vertical',
-    beforeDraw(chart, args, options) {
-        const {
-            ctx,
-            chartArea: { top, right, bottom, left, width, height },
-            scales: { x, y1 },
-        } = chart;
-
-        ctx.save();
-
-        if (options.length > 0) {
-            options.forEach(function(item){
-                ctx.strokeStyle = item.lineColor;
-                ctx.strokeRect(left, y1.getPixelForValue(item.yPosition), width, 0);
-            });
-        }
-
-        ctx.restore();
-    }
-}
-  
 const horizontal = {
     id: 'horizontal',
     beforeDraw(chart, args, options) {
@@ -32,7 +10,42 @@ const horizontal = {
         ctx.save();
 
         if (options.length > 0) {
-            options.forEach(function(item){
+            options.forEach(function(item) {
+
+                if (typeof item.text !== 'undefined') {
+                    var size_font = 10;
+                    ctx.font = size_font + 'px Verdana';
+                    var l = ctx.measureText(item.text).width;
+                    var h = parseInt(ctx.font, size_font);
+                    ctx.fillStyle = item.lineColor;
+                    ctx.fillRect(left, y1.getPixelForValue(item.yPosition), l + 10, -h);
+
+                    ctx.fillStyle = 'black';
+                    ctx.fillText(item.text, 5, y1.getPixelForValue(item.yPosition) - 1);
+                }
+
+                ctx.strokeStyle = item.lineColor;
+                ctx.strokeRect(left, y1.getPixelForValue(item.yPosition), width, 0);
+            });
+        }
+
+        ctx.restore();
+    }
+}
+  
+const vertical = {
+    id: 'vertical',
+    beforeDraw(chart, args, options) {
+        const {
+            ctx,
+            chartArea: { top, right, bottom, left, width, height },
+            scales: { x, y1 },
+        } = chart;
+
+        ctx.save();
+
+        if (options.length > 0) {
+            options.forEach(function(item) {
                 ctx.strokeStyle = item.lineColor;
                 ctx.strokeRect(x.getPixelForValue(item.xPosition), top, 0, height);
             });

@@ -694,8 +694,8 @@ if (!$readonly) {
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
-        options_Stock_Graphe.plugins.horizontal = [ ];
-        options_Stock_Graphe.plugins.vertical   = [ <?= $pru == 0 ? "" : "{ lineColor: 'red', yPosition: ".$pru." }" ?> ];
+        options_Stock_Graphe.plugins.vertical   = [ ];
+        options_Stock_Graphe.plugins.horizontal = [ <?= $pru == 0 ? "" : "{ lineColor: 'red', yPosition: ".$pru.", text: 'PRU' }" ?> ];
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ horizontal, vertical ]);
 
         // Update Chart RSI
