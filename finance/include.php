@@ -778,7 +778,7 @@ class calc {
 
         $ret = array();
 
-        if (tools::isLocalHost() || cacheData::refreshCache($file_cache, 900)) { // Cache de 15'
+        if (tools::isLocalHost() || cacheData::refreshOnceADayCache($file_cache)) {
 
             // Recuperation de tous les actifs
             $quotes = calc::getIndicatorsLastQuote();
