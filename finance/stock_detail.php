@@ -680,7 +680,7 @@ if (!$readonly) {
         }
 
         // En attendant d'avoir un plugin ou de corriger le pb de volumetrie on limite le daily a max 3000 inputs
-        max_data = 3000;
+        max_data = 100000;
         if (g_new_data.length > max_data) {
             g_days     =  g_days.slice(min_slice(g_days, max_data), max_slice(g_days));
             g_new_data =  g_new_data.slice(min_slice(g_new_data, max_data), max_slice(g_new_data));
