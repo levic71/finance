@@ -60,7 +60,7 @@ $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
 ?>
 
-<div class="ui container inverted segment">
+<div class="ui container inverted segment" style="padding-bottom: 0px;">
 
     <h2 class="ui left">
         <span>
@@ -204,7 +204,7 @@ asort(uimx::$invest_factorielle);
 </style>
 
 
-<div id="canvas_area" class="ui container inverted segment">
+<div id="canvas_area" class="ui container inverted segment" style="padding-top: 0px;">
     <span>
         <button id="graphe_D_bt" class="mini ui <?= $rsi_choice == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">Daily</button>
         <button id="graphe_W_bt" class="mini ui <?= $rsi_choice == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">Weekly</button>
@@ -220,9 +220,8 @@ asort(uimx::$invest_factorielle);
         <button id="graphe_volume_bt" class="mini ui <?= $volume_choice == 1  ? $bt_volume_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
     </span>
     <canvas id="stock_canvas1" height="100"></canvas>
-    <canvas id="stock_canvas2" height="20"></canvas>
-    <h4>Evolution DM</h4>
-    <canvas id="stock_canvas3" height="50"></canvas>
+    <canvas id="stock_canvas2" height="30"></canvas>
+    <canvas id="stock_canvas3" height="30"></canvas>
 </div>
 
 <div class="ui container inverted segment">
@@ -578,7 +577,7 @@ if (!$readonly) {
         el("stock_canvas2").height = document.body.offsetWidth > 700 ? 30 : 90;
 
         var ctx3 = document.getElementById('stock_canvas3').getContext('2d');
-        el("stock_canvas3").height = document.body.offsetWidth > 700 ? 50 : 150;
+        el("stock_canvas3").height = document.body.offsetWidth > 700 ? 30 : 120;
 
     } catch(e) {
         alert('stock_detail.php: Graphe data error' + e);
@@ -701,13 +700,15 @@ if (!$readonly) {
         // Update Chart RSI
         var datasets2 = [];
         datasets2.push(getDatasetRSI14(g_new_data));
-        myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [horizontalLines_RSI_Graphe]);
+        options_RSI_Graphe.plugins.insider   = { title: 'RSI14', colr: '#e77fe8', bgcolr: '#1b1c1d', size: '12', align: 'left' };
+        myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [ insider, horizontalLines_RSI_Graphe ]);
 
         // Update Chart DM
         var datasets3 = [];
         datasets3.push(getDatasetDM(g_new_data));
         options_DM_Graphe.scales.y.position = 'right';
-        myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [horizontalLines_DM_Graphe]);
+        options_DM_Graphe.plugins.insider   = { title: 'Evolution DM', colr: 'yellow', bgcolr: '#1b1c1d', size: '12', align: 'left' };
+        myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [ insider, horizontalLines_DM_Graphe ]);
 
         rmCN(bt, 'loading');
     }

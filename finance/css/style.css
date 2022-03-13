@@ -5,6 +5,44 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
 .icon_action { padding: 11px !important; }
 .icon_action i { margin: 0px !important; }
 
+#tooltip_stock_graphe {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 3px;
+    color: white;
+    opacity: 1;
+    pointer-events: none;
+    position: absolute;
+    transform: translate(-50%, 0);
+    transition: all .1s ease;
+}
+#tooltip_stock_graphe table {
+    margin: 0px;
+}
+#tooltip_stock_graphe table tr {
+    border-width: 0px;
+}
+#tooltip_stock_graphe table th {
+    border-width: 0px;
+    text-align: center;
+}
+#tooltip_stock_graphe table span {
+    border-width: 2px;
+    margin-right: 10px;
+    height: 10px;
+    width: 10px;
+}
+#tooltip_stock_graphe table tr {
+    border-width: 0px;
+    font-size: 12px;
+    line-height: 12px;
+}
+#tooltip_stock_graphe table td {
+    border-width: 0px;
+}
+#tooltip_stock_graphe table td:nth-child(2) {
+    text-align: right;
+}
+
 .nav {
 	right: 20px;
 	opacity: 0;

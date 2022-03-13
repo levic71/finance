@@ -1,3 +1,49 @@
+const insider = {
+    id: 'insider',
+    beforeDraw(chart, args, options) {
+        const {
+            ctx,
+            chartArea: { top, right, bottom, left, width, height },
+            scales: { x, y1 },
+        } = chart;
+
+        ctx.save();
+
+        if (typeof options.title !== 'undefined') {
+
+            var padding_width  = 15;
+            var padding_height = 5;
+            var size_font = options.size;
+
+            ctx.font = size_font + 'px Verdana';
+
+            var l = ctx.measureText(options.title).width;
+            var h = parseInt(ctx.font, size_font);
+
+            if (options.align == 'right') {
+                ctx.fillStyle = options.bgcolr;
+                ctx.fillRect(right - l - padding_width, top, l + padding_width, h + padding_height);
+                ctx.fillStyle = options.colr;
+                ctx.fillText(options.title, right - l - (padding_width / 2), top + h);
+             }
+            else if (options.align == 'left') {
+                ctx.fillStyle = options.bgcolr;
+                ctx.fillRect(left, top, l + padding_width, h + padding_height);
+                ctx.fillStyle = options.colr;
+                ctx.fillText(options.title, padding_width / 2, top + h);
+             }
+            else {
+                ctx.fillStyle = options.bgcolr;
+                ctx.fillRect(left + ((width + padding_width - l) / 2), top, l + padding_width, h + padding_height);
+                ctx.fillStyle = options.colr;
+                ctx.fillText(options.title, ((width + padding_width - l) / 2 ) + padding_width / 2, top + h);
+            }
+        }
+
+        ctx.restore();
+    }
+}
+
 const horizontal = {
     id: 'horizontal',
     beforeDraw(chart, args, options) {
@@ -32,7 +78,7 @@ const horizontal = {
         ctx.restore();
     }
 }
-  
+
 const vertical = {
     id: 'vertical',
     beforeDraw(chart, args, options) {
@@ -54,10 +100,112 @@ const vertical = {
         ctx.restore();
     }
 }
+
+const getOrCreateTooltip = (chart) => {
+    let tooltipEl = chart.canvas.parentNode.querySelector('div');
   
+    if (!tooltipEl) {
+        tooltipEl = document.createElement('div');
+        tooltipEl.id = 'tooltip_stock_graphe';    
+        const table = document.createElement('table');
+        tooltipEl.appendChild(table);
+        chart.canvas.parentNode.appendChild(tooltipEl);
+    }
+  
+    return tooltipEl;
+}
+  
+const externalTooltipHandler = (context) => {
+    // Tooltip Element
+    const {chart, tooltip} = context;
+    const tooltipEl = getOrCreateTooltip(chart);
+  
+    // Hide if no tooltip
+    if (tooltip.opacity === 0) {
+        tooltipEl.style.opacity = 0;
+        return;
+    }
+  
+    // Set Text
+    if (tooltip.body) {
+        const titleLines = tooltip.title || [];
+        const bodyLines = tooltip.body.map(b => b.lines);
+
+        const tableHead = document.createElement('thead');
+
+        titleLines.forEach(title => {
+            const tr = document.createElement('tr');
+            const th = document.createElement('th');
+            th.colSpan = 2;
+            const text = document.createTextNode(title);
+            th.appendChild(text);
+            tr.appendChild(th);
+            tableHead.appendChild(tr);
+        });
+  
+        const tableBody = document.createElement('tbody');
+        bodyLines.forEach((body, i) => {
+            const colors = tooltip.labelColors[i];
+
+            var t = body[0].split(': ');
+
+            const span = document.createElement('span');
+            span.style.background = t[0] == 'VOLUME' ? colors.backgroundColor : colors.borderColor;
+            span.style.borderColor = colors.borderColor;
+            span.style.borderWidth = '2px';
+            span.style.marginRight = '10px';
+            span.style.height = '10px';
+            span.style.width = '10px';
+            span.style.display = 'inline-block';
+
+            const tr = document.createElement('tr');
+            tr.style.backgroundColor = 'inherit';
+            tr.style.borderWidth = 0;
+
+            const td1 = document.createElement('td');
+            td1.style.borderWidth = 0;
+
+            const td2 = document.createElement('td');
+            td2.style.textAlign = 'right';
+            td2.style.borderWidth = 0;
+
+            const text1 = document.createTextNode(t[0]);
+            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' \u20ac'));
+
+            td1.appendChild(span);
+            td1.appendChild(text1);
+            td2.appendChild(text2);
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            tableBody.appendChild(tr);
+        });
+  
+        const tableRoot = tooltipEl.querySelector('table');
+  
+        // Remove old children
+        while (tableRoot.firstChild) {
+            tableRoot.firstChild.remove();
+        }
+  
+        // Add new children
+        tableRoot.appendChild(tableHead);
+        tableRoot.appendChild(tableBody);
+    }
+  
+    const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
+  
+    // Display, position, and set styles for font
+    tooltipEl.style.opacity = 1;
+    tooltipEl.style.left = '50%';
+    tooltipEl.style.top = '25px';
+//    tooltipEl.style.left = positionX + tooltip.caretX + 'px';
+//    tooltipEl.style.top = positionY + tooltip.caretY + 'px';
+}
+
 var options_Stock_Graphe = {
     interaction: {
-		intersect: false
+		intersect: false,
+        mode: 'index'
 	},
 	radius: 0,
 	responsive: true,
@@ -76,17 +224,20 @@ var options_Stock_Graphe = {
 			display: false
 		},
         tooltip: {
+            enabled: false,
+            external: externalTooltipHandler
+        },    
+        tooltip2: {  // Ne sert plus on utilise tooltip au dessus
             callbacks: {
                 label: function(context) {
-                    let label = context.dataset.label || '';
-                    let ext = context.datasetIndex == 2 ? "K " : "";
-                    if (label) {
-                        label += ':  ';
-                    }
-                    if (context.parsed.y !== null) {
-//                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
-                        label += context.parsed.y.toLocaleString() + ext;
-                    }
+                    console.log(context);
+                    // alert(context.dataIndex);
+                    // alert(context.dataset.data[context.dataIndex].y);
+                    let label = ' ' + context.dataset.label + '  ' || '';
+                    label += context.dataset.label == 'Cours' ? '    ' : (context.dataset.label == 'MM200' ? '  ' : (context.dataset.label == 'VOLUME' ? '' : (context.dataset.label == 'MM7' ? '      ' : '    ')));
+                    let ext = context.dataset.label == 'VOLUME' ? " K " : " \u20ac";
+                    if (context.parsed.y !== null)
+                        label += ' : ' + context.parsed.y.toLocaleString() + ext;
                     return label;
                 }
             }
@@ -210,8 +361,8 @@ var options_DM_Graphe = {
 	},
     scales: {
         x: {
-            gridLines: {
-                color: "red"
+            grid: {
+                display: false
             },
             ticks: {
                 minRotation: 90,
@@ -253,7 +404,6 @@ const horizontalLines_DM_Graphe = {
         ctx.moveTo(left, h);
         ctx.lineTo(right, h);
         ctx.stroke();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
         ctx.restore();
     }
 };
