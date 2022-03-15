@@ -193,8 +193,8 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						</div></td>
 					
 						<td class="center aligned" data-value="'.$pct_mm.'"><div>
-							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%s%.2f", "+", $qs['MM200']).' &euro;</button>
-							<label style="color: grey">'.sprintf("%.2f", $pct_mm).' %</label>
+							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%.2f", $qs['MM200']).' &euro;</button>
+							<label style="color: grey">'.sprintf("%s%.2f", ($pct_mm >= 0 ? '+' : ''), $pct_mm).' %</label>
 						</div></td>
 
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
