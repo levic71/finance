@@ -106,6 +106,80 @@ const getOrCreateTooltip = (chart) => {
   
     if (!tooltipEl) {
         tooltipEl = document.createElement('div');
+        tooltipEl.id = 'tooltip_stock_graphe_div';
+        chart.canvas.parentNode.appendChild(tooltipEl);
+    }
+  
+    return tooltipEl;
+}
+
+const externalTooltipHandler = (context) => {
+    // Tooltip Element
+    const {chart, tooltip} = context;
+    const tooltipEl = getOrCreateTooltip(chart);
+  
+    // Hide if no tooltip
+    if (tooltip.opacity === 0) {
+        tooltipEl.style.opacity = 0;
+        return;
+    }
+  
+    // Set Text
+    if (tooltip.body) {
+        const titleLines = tooltip.title || [];
+        const bodyLines = tooltip.body.map(b => b.lines);
+
+        // Remove old children
+        while (tooltipEl.firstChild) tooltipEl.firstChild.remove();
+
+        titleLines.forEach(title => {
+            const div = document.createElement('div');
+            const text = document.createTextNode(title);
+            div.appendChild(text);
+            tooltipEl.appendChild(div);
+        });
+  
+        bodyLines.forEach((body, i) => {
+            const colors = tooltip.labelColors[i];
+
+            var t = body[0].split(': ');
+
+            const span = document.createElement('span');
+            span.style.background = t[0] == 'VOLUME' ? colors.backgroundColor : colors.borderColor;
+            span.style.borderColor = colors.borderColor;
+
+            const div = document.createElement('div');
+            div.style.backgroundColor = 'inherit';
+            div.style.borderWidth = 0;
+
+            const label1 = document.createElement('div');
+            const text1 = document.createTextNode(t[0] + ' : ');
+            label1.appendChild(text1);
+            const label2 = document.createElement('div');
+            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' \u20ac'));
+            label2.appendChild(text2);
+
+            div.appendChild(span);
+            div.appendChild(label1);
+            div.appendChild(label2);
+
+            tooltipEl.appendChild(div);
+        });
+    }
+  
+    const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
+  
+    // Display, position, and set styles for font
+    tooltipEl.style.opacity = 1;
+    tooltipEl.style.left = '50%';
+    tooltipEl.style.top = '25px';
+}
+
+const getOrCreateTooltip2 = (chart) => {
+    let tooltipEl = chart.canvas.parentNode.querySelector('div');
+  
+    if (!tooltipEl) {
+        tooltipEl = document.createElement('div');
         tooltipEl.id = 'tooltip_stock_graphe';    
         const table = document.createElement('table');
         tooltipEl.appendChild(table);
@@ -114,11 +188,11 @@ const getOrCreateTooltip = (chart) => {
   
     return tooltipEl;
 }
-  
-const externalTooltipHandler = (context) => {
+
+const externalTooltipHandler2 = (context) => {
     // Tooltip Element
     const {chart, tooltip} = context;
-    const tooltipEl = getOrCreateTooltip(chart);
+    const tooltipEl = getOrCreateTooltip2(chart);
   
     // Hide if no tooltip
     if (tooltip.opacity === 0) {
@@ -230,7 +304,7 @@ var options_Stock_Graphe = {
         tooltip2: {  // Ne sert plus on utilise tooltip au dessus
             callbacks: {
                 label: function(context) {
-                    console.log(context);
+                    // console.log(context);
                     // alert(context.dataIndex);
                     // alert(context.dataset.data[context.dataIndex].y);
                     let label = ' ' + context.dataset.label + '  ' || '';

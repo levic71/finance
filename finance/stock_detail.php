@@ -580,8 +580,6 @@ if (!$readonly) {
 
         if (array_years.length > 2) array_years.shift();
 
-        console.log(tmp_array_years);
-
         // Current data
         var g_new_data = null;
         var g_days     = null;
