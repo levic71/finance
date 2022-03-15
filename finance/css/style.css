@@ -6,7 +6,7 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
 .icon_action i { margin: 0px !important; }
 
 #tooltip_stock_graphe {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 3px;
     color: white;
     opacity: 1;

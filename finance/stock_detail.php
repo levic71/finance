@@ -566,6 +566,22 @@ if (!$readonly) {
         var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
         var ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
 
+        // Filtre pour les labels axes x des dates
+        var tmp_array_years = [];
+        var array_years = [];
+        ref_d_days.forEach(function(item) {
+            let year = item.split('-')[0];
+            let found = tmp_array_years.find(element => element == year);
+            if (found == undefined) {
+                tmp_array_years.push(year);
+                array_years.push(item);
+            }
+        });
+
+        if (array_years.length > 2) array_years.shift();
+
+        console.log(tmp_array_years);
+
         // Current data
         var g_new_data = null;
         var g_days     = null;

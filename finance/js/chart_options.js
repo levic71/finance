@@ -22,21 +22,21 @@ const insider = {
 
             if (options.align == 'right') {
                 ctx.fillStyle = options.bgcolr;
-                ctx.fillRect(right - l - padding_width, top, l + padding_width, h + padding_height);
+                ctx.fillRect(right - l - padding_width, 0, l + padding_width, h + padding_height);
                 ctx.fillStyle = options.colr;
                 ctx.fillText(options.title, right - l - (padding_width / 2), top + h);
              }
             else if (options.align == 'left') {
                 ctx.fillStyle = options.bgcolr;
-                ctx.fillRect(left, top, l + padding_width, h + padding_height);
+                ctx.fillRect(left, 0, l + padding_width, h + padding_height);
                 ctx.fillStyle = options.colr;
-                ctx.fillText(options.title, padding_width / 2, top + h);
+                ctx.fillText(options.title, padding_width / 2, 0 + h);
              }
             else {
                 ctx.fillStyle = options.bgcolr;
-                ctx.fillRect(left + ((width + padding_width - l) / 2), top, l + padding_width, h + padding_height);
+                ctx.fillRect(left + ((width + padding_width - l) / 2), 0, l + padding_width, h + padding_height);
                 ctx.fillStyle = options.colr;
-                ctx.fillText(options.title, ((width + padding_width - l) / 2 ) + padding_width / 2, top + h);
+                ctx.fillText(options.title, ((width + padding_width - l) / 2 ) + padding_width / 2, 0 + h);
             }
         }
 
@@ -249,8 +249,21 @@ var options_Stock_Graphe = {
 				display: false
 			},
 			ticks: {
-				minRotation: 90,
-				maxRotation: 90
+				minRotation: 0,
+				maxRotation: 0,
+                callback: function(value, index, ticks) {
+
+                    let search = this.getLabelForValue(value);
+
+                    if (typeof array_years == 'undefined') return search;
+
+                    let year = this.getLabelForValue(value).split('-')[0];
+                    let found = array_years.find(element => element == search);
+                    if (found != undefined) {
+                        return year;
+                    }
+
+                }
 			}
 		},
 		y1: {
@@ -259,8 +272,8 @@ var options_Stock_Graphe = {
 			},
 			ticks: {
 				align: 'end',
-				callback: function(value, index, values) {
-					var c = value+" \u20ac       ";
+				callback: function(value, index, ticks) {
+					var c = value + " \u20ac       ";
 					return c.substring(0, 6);
 				}
 			},

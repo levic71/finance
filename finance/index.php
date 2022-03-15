@@ -111,7 +111,7 @@ foreach(['action', 'goto'] as $key)
 		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
 		<a class="item" id="m2_palmares_bt"><i class="ui inverted trophy icon"></i>Palmarès</a>
 		<a class="item" id="m2_pft_bt"><i class="ui inverted briefcase icon"></i>Portefeuilles</a>
-		<a class="item" id="m2_tools_bt"><i class="ui inverted briefcase icon"></i>Outils</a>
+		<a class="item" id="m2_tools_bt"><i class="ui inverted tools icon"></i>Outils</a>
 <? if ($sess_context->isSuperAdmin()) { ?>
 		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
 		<a class="item" id="m2_admin_bt"><i class="ui inverted sort amount down icon"></i>Admin</a>

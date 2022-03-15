@@ -133,7 +133,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<th class="center aligned">Actif</th>
 						<th class="center aligned" data-sortable="false">PRU<br />Qté</th>
 						<th class="center aligned">Cotation<br />%</th>
-						<th class="center aligned" data-sortable="false">MM7<br />MM200</th>
+						<th class="center aligned" data-sortable="false">MM200<br />%</th>
 						<th class="center aligned" data-sortable="false">Stop<br />Alerte</th>
 						<th class="center aligned">DM</th>
 						<th class="center aligned">Tendance</th>
@@ -171,6 +171,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 					$icon = "copyright outline";
 					$icon_tag = "bt_filter_SEC_99999";
+					$pct_mm = (($qs['MM200'] - $quote) * 100) / $quote;
 
 					$tags_infos = uimx::getIconTooltipTag($qs['tags']);
 				
@@ -191,9 +192,9 @@ $lst_trend_following = $portfolio_data['trend_following'];
 							<label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
 						</div></td>
 					
-						<td class="center aligned"><div>
-							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM7'],   $quote).'">'.sprintf("%.2f", $qs['MM7']).' &euro;</button>
-							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%.2f", $qs['MM200']).' &euro;</button>
+						<td class="center aligned" data-value="'.$pct_mm.'"><div>
+							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%s%.2f", "+", $qs['MM200']).' &euro;</button>
+							<label style="color: grey">'.sprintf("%.2f", $pct_mm).' %</label>
 						</div></td>
 
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
