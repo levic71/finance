@@ -231,7 +231,7 @@ class calc {
         $today = new DateTime(date("Y-m-d"));
 
         // Récupération et TRT des ordres passes
-        $req = "SELECT * FROM orders WHERE portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") ORDER BY date, datetime ASC";
+        $req = "SELECT * FROM orders WHERE portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") ORDER BY date, symbol, datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
 
