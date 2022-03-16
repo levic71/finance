@@ -171,8 +171,6 @@ const externalTooltipHandler = (context) => {
   
     // Display, position, and set styles for font
     tooltipEl.style.opacity = 1;
-    tooltipEl.style.left = '50%';
-    tooltipEl.style.top = '25px';
 }
 
 const getOrCreateTooltip2 = (chart) => {

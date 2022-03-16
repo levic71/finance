@@ -6,12 +6,14 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
 .icon_action i { margin: 0px !important; }
 
 #tooltip_stock_graphe, #tooltip_stock_graphe_div {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 5px;
     color: white;
     opacity: 1;
     pointer-events: none;
     position: absolute;
+    left: 50%;
+    top: 35px;
     transform: translate(-50%, 0);
     transition: all .1s ease;
 }
@@ -67,11 +69,11 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
     width: 60px;
 }
 #tooltip_stock_graphe_div div div:nth-child(3) {
-    width: 40px;
+    width: 45px;
     text-align: right;
 }
 #tooltip_stock_graphe_div div:nth-child(4) div:nth-child(3) {
-    width: 100px;
+    width: 70px;
 }
 
 .nav {

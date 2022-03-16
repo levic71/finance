@@ -9,6 +9,7 @@ include "common.php";
 $symbol = "";
 $rsi_choice = 0;
 $volume_choice = 1;
+$alarm_choice = 1;
 
 foreach (['symbol', 'ptf_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -21,6 +22,7 @@ $bt_interval_colr = "green"; // D/W/M
 $bt_period_colr   = "blue";  // ALL/3Y/1Y/1T
 $bt_mmx_colr      = "purple";
 $bt_volume_colr   = "yellow";
+$bt_alarm_colr    = "pink";
 $bt_filter_colr   = "teal";
 $bt_grey_colr     = "grey";
 
@@ -206,18 +208,19 @@ asort(uimx::$invest_factorielle);
 
 <div id="canvas_area" class="ui container inverted segment" style="padding-top: 0px;">
     <span>
-        <button id="graphe_D_bt" class="mini ui <?= $rsi_choice == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">Daily</button>
-        <button id="graphe_W_bt" class="mini ui <?= $rsi_choice == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">Weekly</button>
-        <button id="graphe_M_bt" class="mini ui <?= $rsi_choice == 2  ? $bt_interval_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">Monthly</button>
-        <button id="graphe_all_bt" class="mini ui <?= $bt_period_colr ?> button">All</button>
-        <button id="graphe_3Y_bt" class="mini ui <?= $bt_grey_colr ?> button">3Y</button>
-        <button id="graphe_1Y_bt" class="mini ui <?= $bt_grey_colr ?> button">1Y</button>
-        <button id="graphe_1T_bt" class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;">1T</button>
-        <button id="graphe_mm7_bt" class="mini ui <?= ($mmx & 1) == 1 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM7</button>
-        <button id="graphe_mm20_bt" class="mini ui <?= ($mmx & 2) == 2 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM20</button>
-        <button id="graphe_mm50_bt" class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM50</button>
-        <button id="graphe_mm200_bt" class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">MM200</button>
-        <button id="graphe_volume_bt" class="mini ui <?= $volume_choice == 1  ? $bt_volume_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
+        <button id="graphe_D_bt"      class="mini ui <?= $rsi_choice == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">Daily</button>
+        <button id="graphe_W_bt"      class="mini ui <?= $rsi_choice == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">Weekly</button>
+        <button id="graphe_M_bt"      class="mini ui <?= $rsi_choice == 2  ? $bt_interval_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">Monthly</button>
+        <button id="graphe_all_bt"    class="mini ui <?= $bt_period_colr ?> button">All</button>
+        <button id="graphe_3Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">3Y</button>
+        <button id="graphe_1Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">1Y</button>
+        <button id="graphe_1T_bt"     class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;">1T</button>
+        <button id="graphe_mm7_bt"    class="mini ui <?= ($mmx & 1) == 1 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM7</button>
+        <button id="graphe_mm20_bt"   class="mini ui <?= ($mmx & 2) == 2 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM20</button>
+        <button id="graphe_mm50_bt"   class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM50</button>
+        <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">MM200</button>
+        <button id="graphe_volume_bt" class="mini ui <?= $volume_choice == 1  ? $bt_volume_colr : $bt_grey_colr ?> button" style="margin-right: 20px;"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
+        <button id="graphe_alarm_bt"  class="mini ui <?= $alarm_choice  == 1  ? $bt_alarm_colr  : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted alarm"></i></button>
     </span>
     <canvas id="stock_canvas1" height="100"></canvas>
     <canvas id="stock_canvas2" height="30"></canvas>
@@ -457,11 +460,12 @@ if (!$readonly) {
     };
 
     var mm_bts = {
-        'graphe_mm7_bt'   : 'MM7',
-        'graphe_mm20_bt'  : 'MM20',
-        'graphe_mm50_bt'  : 'MM50',
-        'graphe_mm200_bt' : 'MM200',
-        'graphe_volume_bt': 'VOLUME'
+        'graphe_mm7_bt'    : 'MM7',
+        'graphe_mm20_bt'   : 'MM20',
+        'graphe_mm50_bt'   : 'MM50',
+        'graphe_mm200_bt'  : 'MM200',
+        'graphe_volume_bt' : 'VOLUME',
+        'graphe_alarm_bt'  : 'ALARM'
     };
 
     // Couleurs des MMX
@@ -605,15 +609,19 @@ if (!$readonly) {
         ref_colr = label.toLowerCase() == "volume" ? "<?= $bt_volume_colr ?>" : "<?= $bt_mmx_colr ?>";
         bt = 'graphe_' + label.toLowerCase() + '_bt'
         addCN(bt, 'loading');
-        if (isCN(bt, ref_colr)) {
-            chart.data.datasets.forEach((dataset) => {
-                if (dataset.label == label) dataset.data = null;
-            });
+        if (label.toLowerCase() == 'alarm') {
+
         } else {
-            if (label.toLowerCase() == "volume")
-                chart.data.datasets.push(getDatasetVols(g_new_data, 'VOLUME'));
-            else
-                chart.data.datasets.push(getDatasetMMX(g_new_data, getMMXKey(label), label));
+            if (isCN(bt, ref_colr)) {
+                chart.data.datasets.forEach((dataset) => {
+                    if (dataset.label == label) dataset.data = null;
+                });
+            } else {
+                if (label.toLowerCase() == "volume")
+                    chart.data.datasets.push(getDatasetVols(g_new_data, 'VOLUME'));
+                else
+                    chart.data.datasets.push(getDatasetMMX(g_new_data, getMMXKey(label), label));
+            }
         }
         chart.update();
         rmCN(bt, 'loading');
