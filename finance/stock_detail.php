@@ -47,7 +47,7 @@ $tags = array_flip(explode("|", utf8_decode($row['tags'])));
 
 // Recuperation des min/max des cotations
 $minmax = calc::getMinMaxQuotations();
-
+var_dump($minmax[$symbol]);
 // Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
 $aggregate_ptf = $sess_context->isUserConnected() ? calc::getAggregatePortfoliosByUser($sess_context->getUserId()) : array();
 
