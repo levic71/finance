@@ -625,7 +625,8 @@ if (!$readonly) {
         if (label.toLowerCase() == 'alarm') {
 
             if (isCN(bt, ref_colr)) {
-                chart.options.plugins = [];
+                chart.options.plugins.vertical   = [];
+                chart.options.plugins.horizontal = [];
             } else {
                 chart.options.plugins.vertical   = [];
                 chart.options.plugins.horizontal = h_lines;
