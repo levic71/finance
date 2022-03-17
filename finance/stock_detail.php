@@ -49,7 +49,7 @@ $tags = array_flip(explode("|", utf8_decode($row['tags'])));
 $minmax = calc::getMinMaxQuotations();
 
 // Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
-$aggregate_ptf = calc::getAggregatePortfoliosByUser($sess_context->getUserId());
+$aggregate_ptf = $sess_context->isUserConnected() ? calc::getAggregatePortfoliosByUser($sess_context->getUserId()) : array();
 
 $pru = isset($aggregate_ptf['positions'][$symbol]['pru']) ? $aggregate_ptf['positions'][$symbol]['pru'] : 0;
 
@@ -220,7 +220,9 @@ asort(uimx::$invest_factorielle);
         <button id="graphe_mm50_bt"   class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM50</button>
         <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">MM200</button>
         <button id="graphe_volume_bt" class="mini ui <?= $volume_choice == 1  ? $bt_volume_colr : $bt_grey_colr ?> button" style="margin-right: 20px;"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
-        <button id="graphe_alarm_bt"  class="mini ui <?= $alarm_choice  == 1  ? $bt_alarm_colr  : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted alarm"></i></button>
+        <? if ($sess_context->isUserConnected()) { ?>
+        <button id="graphe_alarm_bt"  class="mini ui <?= $alarm_choice  == 1  ? $bt_alarm_colr  : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted flag"></i></button>
+        <? } ?>
     </span>
     <canvas id="stock_canvas1" height="100"></canvas>
     <canvas id="stock_canvas2" height="30"></canvas>
@@ -464,9 +466,13 @@ if (!$readonly) {
         'graphe_mm20_bt'   : 'MM20',
         'graphe_mm50_bt'   : 'MM50',
         'graphe_mm200_bt'  : 'MM200',
-        'graphe_volume_bt' : 'VOLUME',
-        'graphe_alarm_bt'  : 'ALARM'
+        'graphe_volume_bt' : 'VOLUME'
     };
+
+    <? if ($sess_context->isUserConnected()) { ?>
+    mm_bts.graphe_alarm_bt = 'ALARM';
+    <? } ?>
+
 
     // Couleurs des MMX
     var mmx_colors = { 'MM7': '<?= $sess_context->getSpectreColor(4) ?>', 'MM20': '<?= $sess_context->getSpectreColor(2) ?>', 'MM50': '<?= $sess_context->getSpectreColor(1) ?>', 'MM200': '<?= $sess_context->getSpectreColor(6) ?>' };
@@ -582,7 +588,14 @@ if (!$readonly) {
             }
         });
 
+        // On retire le premier label pour qu'il n'empiete pas sur la gauche du graphe
         if (array_years.length > 2) array_years.shift();
+
+        // Data pour les lignes horizontales
+        h_lines = [];
+        <? if ($pru > 0) { ?>
+        h_lines.push({ lineColor: 'red', yPosition: <?= $pru ?>, text: 'PRU' });
+        <? } ?>
 
         // Current data
         var g_new_data = null;
@@ -606,10 +619,17 @@ if (!$readonly) {
     }
 
     toogleMMX = function(chart, label) {
-        ref_colr = label.toLowerCase() == "volume" ? "<?= $bt_volume_colr ?>" : "<?= $bt_mmx_colr ?>";
+        ref_colr = label.toLowerCase() == "volume" ? "<?= $bt_volume_colr ?>" : (label.toLowerCase() == "alarm" ? "<?= $bt_alarm_colr ?>" : "<?= $bt_mmx_colr ?>");
         bt = 'graphe_' + label.toLowerCase() + '_bt'
         addCN(bt, 'loading');
         if (label.toLowerCase() == 'alarm') {
+
+            if (isCN(bt, ref_colr)) {
+                chart.options.plugins = [];
+            } else {
+                chart.options.plugins.vertical   = [];
+                chart.options.plugins.horizontal = h_lines;
+            }
 
         } else {
             if (isCN(bt, ref_colr)) {
@@ -715,8 +735,8 @@ if (!$readonly) {
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
-        options_Stock_Graphe.plugins.vertical   = [ ];
-        options_Stock_Graphe.plugins.horizontal = [ <?= $pru == 0 ? "" : "{ lineColor: 'red', yPosition: ".$pru.", text: 'PRU' }" ?> ];
+        options_Stock_Graphe.plugins.vertical   = [];
+        options_Stock_Graphe.plugins.horizontal = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? h_lines : [];
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ horizontal, vertical ]);
 
         // Update Chart RSI

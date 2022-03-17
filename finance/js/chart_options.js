@@ -64,10 +64,10 @@ const horizontal = {
                     var l = ctx.measureText(item.text).width;
                     var h = parseInt(ctx.font, size_font);
                     ctx.fillStyle = item.lineColor;
-                    ctx.fillRect(left, y1.getPixelForValue(item.yPosition), l + 10, -h);
+                    ctx.fillRect(left, y1.getPixelForValue(item.yPosition), l + 10, -h-2);
 
                     ctx.fillStyle = 'black';
-                    ctx.fillText(item.text, 5, y1.getPixelForValue(item.yPosition) - 1);
+                    ctx.fillText(item.text, 5, y1.getPixelForValue(item.yPosition) - 2);
                 }
 
                 ctx.strokeStyle = item.lineColor;
@@ -284,14 +284,6 @@ var options_Stock_Graphe = {
 	maintainAspectRatio: true,
     animation: true,
     plugins: {
-        horizontal: {
-            lineColor: 'blue',
-            xPosition: 10,
-        },
-        vertical: {
-            lineColor: 'green',
-            yPosition: 50,
-        },
         legend: {
 			display: false
 		},

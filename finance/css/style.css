@@ -379,6 +379,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 #lst_search_quote .td_name {
     width: 400px;
+    width: auto;
     text-overflow: ellipsis;
     overflow: hidden;
 }
