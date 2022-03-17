@@ -592,9 +592,25 @@ if (!$readonly) {
         if (array_years.length > 2) array_years.shift();
 
         // Data pour les lignes horizontales
-        h_lines = [];
+        h_lines_1Y  = [];
+        h_lines_3Y  = [];
+        h_lines_all = [];
         <? if ($pru > 0) { ?>
-        h_lines.push({ lineColor: 'red', yPosition: <?= $pru ?>, text: 'PRU' });
+            h_lines_1Y.push({  lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
+            h_lines_3Y.push({  lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
+            h_lines_all.push({ lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
+        <? } ?>
+       
+        <? if ($minmax[$symbol]['all_min_price'] > 0) { ?>
+            h_lines_1Y.push({  lineColor: 'red', yPosition: <?= $minmax[$symbol]['1Y_min_price'] ?>,  text: 'MIN', lineDash: [ 2, 2 ] });
+            h_lines_3Y.push({  lineColor: 'red', yPosition: <?= $minmax[$symbol]['3Y_min_price'] ?>,  text: 'MIN', lineDash: [ 2, 2 ] });
+            h_lines_all.push({ lineColor: 'red', yPosition: <?= $minmax[$symbol]['all_min_price'] ?>, text: 'MIN', lineDash: [ 2, 2 ] });
+        <? } ?>
+
+        <? if ($minmax[$symbol]['all_max_price'] > 0) { ?>
+            h_lines_1Y.push({  lineColor: 'green', yPosition: <?= $minmax[$symbol]['1Y_max_price'] ?>,  text: 'MAX', lineDash: [ 2, 2 ] });
+            h_lines_3Y.push({  lineColor: 'green', yPosition: <?= $minmax[$symbol]['3Y_max_price'] ?>,  text: 'MAX', lineDash: [ 2, 2 ] });
+            h_lines_all.push({ lineColor: 'green', yPosition: <?= $minmax[$symbol]['all_max_price'] ?>, text: 'MAX', lineDash: [ 2, 2 ] });
         <? } ?>
 
         // Current data
@@ -629,7 +645,7 @@ if (!$readonly) {
                 chart.options.plugins.horizontal = [];
             } else {
                 chart.options.plugins.vertical   = [];
-                chart.options.plugins.horizontal = h_lines;
+                chart.options.plugins.horizontal = isCN('graphe_1Y_bt', '<?= $bt_mmx_colr ?>') || isCN('graphe_1T_bt', '<?= $bt_mmx_colr ?>') ? h_lines_1Y : (isCN('graphe_3Y_bt', '<?= $bt_mmx_colr ?>') ? h_lines_3Y  : h_lines_all);
             }
 
         } else {
@@ -737,7 +753,7 @@ if (!$readonly) {
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
         options_Stock_Graphe.plugins.vertical   = [];
-        options_Stock_Graphe.plugins.horizontal = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? h_lines : [];
+        options_Stock_Graphe.plugins.horizontal = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? h_lines_all : [];
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ horizontal, vertical ]);
 
         // Update Chart RSI

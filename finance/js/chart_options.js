@@ -46,7 +46,7 @@ const insider = {
 
 const horizontal = {
     id: 'horizontal',
-    beforeDraw(chart, args, options) {
+    afterDraw(chart, args, options) {
         const {
             ctx,
             chartArea: { top, right, bottom, left, width, height },
@@ -63,6 +63,8 @@ const horizontal = {
                     ctx.font = size_font + 'px Verdana';
                     var l = ctx.measureText(item.text).width;
                     var h = parseInt(ctx.font, size_font);
+
+                    if (typeof item.lineDash !== 'undefined') ctx.setLineDash(item.lineDash);
                     ctx.fillStyle = item.lineColor;
                     ctx.fillRect(left, y1.getPixelForValue(item.yPosition), l + 10, -h-2);
 
