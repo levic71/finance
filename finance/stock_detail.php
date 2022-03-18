@@ -595,6 +595,7 @@ if (!$readonly) {
         h_lines_1Y  = [];
         h_lines_3Y  = [];
         h_lines_all = [];
+
         <? if ($pru > 0) { ?>
             h_lines_1Y.push({  lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
             h_lines_3Y.push({  lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
@@ -634,33 +635,41 @@ if (!$readonly) {
         return label == "MM7" ? 'm4' : (label == "MM20" ? 'm3' : (label == "MM50" ? 'm2' : 'm1'));
     }
 
+    getAlarmLines = function() {
+        return isCN('graphe_1Y_bt', '<?= $bt_period_colr ?>') || isCN('graphe_1T_bt', '<?= $bt_period_colr ?>') ? h_lines_1Y : (isCN('graphe_3Y_bt', '<?= $bt_period_colr ?>') ? h_lines_3Y  : h_lines_all);
+    }
+
+    updateAlarmDisplay = function(chart) {
+        if (isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>')) {
+            chart.options.plugins.vertical   = [];
+            chart.options.plugins.horizontal = getAlarmLines();
+        } else {
+            chart.options.plugins.vertical   = [];
+            chart.options.plugins.horizontal = [];
+        }
+    }
+
     toogleMMX = function(chart, label) {
+
         ref_colr = label.toLowerCase() == "volume" ? "<?= $bt_volume_colr ?>" : (label.toLowerCase() == "alarm" ? "<?= $bt_alarm_colr ?>" : "<?= $bt_mmx_colr ?>");
         bt = 'graphe_' + label.toLowerCase() + '_bt'
         addCN(bt, 'loading');
-        if (label.toLowerCase() == 'alarm') {
 
-            if (isCN(bt, ref_colr)) {
-                chart.options.plugins.vertical   = [];
-                chart.options.plugins.horizontal = [];
-            } else {
-                chart.options.plugins.vertical   = [];
-                chart.options.plugins.horizontal = isCN('graphe_1Y_bt', '<?= $bt_mmx_colr ?>') || isCN('graphe_1T_bt', '<?= $bt_mmx_colr ?>') ? h_lines_1Y : (isCN('graphe_3Y_bt', '<?= $bt_mmx_colr ?>') ? h_lines_3Y  : h_lines_all);
-            }
-
+        if (isCN(bt, ref_colr)) {
+            chart.data.datasets.forEach((dataset) => {
+                if (dataset.label == label) dataset.data = null;
+            });
         } else {
-            if (isCN(bt, ref_colr)) {
-                chart.data.datasets.forEach((dataset) => {
-                    if (dataset.label == label) dataset.data = null;
-                });
-            } else {
-                if (label.toLowerCase() == "volume")
-                    chart.data.datasets.push(getDatasetVols(g_new_data, 'VOLUME'));
-                else
-                    chart.data.datasets.push(getDatasetMMX(g_new_data, getMMXKey(label), label));
-            }
+            if (label.toLowerCase() == "volume")
+                chart.data.datasets.push(getDatasetVols(g_new_data, 'VOLUME'));
+            else
+                chart.data.datasets.push(getDatasetMMX(g_new_data, getMMXKey(label), label));
         }
+
+        updateAlarmDisplay(chart);
+
         chart.update();
+
         rmCN(bt, 'loading');
         switchCN(bt, '<?= $bt_grey_colr ?>', ref_colr);
     }
@@ -752,8 +761,11 @@ if (!$readonly) {
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
+
+        // options des alarms
         options_Stock_Graphe.plugins.vertical   = [];
-        options_Stock_Graphe.plugins.horizontal = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? h_lines_all : [];
+        options_Stock_Graphe.plugins.horizontal = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
+
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ horizontal, vertical ]);
 
         // Update Chart RSI
