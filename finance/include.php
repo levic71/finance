@@ -741,25 +741,31 @@ class calc {
         if (tools::isLocalHost() || cacheData::refreshOnceADayCache($file_cache)) {
 
             foreach([ "all" => "", "3Y" => "WHERE day >= DATE_SUB(NOW(), INTERVAL 3 YEAR)", "1Y" => "WHERE day >= DATE_SUB(NOW(), INTERVAL 1 YEAR)" ] as $key => $where) {
-                $req = "SELECT symbol, max(close) max, min(close) min FROM `daily_time_series_adjusted` ".$where." group by symbol";
+                $req = "SELECT symbol, max(adjusted_close) max, min(adjusted_close) min FROM `daily_time_series_adjusted` ".$where." group by symbol";
                 $res = dbc::execSql($req);
 
                 while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
 
-                    $req2 = "SELECT symbol, day, close FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND close=".$row['min']." ".str_replace('WHERE', "AND", $where);
+                    $req2 = "SELECT symbol, day, adjusted_close FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND adjusted_close=".$row['min']." ".str_replace('WHERE', "AND", $where);
                     $res2 = dbc::execSql($req2);
                     $row2 = mysqli_fetch_array($res2, MYSQLI_ASSOC);
 
-                    $ret[$row2['symbol']][$key.'_min_price'] = $row2['close'];
+                    $ret[$row2['symbol']][$key.'_min_price'] = $row2['adjusted_close'];
                     $ret[$row2['symbol']][$key.'_min_day']   = $row2['day'];
 
-                    $req2 = "SELECT symbol, day, close FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND close=".$row['max']." ".str_replace("WHERE", "AND", $where);
+                    $req2 = "SELECT symbol, day, adjusted_close FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND adjusted_close=".$row['max']." ".str_replace("WHERE", "AND", $where);
                     $res2 = dbc::execSql($req2);
                     $row2 = mysqli_fetch_array($res2, MYSQLI_ASSOC);
 
-                    $ret[$row2['symbol']][$key.'_max_price'] = $row2['close'];
+                    $ret[$row2['symbol']][$key.'_max_price'] = $row2['adjusted_close'];
                     $ret[$row2['symbol']][$key.'_max_day']   = $row2['day'];
 
+                    $req3 = "SELECT * FROM quotes WHERE symbol='".$row['symbol']."'";
+                    $res3 = dbc::execSql($req3);
+                    if ($row3 = mysqli_fetch_array($res3, MYSQLI_ASSOC)) {
+                        if ($row3['price'] > $ret[$row2['symbol']][$key.'_max_price']) $ret[$row2['symbol']][$key.'_max_price'] = $row3['price'];
+                        if ($row3['price'] < $ret[$row2['symbol']][$key.'_min_price']) $ret[$row2['symbol']][$key.'_min_price'] = $row3['price'];
+                    }
                 }
             }
 

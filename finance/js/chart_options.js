@@ -1,46 +1,45 @@
-const insider = {
-    id: 'insider',
+drawLabel = function(chart, text, args = {}) {
+
+    const {
+        ctx,
+        chartArea: { top, right, bottom, left, width, height },
+        scales: { x, y1 },
+    } = chart;
+
+    ctx.save();
+
+	const bgColr     = args.bgColr     || 'white';
+	const textColr   = args.textColr   || 'black';
+	const fontFamily = args.fontFamily || 'Verdana';
+	const fontSize   = args.fontSize   || 12;
+	const alignX     = args.alignX || '';
+	const alignY     = args.alignY || '';
+	const paddingWidth  = args.paddingWidth || 20;
+	const paddingHeight = args.paddingHeight || 6;
+	const xx = args.x || 0;
+	const yy = args.y || 0;
+
+    ctx.font = fontSize + 'px ' + fontFamily;
+
+    let l = ctx.measureText(text).width;
+    let h = parseInt(ctx.font, fontSize);
+
+    let posX = alignX === 'right'  ? right-l-paddingWidth   : (alignX === 'center' ? left+((width+paddingWidth-l) / 2)  : xx);
+    let posY = alignY === 'bottom' ? bottom-h-paddingHeight : (alignY === 'center' ? ((height+paddingHeight-h) / 2) : yy);
+
+    ctx.fillStyle = bgColr;
+    ctx.fillRect(posX, posY, (l + paddingWidth), (h + paddingHeight));
+
+    ctx.fillStyle = textColr;
+    ctx.fillText(text, posX + (paddingWidth / 2), posY + h + (paddingHeight / 2) - 2);
+
+    ctx.restore();
+}
+
+const insiderText = {
+    id: 'insiderText',
     beforeDraw(chart, args, options) {
-        const {
-            ctx,
-            chartArea: { top, right, bottom, left, width, height },
-            scales: { x, y1 },
-        } = chart;
-
-        ctx.save();
-
-        if (typeof options.title !== 'undefined') {
-
-            var padding_width  = 15;
-            var padding_height = 5;
-            var size_font = options.size;
-
-            ctx.font = size_font + 'px Verdana';
-
-            var l = ctx.measureText(options.title).width;
-            var h = parseInt(ctx.font, size_font);
-
-            if (options.align == 'right') {
-                ctx.fillStyle = options.bgcolr;
-                ctx.fillRect(right - l - padding_width, 0, l + padding_width, h + padding_height);
-                ctx.fillStyle = options.colr;
-                ctx.fillText(options.title, right - l - (padding_width / 2), top + h);
-             }
-            else if (options.align == 'left') {
-                ctx.fillStyle = options.bgcolr;
-                ctx.fillRect(left, 0, l + padding_width, h + padding_height);
-                ctx.fillStyle = options.colr;
-                ctx.fillText(options.title, padding_width / 2, 0 + h);
-             }
-            else {
-                ctx.fillStyle = options.bgcolr;
-                ctx.fillRect(left + ((width + padding_width - l) / 2), 0, l + padding_width, h + padding_height);
-                ctx.fillStyle = options.colr;
-                ctx.fillText(options.title, ((width + padding_width - l) / 2 ) + padding_width / 2, 0 + h);
-            }
-        }
-
-        ctx.restore();
+        drawLabel(chart, options.title, { bgColr: options.bgcolr, textColr: options.colr, alignX: options.alignX, alignY: options.alignY });
     }
 }
 
@@ -59,19 +58,11 @@ const horizontal = {
             options.forEach(function(item) {
 
                 if (typeof item.text !== 'undefined') {
-                    var size_font = 10;
-                    ctx.font = size_font + 'px Verdana';
-                    var l = ctx.measureText(item.text).width;
-                    var h = parseInt(ctx.font, size_font);
-
-                    if (typeof item.lineDash !== 'undefined') ctx.setLineDash(item.lineDash);
-                    ctx.fillStyle = item.lineColor;
-                    ctx.fillRect(left, y1.getPixelForValue(item.yPosition), l + 10, -h-2);
-
-                    ctx.fillStyle = 'black';
-                    ctx.fillText(item.text, 5, y1.getPixelForValue(item.yPosition) - 2);
+                    drawLabel(chart, item.text, { x: 0, y: y1.getPixelForValue(item.yPosition)-10-2, textColr: 'black', bgColr: item.lineColor, fontSize: '10', paddingHeight: 3, paddingWidth: 4 });
+                    drawLabel(chart, item.text, { x: width, y: y1.getPixelForValue(item.yPosition)-10-2, textColr: 'black', bgColr: 'rgba(255, 255, 255, 0.3', fontSize: '10', paddingHeight: 3, paddingWidth: 4 });
                 }
 
+                if (typeof item.lineDash !== 'undefined') ctx.setLineDash(item.lineDash);
                 ctx.strokeStyle = item.lineColor;
                 ctx.strokeRect(left, y1.getPixelForValue(item.yPosition), width, 0);
             });

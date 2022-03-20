@@ -666,12 +666,15 @@ if (!$readonly) {
                 chart.data.datasets.push(getDatasetMMX(g_new_data, getMMXKey(label), label));
         }
 
+        // Changement couleur bt
+        switchCN(bt, '<?= $bt_grey_colr ?>', ref_colr);
+
+        // Update sinon pak ok pour bt alarm
         updateAlarmDisplay(chart);
 
         chart.update();
 
         rmCN(bt, 'loading');
-        switchCN(bt, '<?= $bt_grey_colr ?>', ref_colr);
     }
 
     getIntervalStatus = function() {
@@ -771,15 +774,15 @@ if (!$readonly) {
         // Update Chart RSI
         var datasets2 = [];
         datasets2.push(getDatasetRSI14(g_new_data));
-        options_RSI_Graphe.plugins.insider   = { title: 'RSI14', colr: '#e77fe8', bgcolr: '#1b1c1d', size: '12', align: 'left' };
-        myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [ insider, horizontalLines_RSI_Graphe ]);
+        options_RSI_Graphe.plugins.insiderText   = { title: 'RSI14', colr: '#e77fe8', bgcolr: '#1b1c1d', alignX: 'left', alignY: 'top' };
+        myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [ insiderText, horizontalLines_RSI_Graphe ]);
 
         // Update Chart DM
         var datasets3 = [];
         datasets3.push(getDatasetDM(g_new_data));
         options_DM_Graphe.scales.y.position = 'right';
-        options_DM_Graphe.plugins.insider   = { title: 'Evolution DM', colr: 'yellow', bgcolr: '#1b1c1d', size: '12', align: 'left' };
-        myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [ insider, horizontalLines_DM_Graphe ]);
+        options_DM_Graphe.plugins.insiderText   = { title: 'Evolution DM', colr: 'yellow', bgcolr: '#1b1c1d', alignX: 'left', alignY: 'top' };
+        myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [ insiderText, horizontalLines_DM_Graphe ]);
 
         rmCN(bt, 'loading');
     }
@@ -841,7 +844,7 @@ if (!$readonly) {
         go({ action: 'home', id: 'main', url: '<?= $ptf_id == "" ?  "home_content.php" : "portfolio_dashboard.php?portfolio_id=".$ptf_id ?>', loading_area: 'main' });
     });
 
-    // Listener sur bt MMX et volume
+    // Listener sur bt MMX + volume + alarm
     Object.entries(mm_bts).forEach(([key, val]) => {
         Dom.addListener(Dom.id(key), Dom.Event.ON_CLICK, function(event) {
             toogleMMX(myChart1, val);
