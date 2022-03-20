@@ -760,13 +760,13 @@ class calc {
                     $ret[$row2['symbol']][$key.'_max_price'] = $row2['adjusted_close'];
                     $ret[$row2['symbol']][$key.'_max_day']   = $row2['day'];
 
-                    $req3 = "SELECT * FROM quotes WHERE symbol='".$row['symbol']."'";
+/*                     $req3 = "SELECT * FROM quotes WHERE symbol='".$row['symbol']."'";
                     $res3 = dbc::execSql($req3);
                     if ($row3 = mysqli_fetch_array($res3, MYSQLI_ASSOC)) {
                         if ($row3['price'] > $ret[$row2['symbol']][$key.'_max_price']) $ret[$row2['symbol']][$key.'_max_price'] = $row3['price'];
                         if ($row3['price'] < $ret[$row2['symbol']][$key.'_min_price']) $ret[$row2['symbol']][$key.'_min_price'] = $row3['price'];
                     }
-                }
+ */                }
             }
 
             cacheData::writeCacheData($file_cache, $ret);
