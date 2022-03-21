@@ -243,7 +243,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<th>Qté</th>
 						<th>Prix</th>
 						<th>Total</th>
-						<th>Comm</th>
+						<th>Comm/TTF</th>
 						<th></th>
 						<th></th>
 					</tr></thead>
@@ -258,7 +258,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>
 						<td data-value="'.$val['price'].'">'.sprintf("%.2f", $val['price']).' &euro;</td>
 						<td data-value="'.sprintf("%.2f", $val['quantity'] * $val['price']).'">'.sprintf("%.2f", $val['quantity'] * $val['price']).' &euro;</td>
-						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;</td>
+						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;/'.sprintf("%.2f", $val['ttf']).' &euro;</td>
 						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
 						<td class="collapsing">
 							'.($isPortfolioSynthese ? '' : '<i id="order_edit_'.$val['id'].'_bt" class="edit inverted icon"></i>').'
@@ -270,7 +270,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					<tfoot>
 						<tr>
 							<td colspan="7"></td>
-							<td class="right aligned"><span id="sum_comm"></span></td>
+							<td class="right aligned"><span id="sum_comm"></span>/<span id="sum_ttf"></span></td>
 							<td></td>
 					</tfoot>
 				</table>
@@ -337,6 +337,7 @@ computeLines = function(opt) {
 	transferts_out = <?= sprintf("%.2f", $portfolio_data['transfert_out']) ?>;
 	transferts = transferts_in - transferts_out;
 	commissions = <?= sprintf("%.2f", $portfolio_data['commission']) ?>;
+	ttf = <?= sprintf("%.2f", $portfolio_data['ttf']) ?>;
 
 	if (opt == 'init') {
 		setInputValueAndKeepLastCar('f_valo_ptf', valo_ptf.toFixed(2));
@@ -346,6 +347,7 @@ computeLines = function(opt) {
 		Dom.id('retraits_transferts').value = Dom.id('retraits_transferts').value.replace("0x", retraits.toFixed(2));
 		Dom.id('retraits_transferts').value = Dom.id('retraits_transferts').value.replace("0y", transferts.toFixed(2));
 		setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + ' &euro;');
+		setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + ' &euro;');
 		Dom.id('subtitle').innerHTML = ' (<?= $portfolio_data['interval_year'] > 0 ? $portfolio_data['interval_year'].($portfolio_data['interval_year'] > 1 ? " ans " : " an") : "" ?> <?= $portfolio_data['interval_month'] ?> mois)';
 	}
 

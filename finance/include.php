@@ -185,6 +185,7 @@ class calc {
         $sum_retrait    = 0;
         $sum_dividende  = 0;
         $sum_commission = 0;
+        $sum_ttf        = 0; // Taxe Transaction financiere sur achat actifs FR de 0,3%
         $valo_ptf       = 0;
         $cash           = 0;
         $ampplt         = 0; // Apports moyen ponderes par le temps
@@ -252,12 +253,10 @@ class calc {
             $row['other_name'] = substr($row['product_name'], 0, 5) == "AUTRE" ? true : false;
             $pname = $row['other_name'] ? substr($row['product_name'], 6) : $row['product_name'];
             $row['product_name'] = $pname;
-
-            // Tableau des ordres
-            $portfolio['orders'][] = $row;
+            $row['ttf'] = 0;
 
             // Si ordre non confirme
-            if ($row['confirme'] == 0) continue;
+            if ($row['confirme'] == 0) { $portfolio['orders'][] = $row; continue; }
             
             // Achat/Vente
             if ($row['action'] == 1 || $row['action'] == -1) {
@@ -278,7 +277,15 @@ class calc {
                     $pru = $row['price'];
                 }
 
-                $cash += ($row['quantity'] * $row['price'] * ($achat ? -1 : 1)); // ajout si vente, retrait achat
+                // Valorisation operation
+                $valo_ope = $row['quantity'] * $row['price'];
+
+                // Maj cash
+                $cash += $valo_ope * ($achat ? -1 : 1); // ajout si vente, retrait achat
+
+                // TTF si actif FR 
+                if (isset($quotes['stocks'][$pname]['type']) && $quotes['stocks'][$pname]['type'] == 'Equity' && strstr($pname, ".PAR")) $row['ttf'] = $valo_ope * 0.003;
+                $sum_ttf += $row['ttf'];
 
                 $positions[$pname]['nb']  = $nb;
                 $positions[$pname]['pru'] = $pru;
@@ -321,6 +328,9 @@ class calc {
                 $ampplt        += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
    
+            // Tableau des ordres
+            $portfolio['orders'][] = $row;
+
         }
 
         // On retire des positions les actifs dont le nb = 0 (plus dans le portefeuille)
@@ -331,10 +341,9 @@ class calc {
                 $valo_ptf += $val['nb'] * (isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru']);
         }
 
-        $portfolio['valo_ptf']   = $valo_ptf + $cash;
+        $portfolio['valo_ptf']   = $valo_ptf + $cash - $sum_commission - $sum_ttf;
         $portfolio['cash']       = $cash;
-        // J'enlève les commissions pour etre au plus pres de la réalité
-        $portfolio['gain_perte'] = $portfolio['valo_ptf'] + $transfert_out - $sum_depot - $transfert_in - $sum_commission;
+        $portfolio['gain_perte'] = $portfolio['valo_ptf'] + $transfert_out - $sum_depot - $transfert_in;
         $portfolio['ampplt']     = $ampplt;
         $portfolio['perf_ptf']   = $ampplt == 0 ? 0 : ($portfolio['gain_perte'] / $ampplt) * 100;
         $portfolio['transfert_in']  = $transfert_in;
@@ -343,6 +352,7 @@ class calc {
         $portfolio['retrait']    = $sum_retrait;
         $portfolio['dividende']  = $sum_dividende;
         $portfolio['commission'] = $sum_commission;
+        $portfolio['ttf']        = $sum_ttf;
         $portfolio['positions']  = $positions;
         $portfolio['interval_year']  = $interval_year;
         $portfolio['interval_month'] = $interval_month;
