@@ -408,12 +408,6 @@ computeLines = function(opt) {
 
 		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
-
-		estimation_valo = cash + sum_valo;
-		gain_perte = estimation_valo + transferts_out - depots - transferts_in;
-
-		setInputValueAndKeepLastCar('f_valo_ptf', estimation_valo.toFixed(2));
-		setInputValueAndKeepLastCar('gain_perte', gain_perte.toFixed(2));
 	}
 
 	// RIBBON
