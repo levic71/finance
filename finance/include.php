@@ -341,8 +341,8 @@ class calc {
                 $valo_ptf += $val['nb'] * (isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru']);
         }
 
-        $portfolio['valo_ptf']   = $valo_ptf + $cash - $sum_commission - $sum_ttf;
-        $portfolio['cash']       = $cash;
+        $portfolio['cash']       = $cash - $sum_commission - $sum_ttf;
+        $portfolio['valo_ptf']   = $valo_ptf + $cash;
         $portfolio['gain_perte'] = $portfolio['valo_ptf'] + $transfert_out - $sum_depot - $transfert_in;
         $portfolio['ampplt']     = $ampplt;
         $portfolio['perf_ptf']   = $ampplt == 0 ? 0 : ($portfolio['gain_perte'] / $ampplt) * 100;
