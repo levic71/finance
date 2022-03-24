@@ -148,15 +148,33 @@ class dbc {
         return $res;
     }
 
-    public static function addColTable($table, $column, $requete)
+    public static function isColTable($table, $column)
     {
-        $ret = 0;
-
         $req = "SELECT count(*) total FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '".$table."' AND column_name LIKE '".$column."'";
         $res = dbc::execSql($req);
         $row = mysqli_fetch_assoc($res);
 
-        if ($row['total'] == 0) {
+        return $row['total'];
+    }
+
+    public static function addColTable($table, $column, $requete)
+    {
+        $ret = 0;
+
+        if (!dbc::isColTable($table, $column)) {
+            $res = dbc::execSql($requete);
+            echo $requete." OK";
+            $ret = 1;
+        }
+
+        return $ret;
+    }
+
+    public static function delColTable($table, $column, $requete)
+    {
+        $ret = 0;
+
+        if (dbc::isColTable($table, $column)) {
             $res = dbc::execSql($requete);
             echo $requete." OK";
             $ret = 1;
@@ -204,15 +222,13 @@ class calc {
         $req = "SELECT * FROM trend_following WHERE user_id=".$user_id;
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) $portfolio['trend_following'][$row['symbol']] = $row;
-        
-        // Si portefeuille synthese on fusionne les eventuelles saisies de cotation
-        if ($portfolio['infos']['synthese'] == 1) {
-            $local_quotes = '';
-            $req = "SELECT * FROM portfolios WHERE user_id=".$user_id." AND id IN (".$portfolio['infos']['all_ids'].")";
-            $res = dbc::execSql($req);
-            while($row = mysqli_fetch_array($res)) $local_quotes .= ($local_quotes ==  '' ? '' : ',').$row['quotes'];
-            $portfolio['infos']['quotes'] = $local_quotes;
-        }
+
+        // Ajout des cotations saisies manuellement dans Trend Following
+        $local_quotes = '';
+        $req = "SELECT * FROM trend_following WHERE user_id=".$user_id;
+        $res = dbc::execSql($req);
+        while($row = mysqli_fetch_array($res)) if ($row['manual_price']) $local_quotes .= ($local_quotes ==  '' ? '' : ',').$row['symbol'].'|'.$row['manual_price'];
+        $portfolio['infos']['quotes'] = $local_quotes;
 
         // On recupere les eventuelles saisies de cotation manuelles
         if (!isset($quotes['stocks'])) $quotes['stocks'] = array();
@@ -903,6 +919,9 @@ class calc {
         $MM100 = $data['MM100'] != "" ? $data['MM100'] : ($data['MM200'] + $data['MM50']) / 2;
         $MM200 = $data['MM200'];
         $close = $data['price'];
+
+        // Si les MM sont a zero, bye bye
+        if ($MM7 == 0 && $MM200 == 0) return $ret;
 
 /*
 //rouge (baissier prix sous moyenne mobile 200)
@@ -1599,6 +1618,8 @@ class uimx {
     ];
 
     public static function getRedGreenColr($x, $y) {
+
+        if ($x == 0) return 0;
 
         $colr = 6;
         $ratio = ((($y - $x) * 100) / $x);

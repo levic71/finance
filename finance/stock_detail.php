@@ -60,6 +60,8 @@ $ptf_nb_positions = isset($aggregate_ptf['positions']) ? count($aggregate_ptf['p
 $data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
 $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
+$trend_following = $aggregate_ptf['trend_following'];
+
 ?>
 
 <div class="ui container inverted segment" style="padding-bottom: 0px;">
@@ -592,9 +594,9 @@ if (!$readonly) {
         if (array_years.length > 2) array_years.shift();
 
         // Data pour les lignes horizontales
-        h_lines_1Y  = [];
-        h_lines_3Y  = [];
-        h_lines_all = [];
+        var h_lines_1Y  = [];
+        var h_lines_3Y  = [];
+        var h_lines_all = [];
 
         <? if ($pru > 0) { ?>
             h_lines_1Y.push({  lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
@@ -612,6 +614,14 @@ if (!$readonly) {
             h_lines_1Y.push({  lineColor: 'green', yPosition: <?= $minmax[$symbol]['1Y_max_price'] ?>,  text: 'MAX', lineDash: [ 2, 2 ] });
             h_lines_3Y.push({  lineColor: 'green', yPosition: <?= $minmax[$symbol]['3Y_max_price'] ?>,  text: 'MAX', lineDash: [ 2, 2 ] });
             h_lines_all.push({ lineColor: 'green', yPosition: <?= $minmax[$symbol]['all_max_price'] ?>, text: 'MAX', lineDash: [ 2, 2 ] });
+        <? } ?>
+
+        // Data pour les infos sur l'axe Y
+        var axe_infos  = [];
+        <? if (isset($trend_following[$symbol])) { ?>
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_loss'])   ?> \u20ac', colr: 'white', bgcolr: 'rgba(247,143,3, 0.6', valueY: <?= $trend_following[$symbol]['stop_loss']   ?> });
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_profit']) ?> \u20ac', colr: 'white', bgcolr: 'rgba(181, 87, 87, 0.6', valueY: <?= $trend_following[$symbol]['stop_profit'] ?> });
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?> \u20ac', colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
         <? } ?>
 
         // Current data
@@ -643,9 +653,11 @@ if (!$readonly) {
         if (isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>')) {
             chart.options.plugins.vertical   = [];
             chart.options.plugins.horizontal = getAlarmLines();
+            chart.options.plugins.rightAxeText = axe_infos;
         } else {
             chart.options.plugins.vertical   = [];
             chart.options.plugins.horizontal = [];
+            chart.options.plugins.rightAxeText = [];
         }
     }
 
@@ -656,6 +668,7 @@ if (!$readonly) {
         addCN(bt, 'loading');
 
         if (isCN(bt, ref_colr)) {
+            // On retire les data de la courbe ou volume du bouton selectionne
             chart.data.datasets.forEach((dataset) => {
                 if (dataset.label == label) dataset.data = null;
             });
@@ -766,22 +779,22 @@ if (!$readonly) {
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
 
         // options des alarms
-        options_Stock_Graphe.plugins.vertical   = [];
-        options_Stock_Graphe.plugins.horizontal = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
-
-        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ horizontal, vertical ]);
+        options_Stock_Graphe.plugins.vertical     = [];
+        options_Stock_Graphe.plugins.horizontal   = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
+        options_Stock_Graphe.plugins.rightAxeText = axe_infos;
+        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ rightAxeText, horizontal, vertical ]);
 
         // Update Chart RSI
         var datasets2 = [];
         datasets2.push(getDatasetRSI14(g_new_data));
-        options_RSI_Graphe.plugins.insiderText   = { title: 'RSI14', colr: '#e77fe8', bgcolr: '#1b1c1d', alignX: 'left', alignY: 'top' };
+        options_RSI_Graphe.plugins.insiderText   = [ { title: 'RSI14', colr: '#e77fe8', bgcolr: '#1b1c1d', alignX: 'left', alignY: 'top' } ];
         myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [ insiderText, horizontalLines_RSI_Graphe ]);
 
         // Update Chart DM
         var datasets3 = [];
         datasets3.push(getDatasetDM(g_new_data));
         options_DM_Graphe.scales.y.position = 'right';
-        options_DM_Graphe.plugins.insiderText   = { title: 'Evolution DM', colr: 'yellow', bgcolr: '#1b1c1d', alignX: 'left', alignY: 'top' };
+        options_DM_Graphe.plugins.insiderText   = [ { title: 'Evolution DM', colr: 'yellow', bgcolr: '#1b1c1d', alignX: 'left', alignY: 'top' } ];
         myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [ insiderText, horizontalLines_DM_Graphe ]);
 
         rmCN(bt, 'loading');

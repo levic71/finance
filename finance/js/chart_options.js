@@ -1,3 +1,5 @@
+var euro = '\u20ac';
+
 drawLabel = function(chart, text, args = {}) {
 
     const {
@@ -14,6 +16,8 @@ drawLabel = function(chart, text, args = {}) {
 	const fontSize   = args.fontSize   || 12;
 	const alignX     = args.alignX || '';
 	const alignY     = args.alignY || '';
+	const valueX     = args.valueX || '';
+	const valueY     = args.valueY || '';
 	const paddingWidth  = args.paddingWidth || 20;
 	const paddingHeight = args.paddingHeight || 6;
 	const xx = args.x || 0;
@@ -27,6 +31,11 @@ drawLabel = function(chart, text, args = {}) {
     let posX = alignX === 'right'  ? right-l-paddingWidth   : (alignX === 'center' ? left+((width+paddingWidth-l) / 2)  : xx);
     let posY = alignY === 'bottom' ? bottom-h-paddingHeight : (alignY === 'center' ? ((height+paddingHeight-h) / 2) : yy);
 
+    if (valueX !== '') posX = x.getPixelForValue(valueX);
+    if (valueY !== '') posY = y1.getPixelForValue(valueY) - 10 - 2;
+
+    if (alignX == 'rightAxe') posX = width;
+
     ctx.fillStyle = bgColr;
     ctx.fillRect(posX, posY, (l + paddingWidth), (h + paddingHeight));
 
@@ -36,10 +45,25 @@ drawLabel = function(chart, text, args = {}) {
     ctx.restore();
 }
 
+const rightAxeText = {
+    id: 'rightAxeText',
+    afterDraw(chart, args, options) {
+        if (options.length > 0) {
+            options.forEach(function(item) {
+                drawLabel(chart, item.title, { bgColr: item.bgcolr, textColr: item.colr, alignX: 'rightAxe', valueY: item.valueY, fontSize: '10', paddingHeight: 6, paddingWidth: 10 });
+            });
+        }
+    }
+}
+
 const insiderText = {
     id: 'insiderText',
-    beforeDraw(chart, args, options) {
-        drawLabel(chart, options.title, { bgColr: options.bgcolr, textColr: options.colr, alignX: options.alignX, alignY: options.alignY });
+    afterDraw(chart, args, options) {
+        if (options.length > 0) {
+            options.forEach(function(item) {
+                drawLabel(chart, item.title, { bgColr: item.bgcolr, textColr: item.colr, alignX: item.alignX, alignY: item.alignY });
+            });
+        }
     }
 }
 
@@ -59,7 +83,6 @@ const horizontal = {
 
                 if (typeof item.text !== 'undefined') {
                     drawLabel(chart, item.text, { x: 0, y: y1.getPixelForValue(item.yPosition)-10-2, textColr: 'black', bgColr: item.lineColor, fontSize: '10', paddingHeight: 3, paddingWidth: 4 });
-                    drawLabel(chart, item.text, { x: width, y: y1.getPixelForValue(item.yPosition)-10-2, textColr: 'black', bgColr: 'rgba(255, 255, 255, 0.3', fontSize: '10', paddingHeight: 3, paddingWidth: 4 });
                 }
 
                 if (typeof item.lineDash !== 'undefined') ctx.setLineDash(item.lineDash);
@@ -74,7 +97,7 @@ const horizontal = {
 
 const vertical = {
     id: 'vertical',
-    beforeDraw(chart, args, options) {
+    afterDraw(chart, args, options) {
         const {
             ctx,
             chartArea: { top, right, bottom, left, width, height },
@@ -106,8 +129,10 @@ const getOrCreateTooltip = (chart) => {
     return tooltipEl;
 }
 
+// externalTooltipHandler est une variable qui contient un object composé des elts et peut executer du code à l'instanciation
 const externalTooltipHandler = (context) => {
-    // Tooltip Element
+
+    // Tooltip Elements : On instancie 2 variables avec 2 elements de l'objet context
     const {chart, tooltip} = context;
     const tooltipEl = getOrCreateTooltip(chart);
   
@@ -117,7 +142,7 @@ const externalTooltipHandler = (context) => {
         return;
     }
   
-    // Set Text
+    // Set Text (On récupère les titres des tooltips dans la liste de titles prealablement setter par les declarations issue de chart)
     if (tooltip.body) {
         const titleLines = tooltip.title || [];
         const bodyLines = tooltip.body.map(b => b.lines);
@@ -132,6 +157,7 @@ const externalTooltipHandler = (context) => {
             tooltipEl.appendChild(div);
         });
   
+        // On parcours les titres des data du graphique
         bodyLines.forEach((body, i) => {
             const colors = tooltip.labelColors[i];
 
@@ -149,7 +175,7 @@ const externalTooltipHandler = (context) => {
             const text1 = document.createTextNode(t[0] + ' : ');
             label1.appendChild(text1);
             const label2 = document.createElement('div');
-            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' \u20ac'));
+            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' ' + euro));
             label2.appendChild(text2);
 
             div.appendChild(span);
@@ -164,107 +190,6 @@ const externalTooltipHandler = (context) => {
   
     // Display, position, and set styles for font
     tooltipEl.style.opacity = 1;
-}
-
-const getOrCreateTooltip2 = (chart) => {
-    let tooltipEl = chart.canvas.parentNode.querySelector('div');
-  
-    if (!tooltipEl) {
-        tooltipEl = document.createElement('div');
-        tooltipEl.id = 'tooltip_stock_graphe';    
-        const table = document.createElement('table');
-        tooltipEl.appendChild(table);
-        chart.canvas.parentNode.appendChild(tooltipEl);
-    }
-  
-    return tooltipEl;
-}
-
-const externalTooltipHandler2 = (context) => {
-    // Tooltip Element
-    const {chart, tooltip} = context;
-    const tooltipEl = getOrCreateTooltip2(chart);
-  
-    // Hide if no tooltip
-    if (tooltip.opacity === 0) {
-        tooltipEl.style.opacity = 0;
-        return;
-    }
-  
-    // Set Text
-    if (tooltip.body) {
-        const titleLines = tooltip.title || [];
-        const bodyLines = tooltip.body.map(b => b.lines);
-
-        const tableHead = document.createElement('thead');
-
-        titleLines.forEach(title => {
-            const tr = document.createElement('tr');
-            const th = document.createElement('th');
-            th.colSpan = 2;
-            const text = document.createTextNode(title);
-            th.appendChild(text);
-            tr.appendChild(th);
-            tableHead.appendChild(tr);
-        });
-  
-        const tableBody = document.createElement('tbody');
-        bodyLines.forEach((body, i) => {
-            const colors = tooltip.labelColors[i];
-
-            var t = body[0].split(': ');
-
-            const span = document.createElement('span');
-            span.style.background = t[0] == 'VOLUME' ? colors.backgroundColor : colors.borderColor;
-            span.style.borderColor = colors.borderColor;
-            span.style.borderWidth = '2px';
-            span.style.marginRight = '10px';
-            span.style.height = '10px';
-            span.style.width = '10px';
-            span.style.display = 'inline-block';
-
-            const tr = document.createElement('tr');
-            tr.style.backgroundColor = 'inherit';
-            tr.style.borderWidth = 0;
-
-            const td1 = document.createElement('td');
-            td1.style.borderWidth = 0;
-
-            const td2 = document.createElement('td');
-            td2.style.textAlign = 'right';
-            td2.style.borderWidth = 0;
-
-            const text1 = document.createTextNode(t[0]);
-            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' \u20ac'));
-
-            td1.appendChild(span);
-            td1.appendChild(text1);
-            td2.appendChild(text2);
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            tableBody.appendChild(tr);
-        });
-  
-        const tableRoot = tooltipEl.querySelector('table');
-  
-        // Remove old children
-        while (tableRoot.firstChild) {
-            tableRoot.firstChild.remove();
-        }
-  
-        // Add new children
-        tableRoot.appendChild(tableHead);
-        tableRoot.appendChild(tableBody);
-    }
-  
-    const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
-  
-    // Display, position, and set styles for font
-    tooltipEl.style.opacity = 1;
-    tooltipEl.style.left = '50%';
-    tooltipEl.style.top = '25px';
-//    tooltipEl.style.left = positionX + tooltip.caretX + 'px';
-//    tooltipEl.style.top = positionY + tooltip.caretY + 'px';
 }
 
 var options_Stock_Graphe = {
@@ -283,21 +208,6 @@ var options_Stock_Graphe = {
         tooltip: {
             enabled: false,
             external: externalTooltipHandler
-        },    
-        tooltip2: {  // Ne sert plus on utilise tooltip au dessus
-            callbacks: {
-                label: function(context) {
-                    // console.log(context);
-                    // alert(context.dataIndex);
-                    // alert(context.dataset.data[context.dataIndex].y);
-                    let label = ' ' + context.dataset.label + '  ' || '';
-                    label += context.dataset.label == 'Cours' ? '    ' : (context.dataset.label == 'MM200' ? '  ' : (context.dataset.label == 'VOLUME' ? '' : (context.dataset.label == 'MM7' ? '      ' : '    ')));
-                    let ext = context.dataset.label == 'VOLUME' ? " K " : " \u20ac";
-                    if (context.parsed.y !== null)
-                        label += ' : ' + context.parsed.y.toLocaleString() + ext;
-                    return label;
-                }
-            }
         }
 	},
 	scales: {
@@ -330,7 +240,7 @@ var options_Stock_Graphe = {
 			ticks: {
 				align: 'end',
 				callback: function(value, index, ticks) {
-					var c = value + " \u20ac       ";
+					var c = value + ' ' + euro + '       ';
 					return c.substring(0, 6);
 				}
 			},

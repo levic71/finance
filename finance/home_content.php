@@ -19,7 +19,17 @@ arsort($data2["perfs"]);
 
 // On récupère les actifs favoris si connecté
 $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_context->getUser()['favoris'] : ""));
-	
+
+$positions       = [];
+$trend_following = [];
+
+// Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
+if ($sess_context->isUserConnected()) {
+	$aggregate_ptf   = calc::getAggregatePortfoliosByUser($sess_context->getUserId());
+	$positions       = $aggregate_ptf['positions'];
+	$trend_following = $aggregate_ptf['trend_following'];
+}
+
 ?>
 
 <div id="strategie_container" class="ui container inverted">
@@ -79,15 +89,16 @@ $favoris = array_flip(explode("|", $sess_context->isUserConnected() ? $sess_cont
 	<h2 class="ui left floated">
 		<span><i class="inverted podcast icon"></i>Screener</span>
 		<div>
-			<button id="lst_filter9_bt" class="mini ui grey button"><i class="ui star grey inverted icon"></i></button>
-			<button id="lst_filter7_bt" class="mini ui grey button">ETF</button>
-			<button id="lst_filter8_bt" class="mini ui grey button">Equity</button>
-			<button id="lst_filter1_bt" class="mini ui grey button">PEA</button>
-			<button id="lst_filter2_bt" class="mini ui grey button">EUR</button>
-			<button id="lst_filter3_bt" class="mini ui grey button">USD</button>
-			<button id="lst_filter4_bt" class="mini ui grey button">&lt; 0.3%</button>
-			<button id="lst_filter5_bt" class="mini ui grey button">&gt; 150 M</button>
-			<button id="lst_filter6_bt" class="mini ui grey button"><i class="inverted ellipsis horizontal icon"></i></button>
+			<button id="lst_filter10_bt" class="mini ui grey button"><i class="ui briefcase grey inverted icon"></i></button>
+			<button id="lst_filter9_bt"  class="mini ui grey button"><i class="ui star grey inverted icon"></i></button>
+			<button id="lst_filter7_bt"  class="mini ui grey button">ETF</button>
+			<button id="lst_filter8_bt"  class="mini ui grey button">Equity</button>
+			<button id="lst_filter1_bt"  class="mini ui grey button">PEA</button>
+			<button id="lst_filter2_bt"  class="mini ui grey button">EUR</button>
+			<button id="lst_filter3_bt"  class="mini ui grey button">USD</button>
+			<button id="lst_filter4_bt"  class="mini ui grey button">&lt; 0.3%</button>
+			<button id="lst_filter5_bt"  class="mini ui grey button">&gt; 150 M</button>
+			<button id="lst_filter6_bt"  class="mini ui grey button"><i class="inverted ellipsis horizontal icon"></i></button>
 		</div>
 		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui right floated pink button icon_action" data-tootik-conf="left" data-tootik="Nouveau actif"><i class="inverted white add icon"></i></button><? } ?>
 		
@@ -153,7 +164,7 @@ foreach($data2["stocks"] as $key => $val) {
 	$curr  = $val['currency'] == "EUR" ? "&euro;" : "$";
 	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : "EQY")." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
 
-	echo "<tr class=\"".$class."\" data-tags=\"".utf8_decode($val['tags'])."\">";
+	echo "<tr class=\"".$class."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".utf8_decode($val['tags'])."\">";
 
 	echo "
 		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
@@ -165,7 +176,10 @@ foreach($data2["stocks"] as $key => $val) {
 		<td>".$val['type']."</td>
 		<td data-value=\"".$val['frais']."\">".sprintf("%.2f", $val['frais'])." %</td>
 		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
-		<td><span data-tootik-conf=\"left multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['day'] == date("Y-m-d") ? "grey" : "black")." alternate icon\"></i></a></span></td>
+		<td>
+			<span data-tootik-conf=\"left  multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['day'] == date("Y-m-d") ? "grey" : "black")." alternate icon\"></i></a></span>
+			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i class=\"inverted alarm ".($val['day'] == date("Y-m-d") ? "grey" : "black")." icon\"></i></a></span>
+		</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td data-value=\"".$val['percent']."\" class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
 		<td data-value=\"".$val['DM']."\"      class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['DM'])." %</td>
@@ -249,6 +263,7 @@ filterLstStocks = function() {
 	f7_on = Dom.hasClass(Dom.id('lst_filter7_bt'), 'orange');
 	f8_on = Dom.hasClass(Dom.id('lst_filter8_bt'), 'orange');
 	f9_on = Dom.hasClass(Dom.id('lst_filter9_bt'), 'orange');
+	f10_on = Dom.hasClass(Dom.id('lst_filter10_bt'), 'orange');
 
 	var filter_tags = [];
 	Dom.find('#other_tags button.bt_tags').forEach(function(item) {
@@ -259,8 +274,10 @@ filterLstStocks = function() {
 	for (const element of tab_stocks) Dom.css(element, {'display' : 'table-row'});
 
 	// On passe en revue toutes les lignes et on cache celles qui ne correspondent pas aux boutons allumés
-	if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false)) {
+	if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false && f10_on == false)) {
 		for (const element of tab_stocks) {
+
+			let in_ptf = Dom.attribute(element, 'data-ptf');
 
 			if (
 				(!f1_on || (f1_on && Dom.hasClass(element, 'PEA')))    &&
@@ -270,7 +287,8 @@ filterLstStocks = function() {
 				(!f5_on || (f5_on && Dom.hasClass(element, 'ACTIFS'))) &&
 				(!f7_on || (f7_on && Dom.hasClass(element, 'ETF')))    && 
 				(!f8_on || (f8_on && Dom.hasClass(element, 'EQY')))    &&
-				(!f9_on || (f9_on && Dom.hasClass(element, 'FAV')))
+				(!f9_on || (f9_on && Dom.hasClass(element, 'FAV')))    &&
+				(!f10_on || (f10_on && in_ptf == 1))
 			) continue;
 
 			Dom.css(element, {'display' : 'none'});
@@ -303,15 +321,16 @@ filterLstAction = function(elt) {
 Dom.addListener(Dom.id('strategie_default_bt'),   Dom.Event.ON_CLICK, function(event) { filterLstStrategies('strategie_default_bt'); });
 
 // Listener sur les boutons de filte tableau assets
-Dom.addListener(Dom.id('lst_filter1_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
-Dom.addListener(Dom.id('lst_filter2_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter3_bt', 'orange')) { switchColorElement('lst_filter3_bt', 'orange', 'grey'); setCookie('lst_filter3_bt', 0 , 1000); }; filterLstAction('lst_filter2_bt'); });
-Dom.addListener(Dom.id('lst_filter3_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter2_bt', 'orange')) { switchColorElement('lst_filter2_bt', 'orange', 'grey'); setCookie('lst_filter2_bt', 0 , 1000); }; filterLstAction('lst_filter3_bt'); });
-Dom.addListener(Dom.id('lst_filter4_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter4_bt'); });
-Dom.addListener(Dom.id('lst_filter5_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter5_bt'); });
-Dom.addListener(Dom.id('lst_filter6_bt'), Dom.Event.ON_CLICK, function(event) { toogle('other_tags'); });
-Dom.addListener(Dom.id('lst_filter7_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter8_bt', 'orange')) { switchColorElement('lst_filter8_bt', 'orange', 'grey'); setCookie('lst_filter8_bt', 0 , 1000); }; filterLstAction('lst_filter7_bt'); });
-Dom.addListener(Dom.id('lst_filter8_bt'), Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) { switchColorElement('lst_filter7_bt', 'orange', 'grey'); setCookie('lst_filter7_bt', 0 , 1000); }; filterLstAction('lst_filter8_bt'); });
-Dom.addListener(Dom.id('lst_filter9_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
+Dom.addListener(Dom.id('lst_filter1_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
+Dom.addListener(Dom.id('lst_filter2_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter3_bt', 'orange')) { switchColorElement('lst_filter3_bt', 'orange', 'grey'); setCookie('lst_filter3_bt', 0 , 1000); }; filterLstAction('lst_filter2_bt'); });
+Dom.addListener(Dom.id('lst_filter3_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter2_bt', 'orange')) { switchColorElement('lst_filter2_bt', 'orange', 'grey'); setCookie('lst_filter2_bt', 0 , 1000); }; filterLstAction('lst_filter3_bt'); });
+Dom.addListener(Dom.id('lst_filter4_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter4_bt'); });
+Dom.addListener(Dom.id('lst_filter5_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter5_bt'); });
+Dom.addListener(Dom.id('lst_filter6_bt'),  Dom.Event.ON_CLICK, function(event) { toogle('other_tags'); });
+Dom.addListener(Dom.id('lst_filter7_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter8_bt', 'orange')) { switchColorElement('lst_filter8_bt', 'orange', 'grey'); setCookie('lst_filter8_bt', 0 , 1000); }; filterLstAction('lst_filter7_bt'); });
+Dom.addListener(Dom.id('lst_filter8_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) { switchColorElement('lst_filter7_bt', 'orange', 'grey'); setCookie('lst_filter7_bt', 0 , 1000); }; filterLstAction('lst_filter8_bt'); });
+Dom.addListener(Dom.id('lst_filter9_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
+Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter10_bt'); });
 
 // Listener sur bouton ajout strategie
 <? if ($sess_context->isUserConnected()) { ?>

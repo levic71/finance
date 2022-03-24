@@ -18,7 +18,8 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
-$ret = dbc::addColTable("orders", "confirme", "ALTER TABLE `orders` ADD `confirme` INT NOT NULL DEFAULT '1' AFTER `datetime`");
+// SQL SCHEMA UPDATE
+$ret = dbc::addColTable("trend_following", "manual_price", "ALTER TABLE `trend_following` ADD `manual_price` VARCHAR(16) NOT NULL DEFAULT '0' AFTER `objectif`;");
 
 // Recuperation des infos du portefeuille
 $req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
@@ -121,9 +122,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 	<div class="ui hidden divider"></div>
 
-	<h2 class="ui left floated"><i class="inverted location arrow icon"></i>Positions
-		<button id="order_save_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white save icon"></i></button>
-	</h2>
+	<h2 class="ui left floated"><i class="inverted location arrow icon"></i>Positions</h2>
 	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
@@ -134,35 +133,35 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<th class="center aligned" data-sortable="false">PRU<br />Qté</th>
 						<th class="center aligned">Cotation<br />%</th>
 						<th class="center aligned" data-sortable="false">MM200<br />%</th>
-						<th class="center aligned" data-sortable="false">Stop<br />Alerte</th>
+						<th class="center aligned" data-sortable="false">Alertes</th>
 						<th class="center aligned">DM</th>
 						<th class="center aligned">Tendance</th>
 						<th class="center aligned">Poids</th>
-						<th class="right  aligned">Valorisation</th>
+						<th class="center aligned">Valorisation</th>
 						<th class="center aligned">Performance</th>
 					</tr></thead>
 					<tbody>
 	<?
-				$hide_save_bt = true;
 				$i = 1;
+				ksort($lst_positions);
 				foreach($lst_positions as $key => $val) {
 
-					if ($val['other_name']) $hide_save_bt = false;
-
 					// Infos sur actif courant
-					$qs = $quotes['stocks'][$key];
+					$qs = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key] : [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0];
 
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
 					// Si on n'a pas la cotation en base on prend le pru
 					$quote_from_pru = isset($qs['price']) && !isset($save_quotes[$key]) ? false : true;
 					$quote = $quote_from_pru ? (isset($save_quotes[$key]) ? $save_quotes[$key] : $val['pru']) : $qs['price'];
+					$qs['price'] = $quote;
 					$pct   = isset($qs['percent']) ? $qs['percent'] : 0;
 					$valo  = sprintf("%.2f", $val['nb'] * $quote);
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
-					$pname = $val['other_name'] ? $key : '<button class="tiny ui primary button">'.$key.'</button>';
+					$pname = '<button class="tiny ui primary button">'.$key.($val['other_name'] ? '(*)' : '').'</button>';
 
 					$stop_loss   = isset($lst_trend_following[$key]['stop_loss'])   ? $lst_trend_following[$key]['stop_loss']   : 0;
 					$stop_profit = isset($lst_trend_following[$key]['stop_profit']) ? $lst_trend_following[$key]['stop_profit'] : 0;
+					$objectif    = isset($lst_trend_following[$key]['objectif'])    ? $lst_trend_following[$key]['objectif']    : 0;
 
 					$perf_indicator = calc::getPerfIndicator($qs);
 					$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
@@ -171,11 +170,11 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 					$icon = "copyright outline";
 					$icon_tag = "bt_filter_SEC_99999";
-					$pct_mm = (($qs['MM200'] - $quote) * 100) / $quote;
+					$pct_mm = $qs['MM200'] == 0 ? 0 : (($qs['MM200'] - $quote) * 100) / $quote;
 
 					$tags_infos = uimx::getIconTooltipTag($qs['tags']);
 				
-					echo '<tr id="tr_item_'.$i.'">
+					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($val['other_name'] ? 1 : 0).'">
 						<td data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
 							<i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
 						</td>
@@ -200,6 +199,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
 							<div class="'.(intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
 							<div class="'.(intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
+							<div class="'.(intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
 						</div></td>
 
 						<td id="f_dm_'.$i.'"       class="center aligned '.($qs['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$qs['DM'].' %</td>
@@ -228,8 +228,9 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	
 	<h2 class="ui left floated"><i class="inverted history icon"></i>Historique ordres
 <? if (!$isPortfolioSynthese) { ?>
-	<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i></button>
+		<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i></button>
 <? } ?>
+		<button id="order_filter_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black filter icon"></i></button>
 	</h2>
 	<div class="ui stackable column grid">
       	<div class="row">
@@ -300,12 +301,17 @@ var options = {
     responsive: false,
     maintainAspectRatio: true,
 	plugins: {
-            legend: {
-                display: true,
-				position: 'right'
-            }
-        },
-	};
+		legend: {
+			display: true,
+			position: 'right'
+		},
+		title: {
+			display: true,
+			color: 'white',
+			text: 'Répartition'
+		}
+	}
+};
 
 <?
 	if (!$isPortfolioSynthese) {
@@ -354,8 +360,8 @@ computeLines = function(opt) {
 	// On parcours les lignes du tableau positions pour calculer valo, perf, gain, ...
 	Dom.find('#lst_position tbody tr').forEach(function(item) {
 
-		ind = Dom.attribute(item, 'id').split('_')[2];
-
+		ind      = Dom.attribute(item, 'id').split('_')[2];
+		other    = Dom.attribute(item, 'data-other');
 		actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
 		pru      = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-pru'));
 		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
@@ -374,9 +380,8 @@ computeLines = function(opt) {
 		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label></div>');
 		//setColNumericTab('f_gain_pru_' + ind, gain_pru, gain_pru.toFixed(2) + ' &euro;');
 
-		if (opt == 'change') {
+		if (other == 1 && opt == 'change') {
 			Dom.id('f_pct_jour_'  + ind).innerHTML = 'N/A';
-			setCN('f_pct_jour_'  + ind, "align_right");
 		}
 	});
 
@@ -410,10 +415,6 @@ computeLines = function(opt) {
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
 	}
 
-	// RIBBON
-	// perf_ptf = getPerf(depots, estimation_valo);
-	// addCN('perf_ribbon1', perf_ptf >= 0 ? "ribbon--green" : "ribbon--red");
-	// Dom.find('#perf_ribbon1 small')[0].innerHTML = perf_ptf.toFixed(2) + ' %';
 	perf_ptf2 = ampplt == 0 ? 0 : (gain_perte / ampplt) * 100;
 	addCN('perf_ribbon3', perf_ptf2 >= 0 ? "ribbon--green" : "ribbon--red");
 	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf2.toFixed(2) + ' %';
@@ -460,13 +461,6 @@ computeLines = function(opt) {
 	myChart.update();
 }
 
-// Listener sur changement de valeur dans tableau des positions
-Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
-	Dom.addListener(item, Dom.Event.ON_CHANGE, function(event) {
-		computeLines('change');
-	});
-});
-
 // Listener sur les boutons ADD et BACK
 <? if (!$isPortfolioSynthese) { ?>
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
@@ -474,41 +468,38 @@ Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { g
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
 
-// Listener possible sur SAVE et SELECT si pas portfolio synthese 
-<? if (!$isPortfolioSynthese) { ?>
-Dom.addListener(Dom.id('order_save_bt'), Dom.Event.ON_CLICK, function(event) {
-	var quotes = '';
-	Dom.find('#lst_position tbody td:nth-child(4) input').forEach(function(item) {
-		if (Dom.attribute(item, 'data-pru') == 1) quotes += (quotes == "" ? "" : ",") + Dom.attribute(item, 'data-name') + '|' + valof(item.id);
-	});
-	go({ action: 'order', id: 'main', url: 'order_action.php?action=save&portfolio_id=<?= $portfolio_id ?>&quotes=' + quotes, no_data: 1, msg: 'Portfolio sauvegardé' });
-});
-
-<? } ?>
-
 // Init du calcul
 computeLines('init');
 
-// Listener sur button detail ligne tableau
+// Listener sur button detail sur actif
 Dom.find("#lst_position tbody tr td:nth-child(2) button").forEach(function(element) {
-	pru = Dom.attribute(Dom.id('f_pru_' + element.parentNode.id.split('_')[2]), 'data-pru');
+	// pru = Dom.attribute(Dom.id('f_pru_' + element.parentNode.id.split('_')[2]), 'data-pru');
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
-		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?ptf_id=<?= $portfolio_id ?>&symbol=' + element.innerHTML, loading_area: 'main' });
+		other = Dom.attribute(element.parentNode.parentNode, 'data-other');
+		if (other == 1)
+			Swal.fire('Actif non suivi');
+		else
+			go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?ptf_id=<?= $portfolio_id ?>&symbol=' + element.innerHTML, loading_area: 'main' });
 	});
 });
 
-// Listener sur buttons stoploss/stoplimit ligne tableau
-Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(element) {
-	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+// Listener sur buttons manuel price ligne tableau si actif other
+Dom.find("#lst_position tbody tr td:nth-child(4) button").forEach(function(element) {
 
-		// Pas tres beau !!!
-		var divs = element.getElementsByTagName("div");
-		var stoploss   = divs[0].innerHTML;
-		var stopprofit = divs[1].innerHTML;
+	let other = Dom.attribute(element.parentNode.parentNode.parentNode, 'data-other');
+	let pname = Dom.attribute(element.parentNode.parentNode.parentNode, 'data-pname');
 
-		Swal.fire({
+	if (other == 1) {
+		Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+
+			// On récupère la valeur dans le button
+			let quote = Dom.attribute(element, 'data-value');
+
+			Swal.fire({
 				title: '',
-				html: '<div class="ui form"><div class="field"><label>Stop loss</label><input type="text"<input id="f_stoploss" class="swal2-input" type="text" placeholder="0.00" value="' + stoploss + '" /><label>Stop Profit</label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" /></div></div>',
+				html: '<div class="ui form"><div class="field">' +
+							'<label>Saisie manuelle de la cotation</label><input type="text"<input id="f_quote" class="swal2-input" type="text" placeholder="0.00" value="' + quote + '" />' +
+						'</div></div>',
 				showCancelButton: true,
 				confirmButtonText: 'Valider',
 				cancelButtonText: 'Annuler',
@@ -516,13 +507,53 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 				allowOutsideClick: () => !Swal.isLoading()
 			}).then((result) => {
 				if (result.isConfirmed) {
-					if (!check_num(valof('f_stoploss'), 'Stop loss', 0, 999999)) return false;
+					if (!check_num(valof('f_quote'), 'Cotation', 0, 999999)) return false;
+					let params = attrs([ 'f_quote' ]) + '&symbol=' + pname;
+					go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=manual_price&' + params, no_data: 1 });
+					element.innerHTML = valof('f_quote') + '&euro;';
+					Dom.attribute(element, { 'data-value': valof('f_quote') });
+					computeLines('change');
+					Swal.fire('Données modifiées');
+				}
+			});
+
+		});
+	}
+});
+
+// Listener sur buttons stoploss/stoplimit ligne tableau
+Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(element) {
+	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+
+		// On récupère les valeurs dans la cellule du tavleau - Pas tres beau !!!
+		var divs = element.getElementsByTagName("div");
+		var stoploss   = divs[0].innerHTML;
+		var stopprofit = divs[1].innerHTML;
+		var objectif   = divs[2].innerHTML;
+
+		Swal.fire({
+				title: '',
+				html: '<div class="ui form"><div class="field">' +
+							'<label>Stop loss</label><input type="text"<input id="f_stoploss" class="swal2-input" type="text" placeholder="0.00" value="' + stoploss + '" />' +
+							'<label>Stop Profit</label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
+							'<label>Objectif</label><input type="text"<input id="f_objectif" class="swal2-input" type="text" placeholder="0.00" value="' + objectif + '" />' +
+						'</div></div>',
+				showCancelButton: true,
+				confirmButtonText: 'Valider',
+				cancelButtonText: 'Annuler',
+				showLoaderOnConfirm: true,
+				allowOutsideClick: () => !Swal.isLoading()
+			}).then((result) => {
+				if (result.isConfirmed) {
+					if (!check_num(valof('f_stoploss'),   'Stop loss',   0, 999999)) return false;
 					if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) return false;
+					if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999)) return false;
 					var symbol = Dom.attribute(element, 'data-pname');
-					var params = attrs([ 'f_stoploss', 'f_stopprofit' ]) + '&symbol=' + symbol;
+					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif' ]) + '&symbol=' + symbol;
 					go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=stops&' + params, no_data: 1 });
 					divs[0].innerHTML = valof('f_stoploss');
 					divs[1].innerHTML = valof('f_stopprofit');
+					divs[2].innerHTML = valof('f_objectif');
 					Swal.fire('Données modifiées');
 				}
 			});

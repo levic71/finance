@@ -317,11 +317,11 @@ table th { color: burlywood !important; cursor: pointer !important; }
     position: relative;
     margin-left: 10px;
 }
-#stocks_box h2 #lst_filter9_bt i {
+#stocks_box h2 #lst_filter9_bt i, #stocks_box h2 #lst_filter10_bt i {
     margin: 0px !important;
 }
 #stocks_box h2 #lst_filter1_bt, #stocks_box h2 #lst_filter2_bt, #stocks_box h2 #lst_filter3_bt, #stocks_box h2 #lst_filter4_bt, #stocks_box h2 #lst_filter5_bt  {
-        white-space: nowrap;
+    white-space: nowrap;
 }
 #portfolio_box {
 	display: flex;
@@ -719,17 +719,23 @@ table th { color: burlywood !important; cursor: pointer !important; }
     margin-bottom: 2px;
     font-size: 11px;
 }
-#lst_position tbody td:nth-child(6) div:nth-child(1) {
-    z-index: 10; background: rgb(247,143,31); padding: 4px 10px; top: -9px; right: 3px;
+#lst_position tbody td:nth-child(6) div div {
+    z-index: 10; padding: 2px 10px; font-size: 10px; line-height: 10px;
 }
-#lst_position tbody td:nth-child(6) div:nth-child(2) {
-    z-index: 10; background: rgb(181 87 87); padding: 4px 10px; top: 13px; right: 5px;
+#lst_position tbody td:nth-child(6) div div:nth-child(1) {
+    background: rgb(247,143,31); top: -29px; right: 3px;
+}
+#lst_position tbody td:nth-child(6) div div:nth-child(2) {
+    background: rgb(181, 87, 87); top: -12px; right: 3px;
+}
+#lst_position tbody td:nth-child(6) div div:nth-child(3) {
+    background: rgb(58, 48, 190); top: 5px; right: 5px;
+}
+#lst_position tbody td:nth-child(6) div div.grey {
+    background: rgb(87, 87, 87); color: rgb(48, 48, 48);
 }
 #lst_position tbody td:nth-child(4) button {
     background: black; color: grey;
-}
-#lst_position tbody td:nth-child(6) div.grey {
-    background: rgb(87, 87, 87); color: rgb(48, 48, 48);
 }
 #lst_position tbody td:nth-child(3) div, #lst_position tbody td:nth-child(4) div, #lst_position tbody td:nth-child(5) div, #lst_position td:nth-child(11) div, #lst_position tfoot td:nth-child(5) {
     display: flex;
