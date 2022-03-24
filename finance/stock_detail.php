@@ -452,7 +452,6 @@ if (!$readonly) {
 
 
 <script>
-alert(0);
     var myChart1 = null;
     var myChart2 = null;
     var myChart3 = null;
@@ -561,8 +560,6 @@ alert(0);
         return newDataset2(vals, 'line', 'y', 'd', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
     }
 
-    alert(1);
-
     var graphe_size_days = 0;
     var new_data_daily   = [];
     var new_data_weekly  = [];
@@ -621,13 +618,15 @@ alert(0);
 
         // Data pour les infos sur l'axe Y
         var axe_infos  = [];
-        <? if (isset($trend_following[$symbol])) { ?>
+        <? if (isset($trend_following[$symbol]['stop_loss']) && $trend_following[$symbol]['stop_loss'] > 0) { ?>
             axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_loss'])   ?> \u20ac', colr: 'white', bgcolr: 'rgba(247,143,3, 0.6', valueY: <?= $trend_following[$symbol]['stop_loss']   ?> });
+        <? } ?>
+        <? if (isset($trend_following[$symbol]['stop_profit']) && $trend_following[$symbol]['stop_profit'] > 0) { ?>
             axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_profit']) ?> \u20ac', colr: 'white', bgcolr: 'rgba(181, 87, 87, 0.6', valueY: <?= $trend_following[$symbol]['stop_profit'] ?> });
+        <? } ?>
+        <? if (isset($trend_following[$symbol]['objectif']) && $trend_following[$symbol]['objectif'] > 0) { ?>
             axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?> \u20ac', colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
         <? } ?>
-
-        alert(2);
 
         // Current data
         var g_new_data = null;
@@ -777,10 +776,10 @@ alert(0);
         // Update Chart Stock
         var datasets1 = [];
         datasets1.push(getDatasetVals(g_new_data));
-        if (isCN('graphe_mm7_bt',    '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm4', 'MM7'));
-        if (isCN('graphe_mm20_bt',   '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm3', 'MM20'));
-        if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
-        if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
+        if (isCN('graphe_mm7_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm4', 'MM7'));
+        if (isCN('graphe_mm20_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm3', 'MM20'));
+        if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
+        if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
 
         // options des alarms
@@ -823,8 +822,6 @@ alert(0);
 
         return params;
     }
-
-    alert(4);
 
     // Listenet sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
@@ -871,8 +868,6 @@ alert(0);
         });
     });
 
-    alert(5);
-
     // Listenet sur bt 1T, 1Y, 3Y, ALL, D, W, M
     ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt', 'graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((item) => {
         Dom.addListener(Dom.id(item), Dom.Event.ON_CLICK, function(event) {
@@ -905,7 +900,6 @@ alert(0);
         });
     <? } ?>
 
-    alert(6);
 
     // Changement etat bouttons tags
     changeState = function(item) {
