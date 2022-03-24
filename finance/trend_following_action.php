@@ -13,11 +13,6 @@ foreach(['action', 'symbol', 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_quot
 
 $db = dbc::connect();
 
-// SQL SCHEMA UPDATE
-$ret = dbc::addColTable("trend_following", "objectif", "ALTER TABLE `trend_following` ADD `objectif` VARCHAR(16) NOT NULL AFTER `stop_profit`");
-$ret = dbc::delColTable("trend_following", "quotes", "ALTER TABLE `portfolios` DROP `quotes`;");
-
-
 if ($action == "stops") {
 
     $req = "
