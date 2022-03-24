@@ -452,6 +452,7 @@ if (!$readonly) {
 
 
 <script>
+alert(0);
     var myChart1 = null;
     var myChart2 = null;
     var myChart3 = null;
@@ -560,6 +561,8 @@ if (!$readonly) {
         return newDataset2(vals, 'line', 'y', 'd', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
     }
 
+    alert(1);
+
     var graphe_size_days = 0;
     var new_data_daily   = [];
     var new_data_weekly  = [];
@@ -623,6 +626,8 @@ if (!$readonly) {
             axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_profit']) ?> \u20ac', colr: 'white', bgcolr: 'rgba(181, 87, 87, 0.6', valueY: <?= $trend_following[$symbol]['stop_profit'] ?> });
             axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?> \u20ac', colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
         <? } ?>
+
+        alert(2);
 
         // Current data
         var g_new_data = null;
@@ -819,6 +824,8 @@ if (!$readonly) {
         return params;
     }
 
+    alert(4);
+
     // Listenet sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
         p = getFormValues();
@@ -864,6 +871,8 @@ if (!$readonly) {
         });
     });
 
+    alert(5);
+
     // Listenet sur bt 1T, 1Y, 3Y, ALL, D, W, M
     ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt', 'graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((item) => {
         Dom.addListener(Dom.id(item), Dom.Event.ON_CLICK, function(event) {
@@ -896,6 +905,7 @@ if (!$readonly) {
         });
     <? } ?>
 
+    alert(6);
 
     // Changement etat bouttons tags
     changeState = function(item) {
