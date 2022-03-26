@@ -1138,9 +1138,16 @@ class cacheData {
         return count($matches) > 0 ? true : false;
     }
     
-    public static function readCacheData($file) {
-        logger::info("CACHE", "", "[READ]{".$file."}");    
-        return json_decode(file_get_contents($file), true);
+    public static function readCacheData($filename) {
+
+        $ret = "{}";
+    
+        if (file_exists($filename)) {
+            logger::info("CACHE", "", "[READ]{".$filename."}");
+            $ret = file_get_contents($filename);
+        }
+
+        return json_decode($ret, true);
     }
 
     public static function writeCacheData($file, $data) {
