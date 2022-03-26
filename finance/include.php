@@ -759,7 +759,7 @@ class calc {
 
     public static function getGSDevises() {
 
-        $file_cache = 'cache/TMP_GS_DEVISES.json';
+        $file_cache = 'cache/CACHE_GS_DEVISES.json';
 
         $ret = array();
 
@@ -777,7 +777,7 @@ class calc {
 
     public static function getGSAlertes() {
 
-        $file_cache = 'cache/TMP_GS_ALERTES.json';
+        $file_cache = 'cache/CACHE_GS_ALERTES.json';
 
         $ret = array();
 

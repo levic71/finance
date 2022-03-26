@@ -11,9 +11,9 @@ foreach([''] as $key)
 
 $db = dbc::connect();
 
-$x = cacheData::readCacheData("cache/TMP_GS_DEVISES.json");
+$x = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
 var_dump($x);
-$x = cacheData::readCacheData("cache/TMP_GS_ALERTES.json");
+$x = cacheData::readCacheData("cache/CACHE_GS_ALERTES.json");
 var_dump($x);
 
 // Recuperation des DM en BD
