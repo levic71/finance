@@ -25,7 +25,17 @@ $values = array();
 // ////////////////////////////////////////////////////////
 // Mise à jour des valeurs de cotations dans Google Sheet
 // ////////////////////////////////////////////////////////
-if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
+if (tools::useGoogleFinanceService()) {
+
+    // Recuperation des cotations Google Sheet
+    $values = updateGoogleSheet();
+
+    // Recuperation des devises Google Sheet et mise en cache
+    $devises = calc::getGSDevises();
+
+    // Recuperatoin des alertes Google Sheet et mise en cache
+    $alertes = calc::getGSAlertes();
+}
 
 // Updates all quotes whith GS
 // updateAllQuotesWithGSData($values);

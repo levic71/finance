@@ -26,7 +26,7 @@ function updateGoogleSheet() {
 	$requestBody = new Google_Service_Sheets_ClearValuesRequest();
 	$response = $service->spreadsheets_values->clear($spreadsheetId, $clear_range, $requestBody);
 
-	// Update datas
+	// Update data : Mise a jour des valeurs recherchees
 	$update_range = $onglet."!A3:K200";
 	$values = array();
 
@@ -61,7 +61,7 @@ function updateGoogleSheet() {
 
 	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
 
-	// Update datas
+	// Update data : Mise a jour de l'entete
 	$update_range = $onglet."!A1:A1";
 	$values = array();
 	$datetime = new DateTime();
@@ -74,7 +74,7 @@ function updateGoogleSheet() {
 	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
 	
 
-	// Request to get data from spreadsheet
+	// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
 	$get_range = $onglet."!A3:K200";
 	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
 	$values = $response->getValues();
@@ -88,6 +88,65 @@ function updateGoogleSheet() {
 	return $ret;
 }
 
+function updateGoogleSheetDevises() {
+
+	$ret = array();
+
+	$onglet = "devises";
+
+	$client = new \Google_Client();
+	$client->setApplicationName('Google Sheets and PHP');
+	$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+	$client->setAccessType('offline');
+	$client->setAuthConfig(__DIR__ . '/credentials.json');
+
+	$service = new Google_Service_Sheets($client);
+
+	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
+
+	// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
+	$get_range = $onglet."!B2:C50";
+	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+	$values = $response->getValues();
+
+	if (!empty($values)) {
+		foreach($values as $key => $val) {
+			$ret[$val[0]] = $val;
+		}
+	}
+
+	return $ret;
+}
+
+function updateGoogleSheetAlertes() {
+
+	$ret = array();
+
+	$onglet = "alertes";
+
+	$client = new \Google_Client();
+	$client->setApplicationName('Google Sheets and PHP');
+	$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+	$client->setAccessType('offline');
+	$client->setAuthConfig(__DIR__ . '/credentials.json');
+
+	$service = new Google_Service_Sheets($client);
+
+	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
+
+	// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
+	$get_range = $onglet."!C2:M100";
+	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+	$values = $response->getValues();
+
+	if (!empty($values)) {
+		foreach($values as $key => $val) {
+			$ret[$val[0]] = $val;
+		}
+	}
+
+	return $ret;
+}
 
 function updateQuotesWithGSData($val) {
 

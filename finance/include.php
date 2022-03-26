@@ -757,6 +757,42 @@ class calc {
         return $row;
     }
 
+    public static function getGSDevises() {
+
+        $file_cache = 'cache/TMP_GS_DEVISES.json';
+
+        $ret = array();
+
+        if (tools::isLocalHost() || cacheData::refreshCache($file_cache, 600)) {
+
+            $ret = updateGoogleSheetDevises();
+            cacheData::writeCacheData($file_cache, $ret);
+
+        } else {
+            $ret = cacheData::readCacheData($file_cache);
+        }
+
+        return $ret;
+    }
+
+    public static function getGSAlertes() {
+
+        $file_cache = 'cache/TMP_GS_ALERTES.json';
+
+        $ret = array();
+
+        if (tools::isLocalHost() || cacheData::refreshCache($file_cache, 600)) {
+
+            $ret = updateGoogleSheetAlertes();
+            cacheData::writeCacheData($file_cache, $ret);
+
+        } else {
+            $ret = cacheData::readCacheData($file_cache);
+        }
+
+        return $ret;
+    }
+
     public static function getMinMaxQuotations() {
 
         $file_cache = 'cache/TMP_MIN_MAX_QUOTATIONS.json';
