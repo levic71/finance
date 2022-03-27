@@ -160,7 +160,10 @@ Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK
 	if (!check_num(valof('f_price'), 'Prix', 0, 999999999999))
 		return false;
 
-	if (!check_num(valof('f_commission'), 'Commission', 0, 999999999999))
+    if (!check_num(valof('f_commission'), 'Commission', 0, 999999999999))
+		return false;
+
+    if (!check_num(valof('f_taux_change'), 'Taux de change', 0, 999999999999))
 		return false;
 
     item = Dom.id('f_product_name');
