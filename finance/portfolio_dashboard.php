@@ -18,10 +18,6 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
-// SQL SCHEMA UPDATE
-// $ret = dbc::delColTable("trend_following", "quotes", "ALTER TABLE `portfolios` DROP `quotes`;");
-// $ret = dbc::addColTable("trend_following", "manual_price", "ALTER TABLE `trend_following` ADD `manual_price` VARCHAR(16) NOT NULL DEFAULT '0' AFTER `objectif`;");
-
 // Recuperation des infos du portefeuille
 $req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);

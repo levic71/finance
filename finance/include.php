@@ -217,6 +217,9 @@ class calc {
         // Recuperation de tous les actifs
         $quotes = calc::getIndicatorsLastQuote();
 
+        // Reccuperation du cours des devises
+        $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
+
         // Récupération des données de trend_following de l'utilisateur
         $portfolio['trend_following'] = array();
         $req = "SELECT * FROM trend_following WHERE user_id=".$user_id;

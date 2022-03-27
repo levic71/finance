@@ -34,6 +34,8 @@ if ($action == "upt") {
     $row['price']        = 0;
     $row['commission']   = 0;
     $row['confirme']     = 1;
+    $row['devise']       = 'EUR';
+    $row['taux_change']  = 1;
 }
 
 // Recuperation de tous les actifs
@@ -64,7 +66,7 @@ $quotes = calc::getIndicatorsLastQuote();
         </div>
         <div class="field">
             <label>Actif</label>
-            <select id="f_product_name" class="ui selection dropdown">
+            <select id="f_product_name" class="ui dropdown">
                 <option value="Cash" data-price="0" <?= $row['product_name'] == "Cash" ? "selected=\"selected\"" : "" ?>>Cash</option>
                 <? foreach ($quotes["stocks"] as $key => $val) { ?>
                     <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" <?= $row['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
@@ -75,7 +77,7 @@ $quotes = calc::getIndicatorsLastQuote();
         </div>
         <div class="field">
             <label>Action</label>
-            <select id="f_action" class="ui selection dropdown">
+            <select id="f_action" class="ui dropdown">
                 <? foreach (uimx::$order_actions as $key => $val) { ?>
                     <option value="<?= $key ?>" <?= $row['action'] == $key ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
                 <? } ?>
@@ -87,9 +89,22 @@ $quotes = calc::getIndicatorsLastQuote();
         </div>
         <div class="field">
             <label>Prix</label>
-            <div class="ui right icon inverted left labeled fluid input">
+            <div class="ui inverted left fluid input">
                 <input type="text" size="10" id="f_price" value="<?= $row['price'] ?>" placeholder="0">
-                <i class="inverted black euro icon"></i>
+            </div>
+        </div>
+        <div class="field">
+            <label>Devise</label>
+            <select id="f_devise" class="ui dropdown">
+                <? foreach ([ 'EUR', 'USD'] as $key => $val) { ?>
+                    <option value="<?= $key ?>" <?= $row['devise'] == $key ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
+                <? } ?>
+            </select>
+        </div>
+        <div class="field">
+            <label>Taux de change</label>
+            <div class="ui inverted fluid input">
+                <input type="text" size="10" id="f_taux_change" value="<?= $row['taux_change'] ?>" placeholder="0">
             </div>
         </div>
         <div class="field">
@@ -151,7 +166,7 @@ Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK
     item = Dom.id('f_product_name');
     n = item.options[item.selectedIndex].value;
 
-    params = '?action=<?= $action ?>&'+attrs(['order_id', 'portfolio_id', 'f_date', 'f_action', 'f_quantity', 'f_price', 'f_commission' ]) + '&f_confirme='+(valof('f_confirme') == 0 ? 0 : 1);
+    params = '?action=<?= $action ?>&'+attrs(['order_id', 'portfolio_id', 'f_date', 'f_action', 'f_quantity', 'f_price', 'f_commission', 'f_devise', 'f_taux_change' ]) + '&f_confirme='+(valof('f_confirme') == 0 ? 0 : 1);
     params += '&f_product_name=' + (n == 'AUTRE' ? 'AUTRE:' + encodeURIComponent(valof('f_other_name')) : encodeURIComponent(valof('f_product_name')));
 
 	go({ action: 'order', id: 'main', url: 'order_action.php'+params, loading_area: 'main' });
