@@ -251,7 +251,8 @@ $lst_trend_following = $portfolio_data['trend_following'];
 <?
 				foreach(array_reverse($lst_orders) as $key => $val) {
 
-					$price_converted = uimx::currencyConverter($val['quantity'] * $val['price'], $val['devise']."EUR", $devises);
+//					$price_converted = uimx::currencyConverter($val['quantity'] * $val['price'], $val['devise']."EUR", $devises);
+					$price_converted = $val['quantity'] * $val['price'] * $val['taux_change'];
 
 					echo '<tr>
 						<td><i class="inverted long arrow alternate '.($val['action'] >= 0 ? "right green" : "left orange").' icon"></i></td>
