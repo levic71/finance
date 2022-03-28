@@ -19,6 +19,8 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
+$devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
+
 $libelle_action_bt = tools::getLibelleBtAction($action);
 
 if ($action == "upt") {
@@ -97,7 +99,7 @@ $quotes = calc::getIndicatorsLastQuote();
             <label>Devise</label>
             <select id="f_devise" class="ui dropdown">
                 <? foreach ([ 'EUR', 'USD'] as $key => $val) { ?>
-                    <option value="<?= $key ?>" <?= $row['devise'] == $key ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
+                    <option value="<?= $val ?>" <?= $row['devise'] == $val ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
                 <? } ?>
             </select>
         </div>

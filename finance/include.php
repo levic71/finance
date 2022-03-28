@@ -1663,6 +1663,25 @@ class uimx {
         9 => "Baissier prix sous moyenne mobile 200"
     ];
 
+    public static function currencyConverter($prix, $converter, $devises) {
+
+        $taux = 1;
+
+        if (isset($devises[$converter][1])) $taux = $devises[$converter][1];
+        return (floatval($prix) * floatval($taux));
+
+    }
+
+    public static function getCurrencySign($cur) {
+
+        $ret = "&euro;";
+
+        if ($cur == "USD") $ret = "$";
+
+        return $ret;
+
+    }
+
     public static function getRedGreenColr($x, $y) {
 
         if ($x == 0) return 0;

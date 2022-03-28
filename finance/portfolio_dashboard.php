@@ -18,6 +18,8 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
+$devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
+
 // Recuperation des infos du portefeuille
 $req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
@@ -134,7 +136,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<th class="center aligned">DM</th>
 						<th class="center aligned">Tendance</th>
 						<th class="center aligned">Poids</th>
-						<th class="center aligned">Valorisation</th>
+						<th class="center aligned">Valorisation (&euro;)</th>
 						<th class="center aligned">Performance</th>
 					</tr></thead>
 					<tbody>
@@ -179,17 +181,17 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
 
 						<td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$val['nb'].'" data-pru="'.sprintf("%.2f", $val['pru']).'"><div>
-							<button class="tiny ui button">'.sprintf("%.2f", $val['pru']).' &euro;</button>
+							<button class="tiny ui button">'.sprintf("%.2f %s", $val['pru'], uimx::getCurrencySign($qs['currency'])).'</button>
 							<label>'.$val['nb'].'</label>
 						</div></td>
 
 						<td class="center aligned" data-value="'.$pct.'"><div>
-							<button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f", $quote).' &euro;</button>
+							<button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $quote, uimx::getCurrencySign($qs['currency'])).'</button>
 							<label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
 						</div></td>
 					
 						<td class="center aligned" data-value="'.$pct_mm.'"><div>
-							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%.2f", $qs['MM200']).' &euro;</button>
+							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%.2f %s", $qs['MM200'], uimx::getCurrencySign($qs['currency'])).'</button>
 							<label style="color: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%s%.2f", ($pct_mm >= 0 ? '+' : ''), $pct_mm).' %</label>
 						</div></td>
 
@@ -248,14 +250,17 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					<tbody>
 <?
 				foreach(array_reverse($lst_orders) as $key => $val) {
+
+					$price_converted = uimx::currencyConverter($val['quantity'] * $val['price'], $val['devise']."EUR", $devises);
+
 					echo '<tr>
 						<td><i class="inverted long arrow alternate '.($val['action'] >= 0 ? "right green" : "left orange").' icon"></i></td>
 						<td>'.$val['date'].'</td>
 						<td>'.$val['product_name'].'</td>
 						<td class="center aligned">'.uimx::$order_actions[$val['action']].'</td>
 						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>
-						<td data-value="'.$val['price'].'">'.sprintf("%.2f", $val['price']).' &euro;</td>
-						<td data-value="'.sprintf("%.2f", $val['quantity'] * $val['price']).'">'.sprintf("%.2f", $val['quantity'] * $val['price']).' &euro;</td>
+						<td data-value="'.$val['price'].'">'.sprintf("%.2f %s", $val['price'], uimx::getCurrencySign($val['devise'])).'</td>
+						<td data-value="'.sprintf("%.2f", $price_converted).'">'.sprintf("%.2f %s", $price_converted, '&euro;').'</td>
 						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;/'.sprintf("%.2f", $val['ttf']).' &euro;</td>
 						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
 						<td class="collapsing">
