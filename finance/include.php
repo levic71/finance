@@ -189,6 +189,22 @@ class dbc {
 //
 class calc {
 
+    public static function getCurrencyRate($currency, $liste) {
+
+        $taux = 1;
+
+        if (isset($liste[$currency][1])) $taux = $liste[$currency][1];
+
+        return floatval($taux);
+
+    }
+
+    public static function currencyConverter($price, $currency, $liste) {
+
+        return (floatval($price) * self::getCurrencyRate($currency, $liste));
+
+    }
+
     public static function aggregatePortfolio($infos) {
 
         // Penser à mettre en cache 10' le calcul ?
@@ -197,8 +213,6 @@ class calc {
 
         $portfolio      = array();
         $positions      = array();
-        $transfert_in   = 0;
-        $transfert_out  = 0;
         $sum_depot      = 0;
         $sum_retrait    = 0;
         $sum_dividende  = 0;
@@ -296,8 +310,8 @@ class calc {
                     $pru = $row['price'];
                 }
 
-                // Valorisation operation
-                $valo_ope = $row['quantity'] * $row['price'];
+                // Valorisation operation avec le taux de change le jour de l'achat/vente
+                $valo_ope = $row['quantity'] * $row['price'] * $row['taux_change'];
 
                 // Maj cash
                 $cash += $valo_ope * ($achat ? -1 : 1); // ajout si vente, retrait achat
@@ -309,21 +323,8 @@ class calc {
                 $positions[$pname]['nb']  = $nb;
                 $positions[$pname]['pru'] = $pru;
                 $positions[$pname]['other_name'] = $row['other_name'];
+                $positions[$pname]['devise'] = $row['devise'];
                 $sum_commission += $row['commission'];
-            }
-
-            // Transfert IN
-            if ($row['action'] == 5) {
-                $transfert_in += $row['quantity'] * $row['price'];
-                $cash         += $row['quantity'] * $row['price'];
-                $ampplt       += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
-            }
-
-            // Transfert OUT
-            if ($row['action'] == -5) {
-                $transfert_out += $row['quantity'] * $row['price'];
-                $cash          -= $row['quantity'] * $row['price'];
-                $ampplt        -= $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
 
             // Depot
@@ -356,17 +357,18 @@ class calc {
         foreach($positions as $key => $val) {
             if ($val['nb'] == 0)
                 unset($positions[$key]);
-            else
-                $valo_ptf += $val['nb'] * (isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru']);
+            else {
+                $eur_price = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru'];
+                // On applique le dernier taux connu
+                $valo_ptf += $val['nb'] * $eur_price * calc::getCurrencyRate($val['devise'], $devises);
+            }
         }
 
         $portfolio['cash']       = $cash - $sum_commission - $sum_ttf;
         $portfolio['valo_ptf']   = $valo_ptf + $cash;
-        $portfolio['gain_perte'] = $portfolio['valo_ptf'] + $transfert_out - $sum_depot - $transfert_in;
+        $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot - $sum_retrait; // Est-ce qu'on enlève les retraits ?
         $portfolio['ampplt']     = $ampplt;
         $portfolio['perf_ptf']   = $ampplt == 0 ? 0 : ($portfolio['gain_perte'] / $ampplt) * 100;
-        $portfolio['transfert_in']  = $transfert_in;
-        $portfolio['transfert_out'] = $transfert_out;
         $portfolio['depot']      = $sum_depot;
         $portfolio['retrait']    = $sum_retrait;
         $portfolio['dividende']  = $sum_dividende;
@@ -1662,15 +1664,6 @@ class uimx {
         8 => "Rebond technique",
         9 => "Baissier prix sous moyenne mobile 200"
     ];
-
-    public static function currencyConverter($prix, $converter, $devises) {
-
-        $taux = 1;
-
-        if (isset($devises[$converter][1])) $taux = $devises[$converter][1];
-        return (floatval($prix) * floatval($taux));
-
-    }
 
     public static function getCurrencySign($cur) {
 

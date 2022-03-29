@@ -95,9 +95,9 @@ $lst_trend_following = $portfolio_data['trend_following'];
 								</div>
 							</div>
 							<div class="field">
-								<label>&sum; Retraits / &sum; Transferts</label>
+								<label>&sum; Retraits</label>
 								<div class="field">
-									<input id="retraits_transferts" type="text" value="0x &euro; / 0y &euro;" readonly="" />
+									<input id="retraits" type="text" value="0" readonly="" />
 								</div>
 							</div>
 							<div class="field">
@@ -173,7 +173,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 					$tags_infos = uimx::getIconTooltipTag($qs['tags']);
 				
-					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($val['other_name'] ? 1 : 0).'">
+					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($val['other_name'] ? 1 : 0).'" data-taux="'.($qs['currency'] == "EUR" ? 1 : calc::getCurrencyRate($qs['currency']."EUR", $devises)).'">
 						<td data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
 							<i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
 						</td>
@@ -213,8 +213,8 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					</tbody>
 					<tfoot><tr>
 						<td colspan="7"></th>
-						<td id="sum_achat" class="right aligned"></td>
-						<td class="center aligned"></td>
+						<td></td>
+						<td></td>
 						<td id="sum_valo"  class="right aligned"></td>
 						<td id="glob_perf" class="center aligned"></td>
 					</tr></tfoot>
@@ -231,6 +231,41 @@ $lst_trend_following = $portfolio_data['trend_following'];
 <? } ?>
 		<button id="order_filter_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black filter icon"></i></button>
 	</h2>
+	<div id="filters" class="ui inverted form six fields">
+		<div class="field">
+            <label>Date</label>
+            <div class="ui right icon inverted left labeled fluid input">
+                <input type="text" size="10" id="f_date" value="" placeholder="0000-00-00">
+                <i class="inverted black calendar alternate outline icon"></i>
+            </div>
+        </div>
+        <div class="field">
+            <label>Actif</label>
+            <select id="f_product_name" class="ui dropdown">
+				<option value="all">All</option>
+				<option value="cash">Cash</option>
+                <? foreach ($quotes["stocks"] as $key => $val) { ?>
+                    <option value="<?= $val['symbol'] ?>"><?= $val['symbol'] ?></option>
+                <? } ?>
+                <option value="other">Autre</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Action</label>
+            <select id="f_action" class="ui dropdown">
+				<option value="all">All</option>
+                <? foreach (uimx::$order_actions as $key => $val) { ?>
+                    <option value="<?= $key ?>"><?= $val ?></option>
+                <? } ?>
+            </select>
+        </div>
+		<div class="ui grid">
+    	    <div class="wide right aligned column">
+    	        <div id="filter_go_bt" class="ui floated right blue submit button">Chercher</div>
+    	    </div>
+	    </div>
+	</div>
+
 	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
@@ -251,7 +286,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 <?
 				foreach(array_reverse($lst_orders) as $key => $val) {
 
-//					$price_converted = uimx::currencyConverter($val['quantity'] * $val['price'], $val['devise']."EUR", $devises);
+//					$price_converted = calc::currencyConverter($val['quantity'] * $val['price'], $val['devise']."EUR", $devises);
 					$price_converted = $val['quantity'] * $val['price'] * $val['taux_change'];
 
 					echo '<tr>
@@ -342,9 +377,6 @@ computeLines = function(opt) {
 	retraits   = <?= sprintf("%.2f", $portfolio_data['retrait']) ?>;
 	depots     = <?= sprintf("%.2f", $portfolio_data['depot']) ?>;
 	dividendes = <?= sprintf("%.2f", $portfolio_data['dividende']) ?>;
-	transferts_in  = <?= sprintf("%.2f", $portfolio_data['transfert_in']) ?>;
-	transferts_out = <?= sprintf("%.2f", $portfolio_data['transfert_out']) ?>;
-	transferts = transferts_in - transferts_out;
 	commissions = <?= sprintf("%.2f", $portfolio_data['commission']) ?>;
 	ttf = <?= sprintf("%.2f", $portfolio_data['ttf']) ?>;
 
@@ -353,8 +385,7 @@ computeLines = function(opt) {
 		setInputValueAndKeepLastCar('gain_perte', gain_perte.toFixed(2));
 		Dom.id('depots').value = Dom.id('depots').value.replace("0", depots.toFixed(2));
 		Dom.id('dividendes').value = Dom.id('dividendes').value.replace("0", dividendes.toFixed(2));
-		Dom.id('retraits_transferts').value = Dom.id('retraits_transferts').value.replace("0x", retraits.toFixed(2));
-		Dom.id('retraits_transferts').value = Dom.id('retraits_transferts').value.replace("0y", transferts.toFixed(2));
+		Dom.id('retraits').value = Dom.id('retraits').value.replace("0", retraits.toFixed(2));
 		setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + ' &euro;');
 		setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + ' &euro;');
 		Dom.id('subtitle').innerHTML = ' (<?= $portfolio_data['interval_year'] > 0 ? $portfolio_data['interval_year'].($portfolio_data['interval_year'] > 1 ? " ans " : " an") : "" ?> <?= $portfolio_data['interval_month'] ?> mois)';
@@ -365,23 +396,24 @@ computeLines = function(opt) {
 
 		ind      = Dom.attribute(item, 'id').split('_')[2];
 		other    = Dom.attribute(item, 'data-other');
+		taux     = Dom.attribute(item, 'data-taux');
 		actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
-		pru      = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-pru'));
+		pru      = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-pru'));
 		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
-		nb       = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-nb'));
-		achat    = parseFloat(nb * pru);
-		valo     = parseFloat(nb * price);
+		nb       = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-nb'));
 		perf_pru = parseFloat(getPerf(pru, price));
-		gain_pru = parseFloat(nb * (price - pru));
+
+		// si devise != EUR, appliquer taux de change
+		achat    = parseFloat(nb * pru * taux);
+		valo     = parseFloat(nb * price * taux);
+		gain_pru = parseFloat(nb * (price - pru) * taux);
 
 		actifs_labels.push(actif);
 		sum_achat += achat;
 		sum_valo  += valo;
 
-		//setColNumericTab('f_achat_' + ind, achat, achat.toFixed(2) + ' &euro;');
 		setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
 		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label></div>');
-		//setColNumericTab('f_gain_pru_' + ind, gain_pru, gain_pru.toFixed(2) + ' &euro;');
 
 		if (other == 1 && opt == 'change') {
 			Dom.id('f_pct_jour_'  + ind).innerHTML = 'N/A';
@@ -409,10 +441,8 @@ computeLines = function(opt) {
 
 	if (actifs_data.length > 0) {
 
-		// setColNumericTab('sum_achat', sum_achat, sum_achat.toFixed(2) + ' &euro;');
 		setColNumericTab('sum_valo',  sum_valo,  sum_valo.toFixed(2)  + ' &euro;');
 		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + ' &euro;</label>');
-		// setColNumericTab('glob_gain', glob_gain, glob_gain.toFixed(2) + ' &euro;');
 
 		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
@@ -464,12 +494,26 @@ computeLines = function(opt) {
 	myChart.update();
 }
 
+// Filtre de la table des ordres
+filter = function() {
+
+	alert(Dom.attribute('f_date', 'value'));
+
+	Dom.find("#lst_order tbody tr").forEach(function(element) {
+		if (element.children[2].innerHTML != "Cash") element.style.display = "none";
+	});
+
+	hide('filters');
+}
+
 // Listener sur les boutons ADD et BACK
 <? if (!$isPortfolioSynthese) { ?>
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
 <? } ?>
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('order_filter_bt'), Dom.Event.ON_CLICK, function(event) { toogle('filters') });
+Dom.addListener(Dom.id('filter_go_bt'), Dom.Event.ON_CLICK, function(event) { filter() });
 
 // Init du calcul
 computeLines('init');
@@ -571,4 +615,7 @@ paginator({
   table: document.getElementById("lst_order"),
   box: document.getElementById("lst_order_box")
 });
+
+hide("filters");
+
 </script>
