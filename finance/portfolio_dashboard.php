@@ -242,7 +242,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
         <div class="field">
             <label>Actif</label>
             <select id="f_product_name" class="ui dropdown">
-				<option value="all">All</option>
+				<option value="">All</option>
 				<option value="cash">Cash</option>
                 <? foreach ($quotes["stocks"] as $key => $val) { ?>
                     <option value="<?= $val['symbol'] ?>"><?= $val['symbol'] ?></option>
@@ -253,9 +253,9 @@ $lst_trend_following = $portfolio_data['trend_following'];
         <div class="field">
             <label>Action</label>
             <select id="f_action" class="ui dropdown">
-				<option value="all">All</option>
+				<option value="">All</option>
                 <? foreach (uimx::$order_actions as $key => $val) { ?>
-                    <option value="<?= $key ?>"><?= $val ?></option>
+                    <option value="<?= $val ?>"><?= $val ?></option>
                 <? } ?>
             </select>
         </div>
@@ -497,10 +497,10 @@ computeLines = function(opt) {
 // Filtre de la table des ordres
 filter = function() {
 
-	alert(Dom.attribute('f_date', 'value'));
-
-	Dom.find("#lst_order tbody tr").forEach(function(element) {
-		if (element.children[2].innerHTML != "Cash") element.style.display = "none";
+	paginator({
+		table: document.getElementById("lst_order"),
+		box: document.getElementById("lst_order_box"),
+		get_rows: get_orders_list
 	});
 
 	hide('filters');
@@ -611,10 +611,44 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 Sortable.initTable(el("lst_position"));
 Sortable.initTable(el("lst_order"));
 
+get_orders_list = function() {
+
+	let filter_date = valof('f_date');
+	let filter_product_name = valof('f_product_name');
+	let filter_action = valof('f_action');
+
+	var table = document.getElementById("lst_order");
+	var tbody = table.getElementsByTagName("tbody")[0]||table;
+
+	children = tbody.children;
+	var trs = [];
+	for (var i=0; i < children.length; i++) {
+		if (children[i].nodeType = "tr") {
+			if (children[i].getElementsByTagName("td").length > 0) {
+				if (filter_date && children[i].getElementsByTagName("td")[1].innerHTML.toLowerCase() != filter_date.toLowerCase())
+					children[i].style.display = "none";
+				else if (filter_product_name && children[i].getElementsByTagName("td")[2].innerHTML.toLowerCase() != filter_product_name.toLowerCase())
+					children[i].style.display = "none";
+				else if (filter_action && children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != filter_action.toLowerCase())
+					children[i].style.display = "none";
+				else
+					trs.push(children[i]);
+			}
+		}
+	}
+
+	return trs;
+}
+
 paginator({
-  table: document.getElementById("lst_order"),
-  box: document.getElementById("lst_order_box")
+	table: document.getElementById("lst_order"),
+	box: document.getElementById("lst_order_box"),
+	get_rows: get_orders_list
 });
+
+const datepicker1 = new TheDatepicker.Datepicker(el('f_date'));
+datepicker1.options.setInputFormat("Y-m-d")
+datepicker1.render();
 
 hide("filters");
 
