@@ -768,6 +768,13 @@ table th { color: burlywood !important; cursor: pointer !important; }
     padding: 8px 0px !important;
 }
 
+.filters {
+    display: inline-flex;
+}
+.filters .field {
+    margin: 0px 10px 10px !important;
+}
+
 @media only screen and (max-width: 1024px) {
 
     body {

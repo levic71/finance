@@ -234,7 +234,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 <? } ?>
 		<button id="order_filter_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black filter icon"></i></button>
 	</h2>
-	<div id="filters" class="ui inverted form six fields">
+	<div id="filters" class="ui inverted form six fields filters" style="display: inline-flex;">
 		<div class="field">
             <label>Date</label>
             <div class="ui right icon inverted left labeled fluid input">
@@ -262,10 +262,9 @@ $lst_trend_following = $portfolio_data['trend_following'];
                 <? } ?>
             </select>
         </div>
-		<div class="ui grid">
-    	    <div class="wide right aligned column">
-    	        <div id="filter_go_bt" class="ui floated right blue submit button">Chercher</div>
-    	    </div>
+		<div class="field">
+			<label>&nbsp;</label>
+    	    <div id="filter_go_bt" class="ui floated right blue submit button">Chercher</div>
 	    </div>
 	</div>
 
