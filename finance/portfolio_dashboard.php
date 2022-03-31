@@ -298,7 +298,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td class="center aligned">'.uimx::$order_actions[$val['action']].'</td>
 						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>
 						<td data-value="'.$val['price'].'">'.sprintf("%.2f %s", $val['price'], uimx::getCurrencySign($val['devise'])).'</td>
-						<td data-value="'.sprintf("%.2f", $price_converted).'">'.sprintf("%.2f %s", $price_converted, '&euro;').'</td>
+						<td data-value="'.sprintf("%.2f", $price_converted).'" class="'.($val['action'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f %s", $price_converted, '&euro;').'</td>
 						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;/'.sprintf("%.2f", $val['ttf']).' &euro;</td>
 						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
 						<td class="collapsing">
