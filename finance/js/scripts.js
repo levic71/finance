@@ -178,7 +178,7 @@ switchColorElement = function(elt, c1, c2) {
 }
 
 getPerf = function(depart, arrive) {
-	return ( ((arrive - depart) * 100) / depart);
+	return depart == 0 ? 0 : ( ((arrive - depart) * 100) / depart);
 }
 
 getRatio = function(ref, val) {

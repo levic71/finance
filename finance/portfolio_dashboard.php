@@ -172,8 +172,11 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					$pct_mm = $qs['MM200'] == 0 ? 0 : (($qs['MM200'] - $quote) * 100) / $quote;
 
 					$tags_infos = uimx::getIconTooltipTag($qs['tags']);
+
+					// Choix de la devise
+					$currency = $val['other_name'] ? $val['devise'] : $qs['currency'];
 				
-					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($val['other_name'] ? 1 : 0).'" data-taux="'.($qs['currency'] == "EUR" ? 1 : calc::getCurrencyRate($qs['currency']."EUR", $devises)).'">
+					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($val['other_name'] ? 1 : 0).'" data-taux="'.($currency == "EUR" ? 1 : calc::getCurrencyRate($currency."EUR", $devises)).'">
 						<td data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
 							<i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
 						</td>
@@ -181,17 +184,17 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
 
 						<td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$val['nb'].'" data-pru="'.sprintf("%.2f", $val['pru']).'"><div>
-							<button class="tiny ui button">'.sprintf("%.2f %s", $val['pru'], uimx::getCurrencySign($qs['currency'])).'</button>
+							<button class="tiny ui button">'.sprintf("%.2f %s", $val['pru'], uimx::getCurrencySign($currency)).'</button>
 							<label>'.$val['nb'].'</label>
 						</div></td>
 
 						<td class="center aligned" data-value="'.$pct.'"><div>
-							<button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $quote, uimx::getCurrencySign($qs['currency'])).'</button>
+							<button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $quote).'" data-name="'.$key.'" data-pru="'.($quote_from_pru ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $quote, uimx::getCurrencySign($currency)).'</button>
 							<label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
 						</div></td>
 					
 						<td class="center aligned" data-value="'.$pct_mm.'"><div>
-							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%.2f %s", $qs['MM200'], uimx::getCurrencySign($qs['currency'])).'</button>
+							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%.2f %s", $qs['MM200'], uimx::getCurrencySign($currency)).'</button>
 							<label style="color: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%s%.2f", ($pct_mm >= 0 ? '+' : ''), $pct_mm).' %</label>
 						</div></td>
 
@@ -371,6 +374,7 @@ computeLines = function(opt) {
 	const actifs_bg = [];
 
 	valo_ptf   = <?= sprintf("%.2f", $portfolio_data['valo_ptf']) ?>;
+	perf_ptf   = <?= sprintf("%.2f", $portfolio_data['perf_ptf']) ?>;
 	cash       = <?= sprintf("%.2f", $portfolio_data['cash']) ?>;
 	ampplt     = <?= sprintf("%.2f", $portfolio_data['ampplt']) ?>;
 	gain_perte = <?= sprintf("%.2f", $portfolio_data['gain_perte']) ?>;
@@ -437,7 +441,6 @@ computeLines = function(opt) {
 
 	glob_perf = getPerf(sum_achat, sum_valo);
 	glob_gain = sum_valo - sum_achat;
-	estimation_valo = valo_ptf;
 
 	if (actifs_data.length > 0) {
 
@@ -448,9 +451,8 @@ computeLines = function(opt) {
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
 	}
 
-	perf_ptf2 = ampplt == 0 ? 0 : (gain_perte / ampplt) * 100;
-	addCN('perf_ribbon3', perf_ptf2 >= 0 ? "ribbon--green" : "ribbon--red");
-	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf2.toFixed(2) + ' %';
+	addCN('perf_ribbon3', perf_ptf >= 0 ? "ribbon--green" : "ribbon--red");
+	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf.toFixed(2) + ' %';
 
 	var nb_actifs = actifs_data.length;
 	if (nb_actifs == 0) {

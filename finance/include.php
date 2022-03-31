@@ -366,10 +366,11 @@ class calc {
 
         $portfolio['cash']       = $cash - $sum_commission - $sum_ttf;
         $portfolio['valo_ptf']   = $valo_ptf + $cash;
+        $portfolio['depot']      = $sum_depot;
         $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot - $sum_retrait; // Est-ce qu'on enlève les retraits ?
         $portfolio['ampplt']     = $ampplt;
-        $portfolio['perf_ptf']   = $ampplt == 0 ? 0 : ($portfolio['gain_perte'] / $ampplt) * 100;
-        $portfolio['depot']      = $sum_depot;
+//        $portfolio['perf_ptf']   = $ampplt == 0 ? 0 : ($portfolio['gain_perte'] / $ampplt) * 100;
+        $portfolio['perf_ptf']   = $portfolio['depot'] == 0 ? 0 : (($portfolio['valo_ptf'] - $portfolio['depot']) * 100) / $portfolio['depot'];
         $portfolio['retrait']    = $sum_retrait;
         $portfolio['dividende']  = $sum_dividende;
         $portfolio['commission'] = $sum_commission;
