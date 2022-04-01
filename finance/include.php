@@ -360,6 +360,7 @@ class calc {
             else {
                 $eur_price = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru'];
                 // On applique le dernier taux connu
+                echo sprintf("%f:%f:%f<br />", $val['nb'], $eur_price, calc::getCurrencyRate($val['devise'], $devises));
                 $valo_ptf += $val['nb'] * $eur_price * calc::getCurrencyRate($val['devise'], $devises);
             }
         }

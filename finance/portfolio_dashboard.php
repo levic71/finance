@@ -257,6 +257,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
             <label>Action</label>
             <select id="f_action" class="ui dropdown">
 				<option value="">All</option>
+				<option value="achatvente">Achat/Vente</option>
                 <? foreach (uimx::$order_actions as $key => $val) { ?>
                     <option value="<?= $val ?>"><?= $val ?></option>
                 <? } ?>
@@ -626,11 +627,22 @@ get_orders_list = function() {
 	for (var i=0; i < children.length; i++) {
 		if (children[i].nodeType = "tr") {
 			if (children[i].getElementsByTagName("td").length > 0) {
+
+				let hide_line = false;
+
 				if (filter_date && children[i].getElementsByTagName("td")[1].innerHTML.toLowerCase() != filter_date.toLowerCase())
-					children[i].style.display = "none";
-				else if (filter_product_name && children[i].getElementsByTagName("td")[2].innerHTML.toLowerCase() != filter_product_name.toLowerCase())
-					children[i].style.display = "none";
-				else if (filter_action && children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != filter_action.toLowerCase())
+					hide_line = true;
+
+				if (filter_product_name && children[i].getElementsByTagName("td")[2].innerHTML.toLowerCase() != filter_product_name.toLowerCase())
+					hide_line = true;
+				
+				if (filter_action && filter_action.toLowerCase() != "achatvente" && children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != filter_action.toLowerCase())
+					hide_line = true;
+
+				if (filter_action && filter_action.toLowerCase() == "achatvente" && (children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != "achat" && children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != "vente"))
+					hide_line = true;
+
+				if (hide_line)
 					children[i].style.display = "none";
 				else
 					trs.push(children[i]);
