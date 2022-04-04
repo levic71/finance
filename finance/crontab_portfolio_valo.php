@@ -30,8 +30,6 @@ while($row = mysqli_fetch_array($res)) {
 
 	if (count($portfolio_data) == 0) continue;
 
-	var_dump($portfolio_data);
-
 	$update = "INSERT INTO portfolio_valo (date, portfolio_id, data) VALUES ('".date("Ymd")."', '".$row['id']."', '".json_encode($portfolio_data)."') ON DUPLICATE KEY UPDATE data='".json_encode($portfolio_data)."'";
 	$res2 = dbc::execSql($update);
 
