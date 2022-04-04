@@ -1707,9 +1707,10 @@ class uimx {
         $tab_tags = array_flip(explode("|", utf8_decode($tags)));
 
         // default values
-        $tooltip = "Entreprise";
-        $icon = "copyright outline";
+        $tooltip  = "Entreprise";
+        $icon     = "copyright outline";
         $icon_tag = "bt_filter_SEC_99999";
+        $geo      = "Monde";
 
         foreach(uimx::$invest_secteur as $key => $val) {
             if (isset($tab_tags[$val['tag']])) {
@@ -1719,11 +1720,18 @@ class uimx {
             }
         }
 
+        foreach(uimx::$invest_zone_geo as $key => $val) {
+            if (isset($tab_tags[$val['tag']])) {
+                $geo = $val['tag'];
+            }
+        }
+
         if ($tooltip == "Entreprise") $tags .= "|Entreprise";
 
-        $ret['icon'] = $icon;
+        $ret['icon']     = $icon;
         $ret['icon_tag'] = $icon_tag;
-        $ret['tooltip'] = $tooltip;
+        $ret['tooltip']  = $tooltip;
+        $ret['geo']      = $geo;
 
         return $ret;
     }

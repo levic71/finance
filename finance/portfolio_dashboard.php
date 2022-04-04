@@ -62,7 +62,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	</h2>
 	<div class="ui stackable column grid">
 		<div class="row">
-			<div class="ten wide column">
+			<div class="ten wide column ptf_infos">
 				<div class="ui stackable two column grid container">
 					<div class="row">
 
@@ -177,7 +177,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					$currency = $val['other_name'] ? $val['devise'] : $qs['currency'];
 				
 					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($val['other_name'] ? 1 : 0).'" data-taux="'.($currency == "EUR" ? 1 : calc::getCurrencyRate($currency."EUR", $devises)).'">
-						<td data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
+						<td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
 							<i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
 						</td>
 
@@ -299,7 +299,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td class="center aligned">'.uimx::$order_actions[$val['action']].'</td>
 						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>
 						<td data-value="'.$val['price'].'">'.sprintf("%.2f %s", $val['price'], uimx::getCurrencySign($val['devise'])).'</td>
-						<td data-value="'.sprintf("%.2f", $price_converted).'" class="'.($val['action'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f %s", $price_converted, '&euro;').'</td>
+						<td data-value="'.sprintf("%.2f", $price_converted).'" class="'.($val['action'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%s%.2f %s", $val['action'] >= 0 ? '+' : '-', $price_converted, '&euro;').'</td>
 						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;/'.sprintf("%.2f", $val['ttf']).' &euro;</td>
 						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
 						<td class="collapsing">
@@ -336,7 +336,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 var myChart = null;
 var ctx = document.getElementById('pft_donut').getContext('2d');
 
-el("pft_donut").height = document.body.offsetWidth > 700 ? 200 : 300;
+el("pft_donut").height = document.body.offsetWidth > 700 ? 160 : 300;
 
 var options = {
     responsive: false,
@@ -369,9 +369,21 @@ computeLines = function(opt) {
 	sum_valo  = 0;
 	glob_perf = 0;
 	glob_gain = 0;
+
+	// Pour donut repartition par actif
 	const actifs_labels = [];
-	const actifs_data = [];
-	const actifs_bg = [];
+	const actifs_data   = [];
+	const actifs_bg     = [];
+
+	// Pour donut repartition par secteur
+	const secteurs_labels = [];
+	const secteurs_data   = [];
+	const secteurs_bg     = [];
+
+	// Pour donut repartition par geographie
+	const geo_labels = [];
+	const geo_data   = [];
+	const geo_bg     = [];
 
 	valo_ptf   = <?= sprintf("%.2f", $portfolio_data['valo_ptf']) ?>;
 	perf_ptf   = <?= sprintf("%.2f", $portfolio_data['perf_ptf']) ?>;
@@ -402,6 +414,8 @@ computeLines = function(opt) {
 		other    = Dom.attribute(item, 'data-other');
 		taux     = Dom.attribute(item, 'data-taux');
 		actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
+		secteur  = Dom.attribute(item.getElementsByTagName("td")[0], 'data-tootik');
+		geo      = Dom.attribute(item.getElementsByTagName("td")[0], 'data-geo');
 		pru      = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-pru'));
 		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
 		nb       = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-nb'));
@@ -412,7 +426,11 @@ computeLines = function(opt) {
 		valo     = parseFloat(nb * price * taux);
 		gain_pru = parseFloat(nb * (price - pru) * taux);
 
+		// Data donuts
 		actifs_labels.push(actif);
+		secteurs_labels.push(secteur);
+		geo_labels.push(geo);
+
 		sum_achat += achat;
 		sum_valo  += valo;
 
@@ -428,6 +446,9 @@ computeLines = function(opt) {
 	Dom.find('#lst_position tbody tr').forEach(function(item) {
 
 		ind = Dom.attribute(item, 'id').split('_')[2];
+
+		secteur  = Dom.attribute(item.getElementsByTagName("td")[0], 'data-tootik');
+		geo      = Dom.attribute(item.getElementsByTagName("td")[0], 'data-geo');
 
 		price = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
 		nb    = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-nb'));

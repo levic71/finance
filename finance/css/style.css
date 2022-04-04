@@ -775,6 +775,15 @@ table th { color: burlywood !important; cursor: pointer !important; }
     margin: 0px 10px 10px !important;
 }
 
+.ptf_infos label { 
+    font-size: 11px !important;
+    margin: 0px !important;
+}
+
+.ptf_infos input {
+    padding: 4px 10px !important;
+}
+
 @media only screen and (max-width: 1024px) {
 
     body {
