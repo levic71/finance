@@ -182,9 +182,11 @@ function format_data($data, $period) {
 $data_daily = getTimeSeriesData("daily_time_series_adjusted", "DAILY", $symbol);
 
 // On ajoute la cotation du jour
-$data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "open" => $row["open"], "high" => $row["high"], "low" => $row["low"], "close" => $row["price"], "adjusted_close" => $row["price"], "volume" => $row["volume"], "period" => "DAILY", "DM" => $data['DM'], "MM7" => $data['MM7'], "MM20" => $data['MM20'], "MM50" => $data["MM50"], "MM200" => $data['MM200'], "RSI14" => $data["RSI14"]);
-$data_daily["rows"][]  = $data_daily_today;
-$data_daily["colrs"][] = 1;
+if ($row['price'] != "") {
+    $data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "open" => $row["open"], "high" => $row["high"], "low" => $row["low"], "close" => $row["price"], "adjusted_close" => $row["price"], "volume" => $row["volume"], "period" => "DAILY", "DM" => $data['DM'], "MM7" => $data['MM7'], "MM20" => $data['MM20'], "MM50" => $data["MM50"], "MM200" => $data['MM200'], "RSI14" => $data["RSI14"]);
+    $data_daily["rows"][]  = $data_daily_today;
+    $data_daily["colrs"][] = 1;
+}
 
 // Recuperation de tous les indicateurs WEEKLY/MONTHLY de l'actif
 $data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $symbol);
