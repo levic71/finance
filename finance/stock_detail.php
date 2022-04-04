@@ -60,7 +60,7 @@ $ptf_nb_positions = isset($aggregate_ptf['positions']) ? count($aggregate_ptf['p
 $data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
 $curr = $row['currency'] == "EUR" ? "&euro;" : "$";
 
-$trend_following = $aggregate_ptf['trend_following'];
+$trend_following = isset($aggregate_ptf['trend_following']) ? $aggregate_ptf['trend_following'] : [];
 
 ?>
 
