@@ -114,7 +114,12 @@ $lst_trend_following = $portfolio_data['trend_following'];
 			</div>
 			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
 				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
-				<canvas id="pft_donut" height="100"></canvas>
+				<div class="ui buttons">
+					<button id="0" class="mini ui primary button">Répartition</button>
+					<button id="1" class="mini ui button">Secteurs</button>
+					<button id="2" class="mini ui button">Géographie</button>
+				</div>
+				<canvas id="pft_donut" height="130" style="margin-top: 10px"></canvas>
 			</div>
 		</div>
 	</div>
@@ -336,7 +341,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 var myChart = null;
 var ctx = document.getElementById('pft_donut').getContext('2d');
 
-el("pft_donut").height = document.body.offsetWidth > 700 ? 160 : 300;
+el("pft_donut").height = document.body.offsetWidth > 700 ? 130 : 300;
 
 var options = {
     responsive: false,
@@ -347,7 +352,7 @@ var options = {
 			position: 'right'
 		},
 		title: {
-			display: true,
+			display: false,
 			color: 'white',
 			text: 'Répartition'
 		}
@@ -363,27 +368,23 @@ var options = {
 	}
 ?>
 
+// Pour donut repartition par actif, secteur, geo 
+const labels_repartition = [[], [], []];
+const data_repartition   = [[], [], []];
+const bg_repartition     = [[], [], []];
+
+labels_repartition[1] = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
+data_repartition[1] = ['5', '3', '4', '8', '10', '11', '10', '9'];
+
+labels_repartition[2] = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
+data_repartition[2] = ['5', '3', '4', '8', '10', '11', '10', '9'];
+
 computeLines = function(opt) {
 
 	sum_achat = 0;
 	sum_valo  = 0;
 	glob_perf = 0;
 	glob_gain = 0;
-
-	// Pour donut repartition par actif
-	const actifs_labels = [];
-	const actifs_data   = [];
-	const actifs_bg     = [];
-
-	// Pour donut repartition par secteur
-	const secteurs_labels = [];
-	const secteurs_data   = [];
-	const secteurs_bg     = [];
-
-	// Pour donut repartition par geographie
-	const geo_labels = [];
-	const geo_data   = [];
-	const geo_bg     = [];
 
 	valo_ptf   = <?= sprintf("%.2f", $portfolio_data['valo_ptf']) ?>;
 	perf_ptf   = <?= sprintf("%.2f", $portfolio_data['perf_ptf']) ?>;
@@ -427,9 +428,9 @@ computeLines = function(opt) {
 		gain_pru = parseFloat(nb * (price - pru) * taux);
 
 		// Data donuts
-		actifs_labels.push(actif);
-		secteurs_labels.push(secteur);
-		geo_labels.push(geo);
+		labels_repartition[0].push(actif);
+		labels_repartition[1].push(secteur);
+		labels_repartition[2].push(geo);
 
 		sum_achat += achat;
 		sum_valo  += valo;
@@ -457,13 +458,13 @@ computeLines = function(opt) {
 
 		setColNumericTab('f_poids_' + ind, Math.round(ratio), Math.round(ratio) + ' %', false);
 
-		actifs_data.push(ratio);
+		data_repartition[0].push(ratio);
 	});
 
 	glob_perf = getPerf(sum_achat, sum_valo);
 	glob_gain = sum_valo - sum_achat;
 
-	if (actifs_data.length > 0) {
+	if (data_repartition[0].length > 0) {
 
 		setColNumericTab('sum_valo',  sum_valo,  sum_valo.toFixed(2)  + ' &euro;');
 		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + ' &euro;</label>');
@@ -475,36 +476,41 @@ computeLines = function(opt) {
 	addCN('perf_ribbon3', perf_ptf >= 0 ? "ribbon--green" : "ribbon--red");
 	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf.toFixed(2) + ' %';
 
-	var nb_actifs = actifs_data.length;
-	if (nb_actifs == 0) {
+	// Garanissage des tablaux de couleurs
+	[ 0, 1, 2].forEach(function(ind) {
 
-		actifs_data.push(100);
-		actifs_labels.push('None');
-		actifs_bg.push('rgb(200, 200, 200)');
+		let nb_actifs = data_repartition[ind].length;
+		if (nb_actifs == 0) {
 
-	} else {
+			data_repartition[ind].push(100);
+			labels_repartition[ind].push('None');
+			bg_repartition[ind].push('rgb(200, 200, 200)');
 
-		// var colrs = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'];
-		// var colrs = [ '#9b59b6', '#2980b9', '#1abc9c', '#27ae60', '#f1c40f', '#e67e22', '#7d3c98', '#e74c3c' ];
-		var colrs = [];
-		var h = 225;
-		for (var n = 0; n < nb_actifs; n++) {
-			var c = new KolorWheel([h, 63, 62]);
-			colrs.push(c.getHex());
-			h += Math.round(360 / nb_actifs);
+		} else {
+
+			// var colrs = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'];
+			// var colrs = [ '#9b59b6', '#2980b9', '#1abc9c', '#27ae60', '#f1c40f', '#e67e22', '#7d3c98', '#e74c3c' ];
+			var colrs = [];
+			var h = 225;
+			for (var n = 0; n < nb_actifs; n++) {
+				var c = new KolorWheel([h, 63, 62]);
+				colrs.push(c.getHex());
+				h += Math.round(360 / nb_actifs);
+			}
+
+			colrs.forEach((item) => { bg_repartition[ind].push(item); });
 		}
+	});
 
-		colrs.forEach((item) => { actifs_bg.push(item); });
-	}
 
-	const data = {
-		labels: actifs_labels,
+	const data_donut = {
+		labels: labels_repartition[0],
 		datasets: [
 			{
 				label: 'Répartition',
-				data: actifs_data,
+				data: data_repartition[0],
 				borderWidth: 0.5,
-				backgroundColor: actifs_bg,
+				backgroundColor: bg_repartition[0],
 				borderWidth: 4,
 				borderColor: "#222",
 				hoverOffset: 4
@@ -513,7 +519,7 @@ computeLines = function(opt) {
 	};
 
 	if (myChart) myChart.destroy();
-	myChart = new Chart(ctx, { type: 'doughnut', data: data, options: options } );
+	myChart = new Chart(ctx, { type: 'doughnut', data: data_donut, options: options } );
 	myChart.update();
 }
 
@@ -629,6 +635,23 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 			});
 	});
 });
+
+// Gestion des boutons du graphe donut
+changeButtonState = function(bt) {
+	['0', '1', '2'].forEach(function(item) { rmCN(item, 'primary'); });
+	addCN(bt, 'primary');
+}
+updateDonut = function(bt) {
+    let i = parseInt(bt);
+	changeButtonState(bt, 'primary');
+    myChart.config.data.datasets[0].data = data_repartition[i];
+    myChart.config.data.labels           = labels_repartition[i];
+	myChart.config.data.backgroundColor  = bg_repartition[i];
+    myChart.update();
+}
+Dom.addListener(Dom.id('0'), Dom.Event.ON_CLICK, function(event) { updateDonut('0'); });
+Dom.addListener(Dom.id('1'), Dom.Event.ON_CLICK, function(event) { updateDonut('1'); });
+Dom.addListener(Dom.id('2'), Dom.Event.ON_CLICK, function(event) { updateDonut('2'); });
 
 // Tri sur tableau
 Sortable.initTable(el("lst_position"));
