@@ -395,6 +395,11 @@ computeLines = function(opt) {
 	glob_perf = 0;
 	glob_gain = 0;
 
+	sum_valo_stoploss1  = 0;
+	sum_valo_stoploss2  = 0;
+	sum_valo_stopprofit = 0;
+	sum_valo_objectif   = 0;
+
 	valo_ptf   = <?= sprintf("%.2f", $portfolio_data['valo_ptf']) ?>;
 	perf_ptf   = <?= sprintf("%.2f", $portfolio_data['perf_ptf']) ?>;
 	cash       = <?= sprintf("%.2f", $portfolio_data['cash']) ?>;
@@ -429,16 +434,41 @@ computeLines = function(opt) {
 		nb       = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-nb'));
 		perf_pru = parseFloat(getPerf(pru, price));
 
+		// Recuperation des stops
+		var stoploss   = 0;
+		var stopprofit = 0;
+		var objectif   = 0;
+
+		var divs = item.getElementsByTagName("td")[5].getElementsByTagName("div")[0].getElementsByTagName("div");
+
+		if (divs) {
+			stoploss   = divs[0].innerHTML;
+			stopprofit = divs[1].innerHTML;
+			objectif   = divs[2].innerHTML;
+		}
+
 		// si devise != EUR, appliquer taux de change
 		achat    = parseFloat(nb * pru * taux);
 		valo     = parseFloat(nb * price * taux);
+		valo     = parseFloat(nb * price * taux);
+		valo     = parseFloat(nb * price * taux);
 		gain_pru = parseFloat(nb * (price - pru) * taux);
+
+		valo_stoploss1  = parseFloat(nb * (stoploss == 0 ? price : stoploss) * taux);
+		valo_stoploss2  = parseFloat(nb * stoploss * taux);
+		valo_stopprofit = parseFloat(nb * (stopprofit == 0 ? price : stopprofit) * taux);
+		valo_objectif   = parseFloat(nb * (objectif == 0 ? price : objectif) * taux);
 
 		// Data donuts
 		labels_repartition[0].push(actif);
 
 		sum_achat += achat;
 		sum_valo  += valo;
+
+		sum_valo_stoploss1  += valo_stoploss1;
+		sum_valo_stoploss2  += valo_stoploss2;
+		sum_valo_stopprofit += valo_stopprofit;
+		sum_valo_objectif   += valo_objectif;
 
 		setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
 		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label></div>');
@@ -537,6 +567,9 @@ computeLines = function(opt) {
 			}
 		]
 	};
+
+	alert(sum_valo_stoploss1 + ':' + sum_valo_stoploss2 + ':' +sum_valo_stopprofit + ':' + sum_valo_objectif); 
+
 
 	if (myChart) myChart.destroy();
 	myChart = new Chart(ctx, { type: 'doughnut', data: data_donut, options: options } );
