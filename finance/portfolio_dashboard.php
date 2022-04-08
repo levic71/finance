@@ -116,8 +116,8 @@ $lst_trend_following = $portfolio_data['trend_following'];
 				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
 				<div class="ui buttons">
 					<button id="0" class="mini ui primary button">Répartition</button>
-					<button id="1" class="mini ui button">Secteurs</button>
-					<button id="2" class="mini ui button">Géographie</button>
+					<button id="1" class="mini ui grey button">Secteurs</button>
+					<button id="2" class="mini ui grey button">Géographie</button>
 				</div>
 				<canvas id="pft_donut" height="130" style="margin-top: 10px"></canvas>
 			</div>
@@ -338,6 +338,19 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 <script>
 
+/* var arr = {
+    "Company Name": 'Flexiple',
+    "ID": 123
+};
+arr.toto = 'toto';
+arr['tutu'] = 'tutu';
+for (var key in arr) {
+    var value = arr[key];
+	alert(key + ' : ' + value);
+}
+alert(Object.keys(arr).length);
+ */
+
 var myChart = null;
 var ctx = document.getElementById('pft_donut').getContext('2d');
 
@@ -372,12 +385,8 @@ var options = {
 const labels_repartition = [[], [], []];
 const data_repartition   = [[], [], []];
 const bg_repartition     = [[], [], []];
-
-labels_repartition[1] = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
-data_repartition[1] = ['5', '3', '4', '8', '10', '11', '10', '9'];
-
-labels_repartition[2] = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
-data_repartition[2] = ['5', '3', '4', '8', '10', '11', '10', '9'];
+var tab_secteur = {};
+var tab_geo = {};
 
 computeLines = function(opt) {
 
@@ -415,8 +424,6 @@ computeLines = function(opt) {
 		other    = Dom.attribute(item, 'data-other');
 		taux     = Dom.attribute(item, 'data-taux');
 		actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
-		secteur  = Dom.attribute(item.getElementsByTagName("td")[0], 'data-tootik');
-		geo      = Dom.attribute(item.getElementsByTagName("td")[0], 'data-geo');
 		pru      = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-pru'));
 		price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
 		nb       = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-nb'));
@@ -429,8 +436,6 @@ computeLines = function(opt) {
 
 		// Data donuts
 		labels_repartition[0].push(actif);
-		labels_repartition[1].push(secteur);
-		labels_repartition[2].push(geo);
 
 		sum_achat += achat;
 		sum_valo  += valo;
@@ -456,10 +461,25 @@ computeLines = function(opt) {
 		valo  = parseFloat(nb * price);
 		ratio = getRatio(sum_valo, valo).toFixed(2);
 
+		tab_secteur[secteur] = (tab_secteur[secteur] ? parseFloat(tab_secteur[secteur]) : 0) + parseFloat(ratio);
+		tab_geo[geo] = (tab_geo[geo] ? parseFloat(tab_geo[geo]) : 0) + parseFloat(ratio);
+
 		setColNumericTab('f_poids_' + ind, Math.round(ratio), Math.round(ratio) + ' %', false);
 
 		data_repartition[0].push(ratio);
 	});
+
+	// On garnit les data du donut secteur
+	for (var key in tab_secteur) {
+		labels_repartition[1].push(key);
+		data_repartition[1].push(tab_secteur[key]);
+	}
+
+	// On garnit les data du donut geo
+	for (var key in tab_geo) {
+		labels_repartition[2].push(key);
+		data_repartition[2].push(tab_geo[key]);
+	}
 
 	glob_perf = getPerf(sum_achat, sum_valo);
 	glob_gain = sum_valo - sum_achat;
@@ -638,12 +658,12 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 
 // Gestion des boutons du graphe donut
 changeButtonState = function(bt) {
-	['0', '1', '2'].forEach(function(item) { rmCN(item, 'primary'); });
-	addCN(bt, 'primary');
+	['0', '1', '2'].forEach(function(item) { replaceCN(item, 'primary', 'grey'); });
+	replaceCN(bt, 'grey', 'primary');
 }
 updateDonut = function(bt) {
     let i = parseInt(bt);
-	changeButtonState(bt, 'primary');
+	changeButtonState(bt);
     myChart.config.data.datasets[0].data = data_repartition[i];
     myChart.config.data.labels           = labels_repartition[i];
 	myChart.config.data.backgroundColor  = bg_repartition[i];
