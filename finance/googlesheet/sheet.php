@@ -135,7 +135,7 @@ function updateGoogleSheetAlertes() {
 	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
 
 	// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
-	$get_range = $onglet."!B3:M100";
+	$get_range = $onglet."!B3:R100";
 	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
 	$values = $response->getValues();
 
