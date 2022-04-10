@@ -603,9 +603,9 @@ computeLines = function(opt) {
 	infos_area_bis.v[2] = sum_valo_objectif.toFixed(2) + ' \u20AC';
 	infos_area_bis.l[3] = "Couverture Stop Loss";
 	infos_area_bis.v[3] = sum_valo_stoploss2.toFixed(2) + ' \u20AC';
-	infos_area_bis.l[4] = "";
+	infos_area_bis.l[4] = "-";
 	infos_area_bis.v[4] = ' \u20AC';
-	infos_area_bis.l[5] = "";
+	infos_area_bis.l[5] = "-";
 	infos_area_bis.v[5] = ' \u20AC';
 
 
