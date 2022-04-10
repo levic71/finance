@@ -185,10 +185,6 @@ getRatio = function(ref, val) {
 	return ( (val * 100) / ref);
 }
 
-setInputValueAndKeepLastCar = function(id, str) {
-	Dom.id(id).value = str + " " + Dom.id(id).value.substring(Dom.id(id).value.length - 1);
-}
-
 setColNumericTab = function(id, val, innerHTML, colored = true) {
 	rmCN(id, "aaf-positive");
 	rmCN(id, "aaf-negative");

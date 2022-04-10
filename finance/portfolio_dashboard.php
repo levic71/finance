@@ -59,6 +59,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	<h2 class="ui left floated">
 		<i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
 		<button id="portfolio_graph_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chart bar outline icon"></i></button>
+		<button id="portfolio_switch_bt" class="circular ui icon very small right floated grey labelled button"><i class="inverted white retweet icon"></i></button>
 	</h2>
 	<div class="ui stackable column grid">
 		<div class="row">
@@ -66,45 +67,33 @@ $lst_trend_following = $portfolio_data['trend_following'];
 				<div class="ui stackable two column grid container">
 					<div class="row">
 
-						<div class="ui inverted column readonly form">
+						<div id="infos_area1" class="ui inverted column readonly form">
 							<div class="field">
-								<label>Estimation Portefeuille</label>
-								<div class="field">
-									<input id="f_valo_ptf" type="text" value="0 &euro;" readonly="" />
-								</div>
+								<label>Label1</label>	
+								<input type="text" value="0" readonly="" />
 							</div>
 							<div class="field">
-								<label>Cash disponible</label>
-								<div class="field">
-									<input type="text" value="<?= sprintf("%.2f &euro;", $portfolio_data['cash']) ?>" readonly="" />
-								</div>
+								<label>Label2</label>
+								<input type="text" value="0" readonly="" />
 							</div>
 							<div class="field">
-								<label>+/- Value</label>
-								<div class="field">
-									<input id="gain_perte" type="text" value="0 &euro;" readonly="" />
-								</div>
+								<label>Label3</label>
+								<input type="text" value="0" readonly="" />
 							</div>
 						</div>
 
-						<div class="ui inverted column readonly form">
+						<div id="infos_area2" class="ui inverted column readonly form">
 							<div class="field">
-								<label>&sum; Dépots</label>
-								<div class="field">
-									<input id="depots" type="text" value="0 &euro;" readonly="" />
-								</div>
+								<label>Label4</label>
+								<input type="text" value="0" readonly="" />
 							</div>
 							<div class="field">
-								<label>&sum; Retraits</label>
-								<div class="field">
-									<input id="retraits" type="text" value="0" readonly="" />
-								</div>
+								<label>Label5</label>
+								<input type="text" value="0" readonly="" />
 							</div>
 							<div class="field">
-								<label>&sum; Dividendes</label>
-								<div class="field">
-									<input id="dividendes" type="text" value="0 &euro;" readonly="" />
-								</div>
+								<label>Label6</label>
+								<input type="text" value="0" readonly="" />
 							</div>
 						</div>
 
@@ -387,6 +376,37 @@ const data_repartition   = [[], [], []];
 const bg_repartition     = [[], [], []];
 var tab_secteur = {};
 var tab_geo = {};
+var infos_area = { n: 1, l:[], v: [] };
+var infos_area_bis = { n: 2, l:[], v: [] };
+var current_infos_area = {};
+
+update_infos_areas = function(o) {
+
+	current_infos_area = o;
+
+	var x = 0;
+
+	[ 'infos_area1', 'infos_area2' ].forEach(function(elt) {
+
+		var area = Dom.id(elt);
+		var children = area.children; // fields
+
+		for (var i = 0; i < children.length; i++) {
+
+			if (children[i].nodeType = "div") {
+				if (children[i].getElementsByTagName("label").length > 0) {
+					if (o.l[x]) children[i].getElementsByTagName("label")[0].innerHTML = o.l[x];
+				}
+				if (children[i].getElementsByTagName("input").length > 0) {
+					if (o.v[x]) children[i].getElementsByTagName("input")[0].value = o.v[x];
+				}
+				x++;
+			}
+
+		}
+
+	});
+}
 
 computeLines = function(opt) {
 
@@ -412,11 +432,18 @@ computeLines = function(opt) {
 	ttf = <?= sprintf("%.2f", $portfolio_data['ttf']) ?>;
 
 	if (opt == 'init') {
-		setInputValueAndKeepLastCar('f_valo_ptf', valo_ptf.toFixed(2));
-		setInputValueAndKeepLastCar('gain_perte', gain_perte.toFixed(2));
-		Dom.id('depots').value = Dom.id('depots').value.replace("0", depots.toFixed(2));
-		Dom.id('dividendes').value = Dom.id('dividendes').value.replace("0", dividendes.toFixed(2));
-		Dom.id('retraits').value = Dom.id('retraits').value.replace("0", retraits.toFixed(2));
+		infos_area.l[0] = "Estimation Portefeuille";
+		infos_area.v[0] = valo_ptf.toFixed(2) + ' \u20AC';
+		infos_area.l[1] = "Cash disponible";
+		infos_area.v[1] = cash.toFixed(2) + ' \u20AC';
+		infos_area.l[2] = "+/- Value";
+		infos_area.v[2] = gain_perte.toFixed(2) + ' \u20AC';
+		infos_area.l[3] = "&sum; Dépots";
+		infos_area.v[3] = depots.toFixed(2) + ' \u20AC';
+		infos_area.l[4] = "&sum; Retraits";
+		infos_area.v[4] = retraits.toFixed(2) + ' \u20AC';
+		infos_area.l[5] = "&sum; Dividendes";
+		infos_area.v[5] = dividendes.toFixed(2) + ' \u20AC';
 		setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + ' &euro;');
 		setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + ' &euro;');
 		Dom.id('subtitle').innerHTML = ' (<?= $portfolio_data['interval_year'] > 0 ? $portfolio_data['interval_year'].($portfolio_data['interval_year'] > 1 ? " ans " : " an") : "" ?> <?= $portfolio_data['interval_month'] ?> mois)';
@@ -568,7 +595,18 @@ computeLines = function(opt) {
 		]
 	};
 
-	alert(sum_valo_stoploss1 + ':' + sum_valo_stoploss2 + ':' +sum_valo_stopprofit + ':' + sum_valo_objectif); 
+	infos_area_bis.l[0] = "Estimation Stop Loss";
+	infos_area_bis.v[0] = sum_valo_stoploss1.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[1] = "Estimation Stop Profit";
+	infos_area_bis.v[1] = sum_valo_stopprofit.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[2] = "Estimation Objectif";
+	infos_area_bis.v[2] = sum_valo_objectif.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[3] = "Couverture Stop Loss";
+	infos_area_bis.v[3] = sum_valo_stoploss2.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[4] = "";
+	infos_area_bis.v[4] = ' \u20AC';
+	infos_area_bis.l[5] = "";
+	infos_area_bis.v[5] = ' \u20AC';
 
 
 	if (myChart) myChart.destroy();
@@ -594,6 +632,7 @@ Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { g
 <? } ?>
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('portfolio_switch_bt'), Dom.Event.ON_CLICK, function(event) { update_infos_areas(current_infos_area.n == 1 ? infos_area_bis : infos_area); });
 Dom.addListener(Dom.id('order_filter_bt'), Dom.Event.ON_CLICK, function(event) { toogle('filters') });
 Dom.addListener(Dom.id('filter_go_bt'), Dom.Event.ON_CLICK, function(event) { filter() });
 
@@ -750,16 +789,22 @@ get_orders_list = function() {
 	return trs;
 }
 
+// Mise a jour de la zone infos ptf
+update_infos_areas(infos_area);
+
+// Pagination
 paginator({
 	table: document.getElementById("lst_order"),
 	box: document.getElementById("lst_order_box"),
 	get_rows: get_orders_list
 });
 
+// Aide a la sasie date
 const datepicker1 = new TheDatepicker.Datepicker(el('f_date'));
 datepicker1.options.setInputFormat("Y-m-d")
 datepicker1.render();
 
+// On cache les fitres de selection de la liste des ordres passes
 hide("filters");
 
 </script>
