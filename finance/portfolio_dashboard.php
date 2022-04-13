@@ -59,7 +59,6 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	<h2 class="ui left floated">
 		<i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
 		<button id="portfolio_graph_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chart bar outline icon"></i></button>
-		<button id="portfolio_switch_bt" class="circular ui icon very small right floated grey labelled button"><i class="inverted white retweet icon"></i></button>
 	</h2>
 	<div class="ui stackable column grid">
 		<div class="row">
@@ -71,6 +70,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 							<div class="field">
 								<label>Label1</label>	
 								<input type="text" value="0" readonly="" />
+								<a id="portfolio_switch_bt" class="ui primary right corner label"><i class="ui inverted retweet icon"></i></a>
 							</div>
 							<div class="field">
 								<label>Label2</label>
