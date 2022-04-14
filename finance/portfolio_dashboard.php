@@ -596,11 +596,11 @@ computeLines = function(opt) {
 	};
 
 	infos_area_bis.l[0] = "Estimation Stop Loss";
-	infos_area_bis.v[0] = sum_valo_stoploss1.toFixed(2) + ' \u20AC';
+	infos_area_bis.v[0] = sum_valo_stoploss1.toFixed(2) + ' \u20AC (' + getPerf(valo_ptf, sum_valo_stoploss1).toFixed(2) + '%)';
 	infos_area_bis.l[1] = "Estimation Stop Profit";
-	infos_area_bis.v[1] = sum_valo_stopprofit.toFixed(2) + ' \u20AC';
+	infos_area_bis.v[1] = sum_valo_stopprofit.toFixed(2) + ' \u20AC (' + getPerf(valo_ptf, sum_valo_stopprofit).toFixed(2) + '%)';
 	infos_area_bis.l[2] = "Estimation Objectif";
-	infos_area_bis.v[2] = sum_valo_objectif.toFixed(2) + ' \u20AC';
+	infos_area_bis.v[2] = sum_valo_objectif.toFixed(2) + ' \u20AC (' + getPerf(valo_ptf, sum_valo_objectif).toFixed(2) + '%)';
 	infos_area_bis.l[3] = "Couverture Stop Loss";
 	infos_area_bis.v[3] = sum_valo_stoploss2.toFixed(2) + ' \u20AC';
 	infos_area_bis.l[4] = "-";
