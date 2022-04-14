@@ -694,6 +694,8 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 
 		// On récupère les valeurs dans la cellule du tavleau - Pas tres beau !!!
+		var pname = Dom.attribute(element, 'data-pname');
+		var price = Dom.attribute(element.parentNode, 'data-value');
 		var divs = element.getElementsByTagName("div");
 		var stoploss   = divs[0].innerHTML;
 		var stopprofit = divs[1].innerHTML;
@@ -702,9 +704,10 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 		Swal.fire({
 				title: '',
 				html: '<div class="ui form"><div class="field">' +
-							'<label>Stop loss</label><input type="text"<input id="f_stoploss" class="swal2-input" type="text" placeholder="0.00" value="' + stoploss + '" />' +
-							'<label>Stop Profit</label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
-							'<label>Objectif</label><input type="text"<input id="f_objectif" class="swal2-input" type="text" placeholder="0.00" value="' + objectif + '" />' +
+							'<label style="text-align: center">' + pname + ' : ' + price + ' &euro;</label>' +
+							'<label>Stop loss ('   + (stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2))   + '%)</label><input type="text"<input id="f_stoploss"   class="swal2-input" type="text" placeholder="0.00" value="' + stoploss   + '" />' +
+							'<label>Stop Profit (' + (stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2)) + '%)</label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
+							'<label>Objectif ('    + (objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2))   + '%)</label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
 						'</div></div>',
 				showCancelButton: true,
 				confirmButtonText: 'Valider',
