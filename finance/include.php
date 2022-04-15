@@ -415,8 +415,7 @@ class calc {
         $infos['name']         = "Synthese User";
         $infos['strategie_id'] = "";
         $infos['synthese']     = 1;
-        $infos['valo_date']    = "";
-        $infos['valo_sum']     = "";
+        $infos['creation']     = "";
         $infos['quotes']       = "";
         $infos['ordre']        = "";
 

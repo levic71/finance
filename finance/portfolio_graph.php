@@ -18,32 +18,28 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
+$data_ptf = [ 'days' => [ "0" ], 'valo' => [ "0" ], 'depot' => [ "0" ] ];
+
 // Recuperation des infos du portefeuille
 $req = "SELECT pv.* FROM portfolios p, portfolio_valo pv WHERE pv.portfolio_id=".$portfolio_id." AND p.id=pv.portfolio_id AND p.user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 
 // Bye bye si inexistant
 while ($row = mysqli_fetch_assoc($res)) {
-    var_dump(json_decode($row['data']));
+
+    $data = json_decode($row['data']);
+    // var_dump($data);
+    $data_ptf['days'][]  = $row['date'];
+    $data_ptf['valo'][]  = $data->valo_ptf;
+    $data_ptf['depot'][] = $data->depot;
+
 }
 
 ?>
 
-<style>
-    table td {
-        padding: 5px 20px !important;
-    }
-
-    table div.checkbox {
-        padding: 8px 0px !important;
-    }
-</style>
-
-
 <div id="canvas_area" class="ui container inverted segment">
     <canvas id="stock_canvas1" height="100"></canvas>
 </div>
-
 
 <div class="ui container inverted segment">
     <h2 class="ui inverted right aligned header">
@@ -53,83 +49,73 @@ while ($row = mysqli_fetch_assoc($res)) {
 
 
 <script>
-    var myChart1 = null;
 
-    newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0) {
+var myChart1 = null;
 
-        var ret = {
-            type: mytype,
-            data: mydata,
-            label: mylabel,
-            borderColor: mycolor,
-            borderWidth: myborderwith,
-            yAxisID: yaxeid,
-            cubicInterpolationMode: 'monotone',
-            tension: mytension,
-            backgroundColor: bg,
-            fill: myfill,
-            pointRadius: myradius,
-        };
+newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0) {
 
-        return ret;
-    }
+    var ret = {
+        type: mytype,
+        data: mydata,
+        label: mylabel,
+        borderColor: mycolor,
+        borderWidth: myborderwith,
+        yAxisID: yaxeid,
+        cubicInterpolationMode: 'monotone',
+        tension: mytension,
+        backgroundColor: bg,
+        fill: myfill,
+        pointRadius: myradius,
+    };
 
-    getDatasetVals = function(vals) {
-        return newDataset(vals, 'line', 'y1', 'Cours', '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>', true);
-    }
-    getDatasetVols = function(vals, l, c) {
-        return newDataset(vals, 'bar', 'y2', l, c, c, true);
-    }
+    return ret;
+}
 
+getDatasetVals = function(label, vals) {
+    return newDataset(vals, 'line', 'y', label, '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>', true);
+}
 
-    var graphe_size_days = 0;
+var graphe_size_days = 0;
 
-    // Ref Daily data
-/*     var ref_d_days   = [<?= '"' . implode('","', array_column($data_daily["rows"], "day")) . '"' ?>];
-    var ref_d_vals   = [<?= implode(',', array_column($data_daily["rows"], "adjusted_close"))  ?>];
-    var ref_d_vols   = [<?= implode(',', array_column($data_daily["rows"], "volume")) ?>];
- */
-    var g1_days   = null;
-    var g1_vals   = null;
-    var g1_vols   = null;
+// Ref Daily data
+var g1_days   = [<?= '"' . implode('","', $data_ptf["days"]) . '"' ?>];
+var g1_vals   = [<?= implode(',', $data_ptf["valo"])  ?>];
+var g2_vals   = [<?= implode(',', $data_ptf["depot"])  ?>];
 
-    var ctx1 = document.getElementById('stock_canvas1').getContext('2d');
-    el("stock_canvas1").height = document.body.offsetWidth > 700 ? 300 : 300;
+var ctx1 = document.getElementById('stock_canvas1').getContext('2d');
+el("stock_canvas1").height = document.body.offsetWidth > 700 ? 140 : 300;
 
-    update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
-        if (c) c.destroy();
-        c = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: lbls,
-                datasets: dtsts
-            },
-            options: opts,
-            plugins: plg
-        });
-        c.update();
-
-        return c;
-    }
-
-    update_all_charts = function(bt) {
-
-        // Update Chart Stock
-        var datasets1 = [];
-        datasets1.push(getDatasetVals(g1_vals));
-        datasets1.push(getDatasetVols(g1_vols, 'VOLUME', g1_colors));
-        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g1_days, datasets1, [{}]);
-
-        rmCN(bt, 'loading');
-    }
-
-    // Initialisation des graphes
-    // update_all_charts('graphe_all_bt');
-
-    var p = loadPrompt();
-
-    Dom.addListener(Dom.id('portfolio_back_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'home', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' });
+update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
+    if (c) c.destroy();
+    c = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: lbls,
+            datasets: dtsts
+        },
+        options: opts,
+        plugins: plg
     });
+    c.update();
+
+    return c;
+}
+
+update_all_charts = function() {
+
+    // Update Chart Stock
+    var datasets1 = [];
+    datasets1.push(getDatasetVals('Valorisation', g1_vals));
+    datasets1.push(getDatasetVals('Dépot', g2_vals));
+    myChart1 = update_graph_chart(myChart1, ctx1, options_Valo_Graphe, g1_days, datasets1, [{}]);
+
+}
+
+// Initialisation des graphes
+update_all_charts();
+
+Dom.addListener(Dom.id('portfolio_back_bt'), Dom.Event.ON_CLICK, function(event) {
+    go({ action: 'home', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' });
+});
 
 </script>
