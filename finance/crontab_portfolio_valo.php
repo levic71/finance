@@ -20,7 +20,7 @@ $db = dbc::connect();
 // On récupère les portefeuilles de l'utilisateur
 $req = "SELECT * FROM portfolios";
 $res = dbc::execSql($req);
-while($row = mysqli_fetch_array($res)) {
+while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
 
 	$portfolio_data = calc::aggregatePortfolio($row);
 

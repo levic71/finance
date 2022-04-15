@@ -21,30 +21,25 @@ if (!$sess_context->isUserConnected()) {
 $data_ptf = [ 'days' => [ "0" ], 'valo' => [ "0" ], 'depot' => [ "0" ] ];
 
 // Recuperation des infos du portefeuille
-$req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
+$req = "SELECT pv.*, p.name FROM portfolios p, portfolio_valo pv WHERE pv.portfolio_id=".$portfolio_id." AND p.id=pv.portfolio_id AND p.user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
-$my_portfolio = mysqli_fetch_assoc($res);
-
-// Recuperation des infos du portefeuille
-$req = "SELECT pv.* FROM portfolios p, portfolio_valo pv WHERE pv.portfolio_id=".$portfolio_id." AND p.id=pv.portfolio_id AND p.user_id=".$sess_context->getUserId();
-$res = dbc::execSql($req);
+$name = "";
 
 // Bye bye si inexistant
 while ($row = mysqli_fetch_assoc($res)) {
 
     $data = json_decode($row['data']);
-    var_dump($data);
+    // var_dump($data);
     $data_ptf['days'][]  = $row['date'];
     $data_ptf['valo'][]  = Round($data->valo_ptf);
     $data_ptf['depot'][] = Round($data->depot);
+    $name = $row['name'];
 
 }
 
 ?>
 
-<h2 class="ui left floated">
-    <i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
-</h2>
+<h2 class="ui left floated"><i class="inverted briefcase icon"></i><?= utf8_decode($name) ?></h2>
 
 <div id="canvas_area" class="ui container inverted segment">
     <canvas id="stock_canvas1" height="100"></canvas>
