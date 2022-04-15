@@ -1,7 +1,10 @@
-td.aaf-positive, label.aaf-positive { color: rgb(97, 194, 97) !important; }
-td.aaf-negative, label.aaf-negative { color: rgb(247, 95, 90) !important; }
+td.aaf-positive, label.aaf-positive, span.aaf-positive { color: rgb(97, 194, 97) !important; }
+td.aaf-negative, label.aaf-negative, span.aaf-negative { color: rgb(247, 95, 90) !important; }
 button.aaf-positive { background: rgb(97, 194, 97) !important; color: white !important; }
 button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
+.mini_button { border-radius: 3px; float: right; margin-top: 3px; padding: 0px 5px; }
+.mini_button.aaf-positive { background: rgb(97, 194, 97) !important; color: white !important; }
+.mini_button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
 .icon_action { padding: 11px !important; }
 .icon_action i { margin: 0px !important; }
 
@@ -775,11 +778,13 @@ table th { color: burlywood !important; cursor: pointer !important; }
     margin: 0px 10px 10px !important;
 }
 
-.ptf_infos label { 
+.ptf_infos label {
     font-size: 11px !important;
     margin: 0px !important;
 }
-
+.ptf_infos label a.tag {
+    float: right;
+}
 .ptf_infos input {
     padding: 4px 10px !important;
 }

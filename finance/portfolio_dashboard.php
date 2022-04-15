@@ -68,7 +68,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 						<div id="infos_area1" class="ui inverted column readonly form">
 							<div class="field">
-								<label>Label1</label>	
+								<label>Label1</label>
 								<input type="text" value="0" readonly="" />
 								<a id="portfolio_switch_bt" class="ui primary right corner label"><i class="ui inverted retweet icon"></i></a>
 							</div>
@@ -595,17 +595,21 @@ computeLines = function(opt) {
 		]
 	};
 
-	infos_area_bis.l[0] = "Estimation Stop Loss";
-	infos_area_bis.v[0] = sum_valo_stoploss1.toFixed(2) + ' \u20AC (' + getPerf(valo_ptf, sum_valo_stoploss1).toFixed(2) + '%)';
-	infos_area_bis.l[1] = "Estimation Stop Profit";
-	infos_area_bis.v[1] = sum_valo_stopprofit.toFixed(2) + ' \u20AC (' + getPerf(valo_ptf, sum_valo_stopprofit).toFixed(2) + '%)';
-	infos_area_bis.l[2] = "Estimation Objectif";
-	infos_area_bis.v[2] = sum_valo_objectif.toFixed(2) + ' \u20AC (' + getPerf(valo_ptf, sum_valo_objectif).toFixed(2) + '%)';
-	infos_area_bis.l[3] = "Couverture Stop Loss";
+	perf_stoploss1  = getPerf(valo_ptf, sum_valo_stoploss1).toFixed(2);
+	perf_stopprofit = getPerf(valo_ptf, sum_valo_stopprofit).toFixed(2);
+	perf_objectif   = getPerf(valo_ptf, sum_valo_objectif).toFixed(2);
+
+	infos_area_bis.l[0] = 'Estimation Stop Loss <a class="ui mini '   + (perf_stoploss1 >= 0  ? 'green' : 'red') + ' tag label">' + perf_stoploss1 + '%</a>';
+	infos_area_bis.v[0] = sum_valo_stoploss1.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[1] = 'Estimation Stop Profit <a class="ui mini ' + (perf_stopprofit >= 0 ? 'green' : 'red') + ' tag label">' + perf_stopprofit + '%</a>';
+	infos_area_bis.v[1] = sum_valo_stopprofit.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[2] = 'Estimation Objectif <a class="ui mini '    + (perf_objectif >= 0   ? 'green' : 'red') + ' tag label">' + perf_objectif + '%</a>';
+	infos_area_bis.v[2] = sum_valo_objectif.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[3] = 'Couverture Stop Loss';
 	infos_area_bis.v[3] = sum_valo_stoploss2.toFixed(2) + ' \u20AC';
-	infos_area_bis.l[4] = "-";
+	infos_area_bis.l[4] = '-';
 	infos_area_bis.v[4] = ' \u20AC';
-	infos_area_bis.l[5] = "-";
+	infos_area_bis.l[5] = '-';
 	infos_area_bis.v[5] = ' \u20AC';
 
 
@@ -700,14 +704,17 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 		var stoploss   = divs[0].innerHTML;
 		var stopprofit = divs[1].innerHTML;
 		var objectif   = divs[2].innerHTML;
+		let perf_stoploss   = stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2);
+		let perf_stopprofit = stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2);
+		let perf_objectif   = objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2);
 
 		Swal.fire({
 				title: '',
 				html: '<div class="ui form"><div class="field">' +
-							'<label style="text-align: center">' + pname + ' : ' + price + ' &euro;</label>' +
-							'<label>Stop loss ('   + (stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2))   + '%)</label><input type="text"<input id="f_stoploss"   class="swal2-input" type="text" placeholder="0.00" value="' + stoploss   + '" />' +
-							'<label>Stop Profit (' + (stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2)) + '%)</label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
-							'<label>Objectif ('    + (objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2))   + '%)</label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
+							'<label style="text-align: center"><button class="ui primary button">' + pname + ' : ' + price + ' &euro;</button></label>' +
+							'<label>Stop loss   <span class="mini_button ' + (perf_stoploss >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stoploss   + '%</span></label><input type="text"<input id="f_stoploss"   class="swal2-input" type="text" placeholder="0.00" value="' + stoploss   + '" />' +
+							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
+							'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
 						'</div></div>',
 				showCancelButton: true,
 				confirmButtonText: 'Valider',
