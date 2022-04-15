@@ -19,64 +19,13 @@ if (!$sess_context->isUserConnected()) {
 }
 
 // Recuperation des infos du portefeuille
-$req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
+$req = "SELECT pv.* FROM portfolios p, portfolio_valo pv WHERE pv.portfolio_id=".$portfolio_id." AND p.id=pv.portfolio_id AND p.user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 
 // Bye bye si inexistant
-if (!$row = mysqli_fetch_assoc($res)) exit(0);
-
-// Calcul synthese portefeuille
-$portfolio_data = calc::aggregatePortfolioById($portfolio_id);
-
-// On recupere les eventuelles saisies de cotation manuelles
-$save_quotes = array();
-$t = explode(',', $portfolio_data['infos']['quotes']);
-if ($t[0] != '') {
-	foreach($t as $key => $val) {
-		$x = explode('|', $val);
-		$save_quotes[$x[0]] = $x[1];
-	}
+while ($row = mysqli_fetch_assoc($res)) {
+    var_dump(json_decode($row['data']));
 }
-
-// On récupère les infos du portefeuille + les positions et les ordres
-$my_portfolio  = $portfolio_data['infos'];
-$lst_positions = $portfolio_data['positions'];
-$lst_orders    = $portfolio_data['orders'];
-
-$date_start = date('Y-m-01', strtotime(date('Y-m-d')  . ' -'.$portfolio_data['interval_year'].' year -'.$portfolio_data['interval_month'].' month'));
-
-function getTimeSeriesData($table_name, $period, $symbol)
-{
-
-    $ret = array('rows' => array(), 'colrs' => array());
-
-    $file_cache = 'cache/TMP_TIMESERIES_' . $symbol . '_' . $period . '.json';
-
-    if (cacheData::refreshCache($file_cache, 600)) { // Cache de 5 min
-
-        $req = "SELECT * FROM " . $table_name . " dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='" . $period . "' AND dtsa.symbol='" . $symbol . "' ORDER BY dtsa.day ASC";
-        $res = dbc::execSql($req);
-        while ($row = mysqli_fetch_assoc($res)) {
-            $row['adjusted_close'] = sprintf("%.2f", $row['adjusted_close']);
-            $ret['rows'][] = $row;
-        }
-
-        cacheData::writeCacheData($file_cache, $ret);
-    } else {
-        $ret = cacheData::readCacheData($file_cache);
-    }
-
-    return $ret;
-}
-
-// Recuperation de tous les indicateurs DAILY de l'actif
-// $data_daily = getTimeSeriesData("daily_time_series_adjusted", "DAILY", $symbol);
-
-// On ajoute la cotation du jour
-/* $data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "open" => $row["open"], "high" => $row["high"], "low" => $row["low"], "close" => $row["price"], "adjusted_close" => $row["price"], "volume" => $row["volume"], "period" => "DAILY", "DM" => $data['DM'], "MM7" => $data['MM7'], "MM20" => $data['MM20'], "MM50" => $data["MM50"], "MM200" => $data['MM200'], "RSI14" => $data["RSI14"]);
-$data_daily["rows"][]  = $data_daily_today;
-$data_daily["colrs"][] = 1;
- */
 
 ?>
 
@@ -180,7 +129,7 @@ $data_daily["colrs"][] = 1;
     var p = loadPrompt();
 
     Dom.addListener(Dom.id('portfolio_back_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'home', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' });
+        go({ action: 'home', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' });
     });
 
 </script>
