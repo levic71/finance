@@ -71,8 +71,8 @@ newDataset = function(mydata, mytype, yaxeid, mylabel, mycolor, bg, myfill, mybo
     return ret;
 }
 
-getDatasetVals = function(label, vals) {
-    return newDataset(vals, 'line', 'y', label, '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>', true);
+getDatasetVals = function(label, vals, colr, bgcolr) {
+    return newDataset(vals, 'line', 'y', label, colr, bgcolr, true);
 }
 
 var graphe_size_days = 0;
@@ -105,8 +105,8 @@ update_all_charts = function() {
 
     // Update Chart Stock
     var datasets1 = [];
-    datasets1.push(getDatasetVals('Valorisation', g1_vals));
-    datasets1.push(getDatasetVals('Dépot', g2_vals));
+    datasets1.push(getDatasetVals('Valorisation', g1_vals, '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>'));
+    datasets1.push(getDatasetVals('Dépot', g2_vals, '<?= $sess_context->getSpectreColor(1) ?>', '<?= $sess_context->getSpectreColor(1, 0.2) ?>'));
     myChart1 = update_graph_chart(myChart1, ctx1, options_Valo_Graphe, g1_days, datasets1, [{}]);
 
 }
