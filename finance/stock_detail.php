@@ -6,12 +6,12 @@ session_start();
 
 include "common.php";
 
-$symbol = "";
-$rsi_choice = 0;
+$symbol        = "";
+$rsi_choice    = 0;
 $volume_choice = 1;
-$alarm_choice = 1;
+$alarm_choice  = 1;
 
-foreach (['symbol', 'ptf_id'] as $key)
+foreach (['symbol', 'edit', 'ptf_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 // Affichage par defaut des MMX
@@ -26,7 +26,7 @@ $bt_alarm_colr    = "pink";
 $bt_filter_colr   = "teal";
 $bt_grey_colr     = "grey";
 
-$readonly = $sess_context->isSuperAdmin() ? false : true;
+$readonly = $sess_context->isSuperAdmin() && $edit == 1 ? false : true;
 
 $db = dbc::connect();
 
@@ -445,6 +445,8 @@ if (!$readonly) {
                 <a class="item" id="stock_reload_bt"><span>Reload cache data</span></a>
             </div>
             <button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
+        <? } else if ($sess_context->isSuperAdmin()) { ?>
+            <button id="stock_edit_bt" class="circular ui icon very small right floated primary labelled button"><i class="inverted white edit icon"></i></button>
         <? } ?>
         <button id="stock_back_bt" class="circular ui icon very small right floated grey labelled button"><i class="inverted white reply icon"></i></button>
 
@@ -862,6 +864,13 @@ if (!$readonly) {
     Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'home', id: 'main', url: '<?= $ptf_id == "" ?  "home_content.php" : "portfolio_dashboard.php?portfolio_id=".$ptf_id ?>', loading_area: 'main' });
     });
+
+    <? if ($edit == 0 && $sess_context->isSuperAdmin()) { ?>
+    // Listener sur bt edit
+    Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
+        go({ action: 'home', id: 'main', url: 'stock_detail.php?edit=1&symbol=<?= $symbol ?>&portfolio_id<?= $ptf_id ?>', loading_area: 'main' });
+    });
+    <? } ?>
 
     // Listener sur bt MMX + volume + alarm
     Object.entries(mm_bts).forEach(([key, val]) => {
