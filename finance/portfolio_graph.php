@@ -30,8 +30,8 @@ while ($row = mysqli_fetch_assoc($res)) {
     $data = json_decode($row['data']);
     // var_dump($data);
     $data_ptf['days'][]  = $row['date'];
-    $data_ptf['valo'][]  = $data->valo_ptf;
-    $data_ptf['depot'][] = $data->depot;
+    $data_ptf['valo'][]  = Round($data->valo_ptf);
+    $data_ptf['depot'][] = Round($data->depot);
 
 }
 
