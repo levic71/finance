@@ -36,7 +36,7 @@ $portfolio_data = calc::aggregatePortfolioById($portfolio_id);
 // Portfolio synthese ?
 $isPortfolioSynthese = $portfolio_data['infos']['synthese'] == 1 ? true : false;
 
-// On recupere les eventuelles saisies de cotation manuelles
+// On recupere les eventuelles saisies de cotation manuelles recupereres de Trend Following
 $save_quotes = array();
 $t = explode(',', $portfolio_data['infos']['quotes']);
 if ($t[0] != '') {
@@ -198,10 +198,10 @@ $lst_trend_following = $portfolio_data['trend_following'];
 							<div class="'.(intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
 						</div></td>
 
-						<td id="f_dm_'.$i.'"       class="center aligned '.($qs['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$qs['DM'].' %</td>
+						<td id="f_dm_'.$i.'"       class="center aligned '.($qs['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$qs['DM'].'">'.$qs['DM'].' %</td>
 						<td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
 						<td id="f_poids_'.$i.'"    class="center aligned"></td>
-						<td id="f_valo_'.$i.'"     class="right aligned"></td>
+						<td id="f_valo_'.$i.'"     class="right  aligned"></td>
 						<td id="f_perf_pru_'.$i.'" class="center aligned"></td>
 					</tr>';
 					$i++;

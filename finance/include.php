@@ -240,7 +240,7 @@ class calc {
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) $portfolio['trend_following'][$row['symbol']] = $row;
 
-        // Ajout des cotations saisies manuellement dans Trend Following
+        // Ajout des cotations potentiellement saisies manuellement dans Trend Following
         $local_quotes = '';
         $req = "SELECT * FROM trend_following WHERE user_id=".$user_id;
         $res = dbc::execSql($req);
