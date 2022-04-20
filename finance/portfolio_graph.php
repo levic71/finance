@@ -37,6 +37,12 @@ while ($row = mysqli_fetch_assoc($res)) {
 
 }
 
+// Ajout de la valo TR
+$data_ptf_now = calc::aggregatePortfolioById($portfolio_id);
+$data_ptf['days'][]  = date("Y-m-d");
+$data_ptf['valo'][]  = Round($data_ptf_now['valo_ptf']);
+$data_ptf['depot'][] = Round($data_ptf_now['depot']);
+
 ?>
 
 <h2 class="ui left floated"><i class="inverted briefcase icon"></i><?= utf8_decode($name) ?></h2>
