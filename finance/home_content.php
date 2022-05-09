@@ -5,6 +5,8 @@ require_once "sess_context.php";
 session_start();
 
 include "common.php";
+include "googlesheet/sheet.php";
+
 
 foreach([''] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -38,6 +40,20 @@ if ($sess_context->isUserConnected()) {
 	$aggregate_ptf   = calc::getAggregatePortfoliosByUser($sess_context->getUserId());
 	$positions       = $aggregate_ptf['positions'];
 	$trend_following = $aggregate_ptf['trend_following'];
+}
+
+// Rajouter à 1 à l'indice !!!
+// -1 => Shortname, 0 => Symbol, 1 => Name, 2 => Alertes, 3 => Price, 4 => Priceopen, 5 => High, 6 => Low, 7 => Volume, 8 => Datadelay, 9 => Closeyest, 10 => Change, 11 => Changepct, 12 => ytd, 13 => 1 week, 14 => 1 month, 15 => 1 year, 16 => 3 years, 17 => mm7, 18 => mm20, 19 => mm50, 20 => mm100, 21 => mm200,
+// $gsah = updateGoogleSheetAlertesHeader();
+// var_dump($gsah);
+
+// 1 - Liste des alertes de franchissemement des alertes et mm200 à hausse et à la baisse
+// 2 - Liste des actifs cours proches de la MM200 (2%)
+
+$gsa = calc::getGSAlertes();
+
+foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ] as $key => $val) {
+	echo $gsa[$val][0]." | ".$gsa[$val][3]." | ".$gsa[$val][4]." | ".$gsa[$val][12]."% | ".$gsa[$val][14]." | ".$gsa[$val][15]." | ".$gsa[$val][16]."<br />";
 }
 
 ?>

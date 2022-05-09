@@ -768,7 +768,7 @@ class calc {
 
         $ret = array();
 
-        if (tools::isLocalHost() || cacheData::refreshCache($file_cache, 600)) {
+        if (cacheData::refreshCache($file_cache, 600)) {
 
             $ret = updateGoogleSheetDevises();
             cacheData::writeCacheData($file_cache, $ret);
@@ -786,7 +786,7 @@ class calc {
 
         $ret = array();
 
-        if (tools::isLocalHost() || cacheData::refreshCache($file_cache, 600)) {
+        if (cacheData::refreshCache($file_cache, 600)) {
 
             $ret = updateGoogleSheetAlertes();
             cacheData::writeCacheData($file_cache, $ret);
