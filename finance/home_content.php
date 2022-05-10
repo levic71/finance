@@ -43,7 +43,7 @@ if ($sess_context->isUserConnected()) {
 }
 
 // Rajouter à 1 à l'indice !!!
-// -1 => Shortname, 0 => Symbol, 1 => Name, 2 => Alertes, 3 => Price, 4 => Priceopen, 5 => High, 6 => Low, 7 => Volume, 8 => Datadelay, 9 => Closeyest, 10 => Change, 11 => Changepct, 12 => ytd, 13 => 1 week, 14 => 1 month, 15 => 1 year, 16 => 3 years, 17 => mm7, 18 => mm20, 19 => mm50, 20 => mm100, 21 => mm200,
+// -1 => Shortname, 0 => Symbol, 1 => Name, 2 => Alertes, 3 => Price, 4 => Priceopen, 5 => High, 6 => Low, 7 => Volume, 8 => Datadelay, 9 => Closeyest, 10 => Change, 11 => Changepct, 12 => ytd, 13 => 1 week, 14 => 1 month, 15 => 1 year, 16 => 3 years, 17 => mm7, 18 => mm20, 19 => mm50, 20 => mm100, 21 => mm200, 22 => j-1
 // $gsah = updateGoogleSheetAlertesHeader();
 // var_dump($gsah);
 
@@ -68,20 +68,24 @@ $gsa = calc::getGSAlertes();
 				<th>% W</th>
 				<th>% M</th>
 				<th>% Y</th>
+				<th>% 3Y</th>
+				<th>MM200</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?
 				foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ] as $key => $val) {
 					echo '<tr>
-						<td><button class="mini ui primary button">'.$gsa[$val][0].'</button></td>
-						<td>'.$gsa[$val][3].'</td>
-						<td>'.$gsa[$val][4].'</td>
-						<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][12].'%</td>
-						<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][13].'</td>
-						<td class="'.(str_replace("\%", "", $gsa[$val][14]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][14].'</td>
-						<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][15].'</td>
-						<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][16].'</td>
+							<td><button class="mini ui primary button">'.$gsa[$val][0].'</button></td>
+							<td>'.$gsa[$val][3].'</td>
+							<td>'.$gsa[$val][4].'</td>
+							<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][12].'%</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][13].'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][14]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][14].'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][15].'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][16].'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][17]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][17].'</td>
+							<td>'.Round($gsa[$val][22], 2).'</td>
 						</tr>';
 				}
 
