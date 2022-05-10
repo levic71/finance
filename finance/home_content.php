@@ -52,13 +52,42 @@ if ($sess_context->isUserConnected()) {
 
 $gsa = calc::getGSAlertes();
 
-foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ] as $key => $val) {
-	echo $gsa[$val][0]." | ".$gsa[$val][3]." | ".$gsa[$val][4]." | ".$gsa[$val][12]."% | ".$gsa[$val][14]." | ".$gsa[$val][15]." | ".$gsa[$val][16]."<br />";
-}
-
 ?>
 
 <div id="strategie_container" class="ui container inverted">
+
+	<h2 class="ui left floated"><i class="inverted eye icon"></i><span>Market</span></h2>
+	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
+		<thead>
+			<tr>
+				<th></th>
+				<th>Alertes</th>
+				<th>Valeur</th>
+				<th>% J</th>
+				<th>% YTD</th>
+				<th>% W</th>
+				<th>% M</th>
+				<th>% Y</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?
+				foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ] as $key => $val) {
+					echo '<tr>
+						<td><button class="mini ui primary button">'.$gsa[$val][0].'</button></td>
+						<td>'.$gsa[$val][3].'</td>
+						<td>'.$gsa[$val][4].'</td>
+						<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][12].'%</td>
+						<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][13].'</td>
+						<td class="'.(str_replace("\%", "", $gsa[$val][14]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][14].'</td>
+						<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][15].'</td>
+						<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][16].'</td>
+						</tr>';
+				}
+
+			?>				
+		</tbody>
+	</table>
 
 	<h2 class="ui left floated">
 		<i class="inverted chess icon"></i>
