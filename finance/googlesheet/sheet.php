@@ -149,11 +149,11 @@ function updateGoogleSheetAlertesFX($range) {
 }
 
 function updateGoogleSheetAlertes() {
-	return updateGoogleSheetAlertesFX("A3:W100");
+	return updateGoogleSheetAlertesFX("A3:X100");
 }
 
 function updateGoogleSheetAlertesHeader() {
-	return updateGoogleSheetAlertesFX("A2:W2");
+	return updateGoogleSheetAlertesFX("A2:X2");
 }
 
 function updateQuotesWithGSData($val) {

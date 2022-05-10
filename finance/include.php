@@ -780,13 +780,13 @@ class calc {
         return $ret;
     }
 
-    public static function getGSAlertes() {
+    public static function getGSAlertes($force = false) {
 
         $file_cache = 'cache/CACHE_GS_ALERTES.json';
 
         $ret = array();
 
-        if (cacheData::refreshCache($file_cache, 600)) {
+        if ($force || cacheData::refreshCache($file_cache, 600)) {
 
             $ret = updateGoogleSheetAlertes();
             cacheData::writeCacheData($file_cache, $ret);

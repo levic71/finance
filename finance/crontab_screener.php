@@ -19,5 +19,8 @@ $db = dbc::connect();
 
 $data = calc::getMinMaxQuotations();
 // var_dump($data);
-	
+
+$gsa = calc::getGSAlertes(true);
+var_dump($gsa);
+
 ?>
