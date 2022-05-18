@@ -94,20 +94,22 @@ function updateGoogleSheetDevises() {
 
 	$onglet = "devises";
 
-	$client = new \Google_Client();
-	$client->setApplicationName('Google Sheets and PHP');
-	$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
-	$client->setAccessType('offline');
-	$client->setAuthConfig(__DIR__ . '/credentials.json');
+	try {
+		$client = new \Google_Client();
+		$client->setApplicationName('Google Sheets and PHP');
+		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+		$client->setAccessType('offline');
+		$client->setAuthConfig(__DIR__ . '/credentials.json');
 
-	$service = new Google_Service_Sheets($client);
+		$service = new Google_Service_Sheets($client);
 
-	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
+		$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
 
-	// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
-	$get_range = $onglet."!B2:C50";
-	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
-	$values = $response->getValues();
+		// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
+		$get_range = $onglet."!B2:C50";
+		$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+		$values = $response->getValues();
+	} catch(RuntimeException $e) { }
 
 	if (!empty($values)) {
 		foreach($values as $key => $val) {
@@ -124,20 +126,22 @@ function updateGoogleSheetAlertesFX($range) {
 
 	$onglet = "alertes";
 
-	$client = new \Google_Client();
-	$client->setApplicationName('Google Sheets and PHP');
-	$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
-	$client->setAccessType('offline');
-	$client->setAuthConfig(__DIR__ . '/credentials.json');
+	try {
+		$client = new \Google_Client();
+		$client->setApplicationName('Google Sheets and PHP');
+		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+		$client->setAccessType('offline');
+		$client->setAuthConfig(__DIR__ . '/credentials.json');
 
-	$service = new Google_Service_Sheets($client);
+		$service = new Google_Service_Sheets($client);
 
-	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
+		$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
 
-	// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
-	$get_range = $onglet."!".$range;
-	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
-	$values = $response->getValues();
+		// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
+		$get_range = $onglet."!".$range;
+		$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+		$values = $response->getValues();
+	} catch(RuntimeException $e) { }
 
 	if (!empty($values)) {
 		foreach($values as $key => $val) {

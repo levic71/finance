@@ -56,6 +56,53 @@ $gsa = calc::getGSAlertes();
 
 <div id="strategie_container" class="ui container inverted">
 
+	<?
+		function depassementALaHausse($vi, $vf, $s) {
+			$ret = false;
+
+			if ($vi < $s && $vf > $s) $ret = true;
+
+			return $ret;
+		}
+
+		function depassementALaBaisse($vi, $vf, $s) {
+			$ret = false;
+
+			if ($vi > $s && $vf < $s) $ret = true;
+
+			return $ret;
+		}
+
+		$notifs = [];
+		foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ] as $key => $val) {
+
+			if (isset($gsa[$val][3])) {
+				$seuils = explode(';', $gsa[$val][3]);
+
+				foreach($seuils as $i => $v) {
+					// echo $val.':'.$gsa[$val][10].'-'.$gsa[$val][4].'-'.$v.'<br />';
+					if (depassementALaHausse($gsa[$val][10], $gsa[$val][4], $v))
+						$notifs[] = $val." dépassement a la hausse du seuil : ".$v;
+					if (depassementALaBaisse($gsa[$val][10], $gsa[$val][4], $v))
+						$notifs[] = $val." dépassement a la baisse du seuil : ".$v;
+
+					// depassement à la baisse ?
+					// depassement à la hausse ?
+					// croisement PRU/stoploss/stopprofit/objectif/MM200 ?
+					// proche MM200 ?
+				}
+			} else {
+				$gsa[$val] = array($val,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-");
+			}
+		}
+	?>
+
+
+	<?	if (count($notifs) > 0) { ?>
+		<h2 class="ui left floated"><i class="inverted bullhorn icon"></i><span>Notications</span></h2>
+		<? foreach($notifs as $key => $val) echo $val."<br />"; ?>
+	<? } ?>
+
 	<h2 class="ui left floated"><i class="inverted eye icon"></i><span>Market</span></h2>
 	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
 		<thead>
