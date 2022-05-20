@@ -82,12 +82,10 @@ $gsa = calc::getGSAlertes();
 				foreach($seuils as $i => $v) {
 					// echo $val.':'.$gsa[$val][10].'-'.$gsa[$val][4].'-'.$v.'<br />';
 					if (depassementALaHausse($gsa[$val][10], $gsa[$val][4], $v))
-						$notifs[] = $val." dépassement a la hausse du seuil : ".$v;
+						$notifs[] = $gsa[$val][0]." : Dépassement a la hausse du seuil des ".$v;
 					if (depassementALaBaisse($gsa[$val][10], $gsa[$val][4], $v))
-						$notifs[] = $val." dépassement a la baisse du seuil : ".$v;
+						$notifs[] = $gsa[$val][0]." : Dépassement a la baisse du seuil des ".$v;
 
-					// depassement à la baisse ?
-					// depassement à la hausse ?
 					// croisement PRU/stoploss/stopprofit/objectif/MM200 ?
 					// proche MM200 ?
 				}
@@ -108,7 +106,7 @@ $gsa = calc::getGSAlertes();
 		<thead>
 			<tr>
 				<th></th>
-				<th>Alertes</th>
+				<th class="center aligned">Alertes</th>
 				<th>Valeur</th>
 				<th>% J</th>
 				<th>% YTD</th>
@@ -124,7 +122,7 @@ $gsa = calc::getGSAlertes();
 				foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ] as $key => $val) {
 					echo '<tr>
 							<td><button class="mini ui primary button">'.$gsa[$val][0].'</button></td>
-							<td>'.$gsa[$val][3].'</td>
+							<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$gsa[$val][3].'" data-tootik-conf="right">'.($gsa[$val][3] == "" ? 0 : count(explode(';', $gsa[$val][3]))).'</button></td>
 							<td>'.$gsa[$val][4].'</td>
 							<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][12].'%</td>
 							<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][13].'</td>
@@ -132,7 +130,7 @@ $gsa = calc::getGSAlertes();
 							<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][15].'</td>
 							<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][16].'</td>
 							<td class="'.(str_replace("\%", "", $gsa[$val][17]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][17].'</td>
-							<td>'.Round($gsa[$val][22], 2).'</td>
+							<td>'.($gsa[$val][22] == 0 ? "-" : Round($gsa[$val][22], 2)).'</td>
 						</tr>';
 				}
 
