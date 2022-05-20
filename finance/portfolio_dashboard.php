@@ -283,17 +283,16 @@ $lst_trend_following = $portfolio_data['trend_following'];
 <?
 				foreach(array_reverse($lst_orders) as $key => $val) {
 
-//					$price_converted = calc::currencyConverter($val['quantity'] * $val['price'], $val['devise']."EUR", $devises);
-					$price_converted = $val['quantity'] * $val['price'] * $val['taux_change'];
+					$val = calc::formatDataOrder($val);
 
 					echo '<tr>
-						<td><i class="inverted long arrow alternate '.($val['action'] >= 0 ? "right green" : "left orange").' icon"></i></td>
+						<td><i class="inverted long arrow alternate '.$val['icon'].' icon"></i></td>
 						<td>'.$val['date'].'</td>
 						<td>'.$val['product_name'].'</td>
-						<td class="center aligned">'.uimx::$order_actions[$val['action']].'</td>
+						<td class="center aligned">'.$val['action_lib'].'</td>
 						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>
-						<td data-value="'.$val['price'].'">'.sprintf("%.2f %s", $val['price'], uimx::getCurrencySign($val['devise'])).'</td>
-						<td data-value="'.sprintf("%.2f", $price_converted).'" class="'.($val['action'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%s%.2f %s", $val['action'] >= 0 ? '+' : '-', $price_converted, '&euro;').'</td>
+						<td data-value="'.$val['price'].'">'.$val['price_signed'].'</td>
+						<td data-value="'.sprintf("%.2f", $val['valo']).'" class="'.$val['action_colr'].'">'.$val['valo_signed'].'</td>
 						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;/'.sprintf("%.2f", $val['ttf']).' &euro;</td>
 						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
 						<td class="collapsing">

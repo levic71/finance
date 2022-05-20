@@ -435,6 +435,50 @@ if (!$readonly) {
 
 <? } ?>
 
+<? if ($sess_context->isUserConnected()) { ?>
+<div id="canvas_area3" class="ui container inverted segment form">
+    <h4 class="ui inverted dividing header">History</h4>
+    <div class="field">
+        <table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_order" data-sortable>
+            <thead><tr>
+                <th></th>
+                <th>Date</th>
+                <th>Actif</th>
+                <th>Action</th>
+                <th>Qté</th>
+                <th>Prix</th>
+                <th>Total</th>
+                <th>Comm</th>
+            </tr></thead>
+            <tbody>
+<?
+
+                $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." AND o.product_name='".$symbol."' ORDER BY date DESC";
+                $res = dbc::execSql($req);
+
+                // Bye bye si inexistant
+                while($row = mysqli_fetch_assoc($res)) {
+                    $row = calc::formatDataOrder($row);
+                    echo '<tr>
+                            <td><i class="inverted long arrow alternate '.$row['icon'].' icon"></td>
+                            <td>'.$row['date'].'</td>
+                            <td>'.$row['product_name'].'</td>
+                            <td>'.$row['action_lib'].'</td>
+                            <td>'.$row['quantity'].'</td>
+                            <td>'.$row['price_signed'].'</td>
+                            <td class="'.$row['action_colr'].'">'.$row['valo_signed'].'</td>
+                            <td>'.sprintf("%.2f", $row['commission']).' &euro;</td>
+                        </tr>';
+                }
+
+?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<? } ?>
+
+
 <div class="ui container inverted segment">
     <h2 class="ui inverted right aligned header foot_buttons">
         <? if (!$readonly) { ?>

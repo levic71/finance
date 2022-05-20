@@ -189,6 +189,19 @@ class dbc {
 //
 class calc {
 
+    public static function formatDataOrder($val) {
+
+        $val['valo'] = $val['quantity'] * $val['price'] * $val['taux_change'];
+        $val['icon'] = $val['action'] >= 0 ? "right green" : "left orange";
+        $val['action_lib']   = uimx::$order_actions[$val['action']];
+        $val['devise_sign']  = uimx::getCurrencySign($val['devise']);
+        $val['action_colr']  = $val['action'] >= 0 ? "aaf-positive" : "aaf-negative";
+        $val['price_signed'] = sprintf("%.2f %s", $val['price'], $val['devise_sign']);
+        $val['valo_signed']  = sprintf("%s%.2f %s", $val['action'] >= 0 ? '+' : '-', $val['valo'], '&euro;');
+
+        return $val;
+    }
+
     public static function getCurrencyRate($currency, $liste) {
 
         $taux = 1;
