@@ -47,8 +47,12 @@ if ($sess_context->isUserConnected()) {
 // $gsah = updateGoogleSheetAlertesHeader();
 // var_dump($gsah);
 
+// 0 - Liste des actifs en portefeuille ou en surveillance
 // 1 - Liste des alertes de franchissemement des alertes et mm200 à hausse et à la baisse
 // 2 - Liste des actifs cours proches de la MM200 (2%)
+// 3 - Baisse ou hausse >= 5% en intraday/weekly/monthly
+// 4 - Si cours dépasse objectif et pas de stoploss ou stoploss trop bas (5% ?)
+// 4 - Si cours dépasse stop profit et pas de stoploss ou stoploss trop bas (5% ?)
 
 $gsa = calc::getGSAlertes();
 

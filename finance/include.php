@@ -802,7 +802,11 @@ class calc {
         if ($force || cacheData::refreshCache($file_cache, 600)) {
 
             $ret = updateGoogleSheetAlertes();
-            cacheData::writeCacheData($file_cache, $ret);
+
+            if (count($ret) > 0)
+                cacheData::writeCacheData($file_cache, $ret);
+            else
+                $ret = cacheData::readCacheData($file_cache);
 
         } else {
             $ret = cacheData::readCacheData($file_cache);

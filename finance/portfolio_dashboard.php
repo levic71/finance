@@ -194,8 +194,8 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
 							<div class="'.(intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
-							<div class="'.(intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
 							<div class="'.(intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
+							<div class="'.(intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
 						</div></td>
 
 						<td id="f_dm_'.$i.'"       class="center aligned '.($qs['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$qs['DM'].'">'.$qs['DM'].' %</td>
@@ -469,8 +469,8 @@ computeLines = function(opt) {
 
 		if (divs) {
 			stoploss   = divs[0].innerHTML;
-			stopprofit = divs[1].innerHTML;
-			objectif   = divs[2].innerHTML;
+			objectif   = divs[1].innerHTML;
+			stopprofit = divs[2].innerHTML;
 		}
 
 		// si devise != EUR, appliquer taux de change
@@ -482,8 +482,8 @@ computeLines = function(opt) {
 
 		valo_stoploss1  = parseFloat(nb * (stoploss == 0 ? price : stoploss) * taux);
 		valo_stoploss2  = parseFloat(nb * stoploss * taux);
-		valo_stopprofit = parseFloat(nb * (stopprofit == 0 ? price : stopprofit) * taux);
 		valo_objectif   = parseFloat(nb * (objectif == 0 ? price : objectif) * taux);
+		valo_stopprofit = parseFloat(nb * (stopprofit == 0 ? price : stopprofit) * taux);
 
 		// Data donuts
 		labels_repartition[0].push(actif);
@@ -493,8 +493,8 @@ computeLines = function(opt) {
 
 		sum_valo_stoploss1  += valo_stoploss1;
 		sum_valo_stoploss2  += valo_stoploss2;
-		sum_valo_stopprofit += valo_stopprofit;
 		sum_valo_objectif   += valo_objectif;
+		sum_valo_stopprofit += valo_stopprofit;
 
 		setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
 		setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label></div>');
@@ -595,15 +595,15 @@ computeLines = function(opt) {
 	};
 
 	perf_stoploss1  = getPerf(valo_ptf, sum_valo_stoploss1).toFixed(2);
-	perf_stopprofit = getPerf(valo_ptf, sum_valo_stopprofit).toFixed(2);
 	perf_objectif   = getPerf(valo_ptf, sum_valo_objectif).toFixed(2);
+	perf_stopprofit = getPerf(valo_ptf, sum_valo_stopprofit).toFixed(2);
 
 	infos_area_bis.l[0] = 'Estimation Stop Loss <a class="ui mini '   + (perf_stoploss1 >= 0  ? 'green' : 'red') + ' tag label">' + perf_stoploss1 + '%</a>';
 	infos_area_bis.v[0] = sum_valo_stoploss1.toFixed(2) + ' \u20AC';
-	infos_area_bis.l[1] = 'Estimation Stop Profit <a class="ui mini ' + (perf_stopprofit >= 0 ? 'green' : 'red') + ' tag label">' + perf_stopprofit + '%</a>';
-	infos_area_bis.v[1] = sum_valo_stopprofit.toFixed(2) + ' \u20AC';
-	infos_area_bis.l[2] = 'Estimation Objectif <a class="ui mini '    + (perf_objectif >= 0   ? 'green' : 'red') + ' tag label">' + perf_objectif + '%</a>';
-	infos_area_bis.v[2] = sum_valo_objectif.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[1] = 'Estimation Objectif <a class="ui mini '    + (perf_objectif >= 0   ? 'green' : 'red') + ' tag label">' + perf_objectif + '%</a>';
+	infos_area_bis.v[1] = sum_valo_objectif.toFixed(2) + ' \u20AC';
+	infos_area_bis.l[2] = 'Estimation Stop Profit <a class="ui mini ' + (perf_stopprofit >= 0 ? 'green' : 'red') + ' tag label">' + perf_stopprofit + '%</a>';
+	infos_area_bis.v[2] = sum_valo_stopprofit.toFixed(2) + ' \u20AC';
 	infos_area_bis.l[3] = 'Couverture Stop Loss';
 	infos_area_bis.v[3] = sum_valo_stoploss2.toFixed(2) + ' \u20AC';
 	infos_area_bis.l[4] = '-';
@@ -701,8 +701,8 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 		var price = Dom.attribute(element.parentNode, 'data-value');
 		var divs = element.getElementsByTagName("div");
 		var stoploss   = divs[0].innerHTML;
-		var stopprofit = divs[1].innerHTML;
-		var objectif   = divs[2].innerHTML;
+		var objectif   = divs[1].innerHTML;
+		var stopprofit = divs[2].innerHTML;
 		let perf_stoploss   = stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2);
 		let perf_stopprofit = stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2);
 		let perf_objectif   = objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2);
@@ -711,9 +711,9 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 				title: '',
 				html: '<div class="ui form"><div class="field">' +
 							'<label style="text-align: center"><button class="ui primary button">' + pname + ' : ' + price + ' &euro;</button></label>' +
-							'<label>Stop loss   <span class="mini_button ' + (perf_stoploss >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stoploss   + '%</span></label><input type="text"<input id="f_stoploss"   class="swal2-input" type="text" placeholder="0.00" value="' + stoploss   + '" />' +
-							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
+							'<label>Stop Loss   <span class="mini_button ' + (perf_stoploss >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stoploss   + '%</span></label><input type="text"<input id="f_stoploss"   class="swal2-input" type="text" placeholder="0.00" value="' + stoploss   + '" />' +
 							'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
+							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
 						'</div></div>',
 				showCancelButton: true,
 				confirmButtonText: 'Valider',
@@ -729,8 +729,8 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif' ]) + '&symbol=' + symbol;
 					go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=stops&' + params, no_data: 1 });
 					divs[0].innerHTML = valof('f_stoploss');
-					divs[1].innerHTML = valof('f_stopprofit');
-					divs[2].innerHTML = valof('f_objectif');
+					divs[1].innerHTML = valof('f_objectif');
+					divs[2].innerHTML = valof('f_stopprofit');
 					Swal.fire('Données modifiées');
 				}
 			});
