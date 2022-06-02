@@ -56,6 +56,35 @@ if ($sess_context->isUserConnected()) {
 
 $gsa = calc::getGSAlertes();
 
+echo "Liste des actifs en surveillance : ";
+foreach($gsa as $key => $val) echo $val[0].", ";
+
+echo "<br />Liste des actifs en portefeuille : ";
+foreach($positions as $key => $val) echo $key.", ";
+
+
+/* 'positions' => 
+array (size=9)
+  'GLE.PAR' => 
+	array (size=4)
+	  'nb' => int 1000
+	  'pru' => float 13.6625
+	  'other_name' => boolean false
+	  'devise' => string 'EUR' (length=3)
+  'BRE.PAR' => 
+  
+'trend_following' => 
+    array (size=4)
+      'BRE.PAR' => 
+        array (size=6)
+          'user_id' => string '4' (length=1)
+          'symbol' => string 'BRE.PAR' (length=7)
+          'stop_loss' => string '0.000000' (length=8)
+          'stop_profit' => string '200.000000' (length=10)
+          'objectif' => string '100.000000' (length=10)
+          'manual_price' => string '0' (length=1)
+      'ESE.PAR' => 
+ */
 ?>
 
 <div id="strategie_container" class="ui container inverted">
@@ -77,24 +106,33 @@ $gsa = calc::getGSAlertes();
 			return $ret;
 		}
 
-		$notifs = [];
-		foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ] as $key => $val) {
+		$indicateurs_a_suivre = [ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ];
 
-			if (isset($gsa[$val][3])) {
-				$seuils = explode(';', $gsa[$val][3]);
+		foreach($indicateurs_a_suivre as $key => $val) {
+			if (!isset($gsa[$val]))
+				$gsa[$val] = array($val,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-");
+		}
+
+		$notifs = [];
+
+		// Alerte sur les indices ?
+		foreach($gsa as $key => $val) {
+
+			// Depassement des alertes 
+			if (isset($val[3])) {
+
+				$seuils = explode(';', $val[3]);
 
 				foreach($seuils as $i => $v) {
 					// echo $val.':'.$gsa[$val][10].'-'.$gsa[$val][4].'-'.$v.'<br />';
-					if (depassementALaHausse($gsa[$val][10], $gsa[$val][4], $v))
-						$notifs[] = $gsa[$val][0]." : Dépassement a la hausse du seuil des ".$v;
-					if (depassementALaBaisse($gsa[$val][10], $gsa[$val][4], $v))
-						$notifs[] = $gsa[$val][0]." : Dépassement a la baisse du seuil des ".$v;
+					if (depassementALaHausse($val[10], $val[4], $v))
+						$notifs[] = $val[0]." : Dépassement a la hausse du seuil des ".$v;
+					if (depassementALaBaisse($val[10], $val[4], $v))
+						$notifs[] = $val[0]." : Dépassement a la baisse du seuil des ".$v;
 
 					// croisement PRU/stoploss/stopprofit/objectif/MM200 ?
 					// proche MM200 ?
 				}
-			} else {
-				$gsa[$val] = array($val,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-");
 			}
 		}
 	?>
@@ -123,7 +161,7 @@ $gsa = calc::getGSAlertes();
 		</thead>
 		<tbody>
 			<?
-				foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ] as $key => $val) {
+				foreach($indicateurs_a_suivre as $key => $val) {
 					echo '<tr>
 							<td><button class="mini ui primary button">'.$gsa[$val][0].'</button></td>
 							<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$gsa[$val][3].'" data-tootik-conf="right">'.($gsa[$val][3] == "" ? 0 : count(explode(';', $gsa[$val][3]))).'</button></td>

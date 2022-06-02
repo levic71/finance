@@ -433,8 +433,8 @@ var options_Valo_Graphe = {
 				display: false
 			},
 			ticks: {
-				minRotation: 0,
-				maxRotation: 0,
+				minRotation: 45,
+				maxRotation: 45,
                 callback: function(value, index, ticks) {
 
                     let search = this.getLabelForValue(value);
@@ -457,8 +457,8 @@ var options_Valo_Graphe = {
 			ticks: {
 				align: 'end',
 				callback: function(value, index, ticks) {
-					var c = value + ' ' + euro + '       ';
-					return c.substring(0, 6);
+					var c = (value / 1000) + 'K' + euro;
+					return c;
 				}
 			},
             beginAtZero: true,
