@@ -298,7 +298,7 @@ asort(uimx::$invest_factorielle);
                     <? } ?>
                 </div>
             </div>
-            <div class="two fields">
+            <div class="four fields">
                 <div class="field">
                     <label>GF Symbole</label>
                     <input type="text" id="f_gf_symbol" value="<?= $row['gf_symbol'] ?>" placeholder="Google finance symbole">
@@ -314,6 +314,17 @@ asort(uimx::$invest_factorielle);
                         <label>Eligible PEA</label>
                         <input type="text" id="f_pea" value="<?= $row['pea'] == 0 ? "Non" : "Oui" ?>" placeholder="">
                     <? } ?>
+                </div>
+                <div class="field">
+                    <label>Dividende annualisé</label>
+                    <input type="text" id="f_dividende" value="<?= $row['dividende_annualise'] ?>" placeholder="0">
+                </div>
+                <div class="field">
+                    <label>Date dividende</label>
+                    <div class="ui right icon inverted left labeled fluid input">
+                        <input type="text" size="10" id="f_date_dividende" value="<?= $row['date_dividende'] ?>" placeholder="0000-00-00">
+                        <i class="inverted black calendar alternate outline icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -500,6 +511,11 @@ if (!$readonly) {
 
 
 <script>
+
+    const datepicker1 = new TheDatepicker.Datepicker(el('f_date_dividende'));
+    datepicker1.options.setInputFormat("Y-m-d")
+    datepicker1.render();
+
     var myChart1 = null;
     var myChart2 = null;
     var myChart3 = null;
@@ -860,7 +876,7 @@ if (!$readonly) {
     <? if (!$readonly) { ?>
 
     getFormValues = function() {
-        params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
+        params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
 
         var tags = '';
         Dom.find('button.bt_tags').forEach(function(item) {
@@ -873,6 +889,10 @@ if (!$readonly) {
 
     // Listenet sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
+
+        if (!check_num(valof('f_dividende'), 'Dividende', 0, 999999999999))
+		return false;
+
         p = getFormValues();
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p, loading_area: 'main' });
         toogleCN('nav_menu', 'on'); scroll(0,0);

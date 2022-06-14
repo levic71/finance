@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.4.52";
+$ver = tools::isLocalHost() ? rand() : "1.4.53";
 
 foreach(['action', 'goto'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");

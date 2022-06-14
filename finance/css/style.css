@@ -715,7 +715,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(10) {
     text-align: right !important;
 }
-#lst_position tbody td:nth-child(10), #lst_position tfoot td:nth-child(6) {
+#lst_position tbody td:nth-child(10) {
     background: rgba(12, 158, 195, 0.1);
 }
 #lst_position tbody td:nth-child(4) input, #lst_position tbody td:nth-child(4) .label,
@@ -745,7 +745,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(4) button {
     background: black; color: grey;
 }
-#lst_position tbody td:nth-child(3) div, #lst_position tbody td:nth-child(4) div, #lst_position tbody td:nth-child(5) div, #lst_position td:nth-child(11) div, #lst_position tfoot td:nth-child(5) {
+#lst_position tbody td:nth-child(3) div, #lst_position tbody td:nth-child(4) div, #lst_position tbody td:nth-child(5) div, #lst_position td:nth-child(11) div, #lst_position tbody td:nth-child(12) div, #lst_position tfoot td:nth-child(5) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -756,8 +756,11 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(4) button {   
     border: 1px solid grey;
 }
-#lst_position tbody td:nth-child(3) label, #lst_position tbody td:nth-child(4) label, #lst_position tbody td:nth-child(5) label, #lst_position td:nth-child(11) label, #lst_position tfoot td:nth-child(5) label {
+#lst_position tbody td:nth-child(3) label, #lst_position tbody td:nth-child(4) label, #lst_position tbody td:nth-child(5) label, #lst_position td:nth-child(11) label, #lst_position td:nth-child(12) label, #lst_position tfoot td:nth-child(5) label {
     font-size: 11px;
+}
+#lst_position td:nth-child(12) label:nth-child(1) {
+    color: aquamarine;
 }
 
 #other_tags [data-tootik][data-tootik-conf*=multiline]:after, .stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {

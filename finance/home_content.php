@@ -18,6 +18,8 @@ $db = dbc::connect();
 // $ret = dbc::addColTable("orders", "devise", "ALTER TABLE `orders` ADD `devise` VARCHAR(16) NOT NULL AFTER `price`;");
 // $ret = dbc::addColTable("orders", "taux_change", "ALTER TABLE `orders` ADD `taux_change` VARCHAR(16) NOT NULL AFTER `devise`;");
 
+$ret = dbc::addColTable("stocks", "dividende_annualise", "ALTER TABLE `stocks` ADD `dividende_annualise` FLOAT NOT NULL AFTER `rating`, ADD `date_dividende` DATE NOT NULL AFTER `dividende_annualise`;");
+
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
 // $x = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
@@ -238,7 +240,7 @@ array (size=9)
 			<button id="lst_filter10_bt" class="mini ui grey button"><i class="ui briefcase grey inverted icon"></i></button>
 			<button id="lst_filter9_bt"  class="mini ui grey button"><i class="ui star grey inverted icon"></i></button>
 			<button id="lst_filter7_bt"  class="mini ui grey button">ETF</button>
-			<button id="lst_filter8_bt"  class="mini ui grey button">Equity</button>
+			<button id="lst_filter8_bt"  class="mini ui grey button">Action</button>
 			<button id="lst_filter1_bt"  class="mini ui grey button">PEA</button>
 			<button id="lst_filter2_bt"  class="mini ui grey button">EUR</button>
 			<button id="lst_filter3_bt"  class="mini ui grey button">USD</button>
@@ -274,7 +276,7 @@ array (size=9)
 				<th>Symbole</th>
 				<th></th>
                 <th class="four wide">Nom</th>
-                <th>Type</th>
+                <th></th>
 				<th>Frais</th>
 				<th>Actifs</th>
 				<th></th>
@@ -319,7 +321,7 @@ foreach($data2["stocks"] as $key => $val) {
 	";
 	
 	echo "
-		<td>".$val['type']."</td>
+		<td><button data-tootik-conf=\"right  multiline\" data-tootik=\"".($val['type'] == "ETF" ? "ETF" : "Action")."\" class=\"mini ui ".($val['type'] == "ETF" ? "green" : "primary")." button badge\">".($val['type'] == "ETF" ? "E" : "A")."</button></td>
 		<td data-value=\"".$val['frais']."\">".sprintf("%.2f", $val['frais'])." %</td>
 		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
 		<td>

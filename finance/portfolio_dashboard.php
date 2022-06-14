@@ -132,6 +132,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<th class="center aligned">Poids</th>
 						<th class="center aligned">Valorisation (&euro;)</th>
 						<th class="center aligned">Performance</th>
+						<th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
 					</tr></thead>
 					<tbody>
 	<?
@@ -141,6 +142,9 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 					// Infos sur actif courant
 					$qs = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key] : [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0];
+
+					// Dividende
+					$dividende = isset($qs['dividende_annualise']) ? $qs['dividende_annualise'] : 0;
 
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
 					// Si on n'a pas la cotation en base on prend le pru
@@ -203,6 +207,12 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td id="f_poids_'.$i.'"    class="center aligned"></td>
 						<td id="f_valo_'.$i.'"     class="right  aligned"></td>
 						<td id="f_perf_pru_'.$i.'" class="center aligned"></td>
+						<td id="f_rand_'.$i.'"     class="center aligned">
+							<div>
+								<label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $val['pru'])).'</label>
+								<label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $quote)).'</label>
+							</div>
+						</td>
 					</tr>';
 					$i++;
 				}
@@ -214,6 +224,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<td></td>
 						<td id="sum_valo"  class="right aligned"></td>
 						<td id="glob_perf" class="center aligned"></td>
+						<td></td>
 					</tr></tfoot>
 				</table>
 			</div>
