@@ -226,3 +226,49 @@ checkCookie = function() {
 	  }
 	}
 }
+
+
+var overlay = {
+	// (A) INITIALIZE - CREATE OVERLAY HTML
+	ewrap: null,    // html wrapper
+	econtent: null, // html contents
+	init: () => {
+	  overlay.ewrap = document.createElement("div");
+	  overlay.ewrap.id = "owrap";
+	  overlay.ewrap.innerHTML = `<button id="oclose" onclick="overlay.hide()" class="circular ui icon very small right floated pink labelled button"><i class="inverted white close icon"></i></button>
+	  <div id="ocontent"></div>`;
+	  overlay.econtent = overlay.ewrap.querySelector("#ocontent");
+	  document.body.appendChild(overlay.ewrap);
+	},
+  
+	// (B) SHOW OVERLAY
+	show: (content) => {
+	  overlay.econtent.innerHTML = content;
+	  // Execution du code javascript
+	  try {
+		  var allJs = overlay.econtent.getElementsByTagName("script");
+		  for(var i=0; i < allJs.length; i++) { if (allJs[i].src && allJs[i].src != "") includeJs(allJs[i].src); else if (allJs[i].innerHTML && allJs[i].innerHTML != "") window.eval(allJs[i].innerHTML); }
+	  } catch(e) { if (isIE8()) alert('IE8 mal support?, utiliser de pr?f?rence FF, IE9 ou Chrome'); else if (typeof allJs != "undefined" && typeof allJs[i] != "undefined") myconsole('cc: JKX caught error: (' + e.name + '): ' + e.message + '\n' + allJs[i].innerHTML ); else myconsole("cc: js error"+ e); }
+	  overlay.ewrap.classList.add("show");
+	},
+	
+	// (C) HIDE OVERLAY
+	hide: () => { overlay.ewrap.classList.remove("show"); },
+   
+	// (D) LOAD & SHOW CONTENT VIA AJAX
+	load : (url, data) => {
+	  // (D1) FORM DATA
+	  let form = new FormData();
+	  if (data) { for (let [k,v] of Object.entries(data)) {
+		form.append(k, v);
+	  }}
+   
+	  // (D2) SET & SHOW CONTENTS
+	  fetch(url, { method:"post", body:form })
+	  .then((res) => { return res.text(); })
+	  .then((txt) => { overlay.show(txt); });
+	}
+  };
+   
+  // (E) ATTACH OVERLAY TO PAGE
+  document.addEventListener("DOMContentLoaded", overlay.init);

@@ -645,7 +645,10 @@ filter = function() {
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
 <? } ?>
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
-Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) {
+//	go({ action: 'portfolio', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' });
+	overlay.load('portfolio_graph.php', { 'portfolio_id' : <?= $portfolio_id ?> });
+});
 Dom.addListener(Dom.id('portfolio_switch_bt'), Dom.Event.ON_CLICK, function(event) { update_infos_areas(current_infos_area.n == 1 ? infos_area_bis : infos_area); });
 Dom.addListener(Dom.id('order_filter_bt'), Dom.Event.ON_CLICK, function(event) { toogle('filters') });
 Dom.addListener(Dom.id('filter_go_bt'), Dom.Event.ON_CLICK, function(event) { filter() });

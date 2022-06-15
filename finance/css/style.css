@@ -8,6 +8,61 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
 .icon_action { padding: 11px !important; }
 .icon_action i { margin: 0px !important; }
 
+/* (A) FULL PAGE OVERLAY */
+#owrap {
+    /* (A1) COVER ENTIRE SCREEN */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.8);
+
+    /* (A2) HIDE OVERLAY BY DEFAULT */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s;
+}
+
+/* (A3) TOGGLE OPEN OVERLAY */
+#owrap.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* (B) OVERLAY CONTENT */
+#ocontent {
+    /* (B1) CENTER ON SCREEN */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* (B2) DIMENSIONS */
+    box-sizing: border-box;
+    padding: 10px;
+    min-width: 300px;
+    min-height: 300px;
+
+    /* (B3) COSMETICS */
+    background: #1b1c1d;
+    text-align: center;
+}
+
+/* (C) OVERLAY CLOSE */
+#oclose {
+    /* (C1) POSITION TOP RIGHT CORNER */
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    /* (C2) COSMETICS FONT SIZE */
+    font-size: 1em;
+    color: #fff;
+    cursor: pointer;
+}
+
 #tooltip_stock_graphe, #tooltip_stock_graphe_div {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 5px;
