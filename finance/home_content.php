@@ -167,13 +167,13 @@ array (size=9)
 					echo '<tr>
 							<td><button class="mini ui primary button">'.$gsa[$val][0].'</button></td>
 							<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$gsa[$val][3].'" data-tootik-conf="right">'.($gsa[$val][3] == "" ? 0 : count(explode(';', $gsa[$val][3]))).'</button></td>
-							<td>'.$gsa[$val][4].'</td>
-							<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][12].'%</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][13].'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][14]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][14].'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][15].'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][16].'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][17]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.$gsa[$val][17].'</td>
+							<td>'.sprintf("%.2f", $gsa[$val][4]).'</td>
+							<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][12]).'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][13]).'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][14]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][14]).'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][15]).'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][16]).'</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][17]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][17]).'</td>
 							<td>'.($gsa[$val][22] == 0 ? "-" : Round($gsa[$val][22], 2)).'</td>
 						</tr>';
 				}
