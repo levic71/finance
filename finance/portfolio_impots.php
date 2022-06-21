@@ -34,7 +34,7 @@ function plusoumoinsvalue($order) {
     $nb = 0;
     $valo = 0;
 
-    echo '<br />'.$order['product_name'].'-'.$order['quantity'].'-'.$order['price']."<br />";
+    // echo '<br />'.$order['product_name'].'-'.$order['quantity'].'-'.$order['price']."<br />";
 
     // On recupere tous les ordres d'achat/vente passés sur cet actif qui ont ete passe avant l'ordre de vente
     $req = "SELECT * FROM orders WHERE portfolio_id=".$order['portfolio_id']." AND product_name='".$order['product_name']."' AND (action=-1 OR action=1) AND datetime < '".$order['datetime']."' AND confirme=1 ORDER BY datetime";
@@ -42,7 +42,7 @@ function plusoumoinsvalue($order) {
 
     while($row = mysqli_fetch_assoc($res)) {
 
-        echo $row['product_name'].'-'.$row['quantity'].'-'.$row['price']."<br />";
+        // echo $row['product_name'].'-'.$row['quantity'].'-'.$row['price']."<br />";
 
         if ($row['action'] == 1) {
             $nb += $row['quantity'];
@@ -52,17 +52,17 @@ function plusoumoinsvalue($order) {
             $valo -= $row['quantity'] * $row['price'];
         }
 
-        echo $nb."-".$valo.'<br />';
+        // echo $nb."-".$valo.'<br />';
 
     }
 
     $pru = $nb == 0 ? 0 : $valo / $nb;
 
-    echo $pru.'<br />';
+    // echo $pru.'<br />';
 
     $ret = $order['quantity'] * ($order['price'] - $pru);
 
-    echo $ret.'<br />';
+    // echo $ret.'<br />';
 
     return $ret;
 
