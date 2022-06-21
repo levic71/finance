@@ -50,7 +50,7 @@ function plusoumoinsvalue($order) {
 
     }
 
-    $pru = $valo / $nb;
+    $pru = $nb == 0 ? 0 : $valo / $nb;
 
     $ret = $order['quantity'] * ($order['price'] - $pru);
 
