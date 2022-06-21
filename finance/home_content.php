@@ -55,6 +55,7 @@ if ($sess_context->isUserConnected()) {
 // 3 - Baisse ou hausse >= 5% en intraday/weekly/monthly
 // 4 - Si cours dépasse objectif et pas de stoploss ou stoploss trop bas (5% ?)
 // 4 - Si cours dépasse stop profit et pas de stoploss ou stoploss trop bas (5% ?)
+// 5 - Si croissement H/B cours/MM200
 
 $gsa = calc::getGSAlertes();
 

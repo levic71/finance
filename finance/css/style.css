@@ -42,7 +42,7 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
     /* (B2) DIMENSIONS */
     box-sizing: border-box;
     padding: 10px;
-    min-width: 300px;
+    min-width: 400px;
     min-height: 300px;
 
     /* (B3) COSMETICS */
