@@ -338,19 +338,6 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 <script>
 
-/* var arr = {
-    "Company Name": 'Flexiple',
-    "ID": 123
-};
-arr.toto = 'toto';
-arr['tutu'] = 'tutu';
-for (var key in arr) {
-    var value = arr[key];
-	alert(key + ' : ' + value);
-}
-alert(Object.keys(arr).length);
- */
-
 var myChart = null;
 var ctx = document.getElementById('pft_donut').getContext('2d');
 
@@ -644,6 +631,7 @@ filter = function() {
 // Listener sur les boutons ADD et BACK
 <? if (!$isPortfolioSynthese) { ?>
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('ptf_impots_bt'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_impots.php', { 'portfolio_id' : <?= $portfolio_id ?> }); });
 <? } ?>
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) {
@@ -652,7 +640,6 @@ Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event
 });
 Dom.addListener(Dom.id('portfolio_switch_bt'), Dom.Event.ON_CLICK, function(event) { update_infos_areas(current_infos_area.n == 1 ? infos_area_bis : infos_area); });
 Dom.addListener(Dom.id('order_filter_bt'), Dom.Event.ON_CLICK, function(event) { toogle('filters') });
-Dom.addListener(Dom.id('ptf_impots_bt'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_impots.php', { 'portfolio_id' : <?= $portfolio_id ?> }); });
 Dom.addListener(Dom.id('filter_go_bt'), Dom.Event.ON_CLICK, function(event) { filter() });
 
 // Init du calcul
