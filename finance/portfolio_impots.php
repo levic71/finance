@@ -7,8 +7,9 @@ session_start();
 include "common.php";
 
 $portfolio_id = 0;
+$year = date('Y');
 
-foreach (['portfolio_id'] as $key)
+foreach (['portfolio_id', 'year'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -19,13 +20,14 @@ if (!$sess_context->isUserConnected()) {
 }
 
 // Recuperation des infos du portefeuille
-$req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
+$req = "SELECT *, YEAR(creation) year FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 
 // Bye bye si inexistant
 if (!($row = mysqli_fetch_assoc($res))) { echo "Portefeuille inexistant"; exit(0); }
 
 $name = $row['name'];
+$year_creation = $row['year'];
 
 function plusoumoinsvalue($order) {
 
@@ -69,9 +71,9 @@ function plusoumoinsvalue($order) {
 }
 
 // Recuperation des ordres de vente depuis le début de l'année courante
-//$date_ref = "2021-01-01";
-$date_ref = date('Y')."-01-01";
-$req = "SELECT * FROM orders WHERE portfolio_id=".$portfolio_id." AND action=-1 AND date >= '".$date_ref."' AND confirme=1 ORDER BY datetime ASC ";
+$date_deb = $year."-01-01";
+$date_fin = $year."-31-12";
+$req = "SELECT * FROM orders WHERE portfolio_id=".$portfolio_id." AND action=-1 AND date >= '".$date_deb."' AND date <= '".$date_fin."' AND confirme=1 ORDER BY datetime ASC ";
 $res = dbc::execSql($req);
 
 $plusoumoinsvalue = [];
@@ -90,7 +92,14 @@ while($row = mysqli_fetch_assoc($res)) {
 
 ?>
 
-<h2 class="ui left floated"><i class="inverted dollar icon"></i><?= $name ?> [ <?= date('Y') ?> ]</h2>
+<h2 class="ui left floated">
+    <i class="inverted dollar icon"></i><?= $name ?>
+    <select id="year_select_bt">
+        <?
+            for($i=$year_creation; $i <= date('Y'); $i++) echo '<option value="'.$i.'" selected="'.($i == $year_creation ? 'selected' : '').'">'.$i.'</option>';
+        ?>
+    </select>
+</h2>
 
 <div class="ui stackable column grid">
     <div class="row">
@@ -113,5 +122,10 @@ echo "<tr><td>Total</td><td>".sprintf("%.2f", $total)."&euro;</td></tr>";
 </div>
 
 <script>
-
+Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
+    element = Dom.id('year_select_bt');
+    var selection = "";
+    for (i=0; i < element.length; i++) if (element[i].selected) selection = element[i].value;
+    if (selection != "") overlay.load('portfolio_impots.php', { 'portfolio_id' : <?= $portfolio_id ?>, 'year' : selection });
+});
 </script>
