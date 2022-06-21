@@ -96,7 +96,7 @@ while($row = mysqli_fetch_assoc($res)) {
     <i class="inverted dollar icon"></i><?= $name ?>
     <select id="year_select_bt">
         <?
-            for($i=$year_creation; $i <= date('Y'); $i++) echo '<option value="'.$i.'" selected="'.($i == $year_creation ? 'selected' : '').'">'.$i.'</option>';
+            for($i=$year_creation; $i <= date('Y'); $i++) echo '<option value="'.$i.'" selected="'.($i == $year ? 'selected' : '').'">'.$i.'</option>';
         ?>
     </select>
 </h2>
