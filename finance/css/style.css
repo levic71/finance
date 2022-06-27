@@ -393,6 +393,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
     max-width: 260px;
     margin: 10px 0px !important;
 }
+.portfolio_alerte .green i {
+    transform: rotate(45deg);
+}
+.portfolio_alerte .red i {
+    transform: rotate(-45deg);
+}
 #strategie_container h2 span button {
     position: relative;
     top: -4px;

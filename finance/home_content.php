@@ -121,17 +121,22 @@ array (size=9)
 		// Alerte sur les indices ?
 		foreach($gsa as $key => $val) {
 
-			// Depassement des alertes 
+			// Depassement des alertes si elles ont ete positionnees
 			if (isset($val[3])) {
+
+				if ($val[0] == "VIX") echo $val[0].":".$val[10].":".$val[4];
 
 				$seuils = explode(';', $val[3]);
 
+				// Parcours de chaque seuil
 				foreach($seuils as $i => $v) {
+
 					// echo $val.':'.$gsa[$val][10].'-'.$gsa[$val][4].'-'.$v.'<br />';
 					if (depassementALaHausse($val[10], $val[4], $v))
-						$notifs[] = $val[0]." : Dépassement a la hausse du seuil des ".$v;
+						$notifs[] =  [ 'actif' => $val[0], 'sens' => -1, 'seuil' => $v ];
+					
 					if (depassementALaBaisse($val[10], $val[4], $v))
-						$notifs[] = $val[0]." : Dépassement a la baisse du seuil des ".$v;
+						$notifs[] =  [ 'actif' => $val[0], 'sens' => 1, 'seuil' => $v ];
 
 					// croisement PRU/stoploss/stopprofit/objectif/MM200 ?
 					// proche MM200 ?
@@ -142,8 +147,17 @@ array (size=9)
 
 
 	<?	if (count($notifs) > 0) { ?>
-		<h2 class="ui left floated"><i class="inverted bullhorn icon"></i><span>Notications</span></h2>
-		<? foreach($notifs as $key => $val) echo $val."<br />"; ?>
+		<h2 class="ui left floated"><i class="inverted bullhorn icon"></i><span>Alertes</span></h2>
+		<?
+			foreach($notifs as $key => $val)
+				echo '
+					<div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
+						<div class="ui '.($val['sens'] >= 0 ? 'green' : 'red' ).' button">
+							<i class="'.($val['sens'] >= 0 ? 'arrow up' : 'arrow down' ).' inverted icon"></i>'.$val['actif'].'
+						</div>
+						<a class="ui basic '.($val['sens'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $val['seuil']).'</a>
+					</div>';
+		?>
 	<? } ?>
 
 	<h2 class="ui left floated"><i class="inverted eye icon"></i><span>Market</span></h2>
@@ -151,7 +165,7 @@ array (size=9)
 		<thead>
 			<tr>
 				<th></th>
-				<th class="center aligned">Alertes</th>
+				<th class="center aligned">Seuils</th>
 				<th>Valeur</th>
 				<th>% J</th>
 				<th>% YTD</th>

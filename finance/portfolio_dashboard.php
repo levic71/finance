@@ -59,6 +59,9 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	<h2 class="ui left floated">
 		<i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
 		<button id="portfolio_graph_bt" class="circular ui icon very small right floated labelled button"><i class="inverted black chart bar outline icon"></i></button>
+		<? if (!$isPortfolioSynthese) { ?>
+		<button id="ptf_impots_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black dollar icon"></i></button>
+		<? } ?>
 	</h2>
 	<div class="ui stackable column grid">
 		<div class="row">
@@ -236,7 +239,6 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	<h2 class="ui left floated"><i class="inverted history icon"></i>Historique ordres
 <? if (!$isPortfolioSynthese) { ?>
 		<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i></button>
-		<button id="ptf_impots_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black dollar icon"></i></button>
 <? } ?>
 		<button id="order_filter_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black filter icon"></i></button>
 	</h2>
