@@ -183,7 +183,6 @@ foreach($gsa as $key => $val) {
 
 			if (depassementALaHausse($val[10], $val[4], $v))
 				$notifs[] =  [ 'actif' => $val[0], 'type' => 'cours', 'sens' => 1, 'seuil' => $v, 'colr' => 'green', 'icon' => 'arrow up' ];
-			
 			if (depassementALaBaisse($val[10], $val[4], $v))
 				$notifs[] =  [ 'actif' => $val[0], 'type' => 'cours', 'sens' => -1, 'seuil' => $v, 'colr' => 'red', 'icon' => 'arrow down' ];
 
@@ -191,15 +190,13 @@ foreach($gsa as $key => $val) {
 
 		// Depassement MM200
 		if (depassementALaHausse($val[10], $val[4], $val[22]))
-			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];
-	
+			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];	
 		if (depassementALaBaisse($val[10], $val[4], $val[22]))
 			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		// Depassement MM20
 		if (depassementALaHausse($val[10], $val[4], $val[19]))
-			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];
-	
+			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];	
 		if (depassementALaBaisse($val[10], $val[4], $val[19]))
 			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
 	}
@@ -215,23 +212,46 @@ foreach($positions as $key => $val) {
 		// Depassement PRU
 		if (depassementALaHausse($d['previous'], $d['price'], $val['pru']))
 			$notifs[] =  [ 'actif' => $key, 'type' => 'pru', 'sens' => 1, 'seuil' => 'PRU', 'colr' => 'green', 'icon' => 'arrow up' ];
-
 		if (depassementALaBaisse($d[('previous')], $d['price'], $val['pru']))
 			$notifs[] =  [ 'actif' => $key, 'type' => 'pru', 'sens' => -1, 'seuil' => 'PRU', 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		// Depassement MM200
 		if (depassementALaHausse($d['previous'], $d['price'], $d['MM200']))
 			$notifs[] =  [ 'actif' => $key, 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];
-
 		if (depassementALaBaisse($d[('previous')], $d['price'], $d['MM200']))
 			$notifs[] =  [ 'actif' => $key, 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		// Depassement MM20
 		if (depassementALaHausse($d['previous'], $d['price'], $d['MM20']))
 			$notifs[] =  [ 'actif' => $key, 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];
-
 		if (depassementALaBaisse($d[('previous')], $d['price'], $d['MM20']))
 			$notifs[] =  [ 'actif' => $key, 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
+
+		// Depassement objectif
+		if (isset($trend_following[$key]['objectif'])) {
+
+			if ($trend_following[$key]['objectif'] > 0) {
+				if (depassementALaHausse($d['previous'], $d['price'], $trend_following[$key]['objectif']))
+					$notifs[] =  [ 'actif' => $key, 'type' => 'objectif', 'sens' => 1, 'seuil' => 'Objectif', 'colr' => 'green', 'icon' => 'arrow up' ];
+				if (depassementALaBaisse($d[('previous')], $d['price'], $trend_following[$key]['objectif']))
+					$notifs[] =  [ 'actif' => $key, 'type' => 'objectif', 'sens' => -1, 'seuil' => 'Objectif', 'colr' => 'red', 'icon' => 'arrow down' ];
+			}
+
+			if ($trend_following[$key]['stop_loss'] > 0) {
+				if (depassementALaHausse($d['previous'], $d['price'], $trend_following[$key]['stop_loss']))
+					$notifs[] =  [ 'actif' => $key, 'type' => 'stop_loss', 'sens' => 1, 'seuil' => 'Stop Loss', 'colr' => 'green', 'icon' => 'arrow up' ];
+				if (depassementALaBaisse($d[('previous')], $d['price'], $trend_following[$key]['stop_loss']))
+					$notifs[] =  [ 'actif' => $key, 'type' => 'stop_loss', 'sens' => -1, 'seuil' => 'Stop Loss', 'colr' => 'red', 'icon' => 'arrow down' ];
+			}
+
+			if ($trend_following[$key]['stop_profit'] > 0) {
+				if (depassementALaHausse($d['previous'], $d['price'], $trend_following[$key]['stop_profit']))
+					$notifs[] =  [ 'actif' => $key, 'type' => 'stop_profit', 'sens' => 1, 'seuil' => 'Stop Profit', 'colr' => 'green', 'icon' => 'arrow up' ];
+				if (depassementALaBaisse($d[('previous')], $d['price'], $trend_following[$key]['stop_profit']))
+					$notifs[] =  [ 'actif' => $key, 'type' => 'stop_profit', 'sens' => -1, 'seuil' => 'Stop Profit', 'colr' => 'red', 'icon' => 'arrow down' ];
+			}
+
+		}
 
 		
 		// croisement PRU/stoploss/stopprofit/objectif/MM200 ?
