@@ -18,7 +18,7 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
-$data_ptf = [ 'days' => [ "0" ], 'valo' => [ "0" ], 'depot' => [ "0" ] ];
+// $data_ptf = [ 'days' => [ "0" ], 'valo' => [ "0" ], 'depot' => [ "0" ] ];
 
 // Recuperation des infos du portefeuille
 $req = "SELECT pv.*, p.name FROM portfolios p, portfolio_valo pv WHERE pv.portfolio_id=".$portfolio_id." AND p.id=pv.portfolio_id AND p.user_id=".$sess_context->getUserId();
