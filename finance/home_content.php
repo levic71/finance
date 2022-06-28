@@ -124,7 +124,7 @@ array (size=9)
 			// Depassement des alertes si elles ont ete positionnees
 			if (isset($val[3])) {
 
-				if ($val[0] == "VIX") echo $val[0].":".$val[10].":".$val[4];
+//				if ($val[0] == "VIX") echo $val[0].":".$val[10].":".$val[4];
 
 				$seuils = explode(';', $val[3]);
 
