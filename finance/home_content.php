@@ -57,14 +57,57 @@ if ($sess_context->isUserConnected()) {
 // 4 - Si cours dépasse stop profit et pas de stoploss ou stoploss trop bas (5% ?)
 // 5 - Si croissement H/B cours/MM200
 
-$gsa = calc::getGSAlertes();
 
-echo "Liste des actifs en surveillance : ";
-foreach($gsa as $key => $val) echo $val[0].", ";
+/* $data2
 
-echo "<br />Liste des actifs en portefeuille : ";
-foreach($positions as $key => $val) echo $key.", ";
-
+array (size=4)
+  'stocks' => 
+    array (size=16)
+      'BNP.PAR' => 
+        array (size=43)
+          'id' => string '147' (length=3)
+          'name' => string 'BNP Paribas SA' (length=14)
+          'symbol' => string 'BNP.PAR' (length=7)
+          'currency' => string 'EUR' (length=3)
+          'type' => string 'Equity' (length=6)
+          'region' => string 'Paris' (length=5)
+          'marketopen' => string '09:00' (length=5)
+          'marketclose' => string '17:30' (length=5)
+          'timezone' => string 'UTC+01' (length=6)
+          'pea' => string '0' (length=1)
+          'gf_symbol' => string '' (length=0)
+          'ISIN' => string '' (length=0)
+          'provider' => string '' (length=0)
+          'categorie' => string '' (length=0)
+          'frais' => string '0' (length=1)
+          'distribution' => string '0' (length=1)
+          'actifs' => string '0' (length=1)
+          'links' => string '{"link1":"","link2":""}' (length=23)
+          'tags' => string 'Actions|Industrie|Services financiers|MarchÃ© dÃ©veloppÃ©|Europe|Value|Large Cap|' (length=81)
+          'rating' => string '6' (length=1)
+          'dividende_annualise' => string '3.67' (length=4)
+          'date_dividende' => string '2022-06-02' (length=10)
+          'open' => string '50.4200' (length=7)
+          'high' => string '51.2600' (length=7)
+          'low' => string '49.8500' (length=7)
+          'price' => string '49.8500' (length=7)
+          'volume' => string '2879032' (length=7)
+          'day' => string '2022-05-09' (length=10)
+          'previous' => string '50.5900' (length=7)
+          'day_change' => string '-0.7400' (length=7)
+          'percent' => string '-1.4627%' (length=8)
+          'period' => string 'DAILY' (length=5)
+          'DM' => string '-4.76' (length=5)
+          'DMD1' => string '2022-04-29' (length=10)
+          'DMD2' => string '2022-02-28' (length=10)
+          'DMD3' => string '2021-11-30' (length=10)
+          'MM7' => string '50.282857142857' (length=15)
+          'MM20' => string '50.0655' (length=7)
+          'MM50' => string '50.5656' (length=7)
+          'MM100' => string '56.5983' (length=7)
+          'MM200' => string '56.22625' (length=8)
+          'RSI14' => string '46.497137366824' (length=15)
+          'Bollinger' => string '' (length=0) */
 
 /* 'positions' => 
 array (size=9)
@@ -88,63 +131,119 @@ array (size=9)
           'manual_price' => string '0' (length=1)
       'ESE.PAR' => 
  */
-?>
 
-<div id="strategie_container" class="ui container inverted">
+$gsa = calc::getGSAlertes();
 
-	<?
-		function depassementALaHausse($vi, $vf, $s) {
-			$ret = false;
+/* echo "Liste des actifs en surveillance : ";
+foreach($gsa as $key => $val) echo $val[0].", ";
 
-			if ($vi < $s && $vf > $s) $ret = true;
+echo "<br />Liste des actifs en portefeuille : ";
+foreach($positions as $key => $val) echo $key.", ";
+ */
 
-			return $ret;
-		}
+function depassementALaHausse($vi, $vf, $s) {
+	$ret = false;
 
-		function depassementALaBaisse($vi, $vf, $s) {
-			$ret = false;
+	if ($vi < $s && $vf > $s) $ret = true;
 
-			if ($vi > $s && $vf < $s) $ret = true;
+	return $ret;
+}
 
-			return $ret;
-		}
+function depassementALaBaisse($vi, $vf, $s) {
+	$ret = false;
 
-		$indicateurs_a_suivre = [ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ];
+	if ($vi > $s && $vf < $s) $ret = true;
 
-		foreach($indicateurs_a_suivre as $key => $val) {
-			if (!isset($gsa[$val]))
-				$gsa[$val] = array($val,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-");
-		}
+	return $ret;
+}
 
-		$notifs = [];
+$indicateurs_a_suivre = [ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ];
 
-		// Alerte sur les indices ?
-		foreach($gsa as $key => $val) {
+// Init à 0 des valeurs des indicateurs dont les donnees pas recupérées
+foreach($indicateurs_a_suivre as $key => $val) {
+	if (!isset($gsa[$val]))
+		$gsa[$val] = array($val,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-");
+}
 
-			// Depassement des alertes si elles ont ete positionnees
-			if (isset($val[3])) {
+// Tableau des notifs
+$notifs = [];
+
+// Alerte sur les actifs surveilles ?
+foreach($gsa as $key => $val) {
+
+	// Depassement des alertes si elles ont ete positionnees
+	if (isset($val[3])) {
 
 //				if ($val[0] == "VIX") echo $val[0].":".$val[10].":".$val[4];
 
-				$seuils = explode(';', $val[3]);
+		$seuils = explode(';', $val[3]);
 
-				// Parcours de chaque seuil
-				foreach($seuils as $i => $v) {
+		// Parcours du cours de chaque seuil ?
+		foreach($seuils as $i => $v) {
 
-					// echo $val.':'.$gsa[$val][10].'-'.$gsa[$val][4].'-'.$v.'<br />';
-					if (depassementALaHausse($val[10], $val[4], $v))
-						$notifs[] =  [ 'actif' => $val[0], 'sens' => -1, 'seuil' => $v ];
-					
-					if (depassementALaBaisse($val[10], $val[4], $v))
-						$notifs[] =  [ 'actif' => $val[0], 'sens' => 1, 'seuil' => $v ];
+			if (depassementALaHausse($val[10], $val[4], $v))
+				$notifs[] =  [ 'actif' => $val[0], 'type' => 'cours', 'sens' => 1, 'seuil' => $v, 'colr' => 'green', 'icon' => 'arrow up' ];
+			
+			if (depassementALaBaisse($val[10], $val[4], $v))
+				$notifs[] =  [ 'actif' => $val[0], 'type' => 'cours', 'sens' => -1, 'seuil' => $v, 'colr' => 'red', 'icon' => 'arrow down' ];
 
-					// croisement PRU/stoploss/stopprofit/objectif/MM200 ?
-					// proche MM200 ?
-				}
-			}
 		}
-	?>
 
+		// Depassement MM200
+		if (depassementALaHausse($val[10], $val[4], $val[22]))
+			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];
+	
+		if (depassementALaBaisse($val[10], $val[4], $val[22]))
+			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
+
+		// Depassement MM20
+		if (depassementALaHausse($val[10], $val[4], $val[19]))
+			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];
+	
+		if (depassementALaBaisse($val[10], $val[4], $val[19]))
+			$notifs[] =  [ 'actif' => $val[0], 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
+	}
+}
+
+// Alerte sur actifs en portefeuille
+foreach($positions as $key => $val) {
+
+	if (isset($data2["stocks"][$key])) {
+
+		$d = $data2["stocks"][$key];
+
+		// Depassement PRU
+		if (depassementALaHausse($d['previous'], $d['price'], $val['pru']))
+			$notifs[] =  [ 'actif' => $key, 'type' => 'pru', 'sens' => 1, 'seuil' => 'PRU', 'colr' => 'green', 'icon' => 'arrow up' ];
+
+		if (depassementALaBaisse($d[('previous')], $d['price'], $val['pru']))
+			$notifs[] =  [ 'actif' => $key, 'type' => 'pru', 'sens' => -1, 'seuil' => 'PRU', 'colr' => 'red', 'icon' => 'arrow down' ];
+
+		// Depassement MM200
+		if (depassementALaHausse($d['previous'], $d['price'], $d['MM200']))
+			$notifs[] =  [ 'actif' => $key, 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];
+
+		if (depassementALaBaisse($d[('previous')], $d['price'], $d['MM200']))
+			$notifs[] =  [ 'actif' => $key, 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
+
+		// Depassement MM20
+		if (depassementALaHausse($d['previous'], $d['price'], $d['MM20']))
+			$notifs[] =  [ 'actif' => $key, 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];
+
+		if (depassementALaBaisse($d[('previous')], $d['price'], $d['MM20']))
+			$notifs[] =  [ 'actif' => $key, 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
+
+		
+		// croisement PRU/stoploss/stopprofit/objectif/MM200 ?
+
+
+	}
+
+};
+
+?>
+
+<div id="strategie_container" class="ui container inverted">
 
 	<?	if (count($notifs) > 0) { ?>
 		<h2 class="ui left floated"><i class="inverted bullhorn icon"></i><span>Alertes</span></h2>
@@ -153,9 +252,9 @@ array (size=9)
 				echo '
 					<div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
 						<div class="ui '.($val['sens'] >= 0 ? 'green' : 'red' ).' button">
-							<i class="'.($val['sens'] >= 0 ? 'arrow up' : 'arrow down' ).' inverted icon"></i>'.$val['actif'].'
+							<i class="'.$val['icon'].' inverted icon"></i>'.$val['actif'].'
 						</div>
-						<a class="ui basic '.($val['sens'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $val['seuil']).'</a>
+						<a class="ui basic '.$val['colr'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>
 					</div>';
 		?>
 	<? } ?>
