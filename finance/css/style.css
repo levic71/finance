@@ -395,6 +395,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 .portfolio_alerte {
     margin-bottom: 5px;
+}
+.portfolio_alerte, .portfolio_alerte a {
     font-size: 10px;
 }
 .portfolio_alerte .green i {
