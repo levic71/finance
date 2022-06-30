@@ -394,10 +394,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
     margin: 10px 0px !important;
 }
 .portfolio_alerte {
-    margin-bottom: 5px;
+    margin-bottom: 5px !important;
 }
 .portfolio_alerte, .portfolio_alerte a {
-    font-size: 10px;
+    font-size: 10px !important;
 }
 .portfolio_alerte .green i {
     transform: rotate(45deg);
