@@ -393,6 +393,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
     max-width: 260px;
     margin: 10px 0px !important;
 }
+.portfolio_alerte {
+    margin-bottom: 5px;
+    font-size: 10px;
+}
 .portfolio_alerte .green i {
     transform: rotate(45deg);
 }
