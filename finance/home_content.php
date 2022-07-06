@@ -438,7 +438,7 @@ alert('tior');
 		Dom.addListener(Dom.id('home_strategie_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_upt', id: 'main', url: 'strategie.php?action=<?= $val['copy'] ? "copy" : "upt" ?>&strategie_id=<?= $val['id'] ?>', loading_area: 'home_strategie_<?= $val['id'] ?>_bt' }); });
 	<? } ?>
 <? } ?>
-
+alert('coucou');
 // Listener sur recherche nouveau actif
 <? if ($sess_context->isSuperAdmin()) { ?>
 Dom.addListener(Dom.id('home_symbol_search'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
