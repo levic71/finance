@@ -290,7 +290,6 @@ foreach($data2["stocks"] as $key => $val) {
 </div>
 
 <script>
-alert('hehe');
 
 var tags_colr = 'teal';
 
@@ -405,6 +404,10 @@ filterLstAction = function(elt) {
 	filterLstStocks();
 	setCookie(elt, isCN(elt, 'grey') ? 0 : 1, 1000);
 }
+
+alert('hehe');
+
+
 
 // Listener sur bouton filtre default strategie
 Dom.addListener(Dom.id('strategie_default_bt'),   Dom.Event.ON_CLICK, function(event) { filterLstStrategies('strategie_default_bt'); });
