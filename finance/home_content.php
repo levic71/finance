@@ -405,15 +405,9 @@ filterLstAction = function(elt) {
 	setCookie(elt, isCN(elt, 'grey') ? 0 : 1, 1000);
 }
 
-alert('hehe');
-
-
-
 // Listener sur bouton filtre default strategie
 Dom.addListener(Dom.id('strategie_default_bt'),   Dom.Event.ON_CLICK, function(event) { filterLstStrategies('strategie_default_bt'); });
 
-
-alert('tata');
 // Listener sur les boutons de filte tableau assets
 Dom.addListener(Dom.id('lst_filter1_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
 Dom.addListener(Dom.id('lst_filter2_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter3_bt', 'orange')) { switchColorElement('lst_filter3_bt', 'orange', 'grey'); setCookie('lst_filter3_bt', 0 , 1000); }; filterLstAction('lst_filter2_bt'); });
@@ -425,7 +419,7 @@ Dom.addListener(Dom.id('lst_filter7_bt'),  Dom.Event.ON_CLICK, function(event) {
 Dom.addListener(Dom.id('lst_filter8_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) { switchColorElement('lst_filter7_bt', 'orange', 'grey'); setCookie('lst_filter7_bt', 0 , 1000); }; filterLstAction('lst_filter8_bt'); });
 Dom.addListener(Dom.id('lst_filter9_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
 Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter10_bt'); });
-alert('tior');
+
 // Listener sur bouton ajout strategie
 <? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
@@ -438,16 +432,16 @@ alert('tior');
 		Dom.addListener(Dom.id('home_strategie_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_upt', id: 'main', url: 'strategie.php?action=<?= $val['copy'] ? "copy" : "upt" ?>&strategie_id=<?= $val['id'] ?>', loading_area: 'home_strategie_<?= $val['id'] ?>_bt' }); });
 	<? } ?>
 <? } ?>
-alert('coucou');
+
 // Listener sur recherche nouveau actif
 <? if ($sess_context->isSuperAdmin()) { ?>
 Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
 
-Dom.addListener(Dom.id('home_alertes_refresh'), Dom.Event.ON_CLICK, function(event) {
-	overlay.load('crontab_alertes.php', { });
-});
+<? if (count($notifs) > 0) { ?>
+Dom.addListener(Dom.id('home_alertes_refresh'), Dom.Event.ON_CLICK, function(event) { overlay.load('crontab_alertes.php', { }); });
 <? } ?>
-alert('hello');
+
+<? } ?>
 
 change_wide_menu_state('wide_menu', 'm1_home_bt');
 
