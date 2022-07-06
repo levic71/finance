@@ -412,6 +412,8 @@ alert('hehe');
 // Listener sur bouton filtre default strategie
 Dom.addListener(Dom.id('strategie_default_bt'),   Dom.Event.ON_CLICK, function(event) { filterLstStrategies('strategie_default_bt'); });
 
+
+alert('tata');
 // Listener sur les boutons de filte tableau assets
 Dom.addListener(Dom.id('lst_filter1_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter1_bt'); });
 Dom.addListener(Dom.id('lst_filter2_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter3_bt', 'orange')) { switchColorElement('lst_filter3_bt', 'orange', 'grey'); setCookie('lst_filter3_bt', 0 , 1000); }; filterLstAction('lst_filter2_bt'); });
@@ -423,7 +425,7 @@ Dom.addListener(Dom.id('lst_filter7_bt'),  Dom.Event.ON_CLICK, function(event) {
 Dom.addListener(Dom.id('lst_filter8_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) { switchColorElement('lst_filter7_bt', 'orange', 'grey'); setCookie('lst_filter7_bt', 0 , 1000); }; filterLstAction('lst_filter8_bt'); });
 Dom.addListener(Dom.id('lst_filter9_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
 Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter10_bt'); });
-
+alert('tior');
 // Listener sur bouton ajout strategie
 <? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
