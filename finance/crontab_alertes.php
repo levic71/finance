@@ -4,7 +4,7 @@
 // NE PAS METTRE DE SESSION SINON PB CRONTAB
 // //////////////////////////////////////////
 
-// Alerte (id, date YYY-MM-JJ, user_id, lue, type, sens, couleur, icone, libelle, actif, seuil)
+// Alerte (id, date YYY-MM-JJ, user_id, actif, mail, lue, type, sens, couleur, icone, libelle, seuil)
 
 include "include.php";
 include "indicators.php";
@@ -264,6 +264,15 @@ foreach($positions as $key => $val) {
 
 $file_cache = 'cache/TMP_ALERTES.json';
 cacheData::writeCacheData($file_cache, $notifs);
+
+foreach($notifs as $key => $val) {
+
+	var_dump($val);
+
+	$req = "INSERT INTO alertes (user_id, date, actif, mail, lue, type, sens, couleur, icone, seuil) VALUES(".$val['user_id'].", '".date('Y-m-d')."', '".$val['actif']."', 0, 0, '".$val['type']."', ".$val['sens'].", '".$val['colr']."', '".$val['icon']."', '".$val['seuil']."') ON DUPLICATE KEY UPDATE user_id='".$val['user_id']."', date='".date('Y-m-d')."', actif='".$val['actif']."'";
+	$res = dbc::execSql($req);
+
+}
 
 echo count($notifs)." item(s)<br />";
 echo "Done";

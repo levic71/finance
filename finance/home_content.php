@@ -70,7 +70,8 @@ if (file_exists($file_cache)) $notifs = cacheData::readCacheData($file_cache);
 	<?	if (count($notifs) > 0) { ?>
 		<h2 class="ui left floated">
 			<i class="inverted bullhorn icon"></i><span>Alertes</span>
-			<? if ($sess_context->isSuperAdmin()) { ?><button id="home_alertes_refresh" class="circular ui right floated pink button icon_action"><i class="inverted white redo icon"></i></button><? } ?>
+			<? if ($sess_context->isSuperAdmin()) { ?><button id="home_alertes_refresh" class="circular ui right floated button icon_action"><i class="inverted black redo icon"></i></button><? } ?>
+			<button id="home_alertes_detail" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
 		</h2>
 		<?
 			foreach($notifs as $key => $val)
