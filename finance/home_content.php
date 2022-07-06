@@ -290,6 +290,7 @@ foreach($data2["stocks"] as $key => $val) {
 </div>
 
 <script>
+alert('hehe');
 
 var tags_colr = 'teal';
 
