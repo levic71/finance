@@ -434,13 +434,11 @@ Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) {
 
 // Listener sur recherche nouveau actif
 <? if ($sess_context->isSuperAdmin()) { ?>
-Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
-
-Dom.addListener(Dom.id('home_alertes_refresh'), Dom.Event.ON_CLICK, function(event) {
-	overlay.load('crontab_alertes.php', { });
-});
+Dom.addListener(Dom.id('home_symbol_search'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
+Dom.addListener(Dom.id('home_alertes_refresh'), Dom.Event.ON_CLICK, function(event) { overlay.load('crontab_alertes.php', { }); });
 <? } ?>
 
+alert('rutu');
 
 change_wide_menu_state('wide_menu', 'm1_home_bt');
 
@@ -479,6 +477,8 @@ Dom.find("#lst_stock tbody tr td:nth-child(1) button").forEach(function(element)
 		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+element.innerHTML, loading_area: 'main' });
 	});
 });
+
+alert('toto');
 
 // Listener sur icon secteur ligne tableau
 Dom.find("#lst_stock tbody tr td:nth-child(2) i").forEach(function(element) {
