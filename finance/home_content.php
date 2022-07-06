@@ -436,7 +436,7 @@ Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) {
 // Listener sur recherche nouveau actif
 <? if ($sess_context->isSuperAdmin()) { ?>
 Dom.addListener(Dom.id('home_symbol_search'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
-<? (count($notifs) > 0) { ?>
+<? if (count($notifs) > 0) { ?>
 Dom.addListener(Dom.id('home_alertes_refresh'), Dom.Event.ON_CLICK, function(event) { overlay.load('crontab_alertes.php', { }); });
 <? } ?>
 <? } ?>
