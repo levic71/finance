@@ -245,7 +245,7 @@ class calc {
         $quotes = calc::getIndicatorsLastQuote();
 
         // Reccuperation du cours des devises
-        $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
+        $devises = calc::getGSDevisesWithNoUpdate();
 
         // Récupération des données de trend_following de l'utilisateur
         $portfolio['trend_following'] = array();
@@ -371,9 +371,10 @@ class calc {
             if ($val['nb'] == 0)
                 unset($positions[$key]);
             else {
+                $taux_du_jour = calc::getCurrencyRate($val['devise']."EUR", $devises);
                 $last_price = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru'];
                 // On applique le dernier taux connu
-                $valo_ptf += $val['nb'] * $last_price * calc::getCurrencyRate($val['devise']."EUR", $devises);
+                $valo_ptf += $val['nb'] * $last_price * $taux_du_jour;
             }
         }
 
@@ -773,6 +774,10 @@ class calc {
 //        exit(0);
 
         return $row;
+    }
+
+    public static function getGSDevisesWithNoUpdate() {
+        return cacheData::readCacheData('cache/CACHE_GS_DEVISES.json');
     }
 
     public static function getGSDevises() {
