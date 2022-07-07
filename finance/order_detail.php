@@ -19,7 +19,7 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
-$devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
+$devises = calc::getGSDevisesWithNoUpdate();
 
 $libelle_action_bt = tools::getLibelleBtAction($action);
 
@@ -58,8 +58,8 @@ $quotes = calc::getIndicatorsLastQuote();
         <? } ?>
     </div>
 
-    <div class="six fields">
-        <div class="field">
+    <div class="nine fields">
+        <div class="field" style="width: 150px;">
             <label>Date</label>
             <div class="ui right icon inverted left labeled fluid input">
                 <input type="text" size="10" id="f_date" value="<?= $row['date'] ?>" placeholder="0000-00-00">
@@ -71,7 +71,7 @@ $quotes = calc::getIndicatorsLastQuote();
             <select id="f_product_name" class="ui dropdown">
                 <option value="Cash" data-price="0" <?= $row['product_name'] == "Cash" ? "selected=\"selected\"" : "" ?>>Cash</option>
                 <? foreach ($quotes["stocks"] as $key => $val) { ?>
-                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" <?= $row['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
+                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $row['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
                 <? } ?>
                 <option value="AUTRE" data-price="0" <?= substr($row['product_name'], 0, 5) == "AUTRE" ? "selected=\"selected\"" : "" ?>>Autre</option>
             </select>
@@ -99,7 +99,7 @@ $quotes = calc::getIndicatorsLastQuote();
             <label>Devise</label>
             <select id="f_devise" class="ui dropdown">
                 <? foreach ([ 'EUR', 'USD'] as $key => $val) { ?>
-                    <option value="<?= $val ?>" <?= $row['devise'] == $val ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
+                    <option value="<?= $val ?>" data-taux="<?= calc::getCurrencyRate($val."EUR", $devises) ?>" <?= $row['devise'] == $val ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
                 <? } ?>
             </select>
         </div>
@@ -142,11 +142,35 @@ datepicker1.render();
 
 // Change sur selection produit
 Dom.addListener(Dom.id('f_product_name'), Dom.Event.ON_CHANGE, function(event) {
-	item = Dom.id('f_product_name');
+
+    item = Dom.id('f_product_name');
 	v = Dom.attribute(item.options[item.selectedIndex], 'data-price');
+	c = Dom.attribute(item.options[item.selectedIndex], 'data-currency');
 	n = item.options[item.selectedIndex].value;
-	Dom.attribute(Dom.id('f_price'), { 'value': v });
+
+    // Si Cash
+    if (!c) c = 'EUR';
+
+    // On positionne l'action a Achat si actif choisit
+    Dom.id('f_action').selectedIndex = item.selectedIndex > 0 ? 1 : 0;
+
+    // Mise a jour de la devise en fct de l'actif + taux de change idoine
+    devises = Dom.id('f_devise');
+    for(i=0; i < devises.length; i++) {
+        if (devises.options[i].value == c) devises.selectedIndex = i;
+    }
+    t = Dom.attribute(devises.options[devises.selectedIndex], 'data-taux');
+    Dom.id('f_taux_change').value = t;
+
+    Dom.attribute(Dom.id('f_price'), { 'value': v });
+
     if (n == 'AUTRE') show('f_other_name'); else hide('f_other_name');
+});
+
+// Change sur selection produit
+Dom.addListener(Dom.id('f_devise'), Dom.Event.ON_CHANGE, function(event) {
+    item = Dom.id('f_devise');
+    Dom.id('f_taux_change').value = Dom.attribute(item.options[item.selectedIndex], 'data-taux');
 });
 
 // Cancel button
