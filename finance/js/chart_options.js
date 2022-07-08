@@ -135,6 +135,11 @@ const externalTooltipHandler = (context) => {
     // Tooltip Elements : On instancie 2 variables avec 2 elements de l'objet context
     const {chart, tooltip} = context;
     const tooltipEl = getOrCreateTooltip(chart);
+
+    // debugger;
+
+    // Si affichage graphe portfolio, on affiche aussi la performance relative et par rapport à la vielle ?
+    if (chart.canvas.id == 'portfolio_canvas') { };
   
     // Hide if no tooltip
     if (tooltip.opacity === 0) {
@@ -150,6 +155,7 @@ const externalTooltipHandler = (context) => {
         // Remove old children
         while (tooltipEl.firstChild) tooltipEl.firstChild.remove();
 
+        // Correspond a la recuperation de la date
         titleLines.forEach(title => {
             const div = document.createElement('div');
             const text = document.createTextNode(title);

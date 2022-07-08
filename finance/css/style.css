@@ -919,8 +919,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
         margin-bottom: 5px;
     }
 
-    #lst_scan th:nth-child(6), #lst_scan th:nth-child(7), #lst_scan th:nth-child(8), #lst_scan th:nth-child(9), #lst_scan th:nth-child(10),
-    #lst_scan td:nth-child(6), #lst_scan td:nth-child(7), #lst_scan td:nth-child(8), #lst_scan td:nth-child(9), #lst_scan td:nth-child(10)  {
+    #lst_scan th:nth-child(5), #lst_scan th:nth-child(6), #lst_scan th:nth-child(7), #lst_scan th:nth-child(8), #lst_scan th:nth-child(9), #lst_scan th:nth-child(10),
+    #lst_scan td:nth-child(5), #lst_scan td:nth-child(6), #lst_scan td:nth-child(7), #lst_scan td:nth-child(8), #lst_scan td:nth-child(9), #lst_scan td:nth-child(10)  {
         display: none !important;
     }
         
@@ -968,8 +968,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
 
     #lst_sim th:nth-child(2), #lst_sim th:nth-child(3), #lst_sim th:nth-child(4), #lst_sim th:nth-child(5), #lst_sim th:nth-child(6), #lst_sim th:nth-child(7), #lst_sim th:nth-child(8), #lst_sim th:nth-child(9),
     #lst_sim td:nth-child(2), #lst_sim td:nth-child(3), #lst_sim td:nth-child(4), #lst_sim td:nth-child(5), #lst_sim td:nth-child(6), #lst_sim td:nth-child(7), #lst_sim td:nth-child(8), #lst_sim td:nth-child(9),
-    #lst_stock th:nth-child(3), #lst_stock th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(6), #lst_stock th:nth-child(7), #lst_stock th:nth-child(9), #lst_stock th:nth-child(12),
-    #lst_stock td:nth-child(3), #lst_stock td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(6), #lst_stock td:nth-child(7), #lst_stock td:nth-child(9), #lst_stock td:nth-child(12)
+    #lst_stock th:nth-child(3), #lst_stock th:nth-child(4), #lst_stock th:nth-child(5), #lst_stock th:nth-child(6), #lst_stock th:nth-child(7), #lst_stock th:nth-child(9), #lst_stock th:nth-child(11), #lst_stock th:nth-child(12),
+    #lst_stock td:nth-child(3), #lst_stock td:nth-child(4), #lst_stock td:nth-child(5), #lst_stock td:nth-child(6), #lst_stock td:nth-child(7), #lst_stock td:nth-child(9), #lst_stock td:nth-child(11), #lst_stock td:nth-child(12)
     {
         display: none;
     }
