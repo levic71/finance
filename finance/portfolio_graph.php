@@ -48,7 +48,7 @@ $data_ptf['depot'][] = Round($data_ptf_now['depot']);
 <h2 class="ui left floated"><i class="inverted briefcase icon"></i><?= $name ?></h2>
 
 <div id="canvas_area" class="ui container inverted segment">
-    <canvas id="stock_canvas1" height="100"></canvas>
+    <canvas id="portfolio_canvas" height="100"></canvas>
 </div>
 
 <script>
@@ -85,8 +85,8 @@ var g1_days   = [<?= '"' . implode('","', $data_ptf["days"]) . '"' ?>];
 var g1_vals   = [<?= implode(',', $data_ptf["valo"])  ?>];
 var g2_vals   = [<?= implode(',', $data_ptf["depot"])  ?>];
 
-var ctx1 = document.getElementById('stock_canvas1').getContext('2d');
-el("stock_canvas1").height = document.body.offsetWidth > 700 ? 140 : 300;
+var ctx1 = document.getElementById('portfolio_canvas').getContext('2d');
+el("portfolio_canvas").height = document.body.offsetWidth > 700 ? 140 : 300;
 
 update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
     if (c) c.destroy();
@@ -108,8 +108,8 @@ update_all_charts = function() {
 
     // Update Chart Stock
     var datasets1 = [];
-    datasets1.push(getDatasetVals('Valorisation', g1_vals, '<?= $sess_context->getSpectreColor(0) ?>', '<?= $sess_context->getSpectreColor(0, 0.2) ?>'));
-    datasets1.push(getDatasetVals('D\u00e9pot',        g2_vals, '<?= $sess_context->getSpectreColor(1) ?>', '<?= $sess_context->getSpectreColor(1, 0.2) ?>'));
+    datasets1.push(getDatasetVals('Valo',       g1_vals, '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.2) ?>'));
+    datasets1.push(getDatasetVals('D\u00e9pot', g2_vals, '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.2) ?>'));
     myChart1 = update_graph_chart(myChart1, ctx1, options_Valo_Graphe, g1_days, datasets1, [{}]);
 
 }
