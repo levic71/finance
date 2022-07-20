@@ -67,23 +67,21 @@ if (file_exists($file_cache)) $notifs = cacheData::readCacheData($file_cache);
 
 <div id="strategie_container" class="ui container inverted">
 
-	<?	if (count($notifs) > 0) { ?>
-		<h2 class="ui left floated">
-			<i class="inverted bullhorn icon"></i><span>Alertes</span>
-			<? if ($sess_context->isSuperAdmin()) { ?><button id="home_alertes_refresh" class="circular ui right floated button icon_action"><i class="inverted black redo icon"></i></button><? } ?>
-			<button id="home_alertes_detail" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
-		</h2>
-		<?
-			foreach($notifs as $key => $val)
-				echo '
-					<div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
-						<div class="ui '.$val['colr'].' button">
-							<i class="'.$val['icon'].' inverted icon"></i>'.$val['actif'].'
-						</div>
-						<a class="ui basic '.$val['colr'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>
-					</div>';
-		?>
-	<? } ?>
+	<h2 class="ui left floated">
+		<i class="inverted bullhorn icon"></i><span>Alertes</span>
+		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_alertes_refresh" class="circular ui right floated button icon_action"><i class="inverted black redo icon"></i></button><? } ?>
+		<button id="home_alertes_list" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
+	</h2>
+	<?
+		foreach($notifs as $key => $val)
+			echo '
+				<div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
+					<div class="ui '.$val['colr'].' button">
+						<i class="'.$val['icon'].' inverted icon"></i>'.$val['actif'].'
+					</div>
+					<a class="ui basic '.$val['colr'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>
+				</div>';
+	?>
 
 	<h2 class="ui left floated"><i class="inverted eye icon"></i><span>Market</span></h2>
 	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
@@ -440,6 +438,9 @@ Dom.addListener(Dom.id('home_symbol_search'), Dom.Event.ON_CLICK, function(event
 <? if (count($notifs) > 0) { ?>
 Dom.addListener(Dom.id('home_alertes_refresh'), Dom.Event.ON_CLICK, function(event) { overlay.load('crontab_alertes.php', { }); });
 <? } ?>
+
+Dom.addListener(Dom.id('home_alertes_list'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_alertes.php', { }); });
+
 
 <? } ?>
 
