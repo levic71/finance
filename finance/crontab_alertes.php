@@ -270,7 +270,7 @@ cacheData::writeCacheData($file_cache, $notifs);
 
 foreach($notifs as $key => $val) {
 
-	$req = "INSERT INTO alertes (user_id, date, actif, mail, lue, type, sens, couleur, icone, seuil) VALUES(".$val['user_id'].", '".date('Y-m-d')."', '".$val['actif']."', 0, 0, '".$val['type']."', ".$val['sens'].", '".$val['colr']."', '".$val['icon']."', '".$val['seuil']."') ON DUPLICATE KEY UPDATE user_id='".$val['user_id']."', date='".date('Y-m-d')."', actif='".$val['actif']."'";
+	$req = "INSERT INTO alertes (user_id, date, actif, mail, lue, type, sens, couleur, icone, seuil) VALUES (".$val['user_id'].", '".date('Y-m-d')."', '".$val['actif']."', 0, 0, '".$val['type']."', ".$val['sens'].", '".$val['colr']."', '".$val['icon']."', '".$val['seuil']."') ON DUPLICATE KEY UPDATE sens='".$val['sens']."', couleur='".$val['colr']."', icone='".$val['icon']."', seuil='".$val['seuil']."'";
 	$res = dbc::execSql($req);
 
 }
