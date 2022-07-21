@@ -37,17 +37,25 @@ while ($row = mysqli_fetch_assoc($res)) {
 		<thead>
 			<tr>
 				<th class="center aligned">Date</th>
-				<th>Actif</th>
-				<th>Valeur</th>
+				<th>Alerte</th>
+				<th class="center aligned">Action</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?
+                $i = 0;
                 foreach ($alertes as $key => $val) {
-                    echo '<tr>
+                    $i++;
+                    // if ($i == 0) var_dump($val);
+                    echo '<tr id="alerte_'.$i.'">
                         <td class="center aligned">'.$val['date'].'</td>
-                        <td><button class="mini ui primary button">'.$val['actif'].'</button></td>
-                        <td>'.$val['actif'].'</td>
+                        <td><div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
+                            <div class="ui '.$val['couleur'].' button">
+                                <i class="'.$val['icone'].' inverted icon"></i>'.$val['actif'].'
+                            </div>
+                            <a class="ui basic '.$val['couleur'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>
+                        </div></td>
+                        <td class="center aligned"><i onclick="change_status_alerte('.$i.');" class="eye inverted icon"></i></td>
                     </tr>';
 				}
 			?>				
@@ -57,5 +65,12 @@ while ($row = mysqli_fetch_assoc($res)) {
 </div>
 
 <script>
+
+change_status_alerte = function(id) {
+
+    go({ action: 'alert_viewed', id: 'main', url: 'portfolio_alerte_viewed.php?date=&symbol='+Dom.attribute(element, 'data-sym'), no_data: 1 });
+    Dom.id('alerte_'+id).remove();
+
+}
 
 </script>
