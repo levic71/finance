@@ -15,6 +15,9 @@ ini_set('max_execution_time', '300'); //300 seconds = 5 minutes
 // Overwrite include value
 $dbg = false;
 
+// Si on n'est pas en semaine
+if (date("N") >= 6) exit(0);
+
 if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
