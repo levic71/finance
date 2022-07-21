@@ -181,23 +181,23 @@ foreach($gsa as $key => $val) {
 		foreach($seuils as $i => $v) {
 
 			if (depassementALaHausse($val[10], $val[4], $v))
-				$notifs[] =  [ 'user_id' => 0, 'actif' => $val[0], 'type' => 'cours', 'sens' => 1, 'seuil' => $v, 'colr' => 'green', 'icon' => 'arrow up' ];
+				$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'cours', 'sens' => 1, 'seuil' => $v, 'colr' => 'green', 'icon' => 'arrow up' ];
 			if (depassementALaBaisse($val[10], $val[4], $v))
-				$notifs[] =  [ 'user_id' => 0, 'actif' => $val[0], 'type' => 'cours', 'sens' => -1, 'seuil' => $v, 'colr' => 'red', 'icon' => 'arrow down' ];
+				$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'cours', 'sens' => -1, 'seuil' => $v, 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		}
 
 		// Depassement MM200
 		if (depassementALaHausse($val[10], $val[4], $val[22]))
-			$notifs[] =  [ 'user_id' => 0, 'actif' => $val[0], 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];	
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];	
 		if (depassementALaBaisse($val[10], $val[4], $val[22]))
-			$notifs[] =  [ 'user_id' => 0, 'actif' => $val[0], 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		// Depassement MM20
 		if (depassementALaHausse($val[10], $val[4], $val[19]))
-			$notifs[] =  [ 'user_id' => 0, 'actif' => $val[0], 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];	
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];	
 		if (depassementALaBaisse($val[10], $val[4], $val[19]))
-			$notifs[] =  [ 'user_id' => 0, 'actif' => $val[0], 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
 	}
 }
 
