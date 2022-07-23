@@ -22,5 +22,7 @@ $infos = explode("|", $alerte);
 
 $req = "UPDATE alertes SET lue=1 WHERE user_id=".$sess_context->getUserId()." AND actif='".$infos[2]."' AND date='".$infos[0]."' AND type='".$infos[3]."'";
 $res = dbc::execSql($req);
+ 
+echo $req;
 
 ?>
