@@ -69,7 +69,7 @@ while ($row = mysqli_fetch_assoc($res)) {
 change_status_alerte = function(id) {
 
     let element = Dom.id('alerte_'+id);
-    go({ action: 'alert_viewed', id: 'main', url: 'portfolio_alerte_viewed.php?alerte='+Dom.attribute(element, 'data-alerte'), no_data: 0 });
+    go({ action: 'alert_viewed', id: 'main', url: 'portfolio_alerte_viewed.php?alerte='+Dom.attribute(element, 'data-alerte'), no_data: 1 });
     element.remove();
 
 }
