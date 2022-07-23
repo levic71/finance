@@ -1,23 +1,26 @@
 <?
 
-// //////////////////////////////////////////
-// NE PAS METTRE DE SESSION SINON PB CRONTAB
-// //////////////////////////////////////////
+require_once "sess_context.php";
 
-// Alerte (id, date YYY-MM-JJ, user_id, actif, mail, lue, type, sens, couleur, icone, libelle, seuil)
+session_start();
 
-include "include.php";
+include "common.php";
+
+$portfolio_id = 0;
+
+foreach (['alerte'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
 
-// Pour l'instant que pour moi
-$req = "SELECT * FROM users WHERE email='vmlf71@gmail.com'";
-$res = dbc::execSql($req);
-$row = mysqli_fetch_array($res);
+if (!$sess_context->isUserConnected()) {
+	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
+	exit(0);
+}
 
-$user_id = $row['id'];
+$infos = explode("|", $alerte);
 
-$req = "UPDATE SET lue=1, sens='".$sens."', couleur='".$colr."', icone='".$icon."', seuil='".$seuil."' WHERE user_id=".$user_id." AND actif='' AND date='' AND type=''";
+$req = "UPDATE alertes SET lue=1 WHERE user_id=".$sess_context->getUserId()." AND actif='".$infos[2]."' AND date='".$infos[0]."' AND type='".$infos[3]."'";
 $res = dbc::execSql($req);
 
 ?>
