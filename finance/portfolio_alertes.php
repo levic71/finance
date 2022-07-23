@@ -47,7 +47,7 @@ while ($row = mysqli_fetch_assoc($res)) {
                 foreach ($alertes as $key => $val) {
                     $i++;
                     // if ($i == 0) var_dump($val);
-                    echo '<tr id="alerte_'.$i.'">
+                    echo '<tr id="alerte_'.$i.'" data-alerte="'.$val['date'].'|'.$val['user_id'].'|'.$val['actif'].'|'.$val['type'].'">
                         <td class="center aligned">'.$val['date'].'</td>
                         <td><div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
                             <div class="ui '.$val['couleur'].' button">
@@ -68,8 +68,9 @@ while ($row = mysqli_fetch_assoc($res)) {
 
 change_status_alerte = function(id) {
 
-    go({ action: 'alert_viewed', id: 'main', url: 'portfolio_alerte_viewed.php?date=&symbol='+Dom.attribute(element, 'data-sym'), no_data: 1 });
-    Dom.id('alerte_'+id).remove();
+    let element = Dom.id('alerte_'+id);
+    go({ action: 'alert_viewed', id: 'main', url: 'portfolio_alerte_viewed.php?alerte='+Dom.attribute(element, 'data-alerte'), no_data: 1 });
+    element.remove();
 
 }
 
