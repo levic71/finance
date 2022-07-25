@@ -617,7 +617,7 @@ computeLines = function(opt) {
 	infos_area_bis.l[4] = '-';
 	infos_area_bis.v[4] = ' \u20AC';
 	infos_area_bis.l[5] = 'Estimation dividende annuel';
-	infos_area_bis.v[5] = '<?= $div_per_year ?> \u20AC';
+	infos_area_bis.v[5] = '<?= sprintf("%.2f", $div_per_year) ?> \u20AC';
 
 
 	if (myChart) myChart.destroy();
