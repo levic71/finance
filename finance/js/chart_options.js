@@ -149,7 +149,11 @@ const externalTooltipHandler = (context) => {
   
     // Set Text (On récupère les titres des tooltips dans la liste de titles prealablement setter par les declarations issue de chart)
     if (tooltip.body) {
+
+        // Legend x
         const titleLines = tooltip.title || [];
+
+        // Legend(s) y
         const bodyLines = tooltip.body.map(b => b.lines);
 
         // Remove old children
@@ -163,25 +167,42 @@ const externalTooltipHandler = (context) => {
             tooltipEl.appendChild(div);
         });
   
-        // On parcours les titres des data du graphique
+        let valo = 0;
+        let depot = 0;
+
+        // On parcours les data y du graphique de la date en cours de focus
         bodyLines.forEach((body, i) => {
+
             const colors = tooltip.labelColors[i];
 
             var t = body[0].split(': ');
 
-            const span = document.createElement('span');
-            span.style.background = t[0] == 'VOLUME' ? colors.backgroundColor : colors.borderColor;
-            span.style.borderColor = colors.borderColor;
-
+            // div parent
             const div = document.createElement('div');
             div.style.backgroundColor = 'inherit';
             div.style.borderWidth = 0;
 
+            // Carre de couleur pour la legende
+            const span = document.createElement('span');
+            span.style.background = t[0] == 'VOLUME' ? colors.backgroundColor : colors.borderColor;
+            span.style.borderColor = colors.borderColor;
+
+            // Calcul performance
+            if (chart.canvas.id == 'portfolio_canvas') {
+
+                if (i == 0) valo = parseInt(t[1]);
+                if (i == 1) depot = parseInt(t[1]);
+
+            }
+
+            // div label legende
             const label1 = document.createElement('div');
             const text1 = document.createTextNode(t[0] + ' : ');
             label1.appendChild(text1);
+
+            // div valeur y
             const label2 = document.createElement('div');
-            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' ' + euro));
+            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' ' + euro) + (chart.canvas.id == 'portfolio_canvas' && i == 1 ? ' [' + getPerf(depot, valo).toFixed(2) + '%]' : '' ));
             label2.appendChild(text2);
 
             div.appendChild(span);
