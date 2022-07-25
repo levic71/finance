@@ -61,6 +61,7 @@ while ($row = mysqli_fetch_assoc($res)) {
 			?>				
 		</tbody>
 	</table>
+    <div id="table_box"></div>
 
 </div>
 
@@ -73,5 +74,12 @@ change_status_alerte = function(id) {
     element.remove();
 
 }
+
+paginator({
+  table: document.getElementById("lst_alertes"),
+  box: document.getElementById("table_box"),
+  rows_per_page: 10,
+  tail_call: 10
+});
 
 </script>

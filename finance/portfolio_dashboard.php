@@ -128,7 +128,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 						<th class="center aligned">Actif</th>
 						<th class="center aligned" data-sortable="false">PRU<br />Qté</th>
 						<th class="center aligned">Cotation<br />%</th>
-						<th class="center aligned" data-sortable="false">MM200<br />%</th>
+						<th class="center aligned">MM200<br />%</th>
 						<th class="center aligned" data-sortable="false">Alertes</th>
 						<th class="center aligned">DM</th>
 						<th class="center aligned">Tendance</th>
@@ -141,13 +141,23 @@ $lst_trend_following = $portfolio_data['trend_following'];
 	<?
 				$i = 1;
 				ksort($lst_positions);
+				$div_per_year = 0;
 				foreach($lst_positions as $key => $val) {
 
 					// Infos sur actif courant
 					$qs = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key] : [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0];
 
-					// Dividende
+					// Choix de la devise
+					$currency = $val['other_name'] ? $val['devise'] : $qs['currency'];
+
+					// Taux conversion devise
+					$taux = $currency == "EUR" ? 1 : calc::getCurrencyRate($currency."EUR", $devises);
+
+					// Dividende annualise s'il existe
 					$dividende = isset($qs['dividende_annualise']) ? $qs['dividende_annualise'] : 0;
+
+					// Estimation dividende annuel
+					$div_per_year += $dividende * $val['nb'] * $taux;
 
 					$achat = sprintf("%.2f", $val['nb'] * $val['pru']);
 					// Si on n'a pas la cotation en base on prend le pru
@@ -173,11 +183,8 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					$pct_mm = $qs['MM200'] == 0 ? 0 : (($qs['MM200'] - $quote) * 100) / $quote;
 
 					$tags_infos = uimx::getIconTooltipTag($qs['tags']);
-
-					// Choix de la devise
-					$currency = $val['other_name'] ? $val['devise'] : $qs['currency'];
 				
-					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($val['other_name'] ? 1 : 0).'" data-taux="'.($currency == "EUR" ? 1 : calc::getCurrencyRate($currency."EUR", $devises)).'">
+					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($val['other_name'] ? 1 : 0).'" data-taux="'.$taux.'">
 						<td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
 							<i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
 						</td>
@@ -609,8 +616,8 @@ computeLines = function(opt) {
 	infos_area_bis.v[3] = sum_valo_stoploss2.toFixed(2) + ' \u20AC';
 	infos_area_bis.l[4] = '-';
 	infos_area_bis.v[4] = ' \u20AC';
-	infos_area_bis.l[5] = '-';
-	infos_area_bis.v[5] = ' \u20AC';
+	infos_area_bis.l[5] = 'Estimation dividende annuel';
+	infos_area_bis.v[5] = '<?= $div_per_year ?> \u20AC';
 
 
 	if (myChart) myChart.destroy();
