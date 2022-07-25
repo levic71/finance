@@ -127,7 +127,7 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
     width: 60px;
 }
 #tooltip_stock_graphe_div div div:nth-child(3) {
-    width: 60px;
+    width: 120px;
     text-align: right;
 }
 #tooltip_stock_graphe_div div:nth-child(4) div:nth-child(3) {
