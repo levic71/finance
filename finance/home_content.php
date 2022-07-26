@@ -13,8 +13,6 @@ foreach([''] as $key)
 
 $db = dbc::connect();
 
-exit();
-
 // SQL SCHEMA UPDATE
 // $ret = dbc::delColTable("trend_following", "quotes", "ALTER TABLE `portfolios` DROP `quotes`;");
 // $ret = dbc::addColTable("orders", "devise", "ALTER TABLE `orders` ADD `devise` VARCHAR(16) NOT NULL AFTER `price`;");
