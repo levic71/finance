@@ -812,7 +812,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(4) button {
     background: black; color: grey;
 }
-#lst_position tbody td:nth-child(3) div, #lst_position tbody td:nth-child(4) div, #lst_position tbody td:nth-child(5) div, #lst_position td:nth-child(11) div, #lst_position tbody td:nth-child(12) div, #lst_position tfoot td:nth-child(5) {
+#lst_position tbody td:nth-child(3) div, #lst_position tbody td:nth-child(4) div, #lst_position tbody td:nth-child(5) div, #lst_position td:nth-child(11) div, #lst_position tbody td:nth-child(12) div, #lst_position tfoot td:nth-child(5) div {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -899,6 +899,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     #main {
         padding: 0px !important;
         margin: 0px !important;
+        overflow-x: hidden;
     }
 
     .perf_card .description {
@@ -1093,16 +1094,23 @@ table th { color: burlywood !important; cursor: pointer !important; }
         padding: 5px;
     }
 
-    #lst_position th:nth-child(1), #lst_position th:nth-child(4), #lst_position th:nth-child(5), #lst_position th:nth-child(6), #lst_position th:nth-child(6), #lst_position th:nth-child(7), #lst_position th:nth-child(8), #lst_position th:nth-child(9), #lst_position th:nth-child(10),
-    #lst_position td:nth-child(1), #lst_position td:nth-child(4), #lst_position td:nth-child(5), #lst_position td:nth-child(6), #lst_position td:nth-child(6), #lst_position td:nth-child(7), #lst_position td:nth-child(8), #lst_position td:nth-child(9), #lst_position td:nth-child(10),
+    #lst_position th:nth-child(1), #lst_position th:nth-child(4), #lst_position th:nth-child(5), #lst_position th:nth-child(6), #lst_position th:nth-child(6), #lst_position th:nth-child(7), #lst_position th:nth-child(8), #lst_position th:nth-child(9), #lst_position th:nth-child(10), #lst_position th:nth-child(12),
+    #lst_position td:nth-child(1), #lst_position td:nth-child(4), #lst_position td:nth-child(5), #lst_position td:nth-child(6), #lst_position td:nth-child(6), #lst_position td:nth-child(7), #lst_position td:nth-child(8), #lst_position td:nth-child(9), #lst_position td:nth-child(10), #lst_position td:nth-child(12),
     #lst_position tfoot td {
         display: none;
+    }
+
+    #lst_position tfoot td:nth-child(2), #lst_position tfoot td:nth-child(3), #lst_position tfoot td:nth-child(5) {
+        display: table-cell;
     }
     
     #lst_order th:nth-child(1), #lst_order th:nth-child(4), #lst_order th:nth-child(5), #lst_order th:nth-child(6), #lst_order th:nth-child(8), #lst_order th:nth-child(9),
     #lst_order td:nth-child(1), #lst_order td:nth-child(4), #lst_order td:nth-child(5), #lst_order td:nth-child(6), #lst_order td:nth-child(8), #lst_order td:nth-child(9),
     #lst_order tfoot td {
-            display: none;
+        display: none;
+    }
+    #lst_order td {
+        font-size: 12px;
     }
     
     .portfolio_page #infos_area2 { 

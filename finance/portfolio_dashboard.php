@@ -551,7 +551,7 @@ computeLines = function(opt) {
 	if (data_repartition[0].length > 0) {
 
 		setColNumericTab('sum_valo',  sum_valo,  sum_valo.toFixed(2)  + ' &euro;');
-		setColNumericTab('glob_perf', glob_perf, '<button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + ' &euro;</label>');
+		setColNumericTab('glob_perf', glob_perf, '<div><button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + ' &euro;</label></div>');
 
 		addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
 		Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
