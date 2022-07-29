@@ -215,7 +215,6 @@ const externalTooltipHandler = (context) => {
 
             tooltipEl.appendChild(div);
         });
-        alert(valo);
     }
   
     const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
