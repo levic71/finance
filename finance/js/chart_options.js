@@ -167,8 +167,9 @@ const externalTooltipHandler = (context) => {
             tooltipEl.appendChild(div);
         });
   
-        let valo = 0;
+        let valo  = 0;
         let depot = 0;
+        let perf  = 0;
 
         // On parcours les data y du graphique de la date en cours de focus
         bodyLines.forEach((body, i) => {
@@ -191,7 +192,10 @@ const externalTooltipHandler = (context) => {
             if (chart.canvas.id == 'portfolio_canvas') {
 
                 if (i == 0) depot = parseInt(t[1]);
-                if (i == 1) valo = parseInt(t[1]);
+                if (i == 1) {
+                    valo  = parseInt(t[1]);
+                    perf = getPerf(depot, valo);
+                }
 
             }
 
@@ -202,7 +206,7 @@ const externalTooltipHandler = (context) => {
 
             // div valeur y
             const label2 = document.createElement('div');
-            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' ' + euro) + (chart.canvas.id == 'portfolio_canvas' && i == 1 ? ' [' + getPerf(depot, valo).toFixed(2) + '%]' : '' ));
+            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' ' + euro) + (chart.canvas.id == 'portfolio_canvas' && i == 1 ? ' [' + (perf >=0 ? '+' : '') + perf.toFixed(2) + '%]' : '' ));
             label2.appendChild(text2);
 
             div.appendChild(span);
@@ -211,6 +215,7 @@ const externalTooltipHandler = (context) => {
 
             tooltipEl.appendChild(div);
         });
+        alert(valo);
     }
   
     const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
