@@ -190,8 +190,8 @@ const externalTooltipHandler = (context) => {
             // Calcul performance
             if (chart.canvas.id == 'portfolio_canvas') {
 
-                if (i == 0) valo = parseInt(t[1]);
-                if (i == 1) depot = parseInt(t[1]);
+                if (i == 0) depot = parseInt(t[1]);
+                if (i == 1) valo = parseInt(t[1]);
 
             }
 
