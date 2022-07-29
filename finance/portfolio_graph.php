@@ -109,7 +109,7 @@ update_all_charts = function() {
     // Update Chart Stock
     var datasets1 = [];
     datasets1.push(getDatasetVals('D\u00e9pot', g2_vals, '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.2) ?>'));
-    datasets1.push(getDatasetVals('Valo',       g1_vals, '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.2) ?>'));
+    datasets1.push(getDatasetVals('Valo',       g1_vals, '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.3) ?>'));
     myChart1 = update_graph_chart(myChart1, ctx1, options_Valo_Graphe, g1_days, datasets1, []);
 
 }
