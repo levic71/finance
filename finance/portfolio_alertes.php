@@ -18,12 +18,10 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
+// Recuperation des alertes non lues
 $alertes = [];
-// Recuperation des infos du portefeuille
 $req = "SELECT * FROM alertes WHERE (user_id=".$sess_context->getUserId()." OR user_id=0) AND lue=0";
 $res = dbc::execSql($req);
-
-// Bye bye si inexistant
 while ($row = mysqli_fetch_assoc($res)) {
     $alertes[] = $row;
 }

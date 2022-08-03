@@ -51,6 +51,10 @@ $minmax = calc::getMinMaxQuotations();
 // Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
 $aggregate_ptf = $sess_context->isUserConnected() ? calc::getAggregatePortfoliosByUser($sess_context->getUserId()) : array();
 
+// Actif dans le ptf ?
+$in_ptf = isset($aggregate_ptf['positions'][$symbol]);
+
+// PRU si actif dans le ptf
 $pru = isset($aggregate_ptf['positions'][$symbol]['pru']) ? $aggregate_ptf['positions'][$symbol]['pru'] : 0;
 
 // Nb positions en portefeuille
@@ -327,6 +331,22 @@ asort(uimx::$invest_factorielle);
                     </div>
                 </div>
             </div>
+<? if ($in_ptf) { ?>
+            <div class="three fields">
+                <div class="field">
+                    <label>Stop loss</label>
+                    <input type="text" id="f_frais" value="<?= $row['frais'] ?>" placeholder="Stop loss">
+                </div>
+                <div class="field">
+                    <label>Objectif</label>
+                    <input type="text" id="f_actifs" value="<?= $row['actifs'] ?>" placeholder="Objectif">
+                </div>
+                <div class="field">
+                    <label>Stop profit</label>
+                    <input type="text" id="f_distribution" value="<?= $row['actifs'] ?>" placeholder="Stop profit">
+                </div>
+            </div>
+<? } ?>
         </div>
     </form>
 </div>
