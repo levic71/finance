@@ -60,30 +60,36 @@ foreach($indicateurs_a_suivre as $key => $val) {
 // Tableau des notifs
 $notifs = [];
 
-$file_cache = 'cache/TMP_ALERTES.json';
-if (file_exists($file_cache)) $notifs = cacheData::readCacheData($file_cache);
+// Recuperation des alertes non lues
+$req = "SELECT * FROM alertes WHERE (user_id=".$sess_context->getUserId()." OR user_id=0) AND lue=0";
+$res = dbc::execSql($req);
+while ($row = mysqli_fetch_assoc($res)) {
+    $notifs[] = $row;
+}
 
 ?>
 
 <div id="strategie_container" class="ui container inverted">
 
+	<? if ($sess_context->isUserConnected() && count($notifs) > 0) { ?>
 	<h2 class="ui left floated">
 		<i class="inverted bullhorn icon"></i><span>Alertes</span>
-		<? if ($sess_context->isSuperAdmin())    { ?><button id="home_alertes_refresh" class="circular ui right floated button icon_action"><i class="inverted black redo icon"></i></button><? } ?>
-		<? if ($sess_context->isUserConnected()) { ?><button id="home_alertes_list"    class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button><? } ?>
+		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_alertes_refresh" class="circular ui right floated button icon_action"><i class="inverted black redo icon"></i></button><? } ?>
+		<button id="home_alertes_list" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
 	</h2>
 	<?
 		foreach($notifs as $key => $val)
 			if ($val['user_id'] == 0 || ($sess_context->isUserConnected() && $val['user_id'] == $sess_context->getUserId())) {
 				echo '
 					<div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
-						<div class="ui '.$val['colr'].' button">
-							<i class="'.$val['icon'].' inverted icon"></i>'.$val['actif'].'
+						<div class="ui '.$val['couleur'].' button">
+							<i class="'.$val['icone'].' inverted icon"></i>'.$val['actif'].'
 						</div>
-						<a class="ui basic '.$val['colr'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>
+						<a class="ui basic '.$val['couleur'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>
 					</div>';
 			}
 	?>
+	<? } ?>
 
 	<h2 class="ui left floated"><i class="inverted eye icon"></i><span>Market</span></h2>
 	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
@@ -423,7 +429,7 @@ Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) {
 // Listener sur bouton ajout strategie et liste des alertes historiques
 <? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
-	Dom.addListener(Dom.id('home_alertes_list'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_alertes.php', { }); });
+	<? if (count($notifs) > 0) { ?>Dom.addListener(Dom.id('home_alertes_list'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_alertes.php', { }); }); <? } ?>
 <? } ?>
 
 // Listener sur boutons backtesting + copy strategie
@@ -437,7 +443,7 @@ Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) {
 // Listener sur recherche nouveau actif
 <? if ($sess_context->isSuperAdmin()) { ?>
 Dom.addListener(Dom.id('home_symbol_search'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'search', id: 'main', menu: 'm1_search_bt', url: 'search.php' }); });
-Dom.addListener(Dom.id('home_alertes_refresh'), Dom.Event.ON_CLICK, function(event) { overlay.load('crontab_alertes.php', { }); });
+<? if (count($notifs) > 0) { ?>Dom.addListener(Dom.id('home_alertes_refresh'), Dom.Event.ON_CLICK, function(event) { overlay.load('crontab_alertes.php', { }); });<? } ?>
 <? } ?>
 
 change_wide_menu_state('wide_menu', 'm1_home_bt');
