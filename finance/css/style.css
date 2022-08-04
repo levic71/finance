@@ -7,6 +7,7 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
 .mini_button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
 .icon_action { padding: 11px !important; }
 .icon_action i { margin: 0px !important; }
+.on i { color: coral !important; }
 
 /* (A) FULL PAGE OVERLAY */
 #owrap {
@@ -864,6 +865,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
     padding: 4px 10px !important;
 }
 
+#ptf_pos_sync_bt { display: none; }
+
 @media only screen and (max-width: 1024px) {
 
     body {
@@ -879,6 +882,12 @@ table th { color: burlywood !important; cursor: pointer !important; }
     .ui .card {
         box-shadow: 0 0px 0px 0 #555, 0 0 0 0px #555 !important;
     }
+
+    h2 { 
+        font-size: 16px;
+        padding: 10px 5px 20px 0px;
+    }
+
     #sidebar_menu {
         background: linear-gradient(0deg,#ba54f5,#e14eca);
     }
@@ -1116,5 +1125,22 @@ table th { color: burlywood !important; cursor: pointer !important; }
     .portfolio_page #infos_area2 { 
         padding-top: 0px;
     }
+
+    #ptf_pos_sync_bt { display: block; }
+
+    #lst_position.alternate tfoot td:nth-child(2), #lst_position.alternate tfoot td:nth-child(3), #lst_position.alternate tfoot td:nth-child(5) {
+        display: none;
+    }
+
+    #lst_position.alternate thead th:nth-child(3), #lst_position.alternate tbody td:nth-child(3),
+    #lst_position.alternate thead th:nth-child(11), #lst_position.alternate tbody td:nth-child(11) {
+            display: none;
+    }
+
+    #lst_position.alternate thead th:nth-child(6), #lst_position.alternate tbody td:nth-child(6),
+    #lst_position.alternate thead th:nth-child(12), #lst_position.alternate tbody td:nth-child(12) {
+            display: table-cell;
+    }
+
 }
 

@@ -321,7 +321,7 @@ asort(uimx::$invest_factorielle);
                 </div>
                 <div class="field">
                     <label>Dividende annualisé</label>
-                    <input type="text" id="f_dividende" value="<?= $row['dividende_annualise'] ?>" placeholder="0">
+                    <input type="text" id="f_dividende" value="<?= $row['dividende_annualise'] > 0 ? $row['dividende_annualise'] : "" ?>" placeholder="0">
                 </div>
                 <div class="field">
                     <label>Date dividende</label>
@@ -335,17 +335,21 @@ asort(uimx::$invest_factorielle);
             <div class="three fields">
                 <div class="field">
                     <label>Stop loss</label>
-                    <input type="text" id="f_frais" value="<?= $row['frais'] ?>" placeholder="Stop loss">
+                    <input type="text" id="f_stoploss" value="<?= isset($trend_following[$symbol]['stop_loss']) ? sprintf("%.2f", $trend_following[$symbol]['stop_loss']) : "" ?>" placeholder="0">
                 </div>
                 <div class="field">
                     <label>Objectif</label>
-                    <input type="text" id="f_actifs" value="<?= $row['actifs'] ?>" placeholder="Objectif">
+                    <input type="text" id="f_objectif" value="<?= isset($trend_following[$symbol]['objectif']) ? sprintf("%.2f", $trend_following[$symbol]['objectif']) : "" ?>" placeholder="0">
                 </div>
                 <div class="field">
                     <label>Stop profit</label>
-                    <input type="text" id="f_distribution" value="<?= $row['actifs'] ?>" placeholder="Stop profit">
+                    <input type="text" id="f_stopprofit" value="<?= isset($trend_following[$symbol]['stop_profit']) ? sprintf("%.2f", $trend_following[$symbol]['stop_profit']) : "" ?>" placeholder="0">
                 </div>
             </div>
+<? } else { ?>
+            <input type="hidden" name="f_stoploss"   value="" />
+            <input type="hidden" name="f_objectif"   value="" />
+            <input type="hidden" name="f_stopprofit" value="" />
 <? } ?>
         </div>
     </form>
@@ -700,7 +704,7 @@ if (!$readonly) {
             h_lines_all.push({ lineColor: 'green', yPosition: <?= $minmax[$symbol]['all_max_price'] ?>, text: 'MAX', lineDash: [ 2, 2 ] });
         <? } ?>
 
-        // Data pour les infos sur l'axe Y
+        // Data pour les infos sur l'axe Y (stop loss/objectif/stop profit)
         var axe_infos  = [];
         <? if (isset($trend_following[$symbol]['stop_loss']) && $trend_following[$symbol]['stop_loss'] > 0) { ?>
             axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_loss'])   ?> \u20ac', colr: 'white', bgcolr: 'rgba(247,143,3, 0.6', valueY: <?= $trend_following[$symbol]['stop_loss']   ?> });
@@ -896,7 +900,7 @@ if (!$readonly) {
     <? if (!$readonly) { ?>
 
     getFormValues = function() {
-        params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
+        params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
 
         var tags = '';
         Dom.find('button.bt_tags').forEach(function(item) {
@@ -910,11 +914,17 @@ if (!$readonly) {
     // Listenet sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
 
-        if (!check_num(valof('f_dividende'), 'Dividende', 0, 999999999999))
-		return false;
+        [   { key: 'f_dividende',  label: 'Dividende'   },
+            { key: 'f_stoploss',   label: 'Stop Loss'   },
+            { key: 'f_stopprofit', label: 'Stop Profit' },
+            { key: 'f_objectif',   label: 'Objectif'    }
+        ].forEach(function(item) {
+            let val = valof(item.key);
+            if (val != '' && !check_num(val, item.label, 0, 999999999999)) return false;
+        });
 
         p = getFormValues();
-        go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>' + p, loading_area: 'main' });
+        go({ action: 'update', id: 'main', url: 'stock_action.php?action=upt&symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>' + p, loading_area: 'main' });
         toogleCN('nav_menu', 'on'); scroll(0,0);
     });
     
@@ -952,7 +962,7 @@ if (!$readonly) {
     <? if ($edit == 0 && $sess_context->isSuperAdmin()) { ?>
     // Listener sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'home', id: 'main', url: 'stock_detail.php?edit=1&symbol=<?= $symbol ?>&portfolio_id<?= $ptf_id ?>', loading_area: 'main' });
+        go({ action: 'home', id: 'main', url: 'stock_detail.php?edit=1&symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
     });
     <? } ?>
 
@@ -1015,7 +1025,6 @@ if (!$readonly) {
     });
     <? } ?>
     
-    // Top de page
-    scroll(0,0);
+    scroll(0,0); // Top de page
 
 </script>

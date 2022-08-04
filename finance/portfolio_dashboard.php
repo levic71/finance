@@ -60,7 +60,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 		<i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
 		<button id="portfolio_graph_bt" class="circular ui icon very small right floated labelled button"><i class="inverted black chart bar outline icon"></i></button>
 		<? if (!$isPortfolioSynthese) { ?>
-		<button id="ptf_impots_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black dollar icon"></i></button>
+		<button id="ptf_impots_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black balance icon"></i></button>
 		<? } ?>
 	</h2>
 	<div class="ui stackable column grid">
@@ -118,7 +118,10 @@ $lst_trend_following = $portfolio_data['trend_following'];
 
 	<div class="ui hidden divider"></div>
 
-	<h2 class="ui left floated"><i class="inverted location arrow icon"></i>Positions</h2>
+	<h2 class="ui left floated">
+		<i class="inverted location arrow icon"></i>Positions
+		<button id="ptf_pos_sync_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black sync icon"></i></button>
+	</h2>
 	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
@@ -649,7 +652,8 @@ Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event
 });
 Dom.addListener(Dom.id('portfolio_switch_bt'), Dom.Event.ON_CLICK, function(event) { update_infos_areas(current_infos_area.n == 1 ? infos_area_bis : infos_area); });
 Dom.addListener(Dom.id('order_filter_bt'), Dom.Event.ON_CLICK, function(event) { toogle('filters') });
-Dom.addListener(Dom.id('filter_go_bt'), Dom.Event.ON_CLICK, function(event) { filter() });
+Dom.addListener(Dom.id('filter_go_bt'),    Dom.Event.ON_CLICK, function(event) { filter() });
+Dom.addListener(Dom.id('ptf_pos_sync_bt'), Dom.Event.ON_CLICK, function(event) { toogleCN('lst_position', 'alternate'); toogleCN('ptf_pos_sync_bt', 'on'); });
 
 // Init du calcul
 computeLines('init');
