@@ -13,7 +13,7 @@ if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
 $pea = 0;
 
-foreach(['action', 'symbol', 'pea', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende'] as $key)
+foreach(['action', 'symbol', 'ptf_id', 'pea', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if ($symbol == "") tools::do_redirect("index.php");
@@ -135,9 +135,20 @@ if ($action == "upt" || $action == "sync") {
 
         $links = json_encode(array("link1" => $f_link1, "link2" => $f_link2));
 
+        // Mise a jour des data informatives de l'actif
         $req = "UPDATE stocks SET links='".$links."', pea=".$pea.", ISIN='".$f_isin."', provider='".$f_provider."', categorie='".$f_categorie."', frais='".$f_frais."', actifs='".$f_actifs."', distribution='".$f_distribution."', gf_symbol='".$f_gf_symbol."', rating='".$f_rating."', tags='".$f_tags."', dividende_annualise='".$f_dividende."', date_dividende='".$f_date_dividende."' WHERE symbol='".$symbol."'";
         $res = dbc::execSql($req);
 
+        // Mise a jour des data Trendfollowing (stoploss, objectif, stopprofit)
+        $req = "
+            INSERT INTO trend_following (user_id, symbol, stop_loss, stop_profit, objectif)
+            VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_stoploss)."', '".sprintf("%2.f", $f_stopprofit)."', '".sprintf("%2.f", $f_objectif)."')
+            ON DUPLICATE KEY UPDATE
+            stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."'
+        ";
+        $res = dbc::execSql($req);
+
+        // Mise a jour des data market de l'actif
         if ($action == "sync") {
             try {
 
@@ -189,17 +200,22 @@ if ($action == "del") {
 </div>
 
 <script>
+
 var p = loadPrompt();
+
 <? if ($action == "upt" || $action == "indic" || $action == "sync" || $action == "reload") { ?>
-    go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
+    go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
     p.success('Actif <?= $symbol ?> mis à jour');
 <? } ?>
+
 <? if ($action == "del") { ?>
-go({ action: 'home_content', id: 'main', url: 'home_content.php' });
-p.success('Actif <?= $symbol ?> supprimé');
+    go({ action: 'home_content', id: 'main', url: 'home_content.php' });
+    p.success('Actif <?= $symbol ?> supprimé');
 <? } ?>
+
 <? if ($action == "add") { ?>
-    go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
+    go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
     p.success('Actif <?= $symbol ?> ajouté');
 <? } ?>
+
 </script>

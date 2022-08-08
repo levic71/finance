@@ -75,13 +75,16 @@ go = function(args) {
 			opt.url,
 			function(data) {
 				myconsole('----> go jx in  : action='+action+' -- url='+opt.url);
-				if (no_chg_cn == 0) setCN(id, (id == 'main' ? 'ui container inverted segment main ' : '')+action+'_page');
-				if (no_data == 0)   cc(id, data);
-				if (msg != '') {
-					var p = loadPrompt();
-					p.success(msg);
-				}
+				// Changement classname sur container cible
+				if (no_chg_cn == 0) setCN(id, (id == 'main' ? 'ui container inverted segment main ' : '')+ action + '_page');
+				// Changement contenu container
+				if (no_data == 0) cc(id, data);
+				// Affichage des popups informatives
+				if (msg != '') { var p = loadPrompt(); p.success(msg); }
+				// Fermeture Sidebar
 				rmCN('sidebar_menu', 'visible');
+				// Top de page
+				scroll(0,0); 
 				myconsole('----> go jx out : action='+action+' -- url='+opt.url);
 			},
 			'text', 'post'
