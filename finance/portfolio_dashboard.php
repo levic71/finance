@@ -52,6 +52,9 @@ $lst_positions = $portfolio_data['positions'];
 $lst_orders    = $portfolio_data['orders'];
 $lst_trend_following = $portfolio_data['trend_following'];
 
+echo $key;
+var_dump($trend_following);
+
 ?>
 
 <div class="ui container inverted segment">
