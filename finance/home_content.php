@@ -61,7 +61,7 @@ foreach($indicateurs_a_suivre as $key => $val) {
 $notifs = [];
 
 // Recuperation des alertes non lues
-$req = "SELECT * FROM alertes WHERE (user_id=".$sess_context->getUserId()." OR user_id=0) AND lue=0";
+$req = "SELECT * FROM alertes WHERE (user_id=".$sess_context->getUserId()." OR user_id=0) AND lue=0 AND date=CURDATE()";
 $res = dbc::execSql($req);
 while ($row = mysqli_fetch_assoc($res)) {
     $notifs[] = $row;
