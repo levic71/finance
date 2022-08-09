@@ -48,22 +48,73 @@ drawLabel = function(chart, text, args = {}) {
 const rightAxeText = {
     id: 'rightAxeText',
     afterDraw(chart, args, options) {
-        if (options.length > 0) {
-            options.forEach(function(item) {
-                drawLabel(chart, item.title, { bgColr: item.bgcolr, textColr: item.colr, alignX: 'rightAxe', valueY: item.valueY, fontSize: '10', paddingHeight: 6, paddingWidth: 10 });
-            });
-        }
+
+        if (options.length == 0) return;
+
+        options.forEach(function(item) {
+            drawLabel(chart, item.title, { bgColr: item.bgcolr, textColr: item.colr, alignX: 'rightAxe', valueY: item.valueY, fontSize: '10', paddingHeight: 6, paddingWidth: 10 });
+        });
     }
 }
 
 const insiderText = {
     id: 'insiderText',
     afterDraw(chart, args, options) {
-        if (options.length > 0) {
-            options.forEach(function(item) {
-                drawLabel(chart, item.title, { bgColr: item.bgcolr, textColr: item.colr, alignX: item.alignX, alignY: item.alignY });
-            });
-        }
+
+        if (options.length == 0) return;
+
+        options.forEach(function(item) {
+            drawLabel(chart, item.title, { bgColr: item.bgcolr, textColr: item.colr, alignX: item.alignX, alignY: item.alignY });
+        });
+    }
+}
+
+drawCircle = function(chart, args = {}) {
+    const {
+        ctx,
+        chartArea: { top, right, bottom, left, width, height },
+        scales: { x, y1 },
+    } = chart;
+
+	const colr  = args.c || 'white';
+	const xPos  = args.x || 0;
+	const yPos  = args.y || 0;
+	const rayon = args.r || 10;
+
+    ctx.save();
+
+    ctx.strokeStyle = 'rgba(' + colr + ', 1)';
+    ctx.fillStyle   = 'rgba(' + colr + ', 0.6)';
+    ctx.beginPath();
+    ctx.arc(xPos, yPos, rayon, 0, 2 * Math.PI, false);
+    ctx.fill();
+    ctx.stroke();
+
+
+}
+
+const bubbles = {
+    id: 'bubbles',
+    afterDraw(chart, args, options) {
+        const {
+            ctx,
+            chartArea: { top, right, bottom, left, width, height },
+            scales: { x, y1 },
+        } = chart;
+
+        if (options.length == 0) return;
+
+        ctx.save();
+
+        options.forEach(function(item) {
+            let posX  = item.valueX || 0;
+            let posY  = item.valueY || 0;
+            let rayon = item.rayon  || 10;
+            let colr  = item.rgb    || '255, 255, 255';
+            drawCircle(chart, { x: x.getPixelForValue(posX), y: y1.getPixelForValue(posY), r: rayon, c: colr } );
+        });
+
+        ctx.restore();
     }
 }
 
@@ -76,20 +127,20 @@ const horizontal = {
             scales: { x, y1 },
         } = chart;
 
+        if (options.length == 0) return;
+
         ctx.save();
 
-        if (options.length > 0) {
-            options.forEach(function(item) {
+        options.forEach(function(item) {
 
-                if (typeof item.text !== 'undefined') {
-                    drawLabel(chart, item.text, { x: 0, y: y1.getPixelForValue(item.yPosition)-10-2, textColr: 'black', bgColr: item.lineColor, fontSize: '10', paddingHeight: 3, paddingWidth: 4 });
-                }
+            if (typeof item.text !== 'undefined') {
+                drawLabel(chart, item.text, { x: 0, y: y1.getPixelForValue(item.yPosition)-10-2, textColr: 'black', bgColr: item.lineColor, fontSize: '10', paddingHeight: 3, paddingWidth: 4 });
+            }
 
-                if (typeof item.lineDash !== 'undefined') ctx.setLineDash(item.lineDash);
-                ctx.strokeStyle = item.lineColor;
-                ctx.strokeRect(left, y1.getPixelForValue(item.yPosition), width, 0);
-            });
-        }
+            if (typeof item.lineDash !== 'undefined') ctx.setLineDash(item.lineDash);
+            ctx.strokeStyle = item.lineColor;
+            ctx.strokeRect(left, y1.getPixelForValue(item.yPosition), width, 0);
+        });
 
         ctx.restore();
     }
@@ -104,14 +155,14 @@ const vertical = {
             scales: { x, y1 },
         } = chart;
 
+        if (options.length == 0) return;
+
         ctx.save();
 
-        if (options.length > 0) {
-            options.forEach(function(item) {
-                ctx.strokeStyle = item.lineColor;
-                ctx.strokeRect(x.getPixelForValue(item.xPosition), top, 0, height);
-            });
-        }
+        options.forEach(function(item) {
+            ctx.strokeStyle = item.lineColor;
+            ctx.strokeRect(x.getPixelForValue(item.xPosition), top, 0, height);
+        });
 
         ctx.restore();
     }
