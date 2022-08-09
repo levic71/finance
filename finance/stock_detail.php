@@ -487,7 +487,8 @@ if (!$readonly) {
             </tr></thead>
             <tbody>
 <?
-
+                
+                $js_data_bubbles = "";
                 $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." AND o.product_name='".$symbol."' ORDER BY date DESC";
                 $res = dbc::execSql($req);
 
@@ -504,6 +505,7 @@ if (!$readonly) {
                             <td class="'.$row['action_colr'].'">'.$row['valo_signed'].'</td>
                             <td>'.sprintf("%.2f", $row['commission']).' &euro;</td>
                         </tr>';
+                    $js_data_bubbles .= "bubbles_data.push({ valueX: '".$row['date']."', valueY: ".floatval($row['price']).", rayon: ".(max(3, 5 * ($row['valo'] / 2000) )).", rgb: '".($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0")."' });";
                 }
 
 ?>
@@ -707,14 +709,17 @@ if (!$readonly) {
         // Data pour les infos sur l'axe Y (stop loss/objectif/stop profit)
         var axe_infos  = [];
         <? if (isset($trend_following[$symbol]['stop_loss']) && $trend_following[$symbol]['stop_loss'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_loss'])   ?> \u20ac', colr: 'white', bgcolr: 'rgba(247,143,3, 0.6', valueY: <?= $trend_following[$symbol]['stop_loss']   ?> });
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_loss'])   ?> \u20ac', colr: 'white', bgcolr: 'rgba(247,143,3, 0.6)', valueY: <?= $trend_following[$symbol]['stop_loss']   ?> });
         <? } ?>
         <? if (isset($trend_following[$symbol]['stop_profit']) && $trend_following[$symbol]['stop_profit'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_profit']) ?> \u20ac', colr: 'white', bgcolr: 'rgba(181, 87, 87, 0.6', valueY: <?= $trend_following[$symbol]['stop_profit'] ?> });
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_profit']) ?> \u20ac', colr: 'white', bgcolr: 'rgba(181, 87, 87, 0.6)', valueY: <?= $trend_following[$symbol]['stop_profit'] ?> });
         <? } ?>
         <? if (isset($trend_following[$symbol]['objectif']) && $trend_following[$symbol]['objectif'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?> \u20ac', colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?> \u20ac', colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6)', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
         <? } ?>
+
+        var bubbles_data  = [];
+        <?= $js_data_bubbles ?>
 
         // Current data
         var g_new_data = null;
@@ -874,7 +879,8 @@ if (!$readonly) {
         options_Stock_Graphe.plugins.vertical     = [];
         options_Stock_Graphe.plugins.horizontal   = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
         options_Stock_Graphe.plugins.rightAxeText = axe_infos;
-        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ rightAxeText, horizontal, vertical ]);
+        options_Stock_Graphe.plugins.bubbles      = bubbles_data;
+        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ rightAxeText, horizontal, vertical, bubbles ]);
 
         // Update Chart RSI
         var datasets2 = [];
