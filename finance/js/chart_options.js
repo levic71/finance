@@ -106,6 +106,7 @@ const bubbles = {
         if (options.length == 0) return;
 
         const date_ref = new Date(x.getLabelForValue(0));
+
         alert(x.getLabelForValue(0));
 
         ctx.save();
