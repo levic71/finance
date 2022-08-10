@@ -102,16 +102,22 @@ const bubbles = {
             scales: { x, y1 },
         } = chart;
 
+        if (getIntervalStatus() != 'D') return;
         if (options.length == 0) return;
+
+        const date_ref = new Date(x.getLabelForValue(0));
 
         ctx.save();
 
         options.forEach(function(item) {
-            let posX  = item.valueX || 0;
-            let posY  = item.valueY || 0;
+            let valX  = item.valueX || 0;
+            let valY  = item.valueY || 0;
             let rayon = item.rayon  || 10;
             let colr  = item.rgb    || '255, 255, 255';
-            drawCircle(chart, { x: x.getPixelForValue(posX), y: y1.getPixelForValue(posY), r: rayon, c: colr } );
+            const date_val = new Date(valX);
+
+            if (date_val > date_ref)
+                drawCircle(chart, { x: x.getPixelForValue(valX), y: y1.getPixelForValue(valY), r: rayon, c: colr } );
         });
 
         ctx.restore();
