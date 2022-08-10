@@ -107,7 +107,7 @@ const bubbles = {
 
         const date_ref = new Date(x.getLabelForValue(0));
 
-        alert(x.getLabelForValue(0));
+//        alert(x.getLabelForValue(0));
 
         ctx.save();
 
