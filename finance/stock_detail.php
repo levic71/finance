@@ -10,6 +10,7 @@ $symbol        = "";
 $rsi_choice    = 0;
 $volume_choice = 1;
 $alarm_choice  = 1;
+$av_choice     = 1;
 
 foreach (['symbol', 'edit', 'ptf_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -23,6 +24,7 @@ $bt_period_colr   = "blue";  // ALL/3Y/1Y/1T
 $bt_mmx_colr      = "purple";
 $bt_volume_colr   = "yellow";
 $bt_alarm_colr    = "pink";
+$bt_av_colr       = "olive";
 $bt_filter_colr   = "teal";
 $bt_grey_colr     = "grey";
 
@@ -229,7 +231,8 @@ asort(uimx::$invest_factorielle);
         <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">MM200</button>
         <button id="graphe_volume_bt" class="mini ui <?= $volume_choice == 1  ? $bt_volume_colr : $bt_grey_colr ?> button" style="margin-right: 20px;"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
         <? if ($sess_context->isUserConnected()) { ?>
-        <button id="graphe_alarm_bt"  class="mini ui <?= $alarm_choice  == 1  ? $bt_alarm_colr  : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted flag"></i></button>
+        <button id="graphe_alarm_bt"  class="mini ui <?= $alarm_choice == 1  ? $bt_alarm_colr  : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted flag"></i></button>
+        <button id="graphe_av_bt"     class="mini ui <?= $av_choice    == 1  ? $bt_av_colr     : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted dollar"></i></button>
         <? } ?>
     </span>
     <canvas id="stock_canvas1" height="100"></canvas>
@@ -488,7 +491,7 @@ if (!$readonly) {
             <tbody>
 <?
                 
-                $js_data_bubbles = "";
+                $js_bubbles_data = "";
                 $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." AND o.product_name='".$symbol."' ORDER BY date DESC";
                 $res = dbc::execSql($req);
 
@@ -505,7 +508,8 @@ if (!$readonly) {
                             <td class="'.$row['action_colr'].'">'.$row['valo_signed'].'</td>
                             <td>'.sprintf("%.2f", $row['commission']).' &euro;</td>
                         </tr>';
-                    $js_data_bubbles .= "bubbles_data.push({ valueX: '".$row['date']."', valueY: ".floatval($row['price']).", rayon: ".(max(3, 5 * ($row['valo'] / 2000) )).", rgb: '".($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0")."' });";
+                    if ($row['action'] == 1 || $row['action'] == -1)
+                        $js_bubbles_data .= "bubbles_data.push({ valueX: '".$row['date']."', valueY: ".floatval($row['price']).", rayon: ".(max(3, 5 * ($row['valo'] / 2000) )).", rgb: '".($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0")."' });";
                 }
 
 ?>
@@ -562,7 +566,8 @@ if (!$readonly) {
     };
 
     <? if ($sess_context->isUserConnected()) { ?>
-    mm_bts.graphe_alarm_bt = 'ALARM';
+        mm_bts.graphe_alarm_bt = 'ALARM';
+        mm_bts.graphe_av_bt = 'AV';
     <? } ?>
 
 
@@ -668,6 +673,10 @@ if (!$readonly) {
         var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
         var ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
 
+        // Ref achat/vente data
+        var bubbles_data  = [];
+        <?= $js_bubbles_data ?>
+
         // Filtre pour les labels axes x des dates
         var tmp_array_years = [];
         var array_years = [];
@@ -718,9 +727,6 @@ if (!$readonly) {
             axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?> \u20ac', colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6)', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
         <? } ?>
 
-        var bubbles_data  = [];
-        <?= $js_data_bubbles ?>
-
         // Current data
         var g_new_data = null;
         var g_days     = null;
@@ -746,24 +752,32 @@ if (!$readonly) {
         return isCN('graphe_1Y_bt', '<?= $bt_period_colr ?>') || isCN('graphe_1T_bt', '<?= $bt_period_colr ?>') ? h_lines_1Y : (isCN('graphe_3Y_bt', '<?= $bt_period_colr ?>') ? h_lines_3Y  : h_lines_all);
     }
 
-    updateAlarmDisplay = function(chart) {
+    updateAlarmAVDisplay = function(chart) {
+
+        chart.options.plugins.vertical       = [];
+        chart.options.plugins.horizontal     = [];
+        chart.options.plugins.rightAxeText   = [];
+        options_Stock_Graphe.plugins.bubbles = [];
+
+
         if (isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>')) {
-            chart.options.plugins.vertical   = [];
-            chart.options.plugins.horizontal = getAlarmLines();
+            chart.options.plugins.horizontal   = getAlarmLines();
             chart.options.plugins.rightAxeText = axe_infos;
-        } else {
-            chart.options.plugins.vertical   = [];
-            chart.options.plugins.horizontal = [];
-            chart.options.plugins.rightAxeText = [];
         }
+
+        if (isCN('graphe_av_bt', '<?= $bt_av_colr ?>')) {
+            options_Stock_Graphe.plugins.bubbles = bubbles_data;
+        }
+
     }
 
     toogleMMX = function(chart, label) {
 
-        ref_colr = label.toLowerCase() == "volume" ? "<?= $bt_volume_colr ?>" : (label.toLowerCase() == "alarm" ? "<?= $bt_alarm_colr ?>" : "<?= $bt_mmx_colr ?>");
+        ref_colr = label.toLowerCase() == "volume" ? "<?= $bt_volume_colr ?>" : (label.toLowerCase() == "alarm" ? "<?= $bt_alarm_colr ?>" : (label.toLowerCase() == "av" ? "<?= $bt_av_colr ?>" : "<?= $bt_mmx_colr ?>"));
         bt = 'graphe_' + label.toLowerCase() + '_bt'
         addCN(bt, 'loading');
 
+        // Pour alarm et av on ne fait rien pas gerer dans les datasets
         if (isCN(bt, ref_colr)) {
             // On retire les data de la courbe ou volume du bouton selectionne
             chart.data.datasets.forEach((dataset) => {
@@ -779,8 +793,8 @@ if (!$readonly) {
         // Changement couleur bt
         switchCN(bt, '<?= $bt_grey_colr ?>', ref_colr);
 
-        // Update sinon pak ok pour bt alarm
-        updateAlarmDisplay(chart);
+        // Update sinon pas ok pour bt alarm et bt achatvente
+        updateAlarmAVDisplay(chart);
 
         chart.update();
 
@@ -879,7 +893,7 @@ if (!$readonly) {
         options_Stock_Graphe.plugins.vertical     = [];
         options_Stock_Graphe.plugins.horizontal   = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
         options_Stock_Graphe.plugins.rightAxeText = axe_infos;
-        options_Stock_Graphe.plugins.bubbles      = bubbles_data;
+        options_Stock_Graphe.plugins.bubbles      = isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : [];
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ rightAxeText, horizontal, vertical, bubbles ]);
 
         // Update Chart RSI
