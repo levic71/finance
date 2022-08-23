@@ -22,9 +22,9 @@ $req = "SELECT * FROM users";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
-	$req = "SELECT * FROM alertes WHERE user_id=".$row['id']." AND mail=0 AND date=CURDATE()";
-	$res = dbc::execSql($req);
-	while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
+	$req2 = "SELECT * FROM alertes WHERE user_id=".$row['id']." AND mail=0 AND date=CURDATE()";
+	$res2 = dbc::execSql($req2);
+	while ($row2 = mysqli_fetch_assoc($res2)) $notifs[] = $row2;
 
 	if (count($notifs) == 0) continue;
 
@@ -37,8 +37,8 @@ while($row = mysqli_fetch_array($res)) {
 	$mail_header = "From: contact@jorkers.com";
 	$res = mail($mail_to, $mail_sujet, $mail_corps, $mail_header);
 
-	$req = "UPDATE alertes SET mail=1 WHERE user_id=".$row['id']." AND mail=0 AND date=CURDATE()";
-	$res = dbc::execSql($req);
+	$req3 = "UPDATE alertes SET mail=1 WHERE user_id=".$row['id']." AND mail=0 AND date=CURDATE()";
+	$res3 = dbc::execSql($req3);
 
 }
 
