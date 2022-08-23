@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.4.70";
+$ver = tools::isLocalHost() ? rand() : "1.4.72";
 
 foreach(['action', 'goto'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -46,6 +46,7 @@ foreach(['action', 'goto'] as $key)
 		<link rel="stylesheet" href="css/prompt.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/style.css?ver=<?= $ver ?>" />
 
+		<script type="text/javascript" src="js/regression.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/kwheel.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/paginator.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/chart_options.js?ver=<?= $ver ?>"></script>

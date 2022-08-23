@@ -203,6 +203,8 @@ asort(uimx::$invest_zone_geo);
 asort(uimx::$invest_classe);
 asort(uimx::$invest_factorielle);
 
+$js_bubbles_data = "";
+
 ?>
 
 <style>
@@ -491,8 +493,8 @@ if (!$readonly) {
             <tbody>
 <?
                 
-                $js_bubbles_data = "";
-                $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." AND o.product_name='".$symbol."' ORDER BY date DESC";
+                $req_option = $symbol == "BNP.PAR" ? "" : "AND o.product_name='".$symbol."'";
+                $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
                 $res = dbc::execSql($req);
 
                 // Bye bye si inexistant
@@ -572,7 +574,7 @@ if (!$readonly) {
 
 
     // Couleurs des MMX
-    var mmx_colors = { 'MM7': '<?= $sess_context->getSpectreColor(4) ?>', 'MM20': '<?= $sess_context->getSpectreColor(2) ?>', 'MM50': '<?= $sess_context->getSpectreColor(1) ?>', 'MM200': '<?= $sess_context->getSpectreColor(6) ?>' };
+    var mmx_colors = { 'LOG': '<?= $sess_context->getSpectreColor(4) ?>', 'MM7': '<?= $sess_context->getSpectreColor(4) ?>', 'MM20': '<?= $sess_context->getSpectreColor(2) ?>', 'MM50': '<?= $sess_context->getSpectreColor(1) ?>', 'MM200': '<?= $sess_context->getSpectreColor(6) ?>' };
 
     // Fonction de gestoion des tableaux de valeurs
     min_slice = function(tab, size) {
@@ -611,6 +613,7 @@ if (!$readonly) {
             tension: mytension,
             fill: myfill,
             pointRadius: myradius,
+            borderDash: yaxekey == 'log' ? [2, 2] : [0, 0],
             normalized: true
         };
 
@@ -660,6 +663,7 @@ if (!$readonly) {
     var new_data_weekly  = [];
     var new_data_monthly = [];
 
+    // Data stock prices
 <?
     format_data($data_daily,   "daily");
     format_data($data_weekly,  "weekly");
@@ -673,11 +677,26 @@ if (!$readonly) {
         var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
         var ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
 
+
+        // Formattage data et calcul regression logarythmique et/ou lineaire
+        let i = 1;
+        var d_data_reg = [];
+        new_data_daily.forEach(function(item) {
+            d_data_reg.push([ i++, item.y ]);
+        });
+        let result = regression.exponential(d_data_reg, { order: 3 });
+
+        // Remise en conformite pour affichage dans graphe
+        let j = 0;
+        result.points.forEach(function(item) {
+            new_data_daily[j++].log = item[1];
+        });
+
         // Ref achat/vente data
         var bubbles_data  = [];
         <?= $js_bubbles_data ?>
 
-        // Filtre pour les labels axes x des dates
+        // Filtre des labels de l'axes des x (date)
         var tmp_array_years = [];
         var array_years = [];
         ref_d_days.forEach(function(item) {
@@ -888,6 +907,9 @@ if (!$readonly) {
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
+
+        // Courbe log
+        //datasets1.push(getDatasetMMX(g_new_data, 'log', 'LOG'));
 
         // options des alarms
         options_Stock_Graphe.plugins.vertical     = [];
