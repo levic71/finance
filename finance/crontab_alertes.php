@@ -140,6 +140,10 @@ echo "<br />Liste des actifs en portefeuille : ";
 foreach($positions as $key => $val) echo $key.", ";
  */
 
+function pourcentagevariation($vi, $vf) {
+	return $vi == 0 ? 0 : (($vf / $vi) - 1) * 100;
+}
+
 function depassementALaHausse($vi, $vf, $s) {
 	$ret = false;
 
@@ -188,16 +192,16 @@ foreach($gsa as $key => $val) {
 		}
 
 		// Depassement MM200
-		if (depassementALaHausse($val[10], $val[4], $val[22]))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];	
-		if (depassementALaBaisse($val[10], $val[4], $val[22]))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
+		// if (depassementALaHausse($val[10], $val[4], $val[22]))
+		//	$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];	
+		// if (depassementALaBaisse($val[10], $val[4], $val[22]))
+		//	$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		// Depassement MM20
-		if (depassementALaHausse($val[10], $val[4], $val[19]))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];	
-		if (depassementALaBaisse($val[10], $val[4], $val[19]))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
+		// if (depassementALaHausse($val[10], $val[4], $val[19]))
+		//	$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];	
+		// if (depassementALaBaisse($val[10], $val[4], $val[19]))
+		//	$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
 	}
 }
 
@@ -208,30 +212,36 @@ foreach($positions as $key => $val) {
 
 		$d = $data2["stocks"][$key];
 
-		// Depassement PRU
-		if (depassementALaHausse($d['previous'], $d['price'], $val['pru']))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'pru', 'sens' => 1, 'seuil' => 'PRU', 'colr' => 'green', 'icon' => 'arrow up' ];
+		// Hausse journaliere +10% par rapport a la veille
+		if (pourcentagevariation($d['previous'], $d['price']) >= 10)
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'var10', 'sens' => 1, 'seuil' => 'QUOTE', 'colr' => 'green', 'icon' => 'arrow up' ];
+
+		// Depassement +20% PRU
+		if (depassementALaHausse($d['previous'], $d['price'], $val['pru'] * 1.2))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'pru20', 'sens' => 1, 'seuil' => 'PRU', 'colr' => 'green', 'icon' => 'arrow up' ];
+		
+		// Depassement a la baisse PRU
 		if (depassementALaBaisse($d[('previous')], $d['price'], $val['pru']))
 			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'pru', 'sens' => -1, 'seuil' => 'PRU', 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		// Depassement MM200
-		if (depassementALaHausse($d['previous'], $d['price'], $d['MM200']))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];
-		if (depassementALaBaisse($d[('previous')], $d['price'], $d['MM200']))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
+		// if (depassementALaHausse($d['previous'], $d['price'], $d['MM200']))
+		//	$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'mm200', 'sens' => 1, 'seuil' => 'MM200', 'colr' => 'green', 'icon' => 'arrow up' ];
+		// if (depassementALaBaisse($d[('previous')], $d['price'], $d['MM200']))
+		//	$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'mm200', 'sens' => -1, 'seuil' => 'MM200', 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		// Depassement MM20
-		if (depassementALaHausse($d['previous'], $d['price'], $d['MM20']))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];
-		if (depassementALaBaisse($d[('previous')], $d['price'], $d['MM20']))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
+		// if (depassementALaHausse($d['previous'], $d['price'], $d['MM20']))
+		//	$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'mm20', 'sens' => 1, 'seuil' => 'MM20', 'colr' => 'green', 'icon' => 'arrow up' ];
+		// if (depassementALaBaisse($d[('previous')], $d['price'], $d['MM20']))
+		//	$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'mm20', 'sens' => -1, 'seuil' => 'MM20', 'colr' => 'red', 'icon' => 'arrow down' ];
 
 		// Depassement objectif/stoploss/stopprofit
 		if (isset($trend_following[$key]['objectif'])) {
 
 			if ($trend_following[$key]['objectif'] > 0) {
 				if (depassementALaHausse($d['previous'], $d['price'], $trend_following[$key]['objectif'])) {
-					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'objectif', 'sens' => 1, 'seuil' => 'Objectif', 'colr' => 'green', 'icon' => 'arrow up' ];
+					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'objectif', 'sens' => 1, 'seuil' => 'Objectif', 'colr' => 'green', 'icon' => 'trophy' ];
 					if ($trend_following[$key]['stop_loss'] == 0)
 						$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
 				}
@@ -248,7 +258,7 @@ foreach($positions as $key => $val) {
 
 			if ($trend_following[$key]['stop_profit'] > 0) {
 				if (depassementALaHausse($d['previous'], $d['price'], $trend_following[$key]['stop_profit'])) {
-					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'stop_profit', 'sens' => 1, 'seuil' => 'Stop Profit', 'colr' => 'green', 'icon' => 'arrow up' ];
+					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'stop_profit', 'sens' => 1, 'seuil' => 'Stop Profit', 'colr' => 'green', 'icon' => 'trophy' ];
 					if ($trend_following[$key]['stop_loss'] == 0)
 						$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
 				}
