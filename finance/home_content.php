@@ -434,7 +434,7 @@ Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) {
 <? if ($sess_context->isUserConnected()) { ?>
 	Dom.addListener(Dom.id('home_strategie_add'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
 	Dom.addListener(Dom.id('home_alertes_list'),     Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_alertes.php', { }); });
-	Dom.addListener(Dom.id('home_alertes_markall'),  Dom.Event.ON_CLICK, function(event) { if (confirm('Etes-vous sur de masquer toutes les alertes ?')) go({ action: 'alert_viewed', id: 'main', url: 'portfolio_alerte_viewed.php?alerte=-1', no_data: 1 });});
+	<? if (count($notifs) > 0) { ?>Dom.addListener(Dom.id('home_alertes_markall'),  Dom.Event.ON_CLICK, function(event) { if (confirm('Etes-vous sur de masquer toutes les alertes ?')) go({ action: 'alert_viewed', id: 'main', url: 'portfolio_alerte_viewed.php?alerte=-1', no_data: 1 });}); <? } ?>
 <? } ?>
 
 // Listener sur boutons backtesting + copy strategie
