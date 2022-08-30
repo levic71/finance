@@ -74,6 +74,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 		<i class="inverted bullhorn icon"></i><span>Alertes</span>
 		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_alertes_refresh" class="circular ui right floated button icon_action"><i class="inverted black redo icon"></i></button><? } ?>
 		<button id="home_alertes_list" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
+		<button id="home_alertes_markall" class="circular ui right floated button icon_action"><i class="inverted black low vision icon"></i></button>
 	</h2>
 	<?
 		foreach($notifs as $key => $val)
@@ -431,8 +432,9 @@ Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) {
 
 // Listener sur bouton ajout strategie et liste des alertes historiques
 <? if ($sess_context->isUserConnected()) { ?>
-	Dom.addListener(Dom.id('home_strategie_add'), Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
-	Dom.addListener(Dom.id('home_alertes_list'),  Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_alertes.php', { }); });
+	Dom.addListener(Dom.id('home_strategie_add'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'strat_new', id: 'main', url: 'strategie.php?action=new', loading_area: 'home_strategie_add' }); });
+	Dom.addListener(Dom.id('home_alertes_list'),     Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_alertes.php', { }); });
+	Dom.addListener(Dom.id('home_alertes_markall'),  Dom.Event.ON_CLICK, function(event) { if (confirm('Etes-vous sur de masquer toutes les alertes ?')) go({ action: 'alert_viewed', id: 'main', url: 'portfolio_alerte_viewed.php?alerte=-1', no_data: 1 });});
 <? } ?>
 
 // Listener sur boutons backtesting + copy strategie

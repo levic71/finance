@@ -238,8 +238,7 @@ var overlay = {
 	init: () => {
 	  overlay.ewrap = document.createElement("div");
 	  overlay.ewrap.id = "owrap";
-	  overlay.ewrap.innerHTML = `<button id="oclose" onclick="overlay.hide()" class="circular ui icon very small right floated pink labelled button"><i class="inverted white close icon"></i></button>
-	  <div id="ocontent"></div>`;
+	  overlay.ewrap.innerHTML = `<button id="oclose" onclick="overlay.hide()" class="circular ui icon very small right floated pink labelled button"><i class="inverted white close icon"></i></button><div id="ocontent"></div>`;
 	  overlay.econtent = overlay.ewrap.querySelector("#ocontent");
 	  document.body.appendChild(overlay.ewrap);
 	},
