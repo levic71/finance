@@ -7,8 +7,9 @@ session_start();
 include "common.php";
 
 $search = "";
+$engine = "alpha";
 
-foreach(['search'] as $key)
+foreach(['search', 'engine'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 ?>
@@ -16,7 +17,7 @@ foreach(['search'] as $key)
 <div class="ui container inverted segment">
     <div class="ui search">
         <div class="ui icon input">
-            <input class="search" id="search" name="search" type="text" placeholder="Quote search ..."  value="<?= isset($search) ? $search : $search ?>" />
+            <input class="search" id="search" name="search" type="text" placeholder="Alphavantage Quote"  value="<?= isset($search) ? $search : $search ?>" />
             <i class="search icon"></i>
         </div>
         <div class="ui primary small button" id="search_bt">Search</div>
@@ -67,6 +68,20 @@ if (isset($search) && $search != "") {
 ?>
 </div>
 
+<div class="ui container inverted segment">OU</div>
+
+<div class="ui container inverted segment">
+<div class="ui search">
+        <div class="ui icon input">
+            <input class="search" id="search2" name="search2" type="text" placeholder="Google Finance Quote"  value="" />
+            <i class="search icon"></i>
+        </div>
+        <div class="ui primary small button" id="search2_bt">Add</div>
+    </div>
+</div>
+
+
 <script>
-	Dom.addListener(Dom.id('search_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('search') != '') go({ action: 'search', id: 'main', url: 'search.php?search='+valof('search'), loading_area: 'search_bt' }); });
+	Dom.addListener(Dom.id('search_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('search')  != '') go({ action: 'search',    id: 'main', url: 'search.php?engine=alpha&search='+valof('search'), loading_area: 'search_bt' }); });
+	Dom.addListener(Dom.id('search2_bt'), Dom.Event.ON_CLICK, function(event) { if (valof('search2') != '') go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=google&symbol='+valof('search2'), loading_area: 'search2_bt' }); });
 </script>

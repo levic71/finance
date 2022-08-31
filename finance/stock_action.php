@@ -12,8 +12,9 @@ include "common.php";
 if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
 $pea = 0;
+$engine = "alpha";
 
-foreach(['action', 'symbol', 'ptf_id', 'pea', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit'] as $key)
+foreach(['action', 'engine', 'symbol', 'ptf_id', 'pea', 'name', 'type', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if ($symbol == "") tools::do_redirect("index.php");
@@ -21,25 +22,26 @@ if ($symbol == "") tools::do_redirect("index.php");
 $db = dbc::connect();
 
 
-function updateSymbolData($mysymbol) {
+function updateSymbolData($symbol, $engine = "alpha") {
 
     if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
     $periods = array();
 
-    $ret = cacheData::buildAllCachesSymbol($mysymbol, true);
+    if ($engine == "alpha")
+        $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
     // Recalcul des indicateurs en fct maj cache
     foreach(['daily', 'weekly', 'monthly'] as $key) $periods[] = strtoupper($key);
 
-    computeIndicatorsForSymbolWithOptions($mysymbol, array("aggregate" => false, "limited" => 0, "periods" => $periods));
+    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => 0, "periods" => $periods));
 
     // Mise à jour de la cote de l'actif avec la donnée GSheet
-    if (isset($values[$mysymbol])) {
-        $ret['gsheet'] = updateQuotesWithGSData($values[$mysymbol]);
+    if (isset($values[$symbol])) {
+        $ret['gsheet'] = updateQuotesWithGSData($values[$symbol]);
 
         // Mise a jour des indicateurs du jour (avec quotes)
-        computeQuoteIndicatorsSymbol($mysymbol);
+        computeQuoteIndicatorsSymbol($symbol);
     }
 
     // On supprime les fichiers cache tmp
@@ -61,16 +63,20 @@ if ($action == "add") {
 
     if ($row['total'] == 0) {
 
-        $name = urldecode($name);
-        
-        $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."')";
-        $res = dbc::execSql($req);
+        if ($engine == "alpha") {
+            $name = urldecode($name);
+            $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency, engine) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."')";
+            $res = dbc::execSql($req);
+        } else if ($engine == "google") {
+            setGoogleSheetStockSymbol($symbol);            
+        }
 
-        updateSymbolData($symbol);
-
+        updateSymbolData($symbol, $engine);
         logger::info("STOCK", $symbol, "[OK]");
+
     } else {
-        updateSymbolData($symbol);
+        updateSymbolData($symbol, $engine);
+        logger::info("STOCK", $symbol, "[UPT]");
     }
 }
 
@@ -82,7 +88,7 @@ if ($action == "indic") {
     $res = dbc::execSql($req);
 
     if ($row = mysqli_fetch_array($res)) {
-        updateSymbolData($symbol);
+        updateSymbolData($symbol, $row['engine']);
 
         logger::info("STOCK", $symbol, "[OK]");
     }
@@ -161,7 +167,7 @@ if ($action == "upt" || $action == "sync") {
                     }
                 }
 
-                updateSymbolData($symbol, true);
+                updateSymbolData($symbol, $row['engine']);
 
                 logger::info("SYNC", $symbol, "[OK]");
 

@@ -200,6 +200,76 @@ function updateAllQuotesWithGSData($values) {
 	return $ret;
 }
 
+
+function setGoogleSheetStockSymbol($symbol) {
+
+	$ret = array();
+
+	$onglet = "data";
+
+	$client = new \Google_Client();
+	$client->setApplicationName('Google Sheets and PHP');
+	$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+	$client->setAccessType('offline');
+	$client->setAuthConfig(__DIR__ . '/credentials.json');
+
+	$service = new Google_Service_Sheets($client);
+
+	$spreadsheetId = "1V0Mj1-qdHoKDOZ7BWP7AHQUdTDEU1OmqDwwK7354wvc";
+
+	// Update data : Mise a jour de l'entete
+	$update_range = $onglet."!A1:A1";
+	$values = array();
+	$datetime = new DateTime();
+	$datetime->setTimezone(new DateTimeZone('Europe/Paris'));
+	$values[] = [ $symbol ];
+
+	$body = new Google_Service_Sheets_ValueRange([
+		'values' => $values
+	]);
+
+	$params = [
+		'valueInputOption' => 'USER_ENTERED'
+	];
+
+	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
+	
+	return $ret;
+}
+
+function getGoogleSheetStockData($range) {
+
+	$ret = array();
+
+	$onglet = "data";
+
+	try {
+		$client = new \Google_Client();
+		$client->setApplicationName('Google Sheets and PHP');
+		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+		$client->setAccessType('offline');
+		$client->setAuthConfig(__DIR__ . '/credentials.json');
+
+		$service = new Google_Service_Sheets($client);
+
+		$spreadsheetId = "1V0Mj1-qdHoKDOZ7BWP7AHQUdTDEU1OmqDwwK7354wvc";
+
+		// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
+		$get_range = $onglet."!".$range;
+		$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+		$values = $response->getValues();
+	} catch(RuntimeException $e) { }
+
+	if (!empty($values)) {
+		foreach($values as $key => $val) {
+			$ret[$val[1]] = $val;
+		}
+	}
+
+	return $ret;
+}
+
+
 // FORCE Computing
 $force = 0;
 
