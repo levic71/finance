@@ -493,7 +493,7 @@ if (!$readonly) {
             <tbody>
 <?
                 
-                $req_option = $symbol == "BNP.PAR" ? "" : "AND o.product_name='".$symbol."'";
+                $req_option = "AND o.product_name='".$symbol."'";
                 $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
                 $res = dbc::execSql($req);
 
