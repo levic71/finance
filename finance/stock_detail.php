@@ -164,7 +164,7 @@ function format_data($data, $period) {
 
         reset($data["colrs"]);
         foreach($data["rows"] as $key => $val) {
-            echo sprintf("{ x: '%s', y: %s, v: %s, m1: %s, m2: %s, m3: %s, m4: %s, r: %s, d: %s, c: '%s' }%s",
+            echo sprintf("{ x: '%s', y: %f, v: %f, m1: %f, m2: %f, m3: %f, m4: %f, r: %f, d: %f, c: '%s' }%s",
                 $val["day"],
                 $val["adjusted_close"],
                 $val["volume"] == "" ? 0 : round($val["volume"]/1000),
