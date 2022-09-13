@@ -670,12 +670,16 @@ if (!$readonly) {
     format_data($data_monthly, "monthly");
 ?>
 
+    var ref_d_days  = [];
+    var ref_w_days  = [];
+    var ref_m_days  = [];
+
     try {
 
         // Ref Day Data
-        var ref_d_days  = [<?= '"' . implode('","', array_column($data_daily["rows"],   "day")) . '"' ?>];
-        var ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
-        var ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
+        ref_d_days  = [<?= '"' . implode('","', array_column($data_daily["rows"],   "day")) . '"' ?>];
+        ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
+        ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
 
 
         // Formattage data et calcul regression logarythmique et/ou lineaire
@@ -761,6 +765,7 @@ if (!$readonly) {
 
     } catch(e) {
         alert('stock_detail.php: Graphe data error' + e);
+        ref_d_days  = []; ref_w_days  = []; ref_m_days  = [];
     }
 
     getMMXKey = function(label) {
