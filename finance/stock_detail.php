@@ -494,7 +494,7 @@ if (!$readonly) {
 <?
                 
                 $req_option = "AND o.product_name='".$symbol."'";
-                $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
+                $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY datetime DESC";
                 $res = dbc::execSql($req);
 
                 // Bye bye si inexistant
@@ -1071,6 +1071,10 @@ if (!$readonly) {
         go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol=<?= $symbol ?>', loading_area: 'main', confirmdel: 1 });
     });
     <? } ?>
+
+    // Init tri tableau
+    Sortable.initTable(el("lst_order"));
+
     
     scroll(0,0); // Top de page
 
