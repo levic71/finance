@@ -30,7 +30,7 @@ while($row = mysqli_fetch_array($res)) {
 
 	$mail_corps  = "";
 	foreach($notifs as $key => $val)
-		$mail_corps .= $val['actif'].':'.$val['type'].':'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'\n';
+		$mail_corps .= $val['actif'].':'.$val['type'].':'.$val['sens'].':'.$val['couleur'].':'.$val['icone'].':'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'\r\n';
 
 	$mail_to     = $row['email'];
 	$mail_sujet  = "Alertes finances";

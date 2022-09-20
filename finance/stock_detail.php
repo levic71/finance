@@ -502,7 +502,7 @@ if (!$readonly) {
                     $row = calc::formatDataOrder($row);
                     echo '<tr>
                             <td><i class="inverted long arrow alternate '.$row['icon'].' icon"></td>
-                            <td>'.$row['date'].'</td>
+                            <td data-value="'.$row['datetime'].'">'.$row['date'].'</td>
                             <td>'.$row['product_name'].'</td>
                             <td>'.$row['action_lib'].'</td>
                             <td>'.$row['quantity'].'</td>

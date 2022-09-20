@@ -1227,6 +1227,139 @@ class cacheData {
         return $update_cache;
     }
 
+    public static function insertAllDataQuoteFromGS($symbol, $gf_symbol) {
+
+        $retour = false;
+
+        // Init de l'object Stock recherché
+        $stock = [];
+        $stock['gf_symbol']   = $gf_symbol;
+        $stock['symbol']      = $symbol;
+        $stock['type']        = "INDICE";
+        $stock['region']      = "Europe";
+        $stock['engine']      = "google";
+        $stock['marketopen']  = "09:00";
+        $stock['marketclose'] = "17:30";
+        $stock['timezone']    = "UTC+01";
+        $stock_histo = [];
+
+        // Affectation du symbol recherche dans la feuille de calcul
+        setGoogleSheetStockSymbol($stock['gf_symbol']);
+
+        // Pause pour laisser le temps a GS de bosser
+        sleep(5);
+
+        // Recuperation du nombre de ligne de cotation
+        $ret = getGoogleSheetStockData("A3", "daily");
+        $nb = $ret[0][0];
+
+        if ($nb > 1) {
+
+            // Recuperation infos actif 
+            $ret = getGoogleSheetStockData("C1:W2", "daily");
+
+            // Si tradetime non existant bye bye
+            if ($ret[1][0] == "#N/A") return $retour;
+
+            // RAZ data
+            $req = "DELETE FROM stocks WHERE symbol='".$stock['symbol']."'";
+            $res = dbc::execSql($req);
+
+            $req = "DELETE FROM quotes WHERE symbol='".$stock['symbol']."'";
+            $res = dbc::execSql($req);
+
+            $req = "DELETE FROM monthly_time_series_adjusted WHERE symbol='".$stock['symbol']."'";
+            $res = dbc::execSql($req);
+
+            $req = "DELETE FROM weekly_time_series_adjusted WHERE symbol='".$stock['symbol']."'";
+            $res = dbc::execSql($req);
+
+            $req = "DELETE FROM daily_time_series_adjusted WHERE symbol='".$stock['symbol']."'";
+            $res = dbc::execSql($req);
+
+            // Creation de l'objet stock avec les valeurs recuperees
+            foreach(range(0, 20) as $i) $stock[$ret[0][$i]] = $ret[1][$i];
+            
+            $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine) VALUES ('".$stock['symbol']."', '".$stock['gf_symbol']."', '".addslashes($stock['name'])."', '".$stock['type']."', '".$stock['region']."', '".$stock['marketopen']."', '".$stock['marketclose']."', '".$stock['timezone']."', '".$stock['currency']."', '".$stock['engine']."')";
+            $res = dbc::execSql($req);
+
+            $req = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$stock['symbol']."','".str_replace(',', '.', $stock['priceopen'])."', '".str_replace(',', '.', $stock['high'])."', '".str_replace(',', '.', $stock['low'])."', '".str_replace(',', '.', $stock['price'])."', '".str_replace(',', '.', $stock['volume'])."', '".substr($stock['tradetime'], 6, 4)."-".substr($stock['tradetime'], 3, 2)."-".substr($stock['tradetime'], 0, 2)."', '".str_replace(',', '.', $stock['closeyest'])."', '".str_replace(',', '.', $stock['change'])."', '".str_replace(',', '.', $stock['changepct'])."')";
+            $res = dbc::execSql($req);
+
+            // Recuperation historique cotation actif en daily
+            $ret = getGoogleSheetStockData("C3:H".($nb+2), "daily");
+
+            $col_names = [];
+            foreach($ret as $key => $val) {
+
+                if ($key == 0) {
+
+                    foreach(range(0, 5) as $i) $col_names[$i] = $ret[$key][$i];
+
+                } else {
+
+                    $stock_histo['symbol'] = $symbol;
+
+                    foreach(range(0, 5) as $i) $stock_histo[$col_names[$i]] = $ret[$key][$i];
+
+                    $date  = substr($stock_histo['Date'], 6, 4)."-".substr($stock_histo['Date'], 3, 2)."-".substr($stock_histo['Date'], 0, 2);
+                    $close = str_replace(',', '.', $stock_histo['Close']);
+                    $open  = str_replace(',', '.', $stock_histo['Open']);
+                    $high  = str_replace(',', '.', $stock_histo['High']);
+                    $low   = str_replace(',', '.', $stock_histo['Low']);
+                    $vol   = str_replace(',', '.', $stock_histo['Volume']);
+                    
+                    $req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$stock_histo['symbol']."','".$date."', '".$open."', '".$high."', '".$low."', '".$close."', '".$close."', '".$vol."', '0', '0') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', adjusted_close='".$close."', volume='".$vol."', dividend='0', split_coef='0'";
+                    $res = dbc::execSql($req);
+                        
+                }
+
+            }
+
+            // Recuperation du nombre de ligne de cotation
+            $ret = getGoogleSheetStockData("A3", "weekly");
+            $nb = $ret[0][0];
+
+            if ($nb > 1) {
+
+                // Recuperation historique cotation actif en weekly
+                $ret = getGoogleSheetStockData("C3:H".($nb+2), "weekly");
+
+                $col_names = [];
+                foreach($ret as $key => $val) {
+
+                    if ($key == 0) {
+
+                        foreach(range(0, 5) as $i) $col_names[$i] = $ret[$key][$i];
+
+                    } else {
+
+                        $stock_histo['symbol'] = $symbol;
+
+                        foreach(range(0, 5) as $i) $stock_histo[$col_names[$i]] = $ret[$key][$i];
+
+                        $date  = substr($stock_histo['Date'], 6, 4)."-".substr($stock_histo['Date'], 3, 2)."-".substr($stock_histo['Date'], 0, 2);
+                        $close = str_replace(',', '.', $stock_histo['Close']);
+                        $open  = str_replace(',', '.', $stock_histo['Open']);
+                        $high  = str_replace(',', '.', $stock_histo['High']);
+                        $low   = str_replace(',', '.', $stock_histo['Low']);
+                        $vol   = str_replace(',', '.', $stock_histo['Volume']);
+                        
+                        $req = "INSERT INTO weekly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$stock_histo['symbol']."','".$date."', '".$open."', '".$high."', '".$low."', '".$close."', '".$close."', '".$vol."', '0', '0') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', adjusted_close='".$close."', volume='".$vol."', dividend='0', split_coef='0'";
+                        $res = dbc::execSql($req);
+                            
+                    }
+
+                }
+            }
+
+            $retour = true;
+        }
+
+        return $retour;
+
+    }
+
     public static function buildCacheOverview($symbol) {
 
         $ret = false;
@@ -1613,7 +1746,8 @@ class uimx {
         7  => [ "tag" => "Biens de consommation de base", "icon" => "shopping cart", "desc" => "Se compose de fabricants et de distributeurs de denrées alimentaires, de boissons et de tabac, de même que de producteurs d'objets ménagers non durables et de produits personnels. Il comprend également les détaillants d'aliments et de médicaments ainsi que les centres commerciaux." ],
         8  => [ "tag" => "Services publics",    "icon" => "people", "desc" => "Se compose de sociétés gazières, d'électricité et de services d'eau, ainsi que d'entreprises qui agissent à titre de producteurs ou de distributeurs d'énergie." ],
         9  => [ "tag" => "Santé",               "icon" => "first aid", "desc" => "Comprend des entreprises qui fabriquent du matériel et des fournitures de soins de santé ou offrent des services de soins de santé. Il inclut aussi des sociétés qui se consacrent principalement à la recherche, au développement, à la production ainsi qu'à la commercialisation de produits pharmaceutiques et biotechnologiques." ],
-        10 => [ "tag" => "Immobilier",          "icon" => "building outline", "desc" => "" ]
+        10 => [ "tag" => "Immobilier",          "icon" => "building outline", "desc" => "" ],
+        11 => [ "tag" => "Général",             "icon" => "world", "desc" => "" ]
     ];
     public static $invest_zone_geo = [
         0  => [ "tag" => "Monde",            "desc" => "" ],
@@ -1637,12 +1771,13 @@ class uimx {
         2  => [ "tag" => "Small Cap",  "desc" => "" ]
     ];
     public static $invest_classe = [
-        0  => [ "tag" => "Actions",            "desc" => "" ],
-        1  => [ "tag" => "Obligations",        "desc" => "" ],
-        2  => [ "tag" => "Monétaires",         "desc" => "" ],
-        3  => [ "tag" => "Matières premières", "desc" => "" ],
-        4  => [ "tag" => "Immobiliers",        "desc" => "" ],
-        5  => [ "tag" => "Factorielles",       "desc" => "" ]
+        0  => [ "tag" => "Action",            "desc" => "" ],
+        1  => [ "tag" => "Obligation",        "desc" => "" ],
+        2  => [ "tag" => "Monétaire",         "desc" => "" ],
+        3  => [ "tag" => "Matière première", "desc" => "" ],
+        4  => [ "tag" => "Immobilier",        "desc" => "" ],
+        5  => [ "tag" => "Factorielle",       "desc" => "" ],
+        6  => [ "tag" => "Indice",            "desc" => "" ]
     ];
     public static $invest_factorielle = [
         0  => [ "tag" => "Value",               "desc" => "Critère de sélection sur la valorisation de l'asset (recherche des actifs sous coté par rapport à la valeur intraséque)" ],

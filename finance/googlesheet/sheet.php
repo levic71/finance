@@ -237,11 +237,9 @@ function setGoogleSheetStockSymbol($symbol) {
 	return $ret;
 }
 
-function getGoogleSheetStockData($range) {
+function getGoogleSheetStockData($range, $onglet = "data") {
 
 	$ret = array();
-
-	$onglet = "data";
 
 	try {
 		$client = new \Google_Client();
@@ -257,14 +255,8 @@ function getGoogleSheetStockData($range) {
 		// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
 		$get_range = $onglet."!".$range;
 		$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
-		$values = $response->getValues();
+		$ret = $response->getValues();
 	} catch(RuntimeException $e) { }
-
-	if (!empty($values)) {
-		foreach($values as $key => $val) {
-			$ret[$val[1]] = $val;
-		}
-	}
 
 	return $ret;
 }
