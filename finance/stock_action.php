@@ -32,12 +32,13 @@ function updateSymbolData($symbol, $engine = "alpha") {
         $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
     // Recalcul des indicateurs en fct maj cache
-    foreach(['daily', 'weekly', 'monthly'] as $key) $periods[] = strtoupper($key);
+    $p = $engine == "alpha" ? ['daily', 'weekly', 'monthly'] : [ 'daily' ];
+    foreach($p as $key) $periods[] = strtoupper($key);
 
     computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => 0, "periods" => $periods));
 
     // Mise à jour de la cote de l'actif avec la donnée GSheet
-    if (isset($values[$symbol])) {
+    if ($engine != "google" && isset($values[$symbol])) {
         $ret['gsheet'] = updateQuotesWithGSData($values[$symbol]);
 
         // Mise a jour des indicateurs du jour (avec quotes)
@@ -54,6 +55,8 @@ function updateSymbolData($symbol, $engine = "alpha") {
 
 if ($action == "add") {
 
+    $ret_add = 0;
+
     logger::info("STOCK", "ADD", "###########################################################");
 
     // Recuperation des infos des assets
@@ -67,16 +70,22 @@ if ($action == "add") {
             $name = urldecode($name);
             $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency, engine) VALUES ('".$symbol."','".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."')";
             $res = dbc::execSql($req);
+            $ret_add = 1;
         } else if ($engine == "google") {
-            setGoogleSheetStockSymbol($symbol);            
+            // Attention le symbol dans ce cas la est le gf_symbol et le ":" pose pb en tant que clé symbol donc on remplace pas "."
+            $gf_symbol = $symbol;
+            $symbol = str_replace(':', '.', $symbol);
+            $ret = cacheData::insertAllDataQuoteFromGS($symbol, $gf_symbol);
+            $ret_add = $ret ? 1 : 0;
         }
-
         updateSymbolData($symbol, $engine);
+
         logger::info("STOCK", $symbol, "[OK]");
 
     } else {
         updateSymbolData($symbol, $engine);
         logger::info("STOCK", $symbol, "[UPT]");
+        $ret_add = 2;
     }
 }
 
@@ -103,30 +112,36 @@ if ($action == "reload") {
 
     if ($row = mysqli_fetch_array($res)) {
 
-        $limited_computing = 0;
 
-        foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
-            $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
+        if ($row['engine'] == "alpha") {
+
+            $limited_computing = 0;
+
+            foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
+                $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
+                $res2 = dbc::execSql($req2);    
+            }
+            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='DAILY'";
             $res2 = dbc::execSql($req2);    
-        }
-        $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='DAILY'";
-        $res2 = dbc::execSql($req2);    
-        $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='WEEKLY'";
-        $res2 = dbc::execSql($req2);    
-        $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='MONTHLY'";
-        $res2 = dbc::execSql($req2);
+            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='WEEKLY'";
+            $res2 = dbc::execSql($req2);    
+            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='MONTHLY'";
+            $res2 = dbc::execSql($req2);
+            
+            aafinance::$cache_load = true;
         
-        aafinance::$cache_load = true;
-    
-        // Mise a jour des caches : full = false => compact, sinon full (on fait les 2 dans le sens ci dessous)
-        $ret = cacheData::buildCachesSymbol($row['symbol'], false, array("daily" => 1, "weekly" => 1, "monthly" => 1));
-        $ret = cacheData::buildCachesSymbol($row['symbol'], true,  array("daily" => 1, "weekly" => 1, "monthly" => 1));
-        
-        if ($ret['daily'])   computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
-        if ($ret['weekly'])  computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "WEEKLY");
-        if ($ret['monthly']) computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "MONTHLY");
+            // Mise a jour des caches : full = false => compact, sinon full (on fait les 2 dans le sens ci dessous)
+            $ret = cacheData::buildCachesSymbol($row['symbol'], false, array("daily" => 1, "weekly" => 1, "monthly" => 1));
+            $ret = cacheData::buildCachesSymbol($row['symbol'], true,  array("daily" => 1, "weekly" => 1, "monthly" => 1));
+            
+            if ($ret['daily'])   computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
+            if ($ret['weekly'])  computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "WEEKLY");
+            if ($ret['monthly']) computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "MONTHLY");
 
-        cacheData::deleteCacheSymbol($symbol);
+            cacheData::deleteCacheSymbol($symbol);
+        } else {
+            $ret = cacheData::insertAllDataQuoteFromGS($row['symbol'], $row['gf_symbol']);
+        }
     }
 }
 
@@ -158,13 +173,17 @@ if ($action == "upt" || $action == "sync") {
         if ($action == "sync") {
             try {
 
-                $data = aafinance::searchSymbol($symbol);
+                if ($row['engine'] == "alpha") {
+                    $data = aafinance::searchSymbol($symbol);
 
-                if (isset($data["bestMatches"])) {
-                    foreach ($data["bestMatches"] as $key => $val) {
-                        $req = "UPDATE stocks SET name='".addslashes($val["2. name"])."', type='".$val["3. type"]."', region='".$val["4. region"]."', marketopen='".$val["5. marketOpen"]."', marketclose='".$val["6. marketClose"]."', timezone='".$val["7. timezone"]."', currency='".$val["8. currency"]."' WHERE symbol='".$val["1. symbol"]."'";
-                        $res = dbc::execSql($req);
+                    if (isset($data["bestMatches"])) {
+                        foreach ($data["bestMatches"] as $key => $val) {
+                            $req = "UPDATE stocks SET name='".addslashes($val["2. name"])."', type='".$val["3. type"]."', region='".$val["4. region"]."', marketopen='".$val["5. marketOpen"]."', marketclose='".$val["6. marketClose"]."', timezone='".$val["7. timezone"]."', currency='".$val["8. currency"]."' WHERE symbol='".$val["1. symbol"]."'";
+                            $res = dbc::execSql($req);
+                        }
                     }
+                } else {
+                    $ret = cacheData::insertAllDataQuoteFromGS($row['symbol'], $row['gf_symbol']);
                 }
 
                 updateSymbolData($symbol, $row['engine']);
@@ -221,7 +240,11 @@ var p = loadPrompt();
 
 <? if ($action == "add") { ?>
     go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
-    p.success('Actif <?= $symbol ?> ajouté');
+    <? if ($ret_add > 0) { ?>
+        p.success('Actif <?= $symbol ?> <?= $ret_add == 1 ? 'ajouté' : 'modifié' ?>');
+    <? } else { ?>
+        p.error('Actif <?= $symbol ?> non ajouté');
+    <? } ?>
 <? } ?>
 
 </script>

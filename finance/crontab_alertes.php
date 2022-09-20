@@ -30,9 +30,10 @@ arsort($data2["perfs"]);
 
 $positions       = [];
 $trend_following = [];
+$email = 'vmlf71@gmail.com';
 
 // Pour l'instant que pour moi
-$req = "SELECT * FROM users WHERE email='vmlf71@gmail.com'";
+$req = "SELECT * FROM users WHERE email='".$email."'";
 $res = dbc::execSql($req);
 $row = mysqli_fetch_array($res);
 
@@ -64,49 +65,49 @@ array (size=4)
     array (size=16)
       'BNP.PAR' => 
         array (size=43)
-          'id' => string '147' (length=3)
-          'name' => string 'BNP Paribas SA' (length=14)
-          'symbol' => string 'BNP.PAR' (length=7)
-          'currency' => string 'EUR' (length=3)
-          'type' => string 'Equity' (length=6)
-          'region' => string 'Paris' (length=5)
-          'marketopen' => string '09:00' (length=5)
-          'marketclose' => string '17:30' (length=5)
-          'timezone' => string 'UTC+01' (length=6)
-          'pea' => string '0' (length=1)
-          'gf_symbol' => string '' (length=0)
-          'ISIN' => string '' (length=0)
-          'provider' => string '' (length=0)
-          'categorie' => string '' (length=0)
-          'frais' => string '0' (length=1)
-          'distribution' => string '0' (length=1)
-          'actifs' => string '0' (length=1)
-          'links' => string '{"link1":"","link2":""}' (length=23)
-          'tags' => string 'Actions|Industrie|Services financiers|Marché développé|Europe|Value|Large Cap|' (length=81)
-          'rating' => string '6' (length=1)
-          'dividende_annualise' => string '3.67' (length=4)
-          'date_dividende' => string '2022-06-02' (length=10)
-          'open' => string '50.4200' (length=7)
-          'high' => string '51.2600' (length=7)
-          'low' => string '49.8500' (length=7)
-          'price' => string '49.8500' (length=7)
-          'volume' => string '2879032' (length=7)
-          'day' => string '2022-05-09' (length=10)
-          'previous' => string '50.5900' (length=7)
-          'day_change' => string '-0.7400' (length=7)
-          'percent' => string '-1.4627%' (length=8)
-          'period' => string 'DAILY' (length=5)
-          'DM' => string '-4.76' (length=5)
-          'DMD1' => string '2022-04-29' (length=10)
-          'DMD2' => string '2022-02-28' (length=10)
-          'DMD3' => string '2021-11-30' (length=10)
-          'MM7' => string '50.282857142857' (length=15)
-          'MM20' => string '50.0655' (length=7)
-          'MM50' => string '50.5656' (length=7)
-          'MM100' => string '56.5983' (length=7)
-          'MM200' => string '56.22625' (length=8)
-          'RSI14' => string '46.497137366824' (length=15)
-          'Bollinger' => string '' (length=0) */
+          'i'147' => $ret[2][0],
+          'nam'BNP Paribas SA' (length=14)
+          'symbo'BNP.PAR' => $ret[2][0],
+          'currenc'EUR' => $ret[2][0],
+          'typ'Equity' => $ret[2][0],
+          'regio'Paris' => $ret[2][0],
+          'marketope'09:00' => $ret[2][0],
+          'marketclos'17:30' => $ret[2][0],
+          'timezon'UTC+01' => $ret[2][0],
+          'pe'0' => $ret[2][0],
+          'gf_symbo'' => $ret[2][0],
+          'ISI'' => $ret[2][0],
+          'provide'' => $ret[2][0],
+          'categori'' => $ret[2][0],
+          'frai'0' => $ret[2][0],
+          'distributio'0' => $ret[2][0],
+          'actif'0' => $ret[2][0],
+          'link'{"link1":"","link2":""}' (length=23)
+          'tag'Actions|Industrie|Services financiers|Marché développé|Europe|Value|Large Cap|' (length=81)
+          'ratin'6' => $ret[2][0],
+          'dividende_annualis'3.67' => $ret[2][0],
+          'date_dividend'2022-06-02' (length=10)
+          'ope'50.4200' => $ret[2][0],
+          'hig'51.2600' => $ret[2][0],
+          'lo'49.8500' => $ret[2][0],
+          'pric'49.8500' => $ret[2][0],
+          'volum'2879032' => $ret[2][0],
+          'da'2022-05-09' (length=10)
+          'previou'50.5900' => $ret[2][0],
+          'day_chang'-0.7400' => $ret[2][0],
+          'percen'-1.4627%' => $ret[2][0],
+          'perio'DAILY' => $ret[2][0],
+          'D'-4.76' => $ret[2][0],
+          'DMD'2022-04-29' (length=10)
+          'DMD'2022-02-28' (length=10)
+          'DMD'2021-11-30' (length=10)
+          'MM'50.282857142857' (length=15)
+          'MM2'50.0655' => $ret[2][0],
+          'MM5'50.5656' => $ret[2][0],
+          'MM10'56.5983' => $ret[2][0],
+          'MM20'56.22625' => $ret[2][0],
+          'RSI1'46.497137366824' (length=15)
+          'Bollinge'' => $ret[2][0], */
 
 /* 'positions' => 
 array (size=9)
@@ -115,19 +116,19 @@ array (size=9)
 	  'nb' => int 1000
 	  'pru' => float 13.6625
 	  'other_name' => boolean false
-	  'devise' => string 'EUR' (length=3)
+	  'devis'EUR' => $ret[2][0],
   'BRE.PAR' => 
   
 'trend_following' => 
     array (size=4)
       'BRE.PAR' => 
         array (size=6)
-          'user_id' => string '4' (length=1)
-          'symbol' => string 'BRE.PAR' (length=7)
-          'stop_loss' => string '0.000000' (length=8)
-          'stop_profit' => string '200.000000' (length=10)
-          'objectif' => string '100.000000' (length=10)
-          'manual_price' => string '0' (length=1)
+          'user_i'4' => $ret[2][0],
+          'symbo'BRE.PAR' => $ret[2][0],
+          'stop_los'0.000000' => $ret[2][0],
+          'stop_profi'200.000000' (length=10)
+          'objecti'100.000000' (length=10)
+          'manual_pric'0' => $ret[2][0],
       'ESE.PAR' => 
  */
 
