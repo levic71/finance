@@ -1028,6 +1028,17 @@ c8=(MM200<MM50)and(MM200<close)and(MM100<close)and((close<MM50)or(close<MM20))
         return $ret;
     }
 
+    public static function removeSymbol($symbol) {
+
+        foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted', 'stocks', 'quotes', 'indicators'] as $key) {
+            $req = "DELETE FROM ".$key." WHERE symbol='".$symbol."'";
+            $res = dbc::execSql($req);    
+        }
+
+        cacheData::deleteCacheSymbol($symbol);
+
+    }
+
 }
 
 //
@@ -1244,12 +1255,12 @@ class cacheData {
         $stock_histo = [];
 
         // Affectation du symbol recherche dans la feuille de calcul
-        setGoogleSheetStockSymbol($stock['gf_symbol']);
+        setGoogleSheetStockSymbol($stock['gf_symbol'], "daily");
 
         // Pause pour laisser le temps a GS de bosser
         sleep(5);
 
-        // Recuperation du nombre de ligne de cotation
+        // Recuperation du nombre de ligne de cotation daily
         $ret = getGoogleSheetStockData("A3", "daily");
         $nb = $ret[0][0];
 
@@ -1262,20 +1273,7 @@ class cacheData {
             if ($ret[1][0] == "#N/A") return $retour;
 
             // RAZ data
-            $req = "DELETE FROM stocks WHERE symbol='".$stock['symbol']."'";
-            $res = dbc::execSql($req);
-
-            $req = "DELETE FROM quotes WHERE symbol='".$stock['symbol']."'";
-            $res = dbc::execSql($req);
-
-            $req = "DELETE FROM monthly_time_series_adjusted WHERE symbol='".$stock['symbol']."'";
-            $res = dbc::execSql($req);
-
-            $req = "DELETE FROM weekly_time_series_adjusted WHERE symbol='".$stock['symbol']."'";
-            $res = dbc::execSql($req);
-
-            $req = "DELETE FROM daily_time_series_adjusted WHERE symbol='".$stock['symbol']."'";
-            $res = dbc::execSql($req);
+            calc::removeSymbol($stock['symbol']);
 
             // Creation de l'objet stock avec les valeurs recuperees
             foreach(range(0, 20) as $i) $stock[$ret[0][$i]] = $ret[1][$i];
@@ -1294,6 +1292,7 @@ class cacheData {
 
                 if ($key == 0) {
 
+                    // Recuperation des noms de colonnes
                     foreach(range(0, 5) as $i) $col_names[$i] = $ret[$key][$i];
 
                 } else {
@@ -1316,7 +1315,7 @@ class cacheData {
 
             }
 
-            // Recuperation du nombre de ligne de cotation
+            // Recuperation du nombre de ligne de cotation weekly
             $ret = getGoogleSheetStockData("A3", "weekly");
             $nb = $ret[0][0];
 
@@ -1330,6 +1329,7 @@ class cacheData {
 
                     if ($key == 0) {
 
+                        // Recuperation des noms de colonnes
                         foreach(range(0, 5) as $i) $col_names[$i] = $ret[$key][$i];
 
                     } else {
@@ -1345,7 +1345,7 @@ class cacheData {
                         $low   = str_replace(',', '.', $stock_histo['Low']);
                         $vol   = str_replace(',', '.', $stock_histo['Volume']);
                         
-                        $req = "INSERT INTO weekly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$stock_histo['symbol']."','".$date."', '".$open."', '".$high."', '".$low."', '".$close."', '".$close."', '".$vol."', '0', '0') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', adjusted_close='".$close."', volume='".$vol."', dividend='0', split_coef='0'";
+                        // $req = "INSERT INTO weekly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$stock_histo['symbol']."','".$date."', '".$open."', '".$high."', '".$low."', '".$close."', '".$close."', '".$vol."', '0', '0') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', adjusted_close='".$close."', volume='".$vol."', dividend='0', split_coef='0'";
                         $res = dbc::execSql($req);
                             
                     }

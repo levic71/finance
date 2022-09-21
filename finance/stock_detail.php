@@ -494,7 +494,7 @@ if (!$readonly) {
 <?
                 
                 $req_option = "AND o.product_name='".$symbol."'";
-                $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY datetime DESC";
+                $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
                 $res = dbc::execSql($req);
 
                 // Bye bye si inexistant
@@ -658,6 +658,26 @@ if (!$readonly) {
         return newDataset2(vals, 'line', 'y', 'd', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
     }
 
+    extractFirstDateYear = function(array_dates) {
+
+        var tmp_array_years = [];
+        var ret_array_years = [];
+
+        array_dates.forEach(function(item) {
+            let year = item.split('-')[0];
+            let found = tmp_array_years.find(element => element == year);
+            if (found == undefined) {
+                tmp_array_years.push(year);
+                ret_array_years.push(item);
+            }
+        });
+
+        // On retire le premier label (premier mois cote) pour qu'il n'empiete pas sur la gauche du graphe
+        if (ret_array_years.length > 2) ret_array_years.shift();
+
+        return ret_array_years;
+    }
+
     var graphe_size_days = 0;
     var new_data_daily   = [];
     var new_data_weekly  = [];
@@ -700,19 +720,10 @@ if (!$readonly) {
         var bubbles_data  = [];
         <?= $js_bubbles_data ?>
 
-        // Filtre des labels de l'axes des x (date)
-        var tmp_array_years = [];
-        var array_years = [];
-        ref_d_days.forEach(function(item) {
-            let year = item.split('-')[0];
-            let found = tmp_array_years.find(element => element == year);
-            if (found == undefined) {
-                tmp_array_years.push(year);
-                array_years.push(item);
-            }
-        });
+        // Filtre des labels de l'axes des x (date) (on ne garde que les premieres dates de marche cote du mois)
+        var array_years = extractFirstDateYear(ref_d_days);
 
-        // On retire le premier label pour qu'il n'empiete pas sur la gauche du graphe
+        // On retire le premier label (premier mois cote) pour qu'il n'empiete pas sur la gauche du graphe
         if (array_years.length > 2) array_years.shift();
 
         // Data pour les lignes horizontales
@@ -836,8 +847,9 @@ if (!$readonly) {
 
         interval = getIntervalStatus();
 
-        g_new_data = getSlicedData2(interval, new_data_daily, new_data_weekly, new_data_monthly, size);
-        g_days     = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
+        g_new_data  = getSlicedData2(interval, new_data_daily, new_data_weekly, new_data_monthly, size);
+        g_days      = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
+        array_years = extractFirstDateYear(g_days);
 
         return g_days.length;
     }
@@ -1071,10 +1083,6 @@ if (!$readonly) {
         go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol=<?= $symbol ?>', loading_area: 'main', confirmdel: 1 });
     });
     <? } ?>
-
-    // Init tri tableau
-    Sortable.initTable(el("lst_order"));
-
     
     scroll(0,0); // Top de page
 

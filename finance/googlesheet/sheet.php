@@ -201,11 +201,9 @@ function updateAllQuotesWithGSData($values) {
 }
 
 
-function setGoogleSheetStockSymbol($symbol) {
+function setGoogleSheetStockSymbol($symbol, $onglet = "data") {
 
 	$ret = array();
-
-	$onglet = "data";
 
 	$client = new \Google_Client();
 	$client->setApplicationName('Google Sheets and PHP');

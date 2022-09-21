@@ -26,16 +26,13 @@ function updateSymbolData($symbol, $engine = "alpha") {
 
     if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
-    $periods = array();
-
     if ($engine == "alpha")
         $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
     // Recalcul des indicateurs en fct maj cache
-    $p = $engine == "alpha" ? ['daily', 'weekly', 'monthly'] : [ 'daily' ];
-    foreach($p as $key) $periods[] = strtoupper($key);
+    $p = ['DAILY', 'WEEKLY', 'MONTHLY'];
 
-    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => false, "limited" => 0, "periods" => $periods));
+    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => true, "limited" => 0, "periods" => $p));
 
     // Mise à jour de la cote de l'actif avec la donnée GSheet
     if ($engine != "google" && isset($values[$symbol])) {
@@ -208,14 +205,7 @@ if ($action == "del") {
     $res = dbc::execSql($req);
 
     if ($row = mysqli_fetch_array($res)) {
-
-        foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted', 'stocks', 'quotes', 'indicators'] as $key) {
-            $req = "DELETE FROM ".$key." WHERE symbol='".$symbol."'";
-            $res = dbc::execSql($req);    
-        }
-
-        cacheData::deleteCacheSymbol($symbol);
-
+        calc::removeSymbol($symbol);
         logger::info("STOCK", $symbol, "[OK]");
     }
 }
@@ -239,8 +229,8 @@ var p = loadPrompt();
 <? } ?>
 
 <? if ($action == "add") { ?>
-    go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
     <? if ($ret_add > 0) { ?>
+        go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
         p.success('Actif <?= $symbol ?> <?= $ret_add == 1 ? 'ajouté' : 'modifié' ?>');
     <? } else { ?>
         p.error('Actif <?= $symbol ?> non ajouté');
