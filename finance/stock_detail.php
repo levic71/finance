@@ -293,20 +293,28 @@ $js_bubbles_data = "";
                     <? } ?>
                 </div>
             </div>
-            <div class="two fields">
+            <? if (!$readonly) { ?>
+            <div class="three fields">
                 <div class="field">
-                    <? if (!$readonly) { ?>
-                        <label>Morning Star</label>
-                        <input type="text" id="f_link1" value="<?= $row['link1'] ?>" placeholder="Lien http">
-                    <? } ?>
+                    <label>Type actif</label>
+                    <select class="ui fluid search dropdown" id="f_type">
+                        <option value="">Choisir</option>
+                        <?
+                        foreach (uimx::$type_actif as $key => $val)
+                            echo '<option value="' . $val . '" ' . ($row['type'] == $val ? 'selected="selected"' : '') . '>' . $val . '</option>';
+                        ?>
+                    </select>
                 </div>
                 <div class="field">
-                    <? if (!$readonly) { ?>
-                        <label>JustETF</label>
-                        <input type="text" id="f_link2" value="<?= $row['link2'] ?>" placeholder="Lien http">
-                    <? } ?>
+                    <label>Morning Star</label>
+                    <input type="text" id="f_link1" value="<?= $row['link1'] ?>" placeholder="Lien http">
+                </div>
+                <div class="field">
+                    <label>JustETF</label>
+                    <input type="text" id="f_link2" value="<?= $row['link2'] ?>" placeholder="Lien http">
                 </div>
             </div>
+            <? } ?>
             <div class="four fields">
                 <div class="field">
                     <label>GF Symbole</label>
@@ -959,7 +967,7 @@ if (!$readonly) {
     <? if (!$readonly) { ?>
 
     getFormValues = function() {
-        params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
+        params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
 
         var tags = '';
         Dom.find('button.bt_tags').forEach(function(item) {

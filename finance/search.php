@@ -42,7 +42,7 @@ if (isset($search) && $search != "") {
                     <td>" . $val["3. type"] . "</td>
                     <td>" . $val["4. region"] . "</td>
                     <td>" . $val["8. currency"] . "</td>
-                    <td><button id=\"search_add_".$i."\" onclick=\"go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&symbol=".$val["1. symbol"]."&name=".urlencode($val["2. name"])."&type=".$val["3. type"]."&region=".$val["4. region"]."&marketopen=".$val["5. marketOpen"]."&marketclose=".$val["6. marketClose"]."&timezone=".urlencode($val["7. timezone"])."&currency=".$val["8. currency"]."', loading_area: 'search_add_".$i."' });\" class=\"ui small button\">Add</button></td>
+                    <td><button id=\"search_add_".$i."\" onclick=\"go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&symbol=".$val["1. symbol"]."&name=".urlencode($val["2. name"])."&f_type=".$val["3. type"]."&region=".$val["4. region"]."&marketopen=".$val["5. marketOpen"]."&marketclose=".$val["6. marketClose"]."&timezone=".urlencode($val["7. timezone"])."&currency=".$val["8. currency"]."', loading_area: 'search_add_".$i."' });\" class=\"ui small button\">Add</button></td>
                 </tr>";
 /*                 echo "<tr>
                     <td>" . $val["1. symbol"] . "</td>
@@ -53,7 +53,7 @@ if (isset($search) && $search != "") {
                     <td>" . $val["6. marketClose"] . "</td>
                     <td>" . $val["7. timezone"] . "</td>
                     <td>" . $val["8. currency"] . "</td>
-                    <td><button id=\"search_add_".$i."\" onclick=\"go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&symbol=".$val["1. symbol"]."&name=".urlencode($val["2. name"])."&type=".$val["3. type"]."&region=".$val["4. region"]."&marketopen=".$val["5. marketOpen"]."&marketclose=".$val["6. marketClose"]."&timezone=".urlencode($val["7. timezone"])."&currency=".$val["8. currency"]."', loading_area: 'search_add_".$i."' });\" class=\"ui small button\">Add</button></td>
+                    <td><button id=\"search_add_".$i."\" onclick=\"go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&symbol=".$val["1. symbol"]."&name=".urlencode($val["2. name"])."&f_type=".$val["3. type"]."&region=".$val["4. region"]."&marketopen=".$val["5. marketOpen"]."&marketclose=".$val["6. marketClose"]."&timezone=".urlencode($val["7. timezone"])."&currency=".$val["8. currency"]."', loading_area: 'search_add_".$i."' });\" class=\"ui small button\">Add</button></td>
                 </tr>";
  */                $i++;
             }

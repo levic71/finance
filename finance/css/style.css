@@ -9,6 +9,10 @@ button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !imp
 .icon_action i { margin: 0px !important; }
 .on i { color: coral !important; }
 
+button.equity { background: #2185d0 !important; color: white !important; }
+button.indice { background: brown !important; color: white !important; }
+button.etf { background: #21ba45 !important; color: white !important; }
+
 /* (A) FULL PAGE OVERLAY */
 #owrap {
     /* (A1) COVER ENTIRE SCREEN */
