@@ -439,6 +439,7 @@ computeLines = function(opt) {
 	depots     = <?= sprintf("%.2f", $portfolio_data['depot']) ?>;
 	dividendes = <?= sprintf("%.2f", $portfolio_data['dividende']) ?>;
 	commissions = <?= sprintf("%.2f", $portfolio_data['commission']) ?>;
+	div2depot  = <?= sprintf("%.2f", ($portfolio_data['dividende'] * 100 ) / $portfolio_data['depot']) ?>;
 	ttf = <?= sprintf("%.2f", $portfolio_data['ttf']) ?>;
 
 	if (opt == 'init') {
@@ -452,8 +453,8 @@ computeLines = function(opt) {
 		infos_area.v[3] = depots.toFixed(2) + ' \u20AC';
 		infos_area.l[4] = "&sum; Retraits";
 		infos_area.v[4] = retraits.toFixed(2) + ' \u20AC';
-		infos_area.l[5] = "&sum; Dividendes";
-		infos_area.v[5] = dividendes.toFixed(2) + ' \u20AC';
+		infos_area.l[5] = "&sum; Dividendes (Div to Depot)";
+		infos_area.v[5] = dividendes.toFixed(2) + ' \u20AC' + ' (' + div2depot.toFixed(2) + ' %)';
 		setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + ' &euro;');
 		setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + ' &euro;');
 		Dom.id('subtitle').innerHTML = ' (<?= $portfolio_data['interval_year'] > 0 ? $portfolio_data['interval_year'].($portfolio_data['interval_year'] > 1 ? " ans " : " an") : "" ?> <?= $portfolio_data['interval_month'] ?> mois)';
@@ -619,8 +620,8 @@ computeLines = function(opt) {
 	infos_area_bis.v[3] = sum_valo_stoploss2.toFixed(2) + ' \u20AC';
 	infos_area_bis.l[4] = '-';
 	infos_area_bis.v[4] = ' \u20AC';
-	infos_area_bis.l[5] = 'Estimation dividende annuel';
-	infos_area_bis.v[5] = '<?= sprintf("%.2f", $div_per_year) ?> \u20AC';
+	infos_area_bis.l[5] = 'Estimation dividende annuel (Div to Depot)';
+	infos_area_bis.v[5] = '<?= sprintf("%.2f", $div_per_year) ?> \u20AC' + ' ( <?= sprintf("%.2f", ($div_per_year * 100) / $portfolio_data['depot']) ?> %)';
 
 
 	if (myChart) myChart.destroy();
