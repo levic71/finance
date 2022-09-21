@@ -93,9 +93,10 @@ function insertIntoTimeSeries($symbol, $data, $table) {
         $high   = $data["high"][$key];
         $low    = $data["low"][$key];
         $close  = $data["close"][$key];
+        $adjusted_close  = $data["adjusted_close"][$key];
         $volume = $data["volume"][$key];
 
-        $req = "INSERT INTO ".$table." (symbol, day, open, high, low, close, volume) VALUES('".$symbol."', '".$val."', '".$open."', '".$high."', '".$low."', '".$close."', '".$volume."') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', volume='".$volume."'";
+        $req = "INSERT INTO ".$table." (symbol, day, open, high, low, close, adjusted_close, volume) VALUES('".$symbol."', '".$val."', '".$open."', '".$high."', '".$low."', '".$close."', '".$adjusted_close."', '".$volume."') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', adjusted_close='".$adjusted_close."', volume='".$volume."'";
         $res = dbc::execSql($req);
     }
 
@@ -179,9 +180,8 @@ function calculMoyenne($tab_data) {
 
     foreach($tab_data['close'] as $key => $val) {
         $tab_data['open'][$key]  = round($tab_data['open'][$key]  / $tab_data['counter'][$key], 8);
-        $tab_data['high'][$key]  = round($tab_data['high'][$key]  / $tab_data['counter'][$key], 8);
-        $tab_data['low'][$key]   = round($tab_data['low'][$key]   / $tab_data['counter'][$key], 8);
         $tab_data['close'][$key] = round($tab_data['close'][$key] / $tab_data['counter'][$key], 8);
+        $tab_data['adjusted_close'][$key] = round($tab_data['adjusted_close'][$key] / $tab_data['counter'][$key], 8);
     }
 
     return $tab_data;
@@ -191,10 +191,10 @@ function calculMoyenne($tab_data) {
 // //////////////////////////////////////////////////////////////
 // Cumul des Daily en Weekly/Monthly
 // //////////////////////////////////////////////////////////////
-function aggregateWeeklyMonthlySymbol($symbol, $limited) {
+function aggregateWeeklyMonthlySymbol($symbol, $limited = 0) {
 
-    $tab_weekly  = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array() ];
-    $tab_monthly = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array() ];
+    $tab_weekly  = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array(), "adjusted_close" => array() ];
+    $tab_monthly = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array(), "adjusted_close" => array() ];
 
     // Requete a revoir sur le subq (300 car il m'en faut 30 + 200 = 230 mim pour calcul MM200)
     $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 300) subq ORDER BY day ASC" : "");
@@ -208,11 +208,19 @@ function aggregateWeeklyMonthlySymbol($symbol, $limited) {
         $month = date("Y-m", strtotime($row['day']));
 
         // Cummul weekly et monthly pour calcul RSI14 weekly et monthly
-        foreach(['volume', 'open', 'high', 'low', 'close'] as $key)
+        foreach(['volume', 'open', 'close', 'adjusted_close'] as $key)
             $tab_weekly[$key][$week] = cumulTabVal($tab_weekly[$key], $week, $row[$key]);
 
-        foreach(['volume', 'open', 'high', 'low', 'close'] as $key)
-            $tab_monthly[$key][$month] = cumulTabVal($tab_monthly[$key], $month, $row[$key]);
+        foreach(['volume', 'open', 'close', 'adjusted_close'] as $key)
+        $tab_monthly[$key][$month] = cumulTabVal($tab_monthly[$key], $month, $row[$key]);
+
+        // Max/min
+        $tab_weekly['high'][$week] = isset($tab_weekly['high'][$week]) ? max($tab_weekly['high'][$week], $row['high']) : $row['high'];
+        $tab_weekly['low'][$week]  = isset($tab_weekly['low'][$week])  ? min($tab_weekly['low'][$week],  $row['low'])  : $row['low'];
+        
+        $tab_monthly['high'][$month] = isset($tab_monthly['high'][$month]) ? max($tab_monthly['high'][$month], $row['high']) : $row['high'];
+        $tab_monthly['low'][$month]  = isset($tab_monthly['low'][$month])  ? min($tab_monthly['low'][$month],  $row['low'])  : $row['low'];
+
 
         // On compte le nb de jours par week/month
         $tab_weekly['counter'][$week]   = isset($tab_weekly['counter'][$week])   ? $tab_weekly['counter'][$week] + 1   : 1;
