@@ -269,7 +269,7 @@ foreach($data2["stocks"] as $key => $val) {
 	";
 	
 	echo "
-		<td><button data-tootik-conf=\"right  multiline\" data-tootik=\"".($val['type'] == "ETF" ? "ETF" : "Action")."\" class=\"mini ui ".($val['type'] == "ETF" ? "green" : "primary")." button badge\">".($val['type'] == "ETF" ? "E" : "A")."</button></td>
+		<td><button data-tootik-conf=\"right  multiline\" data-tootik=\"".$val['type']."\" class=\"mini ui ".strtolower($val['type'])." button badge\">".(substr($val['type'] == 'Equity' ? 'Action' : $val['type'], 0, 1))."</button></td>
 		<td data-value=\"".$val['frais']."\">".sprintf("%.2f", $val['frais'])." %</td>
 		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
 		<td>

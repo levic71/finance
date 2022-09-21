@@ -315,7 +315,9 @@ var options_Stock_Graphe = {
                     if (typeof array_years == 'undefined') return search;
 
                     let year = this.getLabelForValue(value).split('-')[0];
+
                     let found = array_years.find(element => element == search);
+
                     if (found != undefined) {
                         return year;
                     }

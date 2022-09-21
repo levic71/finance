@@ -1724,6 +1724,7 @@ class uimx {
     public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA', 3 => 'Super Dual Momemtum' ];
     public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes', 3 => 'paper plane' ];
     public static $invest_distribution = [ 0 => "Capitalisation", 1 => "Distribution" ];
+    public static $type_actif          = [ 0 => "ETF", 1 => "Equity", 2 => "INDICE" ];
     public static $invest_market = [
         0 => [ "tag" => "Marché développé", "desc" => "" ],
         1 => [ "tag" => "Marché émergent",  "desc" => "" ]
@@ -1747,7 +1748,7 @@ class uimx {
         8  => [ "tag" => "Services publics",    "icon" => "people", "desc" => "Se compose de sociétés gazières, d'électricité et de services d'eau, ainsi que d'entreprises qui agissent à titre de producteurs ou de distributeurs d'énergie." ],
         9  => [ "tag" => "Santé",               "icon" => "first aid", "desc" => "Comprend des entreprises qui fabriquent du matériel et des fournitures de soins de santé ou offrent des services de soins de santé. Il inclut aussi des sociétés qui se consacrent principalement à la recherche, au développement, à la production ainsi qu'à la commercialisation de produits pharmaceutiques et biotechnologiques." ],
         10 => [ "tag" => "Immobilier",          "icon" => "building outline", "desc" => "" ],
-        11 => [ "tag" => "Général",             "icon" => "world", "desc" => "" ]
+        11 => [ "tag" => "Global",              "icon" => "world", "desc" => "" ]
     ];
     public static $invest_zone_geo = [
         0  => [ "tag" => "Monde",            "desc" => "" ],
