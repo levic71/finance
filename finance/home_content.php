@@ -189,6 +189,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 			<button id="lst_filter9_bt"  class="mini ui grey button"><i class="ui star grey inverted icon"></i></button>
 			<button id="lst_filter7_bt"  class="mini ui grey button">ETF</button>
 			<button id="lst_filter8_bt"  class="mini ui grey button">Action</button>
+			<button id="lst_filter11_bt" class="mini ui grey button">Indice</button>
 			<button id="lst_filter1_bt"  class="mini ui grey button">PEA</button>
 			<button id="lst_filter2_bt"  class="mini ui grey button">EUR</button>
 			<button id="lst_filter3_bt"  class="mini ui grey button">USD</button>
@@ -258,7 +259,7 @@ foreach($data2["stocks"] as $key => $val) {
 	$tags_infos = uimx::getIconTooltipTag($val['tags']);
 
 	$curr  = $val['currency'] == "EUR" ? "&euro;" : "$";
-	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : "EQY")." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
+	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : ($val['type'] == "INDICE" ? "IND" : "EQY"))." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
 
 	echo "<tr class=\"".$class."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".utf8_decode($val['tags'])."\">";
 
@@ -360,6 +361,7 @@ filterLstStocks = function() {
 	f8_on = Dom.hasClass(Dom.id('lst_filter8_bt'), 'orange');
 	f9_on = Dom.hasClass(Dom.id('lst_filter9_bt'), 'orange');
 	f10_on = Dom.hasClass(Dom.id('lst_filter10_bt'), 'orange');
+	f11_on = Dom.hasClass(Dom.id('lst_filter11_bt'), 'orange');
 
 	var filter_tags = [];
 	Dom.find('#other_tags button.bt_tags').forEach(function(item) {
@@ -370,7 +372,7 @@ filterLstStocks = function() {
 	for (const element of tab_stocks) Dom.css(element, {'display' : 'table-row'});
 
 	// On passe en revue toutes les lignes et on cache celles qui ne correspondent pas aux boutons allumés
-	if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false && f10_on == false)) {
+	if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false && f10_on == false && f11_on == false)) {
 		for (const element of tab_stocks) {
 
 			let in_ptf = Dom.attribute(element, 'data-ptf');
@@ -384,6 +386,7 @@ filterLstStocks = function() {
 				(!f7_on || (f7_on && Dom.hasClass(element, 'ETF')))    && 
 				(!f8_on || (f8_on && Dom.hasClass(element, 'EQY')))    &&
 				(!f9_on || (f9_on && Dom.hasClass(element, 'FAV')))    &&
+				(!f11_on || (f11_on && Dom.hasClass(element, 'IND')))  &&
 				(!f10_on || (f10_on && in_ptf == 1))
 			) continue;
 
@@ -413,6 +416,25 @@ filterLstAction = function(elt) {
 	setCookie(elt, isCN(elt, 'grey') ? 0 : 1, 1000);
 }
 
+onlyOneActiveButton = function(lst_buttons, bt_clicked) {
+
+	// Si on clique sur le bt deja actif alors on le deactive sans activer un autre bt
+	if (isCN(bt_clicked, 'orange')) {
+		switchColorElement(bt_clicked, 'orange', 'grey');
+		filterLstStocks();
+		setCookie(elt, isCN(bt_clicked, 'grey') ? 0 : 1, 1000);
+	} else {
+		lst_buttons.forEach(function(elt) {
+			if (isCN(elt, 'orange')) {
+				switchColorElement(elt, 'orange', 'grey');
+				setCookie(elt,  0 , 1000);
+			}
+		});
+
+		filterLstAction(bt_clicked);
+	}
+}
+
 // Listener sur bouton filtre default strategie
 Dom.addListener(Dom.id('strategie_default_bt'),   Dom.Event.ON_CLICK, function(event) { filterLstStrategies('strategie_default_bt'); });
 
@@ -423,8 +445,10 @@ Dom.addListener(Dom.id('lst_filter3_bt'),  Dom.Event.ON_CLICK, function(event) {
 Dom.addListener(Dom.id('lst_filter4_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter4_bt'); });
 Dom.addListener(Dom.id('lst_filter5_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter5_bt'); });
 Dom.addListener(Dom.id('lst_filter6_bt'),  Dom.Event.ON_CLICK, function(event) { toogle('other_tags'); });
-Dom.addListener(Dom.id('lst_filter7_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter8_bt', 'orange')) { switchColorElement('lst_filter8_bt', 'orange', 'grey'); setCookie('lst_filter8_bt', 0 , 1000); }; filterLstAction('lst_filter7_bt'); });
-Dom.addListener(Dom.id('lst_filter8_bt'),  Dom.Event.ON_CLICK, function(event) { if (isCN('lst_filter7_bt', 'orange')) { switchColorElement('lst_filter7_bt', 'orange', 'grey'); setCookie('lst_filter7_bt', 0 , 1000); }; filterLstAction('lst_filter8_bt'); });
+
+// ETF/Equity/INDICE
+[ 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter11_bt' ].forEach(function(elt) { Dom.addListener(Dom.id(elt),  Dom.Event.ON_CLICK, function(event) { onlyOneActiveButton([ 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter11_bt' ], elt);  }); });
+
 Dom.addListener(Dom.id('lst_filter9_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
 Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter10_bt'); });
 
@@ -458,7 +482,7 @@ Sortable.initTable(el("lst_stock"));
 addCN("strategie_swiper", "showmine");
 <? if ($sess_context->isSuperAdmin() || !$sess_context->isUserConnected()) { ?>
 	<? if ($sess_context->isUserConnected()) { ?>
-		[ 'lst_filter1_bt', 'lst_filter2_bt', 'lst_filter3_bt', 'lst_filter4_bt', 'lst_filter5_bt', 'lst_filter6_bt', 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter9_bt' ].forEach(function(elt) {
+		[ 'lst_filter1_bt', 'lst_filter2_bt', 'lst_filter3_bt', 'lst_filter4_bt', 'lst_filter5_bt', 'lst_filter6_bt', 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter9_bt', 'lst_filter10_bt', 'lst_filter11_bt' ].forEach(function(elt) {
 			if (getCookie(elt) == 1) switchColorElement(elt, 'orange', 'grey');
 		});
 		if (getCookie('strategie_default_bt') != 1) filterLstStrategies('strategie_default_bt');
