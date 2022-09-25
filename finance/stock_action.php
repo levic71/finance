@@ -127,8 +127,6 @@ if ($action == "reload") {
             
             aafinance::$cache_load = true;
         
-            // Mise a jour des caches : full = false => compact, sinon full (on fait les 2 dans le sens ci dessous)
-            $ret = cacheData::buildCachesSymbol($row['symbol'], false, array("daily" => 1, "weekly" => 1, "monthly" => 1));
             $ret = cacheData::buildCachesSymbol($row['symbol'], true,  array("daily" => 1, "weekly" => 1, "monthly" => 1));
             
             if ($ret['daily'])   computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
