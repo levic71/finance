@@ -108,8 +108,13 @@ while($row = mysqli_fetch_array($res)) {
         // On forece à true !!!!
         $full_data = true;
 
+        foreach(['weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
+            $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
+            $res2 = dbc::execSql($req2);    
+        }
+
         // Mise a jour des caches : full = false => compact (aucun impact sur le calcul des indicateurs) 
-         $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], $full_data);
+        $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], $full_data);
 
         if ($ret['weekly'])
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "WEEKLY");
