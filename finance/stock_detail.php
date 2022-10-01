@@ -244,7 +244,7 @@ $js_bubbles_data = "";
 
 <div class="ui container inverted segment">
     <form class="ui inverted form <?= $readonly ? "readonly" : "" ?>">
-        <h4 class="ui inverted dividing header">Asset Informations</h4>
+        <h4 class="ui inverted dividing header">Asset Informations (<?= $row['engine'] ?>)</h4>
         <div class="field">
             <div class="three fields">
                 <div class="field">
