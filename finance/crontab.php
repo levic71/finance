@@ -53,7 +53,7 @@ $req = "SELECT * FROM stocks ORDER BY symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
-    $full_data = true;     // false => COMPACT, true => FULL
+    $full_data = true;      // false => COMPACT, true => FULL
     $limited_computing = 0; // 0 => pas de limite, 1 => on calcule que sur les 300 dernières valeurs
     // bug si 1 !!!!
 
@@ -68,7 +68,7 @@ while($row = mysqli_fetch_array($res)) {
             }    
             $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='DAILY'";
             $res2 = dbc::execSql($req2);    
-    }
+        }
 
         // Mise a jour des caches : Si full = false => compact (aucun impact sur le calcul des indicateurs) 
         $ret = cacheData::buildDailyCachesSymbol($row['symbol'], $full_data);
@@ -90,7 +90,7 @@ while($row = mysqli_fetch_array($res)) {
             logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data found] [No update]");
 
     } else {
-
+/*
         // Si l'option cache load est positionnee
         if (aafinance::$cache_load) {
             $full_data = true;
@@ -108,11 +108,6 @@ while($row = mysqli_fetch_array($res)) {
         // On forece à true !!!!
         $full_data = true;
 
-        foreach(['weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
-            $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
-            $res2 = dbc::execSql($req2);    
-        }
-
         // Mise a jour des caches : full = false => compact (aucun impact sur le calcul des indicateurs) 
         $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], $full_data);
 
@@ -126,7 +121,7 @@ while($row = mysqli_fetch_array($res)) {
         else
             logger::info("INDIC", $row['symbol'], "[computeMonthlyIndicators] [Cache] [No computing]");
     }
-
+*/
     logger::info("CRON", "---------", "---------------------------------------------------------");
 }
 

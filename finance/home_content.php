@@ -422,12 +422,12 @@ onlyOneActiveButton = function(lst_buttons, bt_clicked) {
 	if (isCN(bt_clicked, 'orange')) {
 		switchColorElement(bt_clicked, 'orange', 'grey');
 		filterLstStocks();
-		setCookie(elt, isCN(bt_clicked, 'grey') ? 0 : 1, 1000);
+		setCookie(bt_clicked, 0, 1000);
 	} else {
 		lst_buttons.forEach(function(elt) {
 			if (isCN(elt, 'orange')) {
 				switchColorElement(elt, 'orange', 'grey');
-				setCookie(elt,  0 , 1000);
+				setCookie(elt,  0, 1000);
 			}
 		});
 

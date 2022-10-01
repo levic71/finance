@@ -30,9 +30,7 @@ function updateSymbolData($symbol, $engine = "alpha") {
         $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
     // Recalcul des indicateurs en fct maj cache
-    $p = ['DAILY', 'WEEKLY', 'MONTHLY'];
-
-    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => true, "limited" => 0, "periods" => $p));
+    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => true, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
 
     // Mise à jour de la cote de l'actif avec la donnée GSheet
     if ($engine != "google" && isset($values[$symbol])) {
