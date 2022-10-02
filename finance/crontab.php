@@ -120,8 +120,8 @@ while($row = mysqli_fetch_array($res)) {
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "MONTHLY");
         else
             logger::info("INDIC", $row['symbol'], "[computeMonthlyIndicators] [Cache] [No computing]");
-    }
 */
+    }
     logger::info("CRON", "---------", "---------------------------------------------------------");
 }
 

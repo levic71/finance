@@ -110,6 +110,19 @@ if ($action == "reload") {
 
         if ($row['engine'] == "alpha") {
 
+            try {
+                $data = aafinance::searchSymbol($row['symbol']);
+                if (isset($data["bestMatches"])) {
+                    foreach ($data["bestMatches"] as $key => $val) {
+                        $req = "UPDATE stocks SET name='".addslashes($val["2. name"])."', type='".$val["3. type"]."', region='".$val["4. region"]."', marketopen='".$val["5. marketOpen"]."', marketclose='".$val["6. marketClose"]."', timezone='".$val["7. timezone"]."', currency='".$val["8. currency"]."' WHERE symbol='".$val["1. symbol"]."'";
+                        $res = dbc::execSql($req);
+                    }
+                }
+            } catch (RuntimeException $e) {
+                if ($e->getCode() == 1) logger::error("RELOAD", $row['symbol'], $e->getMessage());
+                if ($e->getCode() == 2) logger::info("RELOAD",  $row['symbol'], $e->getMessage());
+            }
+    
             $limited_computing = 0;
 
             foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
@@ -135,10 +148,13 @@ if ($action == "reload") {
         } else {
             $ret = cacheData::insertAllDataQuoteFromGS($row['symbol'], $row['gf_symbol']);
         }
+
+        updateSymbolData($row['symbol'], $row['engine']);
+
     }
 }
 
-if ($action == "upt" || $action == "sync") {
+if ($action == "upt") {
 
     logger::info("STOCK", "UPDATE", "###########################################################");
 
@@ -161,33 +177,6 @@ if ($action == "upt" || $action == "sync") {
             stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."'
         ";
         $res = dbc::execSql($req);
-
-        // Mise a jour des data market de l'actif
-        if ($action == "sync") {
-            try {
-
-                if ($row['engine'] == "alpha") {
-                    $data = aafinance::searchSymbol($symbol);
-
-                    if (isset($data["bestMatches"])) {
-                        foreach ($data["bestMatches"] as $key => $val) {
-                            $req = "UPDATE stocks SET name='".addslashes($val["2. name"])."', type='".$val["3. type"]."', region='".$val["4. region"]."', marketopen='".$val["5. marketOpen"]."', marketclose='".$val["6. marketClose"]."', timezone='".$val["7. timezone"]."', currency='".$val["8. currency"]."' WHERE symbol='".$val["1. symbol"]."'";
-                            $res = dbc::execSql($req);
-                        }
-                    }
-                } else {
-                    $ret = cacheData::insertAllDataQuoteFromGS($row['symbol'], $row['gf_symbol']);
-                }
-
-                updateSymbolData($symbol, $row['engine']);
-
-                logger::info("SYNC", $symbol, "[OK]");
-
-            } catch (RuntimeException $e) {
-                if ($e->getCode() == 1) logger::error("UDT", $row['symbol'], $e->getMessage());
-                if ($e->getCode() == 2) logger::info("UDT", $row['symbol'], $e->getMessage());
-            }
-        }
 
         logger::info("STOCK", $symbol, "[OK]");
     }
@@ -214,7 +203,7 @@ if ($action == "del") {
 
 var p = loadPrompt();
 
-<? if ($action == "upt" || $action == "indic" || $action == "sync" || $action == "reload") { ?>
+<? if ($action == "upt" || $action == "indic" || $action == "reload") { ?>
     go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
     p.success('Actif <?= $symbol ?> mis à jour');
 <? } ?>

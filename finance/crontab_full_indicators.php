@@ -22,7 +22,7 @@ $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
 	echo "Computing : ".$row['symbol']."<br />";
-	computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
+	computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['WEEKLY', 'MONTHLY']));
 
 }
 
