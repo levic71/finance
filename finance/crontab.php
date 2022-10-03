@@ -48,6 +48,7 @@ logger::info("CRON", "BEGIN", "#################################################
 $full_data = true;      // false => COMPACT, true => FULL
 $limited_computing = 0; // 0 => pas de limite, 1 => on calcule que sur les 300 dernières valeurs
 // bug si 1 !!!!
+$counter = 0;
 
 // ////////////////////////////////////////////////////////
 // Parcours des actifs suivis
@@ -58,7 +59,7 @@ while($row = mysqli_fetch_array($res)) {
 
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
-/*
+/* */
         if (aafinance::$cache_load) {
             foreach(['daily_time_series_adjusted'] as $key) {
                 $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
@@ -76,7 +77,7 @@ while($row = mysqli_fetch_array($res)) {
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
         else
             logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
-*/
+/* */
 
         // Mise à jour de la cote de l'actif avec la donnée GSheet
         if (isset($values[$row['symbol']])) {
@@ -121,10 +122,11 @@ while($row = mysqli_fetch_array($res)) {
             $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
             $res2 = dbc::execSql($req2);
             logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] OK");
+            $counter++;
         }
 
     }
-    logger::info("CRON", "---------", "---------------------------------------------------------");
+
 }
 
 if (tools::isLocalHost()) cacheData::deleteTMPFiles();
