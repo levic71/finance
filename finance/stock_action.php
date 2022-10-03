@@ -136,7 +136,7 @@ if ($action == "reload") {
             $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='MONTHLY'";
             $res2 = dbc::execSql($req2);
             
-            aafinance::$cache_load = true;
+            aafinance::$cache_load = false;
         
             $ret = cacheData::buildCachesSymbol($row['symbol'], true,  array("daily" => 1, "weekly" => 1, "monthly" => 1));
             

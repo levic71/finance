@@ -536,7 +536,7 @@ if (!$readonly) {
             <button id="nav_menu_bt" class="dropbtn circular ui right floated grey button icon_action"><i class="inverted white ellipsis vertical icon"></i></button>
             <div class="ui vertical menu nav nav_menu_top" id="nav_menu">
                 <a class="item" id="stock_indic_bt"><span>Rebuild Indicators</span></a>
-                <a class="item" id="stock_reload_bt"><span>Reload cache data</span></a>
+                <a class="item" id="stock_reload_bt"><span>Reload Data</span></a>
             </div>
             <button id="stock_edit_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white edit icon"></i> Modifier</button>
         <? } else if ($sess_context->isSuperAdmin()) { ?>
