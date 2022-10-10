@@ -178,7 +178,12 @@ foreach($gsa as $key => $val) {
 	// Depassement des alertes si elles ont ete positionnees
 	if (isset($val[3])) {
 
-//				if ($val[0] == "VIX") echo $val[0].":".$val[10].":".$val[4];
+		$colr_up = $val[0] == "VIX" ? "red" : "green";
+		$icon_up = $val[0] == "VIX" ? "arrow down" : "arrow up";
+		$sens_up = $val[0] == "VIX" ? -1 : 1;
+		$colr_down = $val[0] == "VIX" ? "green" : "red";
+		$icon_down = $val[0] == "VIX" ? "arrow up" : "arrow down";
+		$sens_down = $val[0] == "VIX" ? 1 : -1;
 
 		$seuils = explode(';', $val[3]);
 
@@ -186,9 +191,9 @@ foreach($gsa as $key => $val) {
 		foreach($seuils as $i => $v) {
 
 			if (depassementALaHausse($val[10], $val[4], $v))
-				$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'cours', 'sens' => 1, 'seuil' => $v, 'colr' => 'green', 'icon' => 'arrow up' ];
+				$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'cours', 'sens' => $sens_up, 'seuil' => $v, 'colr' => $colr_up, 'icon' => $icon_up ];
 			if (depassementALaBaisse($val[10], $val[4], $v))
-				$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'cours', 'sens' => -1, 'seuil' => $v, 'colr' => 'red', 'icon' => 'arrow down' ];
+				$notifs[] =  [ 'user_id' => $user_id, 'actif' => $val[0], 'type' => 'cours', 'sens' => $sens_down, 'seuil' => $v, 'colr' => $colr_down, 'icon' => $icon_down ];
 
 		}
 

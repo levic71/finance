@@ -59,7 +59,10 @@ while($row = mysqli_fetch_array($res)) {
 
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
-/* */
+/*
+
+        // Mise à jour journaliere des cotations
+        
         if (aafinance::$cache_load) {
             foreach(['daily_time_series_adjusted'] as $key) {
                 $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
@@ -77,7 +80,7 @@ while($row = mysqli_fetch_array($res)) {
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
         else
             logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
-/* */
+*/
 
         // Mise à jour de la cote de l'actif avec la donnée GSheet
         if (isset($values[$row['symbol']])) {
