@@ -89,7 +89,7 @@ while($row = mysqli_fetch_array($res)) {
             // Mise a jour des indicateurs du jour (avec quotes)
             computeQuoteIndicatorsSymbol($row['symbol']);
 
-            if ($counter++ <= 20 && $row['date_update'] != date('Y-m-d')) {
+            if ($counter++ <= 20 ) {
                 computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['DAILY']));
                 $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
                 $res2 = dbc::execSql($req2);
