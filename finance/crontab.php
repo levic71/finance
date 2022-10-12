@@ -47,7 +47,7 @@ logger::info("CRON", "BEGIN", "#################################################
 
 $full_data = true;      // false => COMPACT, true => FULL
 $limited_computing = 0; // 0 => pas de limite, 1 => on calcule que sur les 300 dernières valeurs
-// bug si 1 !!!!
+
 $counter = 0;
 
 // ////////////////////////////////////////////////////////
@@ -88,6 +88,14 @@ while($row = mysqli_fetch_array($res)) {
 
             // Mise a jour des indicateurs du jour (avec quotes)
             computeQuoteIndicatorsSymbol($row['symbol']);
+
+            if ($counter++ <= 20 && $row['date_update'] != date('Y-m-d')) {
+                computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['DAILY']));
+                $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
+                $res2 = dbc::execSql($req2);
+                logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] OK");
+            }
+    
         }
         else
             logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data found] [No update]");
