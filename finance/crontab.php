@@ -94,7 +94,8 @@ while($row = mysqli_fetch_array($res)) {
                 $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
                 $res2 = dbc::execSql($req2);
                 logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] OK");
-            }
+            } else
+                logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] PASS");
     
         }
         else
