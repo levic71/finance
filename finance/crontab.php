@@ -89,13 +89,15 @@ while($row = mysqli_fetch_array($res)) {
             // Mise a jour des indicateurs du jour (avec quotes)
             computeQuoteIndicatorsSymbol($row['symbol']);
 
-            if ($counter++ <= 20 ) {
-                computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['DAILY']));
+            if ($counter++ <= 10) {
+                computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => false, "limited" => 0, "periods" => ['DAILY']));
                 $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
                 $res2 = dbc::execSql($req2);
                 logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] OK");
             } else
                 logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] PASS [".$counter."][".$row['date_update']."]");
+
+            $counter++;
     
         }
         else
