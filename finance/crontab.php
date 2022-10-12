@@ -95,7 +95,7 @@ while($row = mysqli_fetch_array($res)) {
                 $res2 = dbc::execSql($req2);
                 logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] OK");
             } else
-                logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] PASS");
+                logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] PASS [".$counter."][".$row['date_update']."]");
     
         }
         else
