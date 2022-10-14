@@ -89,7 +89,7 @@ while($row = mysqli_fetch_array($res)) {
             // Mise a jour des indicateurs du jour (avec quotes)
             computeQuoteIndicatorsSymbol($row['symbol']);
 
-            if ($counter++ <= 10) {
+            if ($counter++ <= 10 && $row['date_update'] != date('Y-m-d')) {
                 computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => false, "limited" => 0, "periods" => ['DAILY']));
                 $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
                 $res2 = dbc::execSql($req2);
@@ -104,7 +104,7 @@ while($row = mysqli_fetch_array($res)) {
             logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data found] [No update]");
 
     } else {
-/*
+
         // Si l'option cache load est positionnee
         if (aafinance::$cache_load) {
             foreach(['weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
@@ -129,7 +129,7 @@ while($row = mysqli_fetch_array($res)) {
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "MONTHLY");
         else
             logger::info("INDIC", $row['symbol'], "[computeMonthlyIndicators] [Cache] [No computing]");
-*/
+
         
         if ($row['date_update'] != date('Y-m-d')) {
             computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['WEEKLY', 'MONTHLY']));
