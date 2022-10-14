@@ -59,7 +59,6 @@ while($row = mysqli_fetch_array($res)) {
 
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
-/*
 
         // Mise à jour journaliere des cotations
         
@@ -80,7 +79,7 @@ while($row = mysqli_fetch_array($res)) {
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
         else
             logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
-*/
+
 
         // Mise à jour de la cote de l'actif avec la donnée GSheet
         if (isset($values[$row['symbol']])) {
@@ -89,7 +88,7 @@ while($row = mysqli_fetch_array($res)) {
             // Mise a jour des indicateurs du jour (avec quotes)
             computeQuoteIndicatorsSymbol($row['symbol']);
 
-            if ($counter++ <= 10) {
+            if ($counter++ <= 10 && $row['date_update'] != date('Y-m-d')) {
                 computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => false, "limited" => 0, "periods" => ['DAILY']));
                 $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
                 $res2 = dbc::execSql($req2);
