@@ -59,7 +59,6 @@ while($row = mysqli_fetch_array($res)) {
 
     if (cacheData::isMarketOpen($row['timezone'], $row['marketopen'], $row['marketclose'])) {
 
-/*
 
         // Mise à jour journaliere des cotations
         
@@ -80,7 +79,7 @@ while($row = mysqli_fetch_array($res)) {
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
         else
             logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
-*/
+
 
         // Mise à jour de la cote de l'actif avec la donnée GSheet
         if (isset($values[$row['symbol']])) {
@@ -104,7 +103,7 @@ while($row = mysqli_fetch_array($res)) {
             logger::info("GSHEET", $row['symbol'], "[updateQuotesWithGSData] [No data found] [No update]");
 
     } else {
-
+/*
         // Si l'option cache load est positionnee
         if (aafinance::$cache_load) {
             foreach(['weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
@@ -129,7 +128,7 @@ while($row = mysqli_fetch_array($res)) {
             computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "MONTHLY");
         else
             logger::info("INDIC", $row['symbol'], "[computeMonthlyIndicators] [Cache] [No computing]");
-
+*/
         
         if ($row['date_update'] != date('Y-m-d')) {
             computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['WEEKLY', 'MONTHLY']));
