@@ -20,11 +20,11 @@ function updateGoogleSheet() {
 
 	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
 
-	$update_range = $onglet."!A3:U1000";
+	$_range = $onglet."!A3:U1000";
 
 	// Clear values
 	$requestBody = new Google_Service_Sheets_ClearValuesRequest();
-	$response = $service->spreadsheets_values->clear($spreadsheetId, $update_range, $requestBody);
+	$response = $service->spreadsheets_values->clear($spreadsheetId, $_range, $requestBody);
 
 	// Update data : Mise a jour des valeurs recherchees
 	$values = array();
@@ -46,17 +46,27 @@ function updateGoogleSheet() {
 			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',I$2))',
 			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',J$2))',
 			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',K$2))',
-			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-1,12,31)),2,2)-1)',
-			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",TODAY()-7),2,2)-1)',
-			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",TODAY()-30),2,2)-1)',
-			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-1,month(today()),day(today()))),2,2)-1)',
-			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-3,month(today()),day(today()))),2,2)-1)',
-			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$10,TODAY()),,3)))',
-			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$9,TODAY()),,3)))',
-			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$8,TODAY()),,3)))',
-			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$7,TODAY()),,3)))',
-			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$6,TODAY()),,3)))'
-		];
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			''
+/*
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-1,12,31)),2,2)-1, 4))',
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",TODAY()-7),2,2)-1, 4))',
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",TODAY()-30),2,2)-1, 4))',
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-1,month(today()),day(today()))),2,2)-1, 4))',
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-3,month(today()),day(today()))),2,2)-1, 4))',
+ 			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$10,TODAY()),,3)), 2))',
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$9,TODAY()),,3)), 2))',
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$8,TODAY()),,3)), 2))',
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$7,TODAY()),,3)), 2))',
+			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$6,TODAY()),,3)), 2))'
+ */		];
 		$i++;
 	}
 
@@ -68,10 +78,9 @@ function updateGoogleSheet() {
 		'valueInputOption' => 'USER_ENTERED'
 	];
 
-	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
+	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $_range, $body, $params);
 
 	// Update data : Mise a jour de l'entete
-	$update_range = $onglet."!A1:A1";
 	$values = array();
 	$datetime = new DateTime();
 	$datetime->setTimezone(new DateTimeZone('Europe/Paris'));
@@ -80,12 +89,10 @@ function updateGoogleSheet() {
 	$body = new Google_Service_Sheets_ValueRange([
 		'values' => $values
 	]);
-	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
-	
+	$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $onglet."!A1:A1", $body, $params);
 
 	// Reccuperation des data de finance une fois que google a fait ca maj automatiquement
-	$get_range = $onglet."!A3:K200";
-	$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+	$response = $service->spreadsheets_values->get($spreadsheetId, $_range);
 	$values = $response->getValues();
 
 	if (!empty($values)) {
@@ -276,7 +283,7 @@ function getGoogleSheetStockData($range, $onglet = "data") {
 $force = 0;
 
 foreach(['force'] as $key)
-    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
+    $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 
 if ($force == 1) {
