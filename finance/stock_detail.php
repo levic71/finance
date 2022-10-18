@@ -33,7 +33,7 @@ $readonly = $sess_context->isSuperAdmin() && $edit == 1 ? false : true;
 $db = dbc::connect();
 
 // Recuperation des infos de l'actif selectionne
-$req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE s.symbol='" . $symbol . "'";
+$req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol LEFT JOIN trend_following t ON s.symbol = t.symbol AND t.user_id=".$sess_context->getUserId()." WHERE s.symbol='" . $symbol . "'";
 $res = dbc::execSql($req);
 
 // Bye bye si inexistant
@@ -187,13 +187,6 @@ function format_data($data, $period) {
 // Recuperation de tous les indicateurs DAILY de l'actif
 $data_daily = getTimeSeriesData("daily_time_series_adjusted", "DAILY", $symbol);
 
-// On ajoute la cotation du jour
-if ($row['price'] != "") {
-    $data_daily_today = array("symbol" => $row["symbol"], "day" => $row["day"], "open" => $row["open"], "high" => $row["high"], "low" => $row["low"], "close" => $row["price"], "adjusted_close" => $row["price"], "volume" => $row["volume"], "period" => "DAILY", "DM" => $data['DM'], "MM7" => $data['MM7'], "MM20" => $data['MM20'], "MM50" => $data["MM50"], "MM200" => $data['MM200'], "RSI14" => $data["RSI14"]);
-    $data_daily["rows"][]  = $data_daily_today;
-    $data_daily["colrs"][] = 1;
-}
-
 // Recuperation de tous les indicateurs WEEKLY/MONTHLY de l'actif
 $data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $symbol);
 $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $symbol);
@@ -344,25 +337,30 @@ $js_bubbles_data = "";
                     </div>
                 </div>
             </div>
-<? if ($in_ptf) { ?>
-            <div class="three fields">
+<? if ($sess_context->isUserConnected()) { ?>
+            <div class="four fields">
                 <div class="field">
                     <label>Stop loss</label>
-                    <input type="text" id="f_stoploss" value="<?= isset($trend_following[$symbol]['stop_loss']) ? sprintf("%.2f", $trend_following[$symbol]['stop_loss']) : "" ?>" placeholder="0">
+                    <input type="text" id="f_stoploss" value="<?= $row['stop_loss'] ?>" placeholder="0">
                 </div>
                 <div class="field">
                     <label>Objectif</label>
-                    <input type="text" id="f_objectif" value="<?= isset($trend_following[$symbol]['objectif']) ? sprintf("%.2f", $trend_following[$symbol]['objectif']) : "" ?>" placeholder="0">
+                    <input type="text" id="f_objectif" value="<?= $row['objectif'] ?>" placeholder="0">
                 </div>
                 <div class="field">
                     <label>Stop profit</label>
-                    <input type="text" id="f_stopprofit" value="<?= isset($trend_following[$symbol]['stop_profit']) ? sprintf("%.2f", $trend_following[$symbol]['stop_profit']) : "" ?>" placeholder="0">
+                    <input type="text" id="f_stopprofit" value="<?= $row['stop_profit'] ?>" placeholder="0">
+                </div>
+                <div class="field">
+                    <label>Seuils</label>
+                    <input type="text" id="f_seuils" value="<?= $row['seuils'] ?>" placeholder="0.00;0.00;...">
                 </div>
             </div>
 <? } else { ?>
             <input type="hidden" name="f_stoploss"   value="" />
             <input type="hidden" name="f_objectif"   value="" />
             <input type="hidden" name="f_stopprofit" value="" />
+            <input type="hidden" name="f_seuils"     value="" />
 <? } ?>
         </div>
     </form>

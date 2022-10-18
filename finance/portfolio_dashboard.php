@@ -175,6 +175,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					$stop_loss   = isset($lst_trend_following[$key]['stop_loss'])   ? $lst_trend_following[$key]['stop_loss']   : 0;
 					$stop_profit = isset($lst_trend_following[$key]['stop_profit']) ? $lst_trend_following[$key]['stop_profit'] : 0;
 					$objectif    = isset($lst_trend_following[$key]['objectif'])    ? $lst_trend_following[$key]['objectif']    : 0;
+					$seuils      = isset($lst_trend_following[$key]['seuils'])      ? $lst_trend_following[$key]['seuils']      : "";
 
 					$perf_indicator = calc::getPerfIndicator($qs);
 					$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
@@ -213,6 +214,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 							<div class="'.(intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
 							<div class="'.(intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
 							<div class="'.(intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
+							<div class="hidden grey floating ui label">'.sprintf("%s", $seuils).'</div>
 						</div></td>
 
 						<td id="f_dm_'.$i.'"       class="center aligned '.($qs['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$qs['DM'].'">'.$qs['DM'].' %</td>
@@ -720,6 +722,7 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 		var stoploss   = divs[0].innerHTML;
 		var objectif   = divs[1].innerHTML;
 		var stopprofit = divs[2].innerHTML;
+		var seuils     = divs[3].innerHTML;
 		let perf_stoploss   = stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2);
 		let perf_stopprofit = stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2);
 		let perf_objectif   = objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2);
@@ -731,6 +734,7 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 							'<label>Stop Loss   <span class="mini_button ' + (perf_stoploss >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stoploss   + '%</span></label><input type="text"<input id="f_stoploss"   class="swal2-input" type="text" placeholder="0.00" value="' + stoploss   + '" />' +
 							'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
 							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
+							'<label>Seuils</label><input type="text"<input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
 						'</div></div>',
 				showCancelButton: true,
 				confirmButtonText: 'Valider',
@@ -743,11 +747,12 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 					if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) return false;
 					if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999)) return false;
 					var symbol = Dom.attribute(element, 'data-pname');
-					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif' ]) + '&symbol=' + symbol;
+					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils' ]) + '&symbol=' + symbol;
 					go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=stops&' + params, no_data: 1 });
 					divs[0].innerHTML = valof('f_stoploss');
 					divs[1].innerHTML = valof('f_objectif');
 					divs[2].innerHTML = valof('f_stopprofit');
+					divs[3].innerHTML = valof('f_seuils');
 					Swal.fire('Données modifiées');
 				}
 			});

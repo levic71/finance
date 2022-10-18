@@ -8,7 +8,7 @@ include "common.php";
 
 if (!$sess_context->isUserConnected()) tools::do_redirect("index.php");
 
-foreach(['action', 'symbol', 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_quote'] as $key)
+foreach(['action', 'symbol', 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_quote', 'f_seuils'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -16,10 +16,10 @@ $db = dbc::connect();
 if ($action == "stops") {
 
     $req = "
-        INSERT INTO trend_following (user_id, symbol, stop_loss, stop_profit, objectif)
-        VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_stoploss)."', '".sprintf("%2.f", $f_stopprofit)."', '".sprintf("%2.f", $f_objectif)."')
+        INSERT INTO trend_following (user_id, symbol, stop_loss, stop_profit, objectif, seuils)
+        VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_stoploss)."', '".sprintf("%2.f", $f_stopprofit)."', '".sprintf("%2.f", $f_objectif)."', '".sprintf("%s", $f_seuils)."')
         ON DUPLICATE KEY UPDATE
-        stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."'
+        stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."', seuils='".sprintf("%s", $f_seuils)."'
     ";
 
 }

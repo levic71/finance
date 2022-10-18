@@ -178,9 +178,12 @@ function updateQuotesWithGSData($val) {
 		else
 			$day = date("Y-m-d");
 
+		// Mise à jour de la cotation dans quote et dans daily
 		$req = "UPDATE quotes SET price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."', day='".$day."' WHERE symbol='".$symbol."'";
-		$ret = "[QUOTES] [price='".$val[2]."', open='".$val[3]."', volume='".$val[6]."', percent='".$val[10]."', ... ]";
 		$res = dbc::execSql($req);
+		$req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."','".$day."', '".$val[3]."', '".$val[4]."', '".$val[5]."', '".$val[2]."', '".$val[2]."', '".$val[6]."', '0', '0') ON DUPLICATE KEY UPDATE open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', close='".$val[2]."', adjusted_close='".$val[2]."', volume='".$val[6]."', dividend='0', split_coef='0'";
+		$res = dbc::execSql($req);
+		$ret = "[QUOTES+DAILY_TIME_SERIES_ADJUSTED] [price='".$val[2]."', open='".$val[3]."', volume='".$val[6]."', percent='".$val[10]."', ... ]";
 
 		logger::info("GSHEET", $symbol, $ret);
 	}

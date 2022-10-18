@@ -1132,14 +1132,19 @@ class cacheData {
 
     public static $lst_cache = ["OVERVIEW", "QUOTE", "DAILY_TIME_SERIES_ADJUSTED_FULL", "DAILY_TIME_SERIES_ADJUSTED_COMPACT", "WEEKLY_TIME_SERIES_ADJUSTED_FULL", "WEEKLY_TIME_SERIES_ADJUSTED_COMPACT", "MONTHLY_TIME_SERIES_ADJUSTED_FULL", "MONTHLY_TIME_SERIES_ADJUSTED_COMPACT", "INTRADAY"];
 
-    public static function isMarketOpen($timezone, $market_open, $market_close) {
+    public static function isMarketOpen($market_status)  { return ($market_status > 0); }
+    public static function isMarketClose($market_status) { return ($market_status < 1); }
+    public static function isMarketAfterClosing($market_status) { return ($market_status == -1); }
+    public static function isMarketOnWeekend($market_status) { return ($market_status == -2); }
 
-        $ret = false;
+    public static function getMarketStatus($timezone, $market_open, $market_close) {
+
+        $ret = 0;
 
         // if (tools::isLocalHost()) return true;
 
         // Si on n'est pas en semaine
-        if (date("N") >= 6) return false;
+        if (date("N") >= 6) return -2;
 
         // Ajustement heure par rapport UTC (On ajoute 15 min pour etre sur d'avoir la premiere cotation)
         $my_date_time=time();
@@ -1150,7 +1155,11 @@ class cacheData {
         $dateTimestamp1 = strtotime(date("Y-m-d ".$market_open)) + (15*60);  // On attend 15min pour etre sur d'avoir le cours d'ouverture
         $dateTimestamp2 = strtotime(date("Y-m-d ".$market_close)) + (30*60); // On prolonge de 30min pour etre sur d'avoir le cours de cloture
 
-        if ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2) $ret = true;
+        // Market Open
+        if ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 < $dateTimestamp2) $ret = 1;
+
+        // Market Close (after closing)
+        if ($dateTimestamp0 > $dateTimestamp1 && $dateTimestamp0 > $dateTimestamp2) $ret = -1;
 
         return $ret;
     }
@@ -1315,6 +1324,8 @@ class cacheData {
 
             }
 
+            if (false) {
+
             // Recuperation du nombre de ligne de cotation weekly
             $ret = getGoogleSheetStockData("A3", "weekly");
             $nb = $ret[0][0];
@@ -1351,6 +1362,8 @@ class cacheData {
                     }
 
                 }
+            }
+
             }
 
             $retour = true;
