@@ -20,14 +20,13 @@ function updateGoogleSheet() {
 
 	$spreadsheetId = "1DuYV6Wbpg2evUdvL2X4VNo3T2bnNPBQzXEh92oj-3Xo";
 
-	// Clear values
-	$clear_range = $onglet.'!A3:H1000'; 
+	$update_range = $onglet."!A3:U1000";
 
+	// Clear values
 	$requestBody = new Google_Service_Sheets_ClearValuesRequest();
-	$response = $service->spreadsheets_values->clear($spreadsheetId, $clear_range, $requestBody);
+	$response = $service->spreadsheets_values->clear($spreadsheetId, $update_range, $requestBody);
 
 	// Update data : Mise a jour des valeurs recherchees
-	$update_range = $onglet."!A3:K200";
 	$values = array();
 
 	$req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol WHERE NOT s.gf_symbol = '' ORDER BY s.symbol";
@@ -46,7 +45,17 @@ function updateGoogleSheet() {
 			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',H$2))',
 			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',I$2))',
 			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',J$2))',
-			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',K$2))'
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',K$2))',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-1,12,31)),2,2)-1)',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",TODAY()-7),2,2)-1)',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",TODAY()-30),2,2)-1)',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-1,month(today()),day(today()))),2,2)-1)',
+			'=IF(ISBLANK($B'.$i.'),"",GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-3,month(today()),day(today()))),2,2)-1)',
+			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$10,TODAY()),,3)))',
+			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$9,TODAY()),,3)))',
+			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$8,TODAY()),,3)))',
+			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$7,TODAY()),,3)))',
+			'=IF(ISBLANK($B'.$i.'),"",AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$6,TODAY()),,3)))'
 		];
 		$i++;
 	}
@@ -178,9 +187,12 @@ function updateQuotesWithGSData($val) {
 		else
 			$day = date("Y-m-d");
 
+		// Mise à jour de la cotation dans quote et dans daily
 		$req = "UPDATE quotes SET price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."', day='".$day."' WHERE symbol='".$symbol."'";
-		$ret = "[QUOTES] [price='".$val[2]."', open='".$val[3]."', volume='".$val[6]."', percent='".$val[10]."', ... ]";
 		$res = dbc::execSql($req);
+		$req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."','".$day."', '".$val[3]."', '".$val[4]."', '".$val[5]."', '".$val[2]."', '".$val[2]."', '".$val[6]."', '0', '0') ON DUPLICATE KEY UPDATE open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', close='".$val[2]."', adjusted_close='".$val[2]."', volume='".$val[6]."', dividend='0', split_coef='0'";
+		$res = dbc::execSql($req);
+		$ret = "[QUOTES+DAILY_TIME_SERIES_ADJUSTED] [price='".$val[2]."', open='".$val[3]."', volume='".$val[6]."', percent='".$val[10]."', ... ]";
 
 		logger::info("GSHEET", $symbol, $ret);
 	}

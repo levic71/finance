@@ -14,7 +14,7 @@ if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 $pea = 0;
 $engine = "alpha";
 
-foreach(['action', 'engine', 'symbol', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit'] as $key)
+foreach(['action', 'engine', 'symbol', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit', 'f_seuils'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if ($symbol == "") tools::do_redirect("index.php");
@@ -171,10 +171,10 @@ if ($action == "upt") {
 
         // Mise a jour des data Trendfollowing (stoploss, objectif, stopprofit)
         $req = "
-            INSERT INTO trend_following (user_id, symbol, stop_loss, stop_profit, objectif)
-            VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_stoploss)."', '".sprintf("%2.f", $f_stopprofit)."', '".sprintf("%2.f", $f_objectif)."')
+            INSERT INTO trend_following (user_id, symbol, stop_loss, stop_profit, objectif, seuils)
+            VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_stoploss)."', '".sprintf("%2.f", $f_stopprofit)."', '".sprintf("%2.f", $f_objectif)."', '".sprintf("%s", $f_seuils)."')
             ON DUPLICATE KEY UPDATE
-            stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."'
+            stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."', seuils='".sprintf("%s", $f_seuils)."'
         ";
         $res = dbc::execSql($req);
 
