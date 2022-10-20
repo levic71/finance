@@ -547,20 +547,24 @@ class calc {
         $ret = array();
 
         $i = 0;
-        $ref_DAY = "";
-        $ref_PCT = "";
-        $ref_MJ0 = "";
-        $ref_YJ0 = "";
-        $ref_TJ0 = 0;
-        $ref_T1M = 0;
-        $ref_T3M = 0;
-        $ref_T6M = 0;
+        $ref_DAY  = "";
+        $ref_PCT  = "";
+        $ref_MJ0  = "";
+        $ref_YJ0  = "";
+        $ref_TJ0  = 0;
+        $ref_T1M  = 0; // Pour calcul variation 1M
+        $ref_T3M  = 0;
+        $ref_T6M  = 0;
+        $ref_TYTD = 0; // Pour calcul variation YTD
+        $ref_T1W  = 0; // Pour calcul variation 1W
+        $ref_T1Y  = 0; // Pour calcul variation 1Y
+        $ref_T3Y  = 0; // Pour calcul variation 3Y
         $ref2_T1M = 0;
         $ref2_T3M = 0;
         $ref2_T6M = 0;
-        $ref_D1M = "0000-00-00";
-        $ref_D3M = "0000-00-00";
-        $ref_D6M = "0000-00-00";
+        $ref_D1M  = "0000-00-00";
+        $ref_D3M  = "0000-00-00";
+        $ref_D6M  = "0000-00-00";
 
         $quote = $data['quote'];
 
@@ -615,6 +619,10 @@ class calc {
             if ($i == 22)  $ref_T1M = floatval($close_value); // 22j ouvrés par mois en moy
             if ($i == 66)  $ref_T3M = floatval($close_value);
             if ($i == 132) $ref_T6M = floatval($close_value);
+            if ($i == 7)   $ref_T1W = floatval($close_value);
+            if ($i == 365) $ref_T1Y = floatval($close_value);
+            if ($i == (365*3)) $ref_T3Y = floatval($close_value);
+            if (substr($row['day'], 0, 7) == date("Y-01")) $ref_TYTD = floatval($close_value); // Permet de memoriser la cotation du jour ouvert de janvier
 
             // Recuperation cotation en fin de mois fixe (le mois en cours pouvant etre non terminé)
             if ($ref2_T1M == 0 && substr($row['day'], 0, 7) == substr($ref_D1M, 0, 7)) {
@@ -642,9 +650,16 @@ class calc {
 
         $ret['ref_day'] = $ref_DAY;
 
+        // Calcul variation YTD/1W/1M/1Y/3Y
+        $ret['var_YTD'] = $ref_TYTD == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TYTD / $ref_TJ0) - 1;
+        $ret['var_1W']  = $ref_T1W  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_T1W  / $ref_TJ0) - 1;
+        $ret['var_1M']  = $ref_T1M  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_T1M  / $ref_TJ0) - 1;
+        $ret['var_1Y']  = $ref_T1Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_T1Y  / $ref_TJ0) - 1;
+        $ret['var_3Y']  = $ref_T3Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_T3Y  / $ref_TJ0) - 1;
+
         // Vraiment utile ? On ne peut pas le recuperer de la DB ?
         $ret['ref_close'] = $ref_TJ0;
-        $ret['ref_pct'] = $ref_PCT;
+        $ret['ref_pct']   = $ref_PCT;
 
 
         // A QUOI CA SERT DE CALCULER MMX ??? On le fait dans Indicators !!!

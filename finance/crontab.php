@@ -93,6 +93,7 @@ while($row = mysqli_fetch_array($res)) {
             // Mise a jour des indicateurs du jour (avec quotes)
             computeQuoteIndicatorsSymbol($row['symbol']);
     
+            logger::info("CRON", $row['symbol'], "[updateQuotesWithGSData+computeQuoteIndicatorsSymbol] OK");
         }
 
     }
@@ -102,14 +103,14 @@ while($row = mysqli_fetch_array($res)) {
 
         if ($counter <= 10 && $row['date_update'] != date('Y-m-d')) {
 
-            computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => false, "limited" => 0, "periods" => ['DAILY']));
+            computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
             
             $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
             $res2 = dbc::execSql($req2);
 
-            logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] OK");
             $counter++;
 
+            logger::info("CRON", $row['symbol'], "[computePeriodIndicatorsSymbol DAILY] OK");
         }
 
     }
@@ -152,9 +153,9 @@ while($row = mysqli_fetch_array($res)) {
             $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
             $res2 = dbc::execSql($req2);
 
-            logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions] OK");
             $counter++;
 
+            logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions WEEKLY+MONTHLY] OK");
         }
 
     }
