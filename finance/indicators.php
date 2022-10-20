@@ -72,13 +72,17 @@ function ComputeDMX($data, $size) {
         array_shift($x);
     }
 
-
     // Tri date ascendente pour revenir en nominal
     $z = array_reverse($tab);
 
 /*     foreach($z as $key => $val) tools::pretty($val); */
 
     return array(
+        "YTD"  => fullFillArray($data, array_column($z, "var_YTD")),
+        "1W"   => fullFillArray($data, array_column($z, "var_1W")),
+        "1M"   => fullFillArray($data, array_column($z, "var_1M")),
+        "1Y"   => fullFillArray($data, array_column($z, "var_1Y")),
+        "3Y"   => fullFillArray($data, array_column($z, "var_3Y")),
         "DM"   => fullFillArray($data, array_column($z, "MMZDM")),
         "DMD1" => fullFillArray($data, array_column($z, "MMZ1MDate")),
         "DMD2" => fullFillArray($data, array_column($z, "MMZ3MDate")),
@@ -104,11 +108,11 @@ function insertIntoTimeSeries($symbol, $data, $table) {
 }
 
 function insertIntoIndicators($symbol, $day, $period, $item) {
-    $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM100, MM200, RSI14) VALUES('".$symbol."', '".$day."', '".strtoupper($period)."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM100"]."', '".$item["MM200"]."', '".$item["RSI14"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM100='".$item["MM100"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."'";
+    $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM100, MM200, RSI14, ytd, 1w, 1m, 1y, 3y) VALUES('".$symbol."', '".$day."', '".strtoupper($period)."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM100"]."', '".$item["MM200"]."', '".$item["RSI14"]."', '".$item["YTD"]."', '".$item["1W"]."', '".$item["1M"]."', '".$item["1Y"]."', '".$item["3Y"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM100='".$item["MM100"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."', ytd='".$item["YTD"]."', 1w='".$item["1W"]."', 1m='".$item["1M"]."', 1y='".$item["1Y"]."', 3y='".$item["3Y"]."'";
     $res = dbc::execSql($req);
 }
 
-// Si all=0 on insert tout, sinon on insert le nb indiqué
+// Si all = 0, on insert tout, sinon on insert le nb indiqué
 function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
 
     $ret = 0;
@@ -140,13 +144,13 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
         $tab_DM132['DMD1'] = array_slice($tab_DM132['DMD1'], count($tab_DM132['DMD1']) - $all);
         $tab_DM132['DMD2'] = array_slice($tab_DM132['DMD2'], count($tab_DM132['DMD2']) - $all);
         $tab_DM132['DMD3'] = array_slice($tab_DM132['DMD3'], count($tab_DM132['DMD3']) - $all);
+        $tab_DM132['YTD']  = array_slice($tab_DM132['YTD'],  count($tab_DM132['YTD'])  - $all);
+        $tab_DM132['1W']   = array_slice($tab_DM132['1W'],   count($tab_DM132['1W'])   - $all);
+        $tab_DM132['1M']   = array_slice($tab_DM132['1M'],   count($tab_DM132['1M'])   - $all);
+        $tab_DM132['1Y']   = array_slice($tab_DM132['1Y'],   count($tab_DM132['1Y'])   - $all);
+        $tab_DM132['3Y']   = array_slice($tab_DM132['3Y'],   count($tab_DM132['3Y'])   - $all);
     }
-/*  
-    tools::pretty($tab_days);
-    tools::pretty($tab_close);
-    tools::pretty($tab_DM132['DM']);
-    exit(0);
-  */
+
     $item = array();
     foreach($tab_days as $key => $val) {
         $item["MM7"]   = currentnext($tab_MM7);
@@ -159,6 +163,11 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
         $item["DMD1"]  = currentnext($tab_DM132['DMD1']);
         $item["DMD2"]  = currentnext($tab_DM132['DMD2']);
         $item["DMD3"]  = currentnext($tab_DM132['DMD3']);
+        $item["YTD"]   = currentnext($tab_DM132['YTD']);
+        $item["1W"]    = currentnext($tab_DM132['1W']);
+        $item["1M"]    = currentnext($tab_DM132['1M']);
+        $item["1Y"]    = currentnext($tab_DM132['1Y']);
+        $item["3Y"]    = currentnext($tab_DM132['3Y']);
 
         insertIntoIndicators($symbol, $val, $period, $item);
 
@@ -341,27 +350,31 @@ function resetData($filter) {
     $res= dbc::execSql($sql);
 }
 
-// FORCE Computing
-$force   = 0;
-$reset   = 0;
-$limited = 0;
-$filter  = "";
+ini_set('max_execution_time', '300'); //300 seconds = 5 minutes
 
-foreach(['force', 'reset', 'limited', 'filter'] as $key)
+// FORCE Computing
+$indicators_force   = 0;
+$indicators_reset   = 0;
+$indicators_limited = 0;
+$indicators_filter  = "";
+
+foreach(['indicators_force', 'indicators_reset', 'indicators_limited', 'indicators_filter'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
 
-if ($reset == 1) resetData($filter);
+if ($indicators_reset == 1) resetData($indicators_filter);
 
-if ($force == 1) {
-
-    logger::info("DIRECT", "---------", "---------------------------------------------------------");
-
-    computeAllIndicatorsForAllSymbols($filter, $limited);
+if ($indicators_force == 1) {
 
     logger::info("DIRECT", "---------", "---------------------------------------------------------");
 
-    echo "Done";
+    // All indicators All preriods (D/W/M)
+    computeAllIndicatorsForAllSymbols($indicators_filter, $indicators_limited);
+
+    logger::info("DIRECT", "---------", "---------------------------------------------------------");
+
 }
+
+echo "Done";
 

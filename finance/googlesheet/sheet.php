@@ -55,18 +55,7 @@ function updateGoogleSheet() {
 			'',
 			'',
 			''
-/*
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-1,12,31)),2,2)-1, 4))',
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",TODAY()-7),2,2)-1, 4))',
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",TODAY()-30),2,2)-1, 4))',
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-1,month(today()),day(today()))),2,2)-1, 4))',
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(GOOGLEFINANCE($B'.$i.',"priceopen")/index(GOOGLEFINANCE($B'.$i.',"price",date(year(TODAY())-3,month(today()),day(today()))),2,2)-1, 4))',
- 			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$10,TODAY()),,3)), 2))',
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$9,TODAY()),,3)), 2))',
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$8,TODAY()),,3)), 2))',
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$7,TODAY()),,3)), 2))',
-			'=IF(ISBLANK($B'.$i.'),"",ARRONDI(AVERAGE(INDEX(GOOGLEFINANCE($B'.$i.',"all",data!$B$6,TODAY()),,3)), 2))'
- */		];
+		];
 		$i++;
 	}
 
