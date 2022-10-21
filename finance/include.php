@@ -1308,6 +1308,9 @@ class cacheData {
             $req = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$stock['symbol']."','".str_replace(',', '.', $stock['priceopen'])."', '".str_replace(',', '.', $stock['high'])."', '".str_replace(',', '.', $stock['low'])."', '".str_replace(',', '.', $stock['price'])."', '".str_replace(',', '.', $stock['volume'])."', '".substr($stock['tradetime'], 6, 4)."-".substr($stock['tradetime'], 3, 2)."-".substr($stock['tradetime'], 0, 2)."', '".str_replace(',', '.', $stock['closeyest'])."', '".str_replace(',', '.', $stock['change'])."', '".str_replace(',', '.', $stock['changepct'])."')";
             $res = dbc::execSql($req);
 
+            $req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$stock['symbol']."','".substr($stock['tradetime'], 6, 4)."-".substr($stock['tradetime'], 3, 2)."-".substr($stock['tradetime'], 0, 2)."', '".str_replace(',', '.', $stock['priceopen'])."', '".str_replace(',', '.', $stock['high'])."', '".str_replace(',', '.', $stock['low'])."', '".str_replace(',', '.', $stock['price'])."', '".str_replace(',', '.', $stock['price'])."', '".str_replace(',', '.', $stock['volume'])."', '0', '0') ON DUPLICATE KEY UPDATE open='".str_replace(',', '.', $stock['priceopen'])."', high='".str_replace(',', '.', $stock['high'])."', low='".str_replace(',', '.', $stock['low'])."', close='".str_replace(',', '.', $stock['price'])."', adjusted_close='".str_replace(',', '.', $stock['price'])."', volume='".str_replace(',', '.', $stock['volume'])."', dividend='0', split_coef='0'";
+            $res = dbc::execSql($req);
+
             // Recuperation historique cotation actif en daily
             $ret = getGoogleSheetStockData("C3:H".($nb+2), "daily");
 
