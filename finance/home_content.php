@@ -120,6 +120,40 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 	</table>
 
 
+	<h2 class="ui left floated">
+		<i class="inverted eye icon"></i><span>Market</span>
+		<? if ($sess_context->isUserConnected() && count($notifs) == 0) { ?>
+			<button id="home_alertes_list" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
+		<? } ?>
+	</h2>
+	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
+		<? uimx::displayHeadTable([ ["l" => "", "c" => "" ], ["l" => "Seuils", "c" => "center aligned" ], ["l" => "Valeur", "c" => "" ], ["l" => "%J", "c" => "" ], ["l" => "YTD", "c" => "" ], ["l" => "1W", "c" => "" ], ["l" => "1M", "c" => "" ], ["l" => "1Y", "c" => "" ], ["l" => "3Y", "c" => "" ], ["l" => "MM200", "c" => "" ]  ]); ?>
+		<tbody>
+			<?
+				foreach($indicateurs_a_suivre as $key => $val) {
+					$x = str_replace(':', '.', $val);
+					if (isset($data2['stocks'][$x])) {
+						$s = $data2['stocks'][$x];
+						echo '<tr>
+								<td><button class="mini ui primary button">'.$s['name'].'</button></td>
+								<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$gsa[$val][3].'" data-tootik-conf="right">'.($gsa[$val][3] == "" ? 0 : count(explode(';', $gsa[$val][3]))).'</button></td>
+								<td>'.sprintf("%.2f", $s['price']).'</td>
+								<td class="'.($s['percent'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['percent']).'%</td>
+								<td class="'.($s['ytd'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['ytd'] * 100).'%</td>
+								<td class="'.($s['1w']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['1w']  * 100).'%</td>
+								<td class="'.($s['1m']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['1m']  * 100).'%</td>
+								<td class="'.($s['1y']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['1y']  * 100).'%</td>
+								<td class="'.($s['3y']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['3y']  * 100).'%</td>
+								<td>'.($s['MM200'] == 0 ? "-" : Round($s['MM200'], 2)).'</td>
+							</tr>';
+					}
+				}
+
+			?>				
+		</tbody>
+	</table>
+
+
 
 	<h2 class="ui left floated">
 		<i class="inverted chess icon"></i>

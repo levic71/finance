@@ -1047,7 +1047,7 @@ c8=(MM200<MM50)and(MM200<close)and(MM100<close)and((close<MM50)or(close<MM20))
 
         foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted', 'stocks', 'quotes', 'indicators'] as $key) {
             $req = "DELETE FROM ".$key." WHERE symbol='".$symbol."'";
-            $res = dbc::execSql($req);    
+            $res = dbc::execSql($req); 
         }
 
         cacheData::deleteCacheSymbol($symbol);
