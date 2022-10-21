@@ -306,8 +306,6 @@ function computeQuoteIndicatorsSymbol($symbol) {
         // On ajoute la last quote
         $data[] = $row2;
 
-//        tools::pretty($data); exit(0);
-
         // INSERT ALL INDICATORS
         $ret = computeAndInsertLastIndicator($symbol, $data, "DAILY");
         
@@ -374,7 +372,6 @@ if ($indicators_force == 1) {
 
     logger::info("DIRECT", "---------", "---------------------------------------------------------");
 
+    echo "Done";
 }
-
-echo "Done";
 
