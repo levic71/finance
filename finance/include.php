@@ -1969,13 +1969,13 @@ class uimx {
     }
 
     public static function displayHeadTable($head) {
-        echo "<tr><thead>";
+        echo "<thead><tr>";
         foreach($head as $key => $val) {
             echo "<th ".(isset($val['c']) && $val['c'] != "" ? "class=\"".$val['c']."\"" : "")." ".(isset($val['o']) ? $val['o'] : "").">";
             echo $val['l'];
             echo "</th>";
         }
-        echo "</thead></tr>";
+        echo "</tr></thead>";
     }
 
 }
