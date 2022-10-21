@@ -1339,48 +1339,6 @@ class cacheData {
 
             }
 
-            if (false) {
-
-            // Recuperation du nombre de ligne de cotation weekly
-            $ret = getGoogleSheetStockData("A3", "weekly");
-            $nb = $ret[0][0];
-
-            if ($nb > 1) {
-
-                // Recuperation historique cotation actif en weekly
-                $ret = getGoogleSheetStockData("C3:H".($nb+2), "weekly");
-
-                $col_names = [];
-                foreach($ret as $key => $val) {
-
-                    if ($key == 0) {
-
-                        // Recuperation des noms de colonnes
-                        foreach(range(0, 5) as $i) $col_names[$i] = $ret[$key][$i];
-
-                    } else {
-
-                        $stock_histo['symbol'] = $symbol;
-
-                        foreach(range(0, 5) as $i) $stock_histo[$col_names[$i]] = $ret[$key][$i];
-
-                        $date  = substr($stock_histo['Date'], 6, 4)."-".substr($stock_histo['Date'], 3, 2)."-".substr($stock_histo['Date'], 0, 2);
-                        $close = str_replace(',', '.', $stock_histo['Close']);
-                        $open  = str_replace(',', '.', $stock_histo['Open']);
-                        $high  = str_replace(',', '.', $stock_histo['High']);
-                        $low   = str_replace(',', '.', $stock_histo['Low']);
-                        $vol   = str_replace(',', '.', $stock_histo['Volume']);
-                        
-                        // $req = "INSERT INTO weekly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$stock_histo['symbol']."','".$date."', '".$open."', '".$high."', '".$low."', '".$close."', '".$close."', '".$vol."', '0', '0') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', adjusted_close='".$close."', volume='".$vol."', dividend='0', split_coef='0'";
-                        $res = dbc::execSql($req);
-                            
-                    }
-
-                }
-            }
-
-            }
-
             $retour = true;
         }
 
@@ -2007,6 +1965,15 @@ class uimx {
         uimx::genCard("portfolio_card_".$portfolio['id'], $title, date('Y-m-d'), $desc);
     }
 
+    public static function displayHeadTable($head) {
+        echo "<tr><thead>";
+        foreach($head as $key => $val) {
+            echo "<th ".(isset($val['c']) && $val['c'] != "" ? "class=\"".$val['c']."\"" : "")." ".(isset($val['o']) ? $val['o'] : "").">";
+            echo $val['l'];
+            echo "</th>";
+        }
+        echo "</thead></tr>";
+    }
 
 }
 

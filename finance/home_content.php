@@ -88,6 +88,8 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 	?>
 	<? } ?>
 
+
+
 	<h2 class="ui left floated">
 		<i class="inverted eye icon"></i><span>Market</span>
 		<? if ($sess_context->isUserConnected() && count($notifs) == 0) { ?>
@@ -95,20 +97,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 		<? } ?>
 	</h2>
 	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
-		<thead>
-			<tr>
-				<th></th>
-				<th class="center aligned">Seuils</th>
-				<th>Valeur</th>
-				<th>% J</th>
-				<th>% YTD</th>
-				<th>% W</th>
-				<th>% M</th>
-				<th>% Y</th>
-				<th>% 3Y</th>
-				<th>MM200</th>
-			</tr>
-		</thead>
+		<? uimx::displayHeadTable([ ["l" => "", "c" => "" ], ["l" => "Seuils", "c" => "center aligned" ], ["l" => "Valeur", "c" => "" ], ["l" => "%J", "c" => "" ], ["l" => "%YTD", "c" => "" ], ["l" => "%1W", "c" => "" ], ["l" => "%1M", "c" => "" ], ["l" => "%1Y", "c" => "" ], ["l" => "%3Y", "c" => "" ], ["l" => "MM200", "c" => "" ]  ]); ?>
 		<tbody>
 			<?
 				foreach($indicateurs_a_suivre as $key => $val) {
@@ -129,6 +118,8 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 			?>				
 		</tbody>
 	</table>
+
+
 
 	<h2 class="ui left floated">
 		<i class="inverted chess icon"></i>
@@ -220,24 +211,11 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
     </div>
 
 	<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_stock" data-sortable>
-		<thead>
-			<tr>
-				<th>Symbole</th>
-				<th></th>
-                <th class="four wide">Nom</th>
-                <th></th>
-				<th>Frais</th>
-				<th>Actifs</th>
-				<th></th>
-				<th data-sortable-type="numeric">Prix</th>
-				<th data-sortable-type="numeric">Var</th>
-				<th data-sortable-type="numeric">DM</th>
-				<th data-sortable="false"></th>
-				<th data-sortable="false"></th>
-				<th data-sortable="false"></th>
-			</tr>
-		</thead>
-        <tbody id="lst_stock_body">
+
+		<? uimx::displayHeadTable([ ["l" => "Symbole", "c" => "" ], ["l" => "", "c" => "" ], ["l" => "Nom", "c" => "four wide" ], ["l" => "", "c" => "" ], ["l" => "Frais", "c" => "" ], ["l" => "Actif", "c" => "" ], ["l" => "", "c" => "" ], ["l" => "Prix", "c" => "", "o" => "data-sortable-type=\"numeric\"" ], ["l" => "Var", "c" => "", "o" => "data-sortable-type=\"numeric\"" ], ["l" => "DM", "c" => "", "o" => "data-sortable-type=\"numeric\"" ], ["l" => "", "c" => "", "o" => "data-sortable=\"false\"" ], ["l" => "", "c" => "", "o" => "data-sortable=\"false\"" ], ["l" => "", "c" => "", "o" => "data-sortable=\"false\"" ]  ]); ?>
+
+
+		<tbody id="lst_stock_body">
 <?
 
 $x = 0;
