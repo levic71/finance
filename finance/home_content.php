@@ -97,7 +97,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 		<? } ?>
 	</h2>
 	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
-		<? uimx::displayHeadTable([ ["l" => "", "c" => "" ], ["l" => "Seuils", "c" => "center aligned" ], ["l" => "Valeur", "c" => "" ], ["l" => "%J", "c" => "" ], ["l" => "%YTD", "c" => "" ], ["l" => "%1W", "c" => "" ], ["l" => "%1M", "c" => "" ], ["l" => "%1Y", "c" => "" ], ["l" => "%3Y", "c" => "" ], ["l" => "MM200", "c" => "" ]  ]); ?>
+		<? uimx::displayHeadTable([ ["l" => "", "c" => "" ], ["l" => "Seuils", "c" => "center aligned" ], ["l" => "Valeur", "c" => "" ], ["l" => "%J", "c" => "" ], ["l" => "YTD", "c" => "" ], ["l" => "1W", "c" => "" ], ["l" => "1M", "c" => "" ], ["l" => "1Y", "c" => "" ], ["l" => "3Y", "c" => "" ], ["l" => "MM200", "c" => "" ]  ]); ?>
 		<tbody>
 			<?
 				foreach($indicateurs_a_suivre as $key => $val) {
@@ -105,12 +105,12 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 							<td><button class="mini ui primary button">'.$gsa[$val][0].'</button></td>
 							<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$gsa[$val][3].'" data-tootik-conf="right">'.($gsa[$val][3] == "" ? 0 : count(explode(';', $gsa[$val][3]))).'</button></td>
 							<td>'.sprintf("%.2f", $gsa[$val][4]).'</td>
-							<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][12]).'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][13]).'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][14]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][14]).'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][15]).'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][16]).'</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][17]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][17]).'</td>
+							<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][12]).'%</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][13]).'%</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][14]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][14]).'%</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][15]).'%</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][16]).'%</td>
+							<td class="'.(str_replace("\%", "", $gsa[$val][17]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][17]).'%</td>
 							<td>'.($gsa[$val][22] == 0 ? "-" : Round($gsa[$val][22], 2)).'</td>
 						</tr>';
 				}
@@ -454,6 +454,7 @@ Dom.addListener(Dom.id('home_symbol_search'),   Dom.Event.ON_CLICK, function(eve
 change_wide_menu_state('wide_menu', 'm1_home_bt');
 
 // Init tri tableau
+Sortable.initTable(el("lst_scan"));
 Sortable.initTable(el("lst_stock"));
 
 // Init affichage default strategies + bt screener
