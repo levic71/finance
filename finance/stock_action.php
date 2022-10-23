@@ -37,7 +37,7 @@ function updateSymbolData($symbol, $engine = "alpha") {
         $ret['gsheet'] = updateQuotesWithGSData($values[$symbol]);
 
         // Mise a jour des indicateurs du jour (avec quotes)
-        computeQuoteIndicatorsSymbol($symbol);
+        computeDailyIndicatorsSymbol($symbol);
     }
 
     // On supprime les fichiers cache tmp

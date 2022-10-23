@@ -540,8 +540,8 @@ class calc {
     // ////////////////////////////////////////////////////////////
     // Calcul du DM d'un actif d'une journee
     // ////////////////////////////////////////////////////////////
-    public static function processDataDM($day, $data) {
-
+    public static function processDataDM($data) {
+ 
         global $dbg, $dbg_data;
 
         $ret = array();
@@ -566,12 +566,10 @@ class calc {
         $ref_D3M  = "0000-00-00";
         $ref_D6M  = "0000-00-00";
 
-        $quote = $data['quote'];
-
         $tab_close = array();
 
         // On parcours les cotations en commencant la plus rescente et on remonte le temps
-        foreach($data['data'] as $key => $row) {
+        foreach($data as $key => $row) {
 
             // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
             $close_value = is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
@@ -580,18 +578,9 @@ class calc {
 
             // Valeurs de reference J0
             if ($i == 0) {
-                // Si day is today && Si on a recupere une quotation en temps réel du jour > à la première cotation historique alors on la prend comme référence
-                // Comme la cotation est au minimum à la date de la dernière cotation historique on peut la prendre en ref par defaut
-                if ($day == date("Y-m-d") && isset($quote['day'])) {
-                    $ref_TJ0 = floatval($quote['price']);
-                    $ref_DAY = $quote['day'];
-                    $ref_PCT = $quote['percent'];
-                }
-                else {
-                    $ref_TJ0 = floatval($close_value);
-                    $ref_DAY = $row['day'];
-                    $ref_PCT = $row['open'] == 0 ? 0 : ($row['close'] - $row['open']) * 100 / $row['open'];
-                }
+                $ref_TJ0 = floatval($close_value);
+                $ref_DAY = $row['day'];
+                $ref_PCT = $row['open'] == 0 ? 0 : ($row['close'] - $row['open']) * 100 / $row['open'];
                 $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
                 $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
 
@@ -623,6 +612,7 @@ class calc {
             if ($i == 365) $ref_T1Y = floatval($close_value);
             if ($i == (365*3)) $ref_T3Y = floatval($close_value);
             if (substr($row['day'], 0, 7) == date("Y-01")) $ref_TYTD = floatval($close_value); // Permet de memoriser la cotation du jour ouvert de janvier
+            if (substr($row['day'], 0, 7) == date("Y-01")) $ref_date = $row['day'];
 
             // Recuperation cotation en fin de mois fixe (le mois en cours pouvant etre non terminé)
             if ($ref2_T1M == 0 && substr($row['day'], 0, 7) == substr($ref_D1M, 0, 7)) {
@@ -651,11 +641,11 @@ class calc {
         $ret['ref_day'] = $ref_DAY;
 
         // Calcul variation YTD/1W/1M/1Y/3Y
-        $ret['var_YTD'] = $ref_TYTD == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TYTD / $ref_TJ0) - 1;
-        $ret['var_1W']  = $ref_T1W  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_T1W  / $ref_TJ0) - 1;
-        $ret['var_1M']  = $ref_T1M  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_T1M  / $ref_TJ0) - 1;
-        $ret['var_1Y']  = $ref_T1Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_T1Y  / $ref_TJ0) - 1;
-        $ret['var_3Y']  = $ref_T3Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_T3Y  / $ref_TJ0) - 1;
+        $ret['var_YTD'] = $ref_TYTD == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0 / $ref_TYTD) - 1;
+        $ret['var_1W']  = $ref_T1W  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0  / $ref_T1W) - 1;
+        $ret['var_1M']  = $ref_T1M  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0  / $ref_T1M) - 1;
+        $ret['var_1Y']  = $ref_T1Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0  / $ref_T1Y) - 1;
+        $ret['var_3Y']  = $ref_T3Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0  / $ref_T3Y) - 1;
 
         // Vraiment utile ? On ne peut pas le recuperer de la DB ?
         $ret['ref_close'] = $ref_TJ0;
@@ -701,60 +691,6 @@ class calc {
         $ret['close'] = $close;
         $ret['perf']  = $perf;
         $ret['dm']    = round(($perf['DMD1'] + $perf['DMD2'] + $perf['DMD3']) / 3, 2);
-
-        return $ret;
-    }
-
-    // //////////////////////////////////////////////////////////////////
-    // Reccuperation des data pour le calcul du DM d'un actif d'un jour
-    // //////////////////////////////////////////////////////////////////
-    public static function getDualMomentumData($symbol, $day) {
-
-        $quote = array();
-        $data = array();
-    
-        // On regarde s'il y a une cotation du jour
-        $req = "SELECT * FROM quotes WHERE symbol='".$symbol."' AND day='".$day."'";
-        $res = dbc::execSql($req);
-        if ($row = mysqli_fetch_assoc($res))
-            $quote = $row;
-
-        // On parcours les cotations en commencant la plus rescente et on remonte le temps
-        $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$symbol."' AND day <= '".$day."' ORDER BY day DESC LIMIT 200";
-        $res = dbc::execSql($req);
-        while($row = mysqli_fetch_assoc($res)) {
-            $data[] = $row;
-        }
-
-        return (array("quote" => $quote, "data" => $data));
-    }
-
-    // ////////////////////////////////////////////////////
-    // DM de tous les actifs d'un jour
-    // ////////////////////////////////////////////////////
-    public static function getDualMomentum($day) {
-
-        $file_cache = 'cache/TMP_DUAL_MOMENTUM_'.$day.'.json';
-
-        $ret = array( 'stocks' => array(), 'perfs' => array(), 'day' => $day, 'compute_time' => date("Y-d-m H:i:s") );
-
-        if (cacheData::refreshCache($file_cache, 600)) { // Cache de 10 min
-
-            $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ORDER BY s.symbol";
-            $res = dbc::execSql($req);
-            while($row = mysqli_fetch_assoc($res)) {
-                $symbol = $row['symbol'];
-                $data   = calc::getDualMomentumData($symbol, $day);
-                $ret["stocks"][$symbol] = array_merge($row, calc::processDataDM($day, $data));
-                // On isole les perfs pour pouvoir trier par performance decroissante
-                $ret["perfs"][$symbol] = $ret["stocks"][$symbol]['MMZDM'];
-            }
-
-            cacheData::writeCacheData($file_cache, $ret);
-
-        } else {
-            $ret = cacheData::readCacheData($file_cache);
-        }
 
         return $ret;
     }
