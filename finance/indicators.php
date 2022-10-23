@@ -66,10 +66,13 @@ function ComputeDMX($data, $size) {
     // Tri date descendante pour le calcul avec ma methode
     $x = array_reverse($data);
 
+    // var_dump($x);
+
     while(count($x) >= $size) {
-        $item = current($data);
-        $tab[] = calc::processDataDM($item['day'], array("quote" => array(), "data" => $x));
+
+        $tab[] = calc::processDataDM($x);
         array_shift($x);
+
     }
 
     // Tri date ascendente pour revenir en nominal
@@ -130,7 +133,7 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
     $tab_RSI14 = computeRSIX($tab_close, 14);
     $tab_DM132 = computeDMX($data, 132);
 
-    // On ne retient que le dernier calcul
+    // Si all > 0, on ne retient que les derniers calculs souhaites
     if ($all > 0) {
         $tab_days  = array_slice($tab_days,  count($tab_days)  - $all);
         $tab_close = array_slice($tab_close, count($tab_close) - $all);
@@ -177,11 +180,11 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
     return $ret;
 }
 
-function computeAndInsertAllIndicators($symbol, $data, $period, $all = 0) {
+function computeAndInsertIndicatorsAllDates($symbol, $data, $period, $all = 0) {
     return computeAndInsertIntoIndicators($symbol, $data, $period, $all);
 }
 
-function computeAndInsertLastIndicator($symbol, $data, $period) {
+function computeAndInsertIndicatorsLastDate($symbol, $data, $period) {
     return computeAndInsertIntoIndicators($symbol, $data, $period, 1);
 }
 
@@ -273,7 +276,7 @@ function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
     }
 
     // INSERT INDICATORS
-    $ret = computeAndInsertAllIndicators($symbol, $data, $period, $limited == 1 ? 30 : 0);
+    $ret = computeAndInsertIndicatorsAllDates($symbol, $data, $period, $limited == 1 ? 30 : 0);
     
     logger::info("INDIC", $symbol, "[".$period."] [insert=".$ret.", data=".count($data)."]");
 }
@@ -281,9 +284,10 @@ function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
 // //////////////////////////////////////////////////////////////
 // Calcul DM, MM7, MM20, MM50, MM100, MM200, RSI14 du jour (table quotes)
 // //////////////////////////////////////////////////////////////
-function computeQuoteIndicatorsSymbol($symbol) {
+function computeDailyIndicatorsSymbol($symbol) {
 
     $data = array();
+    $add_today = true;
 
     $req2 = "SELECT * FROM quotes WHERE symbol=\"".$symbol."\"";
     $res2 = dbc::execSql($req2);
@@ -294,6 +298,8 @@ function computeQuoteIndicatorsSymbol($symbol) {
         $row2['close'] = $row2['price'];
         $row2['adjusted_close'] = $row2['price'];
 
+        $d1 = $row2['day'];
+
         $req = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\" ORDER BY day DESC LIMIT 300) subq ORDER BY day ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
@@ -301,13 +307,16 @@ function computeQuoteIndicatorsSymbol($symbol) {
             // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
             $row['close'] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
             $data[] = $row;
+
+            if ($d1 == $row['day']) $add_today = false;
+
         }
 
         // On ajoute la last quote
-        $data[] = $row2;
+        if ($add_today) $data[] = $row2;
 
         // INSERT ALL INDICATORS
-        $ret = computeAndInsertLastIndicator($symbol, $data, "DAILY");
+        $ret = computeAndInsertIndicatorsLastDate($symbol, $data, "DAILY");
         
         logger::info("INDIC", $symbol, "[QUOTES] [insert=".$ret.", data=".count($data)."]");
     }
@@ -322,20 +331,6 @@ function computeIndicatorsForSymbolWithOptions($symbol, $options = array("aggreg
 
     foreach($options['periods'] as $key)
         computePeriodIndicatorsSymbol($symbol, $options['limited'], $key);
-
-}
-
-function computeAllIndicatorsForSymbol($symbol, $limited, $aggregate = false) {
-    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => $aggregate, "limited" => $limited, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
-}
-
-function computeAllIndicatorsForAllSymbols($filter_symbol, $limited) {
-
-    // Selection du/des actif(s) à prendre en charge
-    $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$filter_symbol."%\"";
-    $res = dbc::execSql($req);
-    while($row = mysqli_fetch_assoc($res))
-        computeAllIndicatorsForSymbol($row['symbol'], $limited);
 
 }
 
@@ -355,9 +350,14 @@ $indicators_force   = 0;
 $indicators_reset   = 0;
 $indicators_limited = 0;
 $indicators_filter  = "";
+$indicators_periods  = [ 'DAILY' ];
+$indicators_aggregate = false;
 
-foreach(['indicators_force', 'indicators_reset', 'indicators_limited', 'indicators_filter'] as $key)
+foreach(['indicators_force', 'indicators_reset', 'indicators_limited', 'indicators_filter', 'indicators_periods', 'indicators_aggregate'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
+
+if ($indicators_aggregate == 1) $indicators_aggregate = true;
+$indicators_periods  = [ 'DAILY' ];
 
 $db = dbc::connect();
 
@@ -368,8 +368,14 @@ if ($indicators_force == 1) {
     logger::info("DIRECT", "---------", "---------------------------------------------------------");
 
     // All indicators All preriods (D/W/M)
-    computeAllIndicatorsForAllSymbols($indicators_filter, $indicators_limited);
-
+    $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$indicators_filter."%\"";
+    $res = dbc::execSql($req);
+    while($row = mysqli_fetch_assoc($res)) {
+        computeDailyIndicatorsSymbol($row['symbol']);
+        // computeIndicatorsForSymbolWithOptions($row['symbol'], $options = array("aggregate" => false, "limited" => 1, "periods" => ['DAILY']));
+        // computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => $indicators_aggregate, "limited" => 0, "periods" => $indicators_periods));         
+    }
+    
     logger::info("DIRECT", "---------", "---------------------------------------------------------");
 
     echo "Done";

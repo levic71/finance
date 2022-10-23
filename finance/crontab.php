@@ -91,9 +91,9 @@ while($row = mysqli_fetch_array($res)) {
             $ret['gsheet'] = updateQuotesWithGSData($values[$row['symbol']]);
 
             // Mise a jour des indicateurs du jour (avec quotes)
-            computeQuoteIndicatorsSymbol($row['symbol']);
+            computeDailyIndicatorsSymbol($row['symbol']);
     
-            logger::info("CRON", $row['symbol'], "[updateQuotesWithGSData+computeQuoteIndicatorsSymbol] OK");
+            logger::info("CRON", $row['symbol'], "[updateQuotesWithGSData+computeDailyIndicatorsSymbol] OK");
         }
 
     }
