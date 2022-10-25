@@ -714,8 +714,6 @@ class calc {
             $item['ref_close'] = $ref_TJ0;
             $item['ref_pct']   = $ref_PCT;
 
-            var_dump($item); exit(0);
-
             $ret[] = $item;
 
             // On deplace d'un le curseur du tableau
