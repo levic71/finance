@@ -200,8 +200,8 @@ function aggregateWeeklyMonthlySymbol($symbol, $limited = 0) {
     $tab_weekly  = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array(), "adjusted_close" => array() ];
     $tab_monthly = [ "counter" => array(), "lastdays" => array(), "volume" => array(), "open" => array(), "high" => array(), "low" => array(), "close" => array(), "adjusted_close" => array() ];
 
-    // Requete a revoir sur le subq (300 car il m'en faut 30 + 200 = 230 mim pour calcul MM200) => plutot 700 pour 3Y
-    $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 700) subq ORDER BY day ASC" : "");
+    // Requete a revoir sur le subq (300 car il m'en faut 30 + 200 = 230 mim pour calcul MM200) => plutot 800 pour 3Y
+    $req = "SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\"".($limited == 1 ? " ORDER BY day DESC LIMIT 800) subq ORDER BY day ASC" : "");
     $res= dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
 
@@ -258,7 +258,7 @@ function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
     if ($limited == 0)
         $req = "SELECT * FROM ".$table." WHERE symbol='".$symbol."'";
     else
-        $req = "SELECT * FROM (SELECT * FROM ".$table." WHERE symbol='".$symbol."' ORDER BY day DESC LIMIT 700) subq ORDER BY day ASC";
+        $req = "SELECT * FROM (SELECT * FROM ".$table." WHERE symbol='".$symbol."' ORDER BY day DESC LIMIT 800) subq ORDER BY day ASC";
 
     $res= dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
@@ -292,7 +292,7 @@ function computeDailyIndicatorsSymbol($symbol) {
 
         $d1 = $row2['day'];
 
-        $req = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\" ORDER BY day DESC LIMIT 700) subq ORDER BY day ASC";
+        $req = "SELECT * FROM (SELECT * FROM daily_time_series_adjusted WHERE symbol=\"".$symbol."\" ORDER BY day DESC LIMIT 800) subq ORDER BY day ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
 
@@ -363,10 +363,12 @@ if ($indicators_force == 1) {
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$indicators_filter."%\"";
     $res = dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
-        // computeDailyIndicatorsSymbol($row['symbol']);
-        computeIndicatorsForSymbolWithOptions($row['symbol'], $options = array("aggregate" => false, "limited" => 0, "periods" => ['DAILY']));
+        computeDailyIndicatorsSymbol($row['symbol']);
+        // computeIndicatorsForSymbolWithOptions($row['symbol'], $options = array("aggregate" => false, "limited" => 0, "periods" => ['DAILY']));
         // computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => $indicators_aggregate, "limited" => 0, "periods" => $indicators_periods));         
     }
+
+    cacheData::deleteTMPFiles();
     
     logger::info("DIRECT", "---------", "---------------------------------------------------------");
 
