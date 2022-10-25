@@ -667,7 +667,7 @@ class calc {
             $ref_TYTD = calc::getClosedValue($ref_DYTD, $data);
 
             // Recuperation jour J - 1W
-            $ref_D1W = $keys[6];
+            $ref_D1W = $keys[5];
             $ref_T1W = calc::getClosedValue($ref_D1W, $data);
 
             // Recuperation jour J - 1M
