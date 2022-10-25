@@ -714,6 +714,8 @@ class calc {
             $item['ref_close'] = $ref_TJ0;
             $item['ref_pct']   = $ref_PCT;
 
+            var_dump($item); exit(0);
+
             $ret[] = $item;
 
             // On deplace d'un le curseur du tableau
@@ -727,135 +729,6 @@ class calc {
         return $ret;
     }
 
-    // ////////////////////////////////////////////////////////////
-    // Calcul du DM d'un actif d'une journee
-    // ////////////////////////////////////////////////////////////
-    public static function processDataDM2($data) {
- 
-        global $dbg, $dbg_data;
-
-        $ret = array();
-
-        $i = 0;
-        $ref_DAY  = "";
-        $ref_PCT  = "";
-        $ref_MJ0  = "";
-        $ref_YJ0  = "";
-        $ref_TJ0  = 0;
-        $ref_T1M  = 0; // Pour calcul variation 1M
-        $ref_T3M  = 0;
-        $ref_T6M  = 0;
-        $ref_TYTD = 0; // Pour calcul variation YTD
-        $ref_T1W  = 0; // Pour calcul variation 1W
-        $ref_T1Y  = 0; // Pour calcul variation 1Y
-        $ref_T3Y  = 0; // Pour calcul variation 3Y
-        $ref2_T1M = 0;
-        $ref2_T3M = 0;
-        $ref2_T6M = 0;
-        $ref_D1M  = "0000-00-00";
-        $ref_D3M  = "0000-00-00";
-        $ref_D6M  = "0000-00-00";
-
-        $tab_close = array();
-
-        // On parcours les cotations en commencant la plus rescente et on remonte le temps
-        foreach($data as $key => $row) {
-
-            // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
-            $close_value = is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
-
-            $tab_close[] = $close_value;
-
-            // Valeurs de reference J0
-            if ($i == 0) {
-                $ref_TJ0 = floatval($close_value);
-                $ref_DAY = $row['day'];
-                $ref_PCT = $row['open'] == 0 ? 0 : ($row['close'] - $row['open']) * 100 / $row['open'];
-                $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
-                $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
-
-                // Recuperation dernier jour ouvre J0-1M
-                $ref_D1M = date('Y-m-d', strtotime($ref_YJ0.'-'.$ref_MJ0.'-01'.' -1 day'));
-                
-                // Recuperation dernier jour ouvre J0-3M
-                $m = $ref_MJ0 - 2;
-                $y = $ref_YJ0;
-                if ($m <= 0) { $m += 12; $y -= 1; }
-                $ref_D3M = date('Y-m-d', strtotime($y.'-'.$m.'-01'.' -1 day'));
-
-                // Recuperation dernier jour ouvre J0-6M
-                $m = $ref_MJ0 - 5;
-                $y = $ref_YJ0;
-                if ($m <= 0) { $m += 12; $y -= 1; }
-                $ref_D6M = date('Y-m-t', strtotime($y.'-'.$m.'-01'.' -1 day'));
-            }
-
-            // $ref_  pour le calcul DM mois flottant MMF
-            // $ref2_ pour le calcul DM mois fixe MMZ (DM TKL)
-            // MM = momemtum
-
-            // Récupration cotation en mois flottant
-            if ($i == 22)  $ref_T1M = floatval($close_value); // 22j ouvrés par mois en moy
-            if ($i == 66)  $ref_T3M = floatval($close_value);
-            if ($i == 132) $ref_T6M = floatval($close_value);
-            if ($i == 7)   $ref_T1W = floatval($close_value);
-            if ($i == 365) $ref_T1Y = floatval($close_value);
-            if ($i == (365*3)) $ref_T3Y = floatval($close_value);
-            if (substr($row['day'], 0, 7) == date("Y-01")) $ref_TYTD = floatval($close_value); // Permet de memoriser la cotation du jour ouvert de janvier
-            if (substr($row['day'], 0, 7) == date("Y-01")) $ref_date = $row['day'];
-
-            // Recuperation cotation en fin de mois fixe (le mois en cours pouvant etre non terminé)
-            if ($ref2_T1M == 0 && substr($row['day'], 0, 7) == substr($ref_D1M, 0, 7)) {
-                $ref2_T1M = $close_value;
-                $ret['MMZ1MPrice'] = $close_value;
-                $ret['MMZ1MDate'] = $row['day'];
-            }
-
-            // Recuperation cotation en fin de 3 mois
-            if ($ref2_T3M == 0 && substr($row['day'], 0, 7) == substr($ref_D3M, 0, 7)) {
-                $ref2_T3M = $close_value;
-                $ret['MMZ3MPrice'] = $close_value;
-                $ret['MMZ3MDate'] = $row['day'];
-            }
-
-            // Recuperation cotation en fin de 6 mois
-            if ($ref2_T6M == 0 && substr($row['day'], 0, 7) == substr($ref_D6M, 0, 7)) {
-                $ref2_T6M = $close_value;
-                $ret['MMZ6MPrice'] = $close_value;
-                $ret['MMZ6MDate'] = $row['day'];
-            }
-
-            $i++;
-        }
-
-        $ret['ref_day'] = $ref_DAY;
-
-        // Calcul variation YTD/1W/1M/1Y/3Y
-        $ret['var_YTD'] = $ref_TYTD == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0 / $ref_TYTD) - 1;
-        $ret['var_1W']  = $ref_T1W  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0  / $ref_T1W) - 1;
-        $ret['var_1M']  = $ref_T1M  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0  / $ref_T1M) - 1;
-        $ret['var_1Y']  = $ref_T1Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0  / $ref_T1Y) - 1;
-        $ret['var_3Y']  = $ref_T3Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0  / $ref_T3Y) - 1;
-
-        // Vraiment utile ? On ne peut pas le recuperer de la DB ?
-        $ret['ref_close'] = $ref_TJ0;
-        $ret['ref_pct']   = $ref_PCT;
-
-
-        // A QUOI CA SERT DE CALCULER MMX ??? On le fait dans Indicators !!!
-/*
-        $ret['MMF1M'] = $ref_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref_T1M)*100/$ref_T1M, 2);
-        $ret['MMF3M'] = $ref_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref_T3M)*100/$ref_T3M, 2);
-        $ret['MMF6M'] = $ref_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref_T6M)*100/$ref_T6M, 2);
-        $ret['MMFDM'] = $ref_T6M > 0 ? round(($ret['MMF1M']+$ret['MMF3M']+$ret['MMF6M'])/3, 2) : ($ref_T3M > 0 ? round(($ret['MMF1M']+$ret['MMF3M'])/2, 2) : ($ref_T1M > 0 ? $ret['MMF1M'] : -9999));
-*/
-        $ret['MMZ1M'] = $ref2_T1M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T1M)*100/$ref2_T1M, 2);
-        $ret['MMZ3M'] = $ref2_T3M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T3M)*100/$ref2_T3M, 2);
-        $ret['MMZ6M'] = $ref2_T6M == 0 ? -9999 : round(($ref_TJ0 - $ref2_T6M)*100/$ref2_T6M, 2);
-        $ret['MMZDM'] = $ref2_T6M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M']+$ret['MMZ6M'])/3, 2) : ($ref2_T3M > 0 ? round(($ret['MMZ1M']+$ret['MMZ3M'])/2, 2) : ($ref2_T1M > 0 ? $ret['MMZ1M'] : -9999));
- 
-        return $ret;
-    }
 
     public static function getDirectDM($data) {
 
