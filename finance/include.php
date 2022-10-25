@@ -537,7 +537,7 @@ class calc {
         return $ret;
     }
 
-    public static function getCloseExistingDateInList($d, $data) {
+    public static function getLastExistingDateInMonth($d, $data) {
 
         $ret = $d;
 
@@ -556,7 +556,7 @@ class calc {
 
     }
 
-    public static function getFirstExistingDateInList($d, $data) {
+    public static function getFirstExistingDateInMonth($d, $data) {
 
         $ret = $d;
 
@@ -566,6 +566,25 @@ class calc {
         while ($i < 31) {
             if (isset($data[$deb.sprintf("-%'02s", $i)])) {
                 $ret = $deb.sprintf("-%'02s", $i);
+                break;
+            }
+            $i++;
+        }
+
+        return $ret;
+
+    }
+
+    public static function getClosestExistingDateInMonth($d, $data) {
+
+        $ret = $d;
+
+
+        $i = 1;
+        while ($i < 31) {
+            $deb = date('Y-m-d', strtotime($d.' -'.$i.' day'));
+            if (isset($data[$deb])) {
+                $ret = $deb;
                 break;
             }
             $i++;
@@ -629,22 +648,22 @@ class calc {
             $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
 
             // Recuperation dernier jour ouvre J0-1M
-            $ref_DD1M = calc::getCloseExistingDateInList(date('Y-m-d', strtotime($ref_YJ0.'-'.$ref_MJ0.'-01'.' -1 day')), $data);
+            $ref_DD1M = calc::getLastExistingDateInMonth(date('Y-m-d', strtotime($ref_YJ0.'-'.$ref_MJ0.'-01'.' -1 day')), $data);
 
             // Recuperation dernier jour ouvre J0-3M
             $m = $ref_MJ0 - 2;
             $y = $ref_YJ0;
             if ($m <= 0) { $m += 12; $y -= 1; }
-            $ref_DD3M = calc::getCloseExistingDateInList(date('Y-m-d', strtotime($y.'-'.$m.'-01'.' -1 day')), $data);
+            $ref_DD3M = calc::getLastExistingDateInMonth(date('Y-m-d', strtotime($y.'-'.$m.'-01'.' -1 day')), $data);
 
             // Recuperation dernier jour ouvre J0-6M
             $m = $ref_MJ0 - 5;
             $y = $ref_YJ0;
             if ($m <= 0) { $m += 12; $y -= 1; }
-            $ref_DD6M = calc::getCloseExistingDateInList(date('Y-m-t', strtotime($y.'-'.$m.'-01'.' -1 day')), $data);
+            $ref_DD6M = calc::getLastExistingDateInMonth(date('Y-m-t', strtotime($y.'-'.$m.'-01'.' -1 day')), $data);
 
             // Recuperation jour YTD
-            $ref_DYTD = calc::getFirstExistingDateInList(date("Y-01-31"), $data);
+            $ref_DYTD = calc::getFirstExistingDateInMonth(date("Y-01-31"), $data);
             $ref_TYTD = calc::getClosedValue($ref_DYTD, $data);
 
             // Recuperation jour J - 1W
@@ -652,15 +671,17 @@ class calc {
             $ref_T1W = calc::getClosedValue($ref_D1W, $data);
 
             // Recuperation jour J - 1M
-            $ref_D1M = $keys[30];
+            $ref_D1M = $keys[21];
             $ref_T1M = calc::getClosedValue($ref_D1M, $data);
 
             // Recuperation jour J - 1Y
-            $ref_D1Y = isset($keys[365]) ? $keys[365] : 0 ;
+            // $ref_D1Y = isset($keys[252]) ? $keys[252] : 0 ;
+            $ref_D1Y = self::getClosestExistingDateInMonth((intval(substr($c['day'], 0, 4)) - 1).substr($c['day'], 4), $data);
             $ref_T1Y = calc::getClosedValue($ref_D1Y, $data);
 
             // Recuperation jour J - 3Y
-            $ref_D3Y = isset($keys[365*3]) ? $keys[365*3] : 0;
+            // $ref_D3Y = isset($keys[252*3]) ? $keys[252*3] : 0;
+            $ref_D3Y = self::getClosestExistingDateInMonth((intval(substr($c['day'], 0, 4)) - 3).substr($c['day'], 4), $data);
             $ref_T3Y = calc::getClosedValue($ref_D3Y, $data);
 
             $item['MMJ0MPrice'] = $ref_TJ0;
