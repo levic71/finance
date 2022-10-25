@@ -61,24 +61,15 @@ function ComputeRSIX($data, $size) {
 }
 function ComputeDMX($data, $size) {
 
-    $tab = array();
+    // Indexation du tableau avec la date comme cle
+    foreach(array_reverse($data) as $key => $val)
+        $x[$val['day']] = $val;
 
-    // Tri date descendante pour le calcul avec ma methode
-    $x = array_reverse($data);
-
-    // var_dump($x);
-
-    while(count($x) >= $size) {
-
-        $tab[] = calc::processDataDM($x);
-        array_shift($x);
-
-    }
+    // Calcul DM/YTD/...
+    $tab = calc::processDataDM($x);
 
     // Tri date ascendente pour revenir en nominal
     $z = array_reverse($tab);
-
-/*     foreach($z as $key => $val) tools::pretty($val); */
 
     return array(
         "YTD"  => fullFillArray($data, array_column($z, "var_YTD")),
@@ -153,6 +144,7 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
         $tab_DM132['1Y']   = array_slice($tab_DM132['1Y'],   count($tab_DM132['1Y'])   - $all);
         $tab_DM132['3Y']   = array_slice($tab_DM132['3Y'],   count($tab_DM132['3Y'])   - $all);
     }
+
 
     $item = array();
     foreach($tab_days as $key => $val) {
@@ -371,8 +363,8 @@ if ($indicators_force == 1) {
     $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$indicators_filter."%\"";
     $res = dbc::execSql($req);
     while($row = mysqli_fetch_assoc($res)) {
-        computeDailyIndicatorsSymbol($row['symbol']);
-        // computeIndicatorsForSymbolWithOptions($row['symbol'], $options = array("aggregate" => false, "limited" => 1, "periods" => ['DAILY']));
+        // computeDailyIndicatorsSymbol($row['symbol']);
+        computeIndicatorsForSymbolWithOptions($row['symbol'], $options = array("aggregate" => false, "limited" => 0, "periods" => ['DAILY']));
         // computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => $indicators_aggregate, "limited" => 0, "periods" => $indicators_periods));         
     }
     
