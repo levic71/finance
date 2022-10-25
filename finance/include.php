@@ -537,10 +537,179 @@ class calc {
         return $ret;
     }
 
+    public static function getCloseExistingDateInList($d, $data) {
+
+        $ret = $d;
+
+        $deb = substr($d, 0, 7);
+
+        $i = 31;
+        while ($i > 0) {
+            if (isset($data[$deb.sprintf("-%'02s", $i)])) {
+                $ret = $deb.sprintf("-%'02s", $i);
+                break;
+            }
+            $i--;
+        }
+
+        return $ret;
+
+    }
+
+    public static function getFirstExistingDateInList($d, $data) {
+
+        $ret = $d;
+
+        $deb = substr($d, 0, 7);
+
+        $i = 1;
+        while ($i < 31) {
+            if (isset($data[$deb.sprintf("-%'02s", $i)])) {
+                $ret = $deb.sprintf("-%'02s", $i);
+                break;
+            }
+            $i++;
+        }
+
+        return $ret;
+
+    }
+
+    public static function getClosedValue($d, $data) {
+
+        $ret = 0;
+
+        if (isset($data[$d])) {
+
+            $item = $data[$d];
+            $ret = is_numeric($item['adjusted_close']) ? $item['adjusted_close'] : $item['close'];
+
+        }
+
+        return floatval($ret);
+    }
+
     // ////////////////////////////////////////////////////////////
     // Calcul du DM d'un actif d'une journee
     // ////////////////////////////////////////////////////////////
     public static function processDataDM($data) {
+ 
+        global $dbg, $dbg_data;
+
+        $ret  = array();
+        $item = array();
+
+        $ref_DAY  = "";
+        $ref_PCT  = "";
+        $ref_MJ0  = "";
+        $ref_YJ0  = "";
+        $ref_TJ0  = 0;
+        $ref_T1M  = 0; // Pour calcul variation 1M
+        $ref_TYTD = 0; // Pour calcul variation YTD
+        $ref_T1W  = 0; // Pour calcul variation 1W
+        $ref_T1Y  = 0; // Pour calcul variation 1Y
+        $ref_T3Y  = 0; // Pour calcul variation 3Y
+        $ref_D1M  = "0000-00-00";
+        $ref_D3M  = "0000-00-00";
+        $ref_D6M  = "0000-00-00";
+
+        $k = count($data);
+        $keys = array_keys($data);
+
+        while($k > 132) {
+            
+            // On récupère l'item courant
+            $c = current($data);
+
+            // Valeurs de reference J0
+            $ref_TJ0 = calc::getClosedValue($c['day'], $data);
+            $ref_DAY = $c['day'];
+            $ref_PCT = $c['open'] == 0 ? 0 : ($c['close'] - $c['open']) * 100 / $c['open'];
+            $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
+            $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
+
+            // Recuperation dernier jour ouvre J0-1M
+            $ref_DD1M = calc::getCloseExistingDateInList(date('Y-m-d', strtotime($ref_YJ0.'-'.$ref_MJ0.'-01'.' -1 day')), $data);
+
+            // Recuperation dernier jour ouvre J0-3M
+            $m = $ref_MJ0 - 2;
+            $y = $ref_YJ0;
+            if ($m <= 0) { $m += 12; $y -= 1; }
+            $ref_DD3M = calc::getCloseExistingDateInList(date('Y-m-d', strtotime($y.'-'.$m.'-01'.' -1 day')), $data);
+
+            // Recuperation dernier jour ouvre J0-6M
+            $m = $ref_MJ0 - 5;
+            $y = $ref_YJ0;
+            if ($m <= 0) { $m += 12; $y -= 1; }
+            $ref_DD6M = calc::getCloseExistingDateInList(date('Y-m-t', strtotime($y.'-'.$m.'-01'.' -1 day')), $data);
+
+            // Recuperation jour YTD
+            $ref_DYTD = calc::getFirstExistingDateInList(date("Y-01-31"), $data);
+            $ref_TYTD = calc::getClosedValue($ref_DYTD, $data);
+
+            // Recuperation jour J - 1W
+            $ref_D1W = $keys[6];
+            $ref_T1W = calc::getClosedValue($ref_D1W, $data);
+
+            // Recuperation jour J - 1M
+            $ref_D1M = $keys[30];
+            $ref_T1M = calc::getClosedValue($ref_D1M, $data);
+
+            // Recuperation jour J - 1Y
+            $ref_D1Y = isset($keys[365]) ? $keys[365] : 0 ;
+            $ref_T1Y = calc::getClosedValue($ref_D1Y, $data);
+
+            // Recuperation jour J - 3Y
+            $ref_D3Y = isset($keys[365*3]) ? $keys[365*3] : 0;
+            $ref_T3Y = calc::getClosedValue($ref_D3Y, $data);
+
+            $item['MMJ0MPrice'] = $ref_TJ0;
+            $item['MMJ0MDate']  = $ref_DAY;
+            $item['MMZ1MPrice'] = calc::getClosedValue($ref_DD1M, $data);
+            $item['MMZ1MDate']  = $data[$ref_DD1M]['day'];
+            $item['MMZ3MPrice'] = calc::getClosedValue($ref_DD3M, $data);
+            $item['MMZ3MDate']  = $data[$ref_DD3M]['day'];
+            $item['MMZ6MPrice'] = calc::getClosedValue($ref_DD6M, $data);
+            $item['MMZ6MDate']  = $data[$ref_DD6M]['day'];
+
+            $item['MMZ1M'] = $item['MMZ1MPrice'] == 0 ? -9999 : round(($ref_TJ0 - $item['MMZ1MPrice'])*100/$item['MMZ1MPrice'], 2);
+            $item['MMZ3M'] = $item['MMZ3MPrice'] == 0 ? -9999 : round(($ref_TJ0 - $item['MMZ3MPrice'])*100/$item['MMZ3MPrice'], 2);
+            $item['MMZ6M'] = $item['MMZ6MPrice'] == 0 ? -9999 : round(($ref_TJ0 - $item['MMZ6MPrice'])*100/$item['MMZ6MPrice'], 2);
+            $item['MMZDM'] = $item['MMZ6MPrice'] > 0 ? round(($item['MMZ1M']+$item['MMZ3M']+$item['MMZ6M'])/3, 2) : ($item['MMZ3MPrice'] > 0 ? round(($item['MMZ1M']+$item['MMZ3M'])/2, 2) : ($item['MMZ1MPrice'] > 0 ? $item['MMZ1M'] : -9999));
+    
+            // Calcul variation YTD/1W/1M/1Y/3Y
+            $item['date_YTD'] = $ref_DYTD;
+            $item['var_YTD']  = $ref_TYTD == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0 / $ref_TYTD) - 1;
+            $item['date_1W'] = $ref_D1W;
+            $item['var_1W']  = $ref_T1W  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0 / $ref_T1W) - 1;
+            $item['date_1M'] = $ref_D1M;
+            $item['var_1M']  = $ref_T1M  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0 / $ref_T1M) - 1;
+            $item['date_1Y'] = $ref_D1Y;
+            $item['var_1Y']  = $ref_T1Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0 / $ref_T1Y) - 1;
+            $item['date_3Y'] = $ref_D3Y;
+            $item['var_3Y']  = $ref_T3Y  == 0 || $ref_TJ0 == 0 ? 0 : ($ref_TJ0 / $ref_T3Y) - 1;
+    
+            // Encore utilie ?    
+            $item['ref_close'] = $ref_TJ0;
+            $item['ref_pct']   = $ref_PCT;
+
+            $ret[] = $item;
+
+            // On deplace d'un le curseur du tableau
+            array_shift($data);
+            array_shift($keys);
+
+            $k--;
+
+        }
+
+        return $ret;
+    }
+
+    // ////////////////////////////////////////////////////////////
+    // Calcul du DM d'un actif d'une journee
+    // ////////////////////////////////////////////////////////////
+    public static function processDataDM2($data) {
  
         global $dbg, $dbg_data;
 
