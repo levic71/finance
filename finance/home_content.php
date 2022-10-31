@@ -7,6 +7,8 @@ session_start();
 include "common.php";
 include "googlesheet/sheet.php";
 
+$old_version = false;
+
 
 foreach([''] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -38,7 +40,9 @@ if ($sess_context->isUserConnected()) {
 	$trend_following = $aggregate_ptf['trend_following'];
 }
 
-$gsa = calc::getGSAlertes();
+if ($old_version) {
+	$gsa = calc::getGSAlertes();
+}
 
 /* echo "Liste des actifs en surveillance : ";
 foreach($gsa as $key => $val) echo $val[0].", ";
@@ -89,7 +93,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 	<? } ?>
 
 
-
+<? if ($old_version) { ?>
 	<h2 class="ui left floated">
 		<i class="inverted eye icon"></i><span>Market</span>
 		<? if ($sess_context->isUserConnected() && count($notifs) == 0) { ?>
@@ -118,7 +122,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 			?>				
 		</tbody>
 	</table>
-
+<? } ?>
 
 	<h2 class="ui left floated">
 		<i class="inverted eye icon"></i><span>Market</span>
@@ -133,18 +137,19 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 				foreach($indicateurs_a_suivre as $key => $val) {
 					$x = str_replace(':', '.', $val);
 					if (isset($data2['stocks'][$x])) {
-						$s = $data2['stocks'][$x];
+						$stock = $data2['stocks'][$x];
+						$seuils = isset($trend_following[$x]['seuils']) ? $trend_following[$x]['seuils'] : "";
 						echo '<tr>
-								<td><button class="mini ui primary button">'.$s['name'].'</button></td>
-								<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$gsa[$val][3].'" data-tootik-conf="right">'.($gsa[$val][3] == "" ? 0 : count(explode(';', $gsa[$val][3]))).'</button></td>
-								<td>'.sprintf("%.2f", $s['price']).'</td>
-								<td class="'.($s['percent'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['percent']).'%</td>
-								<td class="'.($s['ytd'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['ytd'] * 100).'%</td>
-								<td class="'.($s['1w']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['1w']  * 100).'%</td>
-								<td class="'.($s['1m']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['1m']  * 100).'%</td>
-								<td class="'.($s['1y']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['1y']  * 100).'%</td>
-								<td class="'.($s['3y']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $s['3y']  * 100).'%</td>
-								<td>'.($s['MM200'] == 0 ? "-" : Round($s['MM200'], 2)).'</td>
+								<td><button class="mini ui primary button">'.$stock['name'].'</button></td>
+								<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$seuils.'" data-tootik-conf="right">'.($seuils == "" ? 0 : count(explode(';', $seuils))).'</button></td>
+								<td>'.sprintf("%.2f", $stock['price']).'</td>
+								<td class="'.($stock['percent'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $stock['percent']).'%</td>
+								<td class="'.($stock['ytd'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $stock['ytd'] * 100).'%</td>
+								<td class="'.($stock['1w']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $stock['1w']  * 100).'%</td>
+								<td class="'.($stock['1m']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $stock['1m']  * 100).'%</td>
+								<td class="'.($stock['1y']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $stock['1y']  * 100).'%</td>
+								<td class="'.($stock['3y']  >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $stock['3y']  * 100).'%</td>
+								<td>'.($stock['MM200'] == 0 ? "-" : Round($stock['MM200'], 2)).'</td>
 							</tr>';
 					}
 				}
