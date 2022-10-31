@@ -964,7 +964,7 @@ if (!$readonly) {
     <? if (!$readonly) { ?>
 
     getFormValues = function() {
-        params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
+        params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit', 'f_seuils' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
 
         var tags = '';
         Dom.find('button.bt_tags').forEach(function(item) {

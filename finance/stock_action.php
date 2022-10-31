@@ -36,7 +36,7 @@ function updateSymbolData($symbol, $engine = "alpha") {
     if ($engine != "google" && isset($values[$symbol])) {
         $ret['gsheet'] = updateQuotesWithGSData($values[$symbol]);
 
-        // Mise a jour des indicateurs du jour (avec quotes)
+        // Mise a jour des indicateurs du jour
         computeDailyIndicatorsSymbol($symbol);
     }
 
