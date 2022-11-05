@@ -46,13 +46,8 @@ function plusoumoinsvalue($order) {
 
         // echo $row['product_name'].'-'.$row['quantity'].'-'.$row['price']."<br />";
 
-        if ($row['action'] == 1) {
-            $nb += $row['quantity'];
-            $valo += $row['quantity'] * $row['price'];
-        } else {
-            $nb -= $row['quantity'];
-            $valo -= $row['quantity'] * $row['price'];
-        }
+        $nb   += ($row['action'] == 1 ? 1 : -1) * $row['quantity'];
+        $valo += ($row['action'] == 1 ? 1 : -1) * $row['quantity'] * $row['price'] * $row['taux_change'];
 
         // echo $nb."-".$valo.'<br />';
 
@@ -62,7 +57,7 @@ function plusoumoinsvalue($order) {
 
     // echo $pru.'<br />';
 
-    $ret = $order['quantity'] * ($order['price'] - $pru);
+    $ret = $order['quantity'] * (($order['price'] * $order['taux_change']) - $pru);
 
     // echo $ret.'<br />';
 
@@ -86,14 +81,14 @@ while($row = mysqli_fetch_assoc($res)) {
     else
         $plusoumoinsvalue[$row['product_name']]['gain'] = plusoumoinsvalue($row);
 
-    $plusoumoinsvalue[$row['product_name']]['devise'] = $row['devise'];
+    $plusoumoinsvalue[$row['product_name']]['devise']      = $row['devise'];
     $plusoumoinsvalue[$row['product_name']]['taux_change'] = $row['taux_change'];
 }
 
 ?>
 
 <h2 class="ui left floated">
-    <i class="inverted dollar icon"></i>Gain sur ventes <?= $name ?>
+    <i class="inverted dollar icon"></i>Balance sur <?= $name ?>
     <select id="year_select_bt">
         <?
             for($i=$year_creation; $i <= date('Y'); $i++) echo '<option value="'.$i.'" '.($i == $year ? 'selected="selected"' : '').'>'.$i.'</option>';
@@ -104,16 +99,16 @@ while($row = mysqli_fetch_assoc($res)) {
 <div class="ui stackable column grid">
     <div class="row">
 		<div class="column">
-	        <table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal">
+	        <table id="tab_balance" class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal">
 <?
 
 $total = 0;
 foreach($plusoumoinsvalue as $key => $val) {
-    echo "<tr><td>".$key."</td><td>".sprintf("%.2f", $val['gain']).uimx::getCurrencySign($val['devise'])."</td></tr>";
+    echo "<tr><td>".$key."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain']).uimx::getCurrencySign($val['devise'])."</td></tr>";
     $total += $val['gain'] * $val['taux_change'];
 }
 
-echo "<tr><td>Total</td><td>".sprintf("%.2f", $total)."&euro;</td></tr>";
+echo "<tr><td></td><td class=\"right aligned ".($total >=0 ? "aaf-positive" : "aaf-negative")."\">".($total >=0 ? "+" : "").sprintf("%.2f", $total)."&euro;</td></tr>";
 
 ?>
             </table>
@@ -126,6 +121,6 @@ Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
     element = Dom.id('year_select_bt');
     var selection = "";
     for (i=0; i < element.length; i++) if (element[i].selected) selection = element[i].value;
-    if (selection != "") overlay.load('portfolio_impots.php', { 'portfolio_id' : <?= $portfolio_id ?>, 'year' : selection });
+    if (selection != "") overlay.load('portfolio_balance.php', { 'portfolio_id' : <?= $portfolio_id ?>, 'year' : selection });
 });
 </script>

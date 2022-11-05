@@ -60,7 +60,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 		<i class="inverted briefcase icon"></i><?= utf8_decode($my_portfolio['name']) ?><small id="subtitle"></small>
 		<button id="portfolio_graph_bt" class="circular ui icon very small right floated labelled button"><i class="inverted black chart bar outline icon"></i></button>
 		<? if (!$isPortfolioSynthese) { ?>
-		<button id="ptf_impots_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black balance icon"></i></button>
+		<button id="ptf_balance_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black balance icon"></i></button>
 		<? } ?>
 	</h2>
 	<div class="ui stackable column grid">
@@ -646,7 +646,7 @@ filter = function() {
 // Listener sur les boutons ADD et BACK
 <? if (!$isPortfolioSynthese) { ?>
 Dom.addListener(Dom.id('order_add_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
-Dom.addListener(Dom.id('ptf_impots_bt'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_impots.php', { 'portfolio_id' : <?= $portfolio_id ?> }); });
+Dom.addListener(Dom.id('ptf_balance_bt'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_balance.php', { 'portfolio_id' : <?= $portfolio_id ?> }); });
 <? } ?>
 Dom.addListener(Dom.id('order_back_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) {
