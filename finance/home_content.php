@@ -7,9 +7,6 @@ session_start();
 include "common.php";
 include "googlesheet/sheet.php";
 
-$old_version = false;
-
-
 foreach([''] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
@@ -38,10 +35,6 @@ if ($sess_context->isUserConnected()) {
 	$aggregate_ptf   = calc::getAggregatePortfoliosByUser($sess_context->getUserId());
 	$positions       = $aggregate_ptf['positions'];
 	$trend_following = $aggregate_ptf['trend_following'];
-}
-
-if ($old_version) {
-	$gsa = calc::getGSAlertes();
 }
 
 /* echo "Liste des actifs en surveillance : ";
@@ -92,38 +85,6 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 	?>
 	<? } ?>
 
-
-<? if ($old_version) { ?>
-	<h2 class="ui left floated">
-		<i class="inverted eye icon"></i><span>Market</span>
-		<? if ($sess_context->isUserConnected() && count($notifs) == 0) { ?>
-			<button id="home_alertes_list" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
-		<? } ?>
-	</h2>
-	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
-		<? uimx::displayHeadTable([ ["l" => "", "c" => "" ], ["l" => "Seuils", "c" => "center aligned" ], ["l" => "Valeur", "c" => "" ], ["l" => "%J", "c" => "" ], ["l" => "YTD", "c" => "" ], ["l" => "1W", "c" => "" ], ["l" => "1M", "c" => "" ], ["l" => "1Y", "c" => "" ], ["l" => "3Y", "c" => "" ], ["l" => "MM200", "c" => "" ]  ]); ?>
-		<tbody>
-			<?
-				foreach($indicateurs_a_suivre as $key => $val) {
-					echo '<tr>
-							<td><button class="mini ui primary button">'.$gsa[$val][0].'</button></td>
-							<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$gsa[$val][3].'" data-tootik-conf="right">'.($gsa[$val][3] == "" ? 0 : count(explode(';', $gsa[$val][3]))).'</button></td>
-							<td>'.sprintf("%.2f", $gsa[$val][4]).'</td>
-							<td class="'.($gsa[$val][12] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][12]).'%</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][13]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][13]).'%</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][14]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][14]).'%</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][15]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][15]).'%</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][16]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][16]).'%</td>
-							<td class="'.(str_replace("\%", "", $gsa[$val][17]) >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $gsa[$val][17]).'%</td>
-							<td>'.($gsa[$val][22] == 0 ? "-" : Round($gsa[$val][22], 2)).'</td>
-						</tr>';
-				}
-
-			?>				
-		</tbody>
-	</table>
-<? } ?>
-
 	<h2 class="ui left floated">
 		<i class="inverted eye icon"></i><span>Market</span>
 		<? if ($sess_context->isUserConnected() && count($notifs) == 0) { ?>
@@ -140,7 +101,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 						$stock = $data2['stocks'][$x];
 						$seuils = isset($trend_following[$x]['seuils']) ? $trend_following[$x]['seuils'] : "";
 						echo '<tr>
-								<td><button class="mini ui primary button">'.$stock['name'].'</button></td>
+								<td><button class="mini ui primary button" data-symbol="'.$stock['symbol'].'">'.$stock['name'].'</button></td>
 								<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$seuils.'" data-tootik-conf="right">'.($seuils == "" ? 0 : count(explode(';', $seuils))).'</button></td>
 								<td>'.sprintf("%.2f", $stock['price']).'</td>
 								<td class="'.($stock['percent'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $stock['percent']).'%</td>
@@ -522,7 +483,14 @@ Dom.find('button.bt_tags').forEach(function(item) {
 	});
 });
 
-// Listener sur button detail ligne tableau
+// Listener sur button detail stock tableau market
+Dom.find("#lst_scan tbody tr td:nth-child(1) button").forEach(function(element) {
+	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+Dom.attribute(element, 'data-symbol'), loading_area: 'main' });
+	});
+});
+
+// Listener sur button detail stock tableau screener
 Dom.find("#lst_stock tbody tr td:nth-child(1) button").forEach(function(element) {
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+element.innerHTML, loading_area: 'main' });
