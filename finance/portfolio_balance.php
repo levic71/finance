@@ -104,7 +104,7 @@ while($row = mysqli_fetch_assoc($res)) {
 
 $total = 0;
 foreach($plusoumoinsvalue as $key => $val) {
-    echo "<tr><td>".$key."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain']).uimx::getCurrencySign($val['devise'])."</td></tr>";
+    echo "<tr><td>".$key."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain'])."&euro;</td></tr>";
     $total += $val['gain'] * $val['taux_change'];
 }
 

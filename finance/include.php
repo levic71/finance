@@ -323,7 +323,7 @@ class calc {
                     $pru = $row['price'];
                 }
 
-                // Valorisation operation avec le taux de change le jour de l'achat/vente
+                // Valorisation operation avec le taux de change le jour de la transaction
                 $valo_ope = $row['quantity'] * $row['price'] * $row['taux_change'];
 
                 // Maj cash
