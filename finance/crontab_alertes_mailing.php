@@ -28,13 +28,30 @@ while($row = mysqli_fetch_array($res)) {
 
 	if (count($notifs) == 0) continue;
 
-	$mail_corps  = "";
-	foreach($notifs as $key => $val)
-		$mail_corps .= $val['actif'].':'.$val['type'].':'.$val['sens'].':'.$val['couleur'].':'.$val['icone'].':'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'\r\n';
+	$mime_boundary = "----finance.jorkers.com----".md5(time());
 
 	$mail_to     = $row['email'];
+	$mail_header = "From: contact@jorkers.com\n";
+	$mail_header .= "Mime-Version: 1.0\n";
+	$mail_header .= "Content-Type: multipart/alternative; boundary=\"$mime_boundary\"\n";
+	$mail_header .= "X-Sender: <finance.jorkers.com>\n";
+	$mail_header .= "X-Mailer: PHP/" . phpversion() . " \n" ;
+	$mail_header .= "X-Priority: 3 (normal) \n";
+	$mail_header .= "X-auth-smtp-user: contact@jorkers.com\n";
+	$mail_header .= "X-abuse-contact: contact@jorkers.com\n";
+	$mail_header .= "Importance: Normal\n";
+	$mail_header .= "Reply-to: contact@jorkers.com\n";
+
 	$mail_sujet  = "Alertes finances";
-	$mail_header = "From: contact@jorkers.com";
+	
+	$mail_corps  = "";
+	$mail_corps .= "--$mime_boundary\n";
+	$mail_corps .= "Content-Type: text/html; charset=ISO-8859-1\n";
+	$mail_corps .= "Content-Transfer-Encoding: 8bit\n\n";
+
+	foreach($notifs as $key => $val)
+		$mail_corps .= $val['actif'].':'.$val['type'].':'.$val['sens'].':'.$val['couleur'].':'.$val['icone'].':'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'<br />';
+
 	$res = mail($mail_to, $mail_sujet, $mail_corps, $mail_header);
 
 	$req3 = "UPDATE alertes SET mail=1 WHERE user_id=".$row['id']." AND mail=0 AND date=CURDATE()";
