@@ -236,7 +236,7 @@ foreach($data2["stocks"] as $key => $val) {
 
 	$tags_infos = uimx::getIconTooltipTag($val['tags']);
 
-	$curr  = $val['currency'] == "EUR" ? "&euro;" : "$";
+	$curr  = $val['type'] == 'INDICE' ? "" : ($val['currency'] == "EUR" ? "&euro;" : "$");
 	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : ($val['type'] == "INDICE" ? "IND" : "EQY"))." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
 
 	echo "<tr class=\"".$class."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".utf8_decode($val['tags'])."\">";

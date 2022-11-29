@@ -64,7 +64,8 @@ $ptf_nb_positions = isset($aggregate_ptf['positions']) ? count($aggregate_ptf['p
 
 // Recuperation des indicateurs de l'actif de la derniere cotation
 $data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
-$curr = $row['currency'] == "EUR" ? "&euro;" : "$";
+$curr = $row['type'] == "INDICE" ? "" : ($row['currency'] == "EUR" ? "&euro;" : "$");
+$curr_graphe = $row['type'] == "INDICE" ? "" : ($row['currency'] == "EUR" ? "\u20ac" : "$");
 
 $trend_following = isset($aggregate_ptf['trend_following']) ? $aggregate_ptf['trend_following'] : [];
 
@@ -688,6 +689,9 @@ if (!$readonly) {
     var new_data_weekly  = [];
     var new_data_monthly = [];
 
+    // Var pour affichage devise dans graphe
+    stock_currency = '<?= $curr_graphe ?>';
+
     // Data stock prices
 <?
     format_data($data_daily,   "daily");
@@ -757,13 +761,13 @@ if (!$readonly) {
         // Data pour les infos sur l'axe Y (stop loss/objectif/stop profit)
         var axe_infos  = [];
         <? if (isset($trend_following[$symbol]['stop_loss']) && $trend_following[$symbol]['stop_loss'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_loss'])   ?> \u20ac', colr: 'white', bgcolr: 'rgba(247,143,3, 0.6)', valueY: <?= $trend_following[$symbol]['stop_loss']   ?> });
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_loss'])   ?>'+stock_currency, colr: 'white', bgcolr: 'rgba(247,143,3, 0.6)', valueY: <?= $trend_following[$symbol]['stop_loss']   ?> });
         <? } ?>
         <? if (isset($trend_following[$symbol]['stop_profit']) && $trend_following[$symbol]['stop_profit'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_profit']) ?> \u20ac', colr: 'white', bgcolr: 'rgba(181, 87, 87, 0.6)', valueY: <?= $trend_following[$symbol]['stop_profit'] ?> });
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_profit']) ?>'+stock_currency, colr: 'white', bgcolr: 'rgba(181, 87, 87, 0.6)', valueY: <?= $trend_following[$symbol]['stop_profit'] ?> });
         <? } ?>
         <? if (isset($trend_following[$symbol]['objectif']) && $trend_following[$symbol]['objectif'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?> \u20ac', colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6)', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
+            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?>'+stock_currency, colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6)', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
         <? } ?>
 
         // Current data

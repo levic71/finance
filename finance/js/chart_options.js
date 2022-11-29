@@ -1,4 +1,8 @@
+// symbol euro
 var euro = '\u20ac';
+
+// Valeur par defaut (peut etre modifie en local)
+var stock_currency = euro;
 
 drawLabel = function(chart, text, args = {}) {
 
@@ -332,7 +336,7 @@ var options_Stock_Graphe = {
 			ticks: {
 				align: 'end',
 				callback: function(value, index, ticks) {
-					var c = value + ' ' + euro + '       ';
+					var c = value + ' ' + stock_currency + '       ';
 					return c.substring(0, 6);
 				}
 			},
