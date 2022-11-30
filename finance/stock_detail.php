@@ -760,15 +760,14 @@ if (!$readonly) {
 
         // Data pour les infos sur l'axe Y (stop loss/objectif/stop profit)
         var axe_infos  = [];
-        <? if (isset($trend_following[$symbol]['stop_loss']) && $trend_following[$symbol]['stop_loss'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_loss'])   ?>'+stock_currency, colr: 'white', bgcolr: 'rgba(247,143,3, 0.6)', valueY: <?= $trend_following[$symbol]['stop_loss']   ?> });
-        <? } ?>
-        <? if (isset($trend_following[$symbol]['stop_profit']) && $trend_following[$symbol]['stop_profit'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['stop_profit']) ?>'+stock_currency, colr: 'white', bgcolr: 'rgba(181, 87, 87, 0.6)', valueY: <?= $trend_following[$symbol]['stop_profit'] ?> });
-        <? } ?>
-        <? if (isset($trend_following[$symbol]['objectif']) && $trend_following[$symbol]['objectif'] > 0) { ?>
-            axe_infos.push({ title: '<?= sprintf("%.1f", $trend_following[$symbol]['objectif'])    ?>'+stock_currency, colr: 'white', bgcolr: 'rgba(58, 48, 190, 0.6)', valueY: <?= $trend_following[$symbol]['objectif']    ?> });
-        <? } ?>
+
+        <? 
+            $pki_colr = [ 'stop_loss' => 'rgba(247,143,3, 0.6)', 'stop_profit' => 'rgba(181, 87, 87, 0.6)', 'objectif' => 'rgba(58, 48, 190, 0.6)'];
+            foreach($pki_colr as $key => $val)
+                if (isset($trend_following[$symbol][$key]) && $trend_following[$symbol][$key] > 0) {
+                    echo sprintf("axe_infos.push({ title: '%.1f'+stock_currency, colr: 'white', bgcolr: '%s', valueY: '%s' });", $trend_following[$symbol][$key], $val, $trend_following[$symbol][$key]);
+                }
+        ?>
 
         // Current data
         var g_new_data = null;
@@ -927,21 +926,44 @@ if (!$readonly) {
 
         // Update Chart Stock
         var datasets1 = [];
+        // Ajout des data valeurs de cotation
         datasets1.push(getDatasetVals(g_new_data));
+        // Ajout des MM & VOLUME en fct si bouton allume
         if (isCN('graphe_mm7_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm4', 'MM7'));
         if (isCN('graphe_mm20_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm3', 'MM20'));
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
+        // Ajout de la courbe log
+        if (false) datasets1.push(getDatasetMMX(g_new_data, 'log', 'LOG'));
 
-        // Courbe log
-        //datasets1.push(getDatasetMMX(g_new_data, 'log', 'LOG'));
+        // MIN/MAX/PRU/STOPLOSS/STOPPROFIT/OBJECTIF (pour verifier si axe y ok)
+        limits_ctrl = [];
+        <? 
+            foreach([ 'stop_loss', 'stop_profit', 'objectif' ] as $key => $val)
+                if (isset($trend_following[$symbol][$val]) && $trend_following[$symbol][$val] > 0)
+                    echo sprintf("limits_ctrl.push(%s);", $trend_following[$symbol][$val]);
+        ?>;
 
-        // options des alarms
+        // MIN/MAX values cotations
+        l_min = 999999999;
+        l_max = 0;
+        g_new_data.forEach(function(item) {
+            if (item.y > l_max) l_max = item.y;
+            if (item.y < l_min) l_min = item.y;
+        });
+        limits_ctrl.forEach(function(item) {
+            if (l_min > item) l_min = item;
+            if (l_max < item) l_max = item;
+        });
+
+        // options des alertes
         options_Stock_Graphe.plugins.vertical     = [];
         options_Stock_Graphe.plugins.horizontal   = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
         options_Stock_Graphe.plugins.rightAxeText = axe_infos;
         options_Stock_Graphe.plugins.bubbles      = isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : [];
+        options_Stock_Graphe.scales['y1'].max     = l_max;
+        options_Stock_Graphe.scales['y1'].min     = l_min;
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ rightAxeText, horizontal, vertical, bubbles ]);
 
         // Update Chart RSI

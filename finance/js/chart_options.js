@@ -22,6 +22,7 @@ drawLabel = function(chart, text, args = {}) {
 	const alignY     = args.alignY || '';
 	const valueX     = args.valueX || '';
 	const valueY     = args.valueY || '';
+	const forceDisplay = args.forceDisplay || false;
 	const paddingWidth  = args.paddingWidth || 20;
 	const paddingHeight = args.paddingHeight || 6;
 	const xx = args.x || 0;
@@ -34,12 +35,16 @@ drawLabel = function(chart, text, args = {}) {
 
     let posX = alignX === 'right'  ? right-l-paddingWidth   : (alignX === 'center' ? left+((width+paddingWidth-l) / 2)  : xx);
     let posY = alignY === 'bottom' ? bottom-h-paddingHeight : (alignY === 'center' ? ((height+paddingHeight-h) / 2) : yy);
-
+    
     if (valueX !== '') posX = x.getPixelForValue(valueX);
     if (valueY !== '') posY = y1.getPixelForValue(valueY) - 10 - 2;
 
     if (alignX == 'rightAxe') posX = width;
 
+    //alert(text+':'+posY);
+/*     if (forceDisplay && posY < 0) posY = 0;
+    if (forceDisplay && posY > height) posY = height;
+ */
     ctx.fillStyle = bgColr;
     ctx.fillRect(posX, posY, (l + paddingWidth), (h + paddingHeight));
 
@@ -56,7 +61,7 @@ const rightAxeText = {
         if (options.length == 0) return;
 
         options.forEach(function(item) {
-            drawLabel(chart, item.title, { bgColr: item.bgcolr, textColr: item.colr, alignX: 'rightAxe', valueY: item.valueY, fontSize: '10', paddingHeight: 6, paddingWidth: 10 });
+            drawLabel(chart, item.title, { bgColr: item.bgcolr, textColr: item.colr, alignX: 'rightAxe', valueY: item.valueY, fontSize: '10', paddingHeight: 6, paddingWidth: 10, forceDisplay: true });
         });
     }
 }
