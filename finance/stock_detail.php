@@ -957,7 +957,7 @@ if (!$readonly) {
             if (l_max < item) l_max = item;
         });
 
-        // options des alertes
+        // Options des alertes
         options_Stock_Graphe.plugins.vertical     = [];
         options_Stock_Graphe.plugins.horizontal   = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
         options_Stock_Graphe.plugins.rightAxeText = axe_infos;
