@@ -304,8 +304,8 @@ class calc {
             // Si ordre non confirme
             if ($row['confirme'] == 0) { $portfolio['orders'][] = $row; continue; }
             
-            // Achat/Vente
-            if ($row['action'] == 1 || $row['action'] == -1) {
+            // Achat/Vente/Dividende Action
+            if ($row['action'] == 1 || $row['action'] == -1 || $row['action'] == 6) {
 
                 $nb = 0;
                 $pru = 0;
@@ -327,7 +327,8 @@ class calc {
                 $valo_ope = $row['quantity'] * $row['price'] * $row['taux_change'];
 
                 // Maj cash
-                $cash += $valo_ope * ($achat ? -1 : 1); // ajout si vente, retrait achat
+                if ($row['action'] != 6)
+                    $cash += $valo_ope * ($achat ? -1 : 1); // ajout si vente, retrait achat
 
                 // TTF si actif FR 
                 if (isset($quotes['stocks'][$pname]['type']) && $quotes['stocks'][$pname]['type'] == 'Equity' && strstr($pname, ".PAR")) $row['ttf'] = $valo_ope * 0.003;
@@ -358,6 +359,12 @@ class calc {
             if ($row['action'] == 4) {
                 $sum_dividende += $row['quantity'] * $row['price'];
                 $cash          += $row['quantity'] * $row['price'];
+                $ampplt        += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
+            }
+   
+            // Divende Action
+            if ($row['action'] == 6) {
+                $sum_dividende += $row['quantity'] * $row['price'];
                 $ampplt        += $interval_ref == 0 ? 0 : ($row['quantity'] * $row['price']) * ($interval / $interval_ref);
             }
    
@@ -1781,6 +1788,7 @@ class uimx {
         -1 => "Vente",
         -2 => "Retrait",
          4 => "Dividende",
+         6 => "Dividende Action",
          5 => "Transfert IN",
         -5 => "Transfert OUT"
     ];
