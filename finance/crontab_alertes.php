@@ -47,11 +47,6 @@ $aggregate_ptf   = calc::getAggregatePortfoliosByUser($user_id);
 $positions       = $aggregate_ptf['positions'];
 $trend_following = $aggregate_ptf['trend_following'];
 
-// Rajouter à 1 à l'indice !!!
-// -1 => Shortname, 0 => Symbol, 1 => Name, 2 => Alertes, 3 => Price, 4 => Priceopen, 5 => High, 6 => Low, 7 => Volume, 8 => Datadelay, 9 => Closeyest, 10 => Change, 11 => Changepct, 12 => ytd, 13 => 1 week, 14 => 1 month, 15 => 1 year, 16 => 3 years, 17 => mm7, 18 => mm20, 19 => mm50, 20 => mm100, 21 => mm200, 22 => j-1
-// $gsah = updateGoogleSheetAlertesHeader();
-// var_dump($gsah);
-
 // 0 - Liste des actifs en portefeuille ou en surveillance
 // 1 - Liste des alertes de franchissemement des alertes et mm200 à hausse et à la baisse
 // 2 - Liste des actifs cours proches de la MM200 (2%)
@@ -100,12 +95,14 @@ foreach($stocks as $key => $val) {
 
 	if (!isset($trend_following[$key]) && !isset($positions[$key])) continue;
 
-	$symbol   = $val['symbol'];
-	$price    = $val['price'];
-	$previous = $val['previous'];
-	$pru      = isset($positions[$key]) ? $positions[$key]['pru'] : 0;
-	$objectif = isset($trend_following[$key]['objectif']) && $trend_following[$key]['objectif'] != '' ? $trend_following[$key]['objectif'] : 0;
-	$seuils   = explode(';', isset($trend_following[$key]['seuils']) ? $trend_following[$key]['seuils'] : '');
+	$symbol     = $val['symbol'];
+	$price      = $val['price'];
+	$previous   = $val['previous'];
+	$pru        = isset($positions[$key]) ? $positions[$key]['pru'] : 0;
+	$objectif   = isset($trend_following[$key]['objectif'])    && $trend_following[$key]['objectif']    != '' ? $trend_following[$key]['objectif']    : 0;
+	$stoploss   = isset($trend_following[$key]['stop_loss'])   && $trend_following[$key]['stop_loss']   != '' ? $trend_following[$key]['stop_loss']   : 0;
+	$stopprofit = isset($trend_following[$key]['stop_profit']) && $trend_following[$key]['stop_profit'] != '' ? $trend_following[$key]['stop_profit'] : 0;
+	$seuils     = explode(';', isset($trend_following[$key]['seuils']) ? $trend_following[$key]['seuils'] : '');
 
 	$colr_up   = $symbol == "VIX" ? "red" : "green";
 	$icon_up   = $symbol == "VIX" ? "arrow down" : "arrow up";
@@ -122,17 +119,14 @@ foreach($stocks as $key => $val) {
 			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'seuil', 'sens' => $sens_down, 'seuil' => $v, 'colr' => $colr_down, 'icon' => $icon_down ];
 	}
 
-	// Depassement MM200
-	if (depassementALaHausse($previous, $price, $val['MM200']))
-		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'mm200', 'sens' => $sens_up, 'seuil' => $val['MM200'], 'colr' => 'green', 'icon' => 'arrow up' ];	
-	if (depassementALaBaisse($previous, $price, $val['MM200']))
-		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'mm200', 'sens' => $sens_down, 'seuil' => $val['MM200'], 'colr' => 'red', 'icon' => 'arrow down' ];
-
-	// Depassement MM20
-	if (depassementALaHausse($previous, $price, $val['MM20']))
-		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'mm20', 'sens' => $sens_up, 'seuil' => $val['MM20'], 'colr' => 'green', 'icon' => 'arrow up' ];	
-	if (depassementALaBaisse($previous, $price, $val['MM20']))
-		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'mm20', 'sens' => $sens_down, 'seuil' => $val['MM20'], 'colr' => 'red', 'icon' => 'arrow down' ];
+	// Depassement hausse/baisse MM
+	$tab_mm = [ 'MM200'];
+	foreach ($tab_mm as $i => $mm) {
+		if (depassementALaHausse($previous, $price, $val[$mm]))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => $mm, 'sens' => $sens_up, 'seuil' => $val[$mm], 'colr' => 'green', 'icon' => 'arrow up' ];	
+		if (depassementALaBaisse($previous, $price, $val[$mm]))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => $mm, 'sens' => $sens_down, 'seuil' => $val[$mm], 'colr' => 'red', 'icon' => 'arrow down' ];
+	}
 
 	// Hausse journaliere +10% par rapport a la veille
 	if (pourcentagevariation($previous, $price) >= 10)
@@ -145,58 +139,42 @@ foreach($stocks as $key => $val) {
 	// Depassement a la baisse PRU
 	if ($pru > 0 && depassementALaBaisse($previous, $price, $pru))
 		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'pru', 'sens' => $sens_down, 'seuil' => $pru, 'colr' => 'green', 'icon' => 'arrow up' ];
+
+	// Depassement hausse/baisse Objectif avec ctrl StopLoss
+	if ($objectif > 0) {
+		if (depassementALaHausse($previous, $price, $objectif)) {
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'objectif', 'sens' => 1, 'seuil' => $objectif, 'colr' => 'green', 'icon' => 'trophy' ];
+			if ($stop_loss == 0)
+				$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
+		}
+		if (depassementALaBaisse($previous, $price, $objectif))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'objectif', 'sens' => -1, 'seuil' => $objectif, 'colr' => 'red', 'icon' => 'arrow down' ];
+	}
+
+	// Depassement hausse/baisse StopProfit avec ctrl StopLoss
+	if ($stopprofit > 0) {
+		if (depassementALaHausse($previous, $price, $stopprofit)) {
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'stopprofit', 'sens' => 1, 'seuil' => $stopprofit, 'colr' => 'green', 'icon' => 'trophy' ];
+			if ($stop_loss == 0)
+				$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
+		}
+		if (depassementALaBaisse($previous, $price, $stopprofit))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'stopprofit', 'sens' => -1, 'seuil' => $stopprofit, 'colr' => 'red', 'icon' => 'arrow down' ];
+	}
+	
+	// Depassement hausse/baisse StopLoss
+	if ($stoploss > 0) {
+		if (depassementALaHausse($previous, $price, $stopprofit))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'stopprofit', 'sens' => 1, 'seuil' => $stopprofit, 'colr' => 'green', 'icon' => 'trophy' ];
+		if (depassementALaBaisse($previous, $price, $stopprofit))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'stopprofit', 'sens' => -1, 'seuil' => $stopprofit, 'colr' => 'red', 'icon' => 'arrow down' ];
+	}
+	
 }
 
 tools::pretty($notifs);
 
 exit(0);
-
-
-// Alerte sur actifs en portefeuille
-foreach($positions as $key => $val) {
-
-	if (isset($data2["stocks"][$key])) {
-
-		$d = $data2["stocks"][$key];
-
-		// Depassement objectif/stoploss/stopprofit
-		if (isset($trend_following[$key]['objectif'])) {
-
-			if ($trend_following[$key]['objectif'] > 0) {
-				if (depassementALaHausse($d['previous'], $d['price'], $trend_following[$key]['objectif'])) {
-					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'objectif', 'sens' => 1, 'seuil' => 'Objectif', 'colr' => 'green', 'icon' => 'trophy' ];
-					if ($trend_following[$key]['stop_loss'] == 0)
-						$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
-				}
-				if (depassementALaBaisse($d[('previous')], $d['price'], $trend_following[$key]['objectif']))
-					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'objectif', 'sens' => -1, 'seuil' => 'Objectif', 'colr' => 'red', 'icon' => 'arrow down' ];
-			}
-
-			if ($trend_following[$key]['stop_loss'] > 0) {
-				if (depassementALaHausse($d['previous'], $d['price'], $trend_following[$key]['stop_loss']))
-					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'stop_loss', 'sens' => 1, 'seuil' => 'Stop Loss', 'colr' => 'green', 'icon' => 'arrow up' ];
-				if (depassementALaBaisse($d[('previous')], $d['price'], $trend_following[$key]['stop_loss']))
-					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'stop_loss', 'sens' => -1, 'seuil' => 'Stop Loss', 'colr' => 'red', 'icon' => 'arrow down' ];
-			}
-
-			if ($trend_following[$key]['stop_profit'] > 0) {
-				if (depassementALaHausse($d['previous'], $d['price'], $trend_following[$key]['stop_profit'])) {
-					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'stop_profit', 'sens' => 1, 'seuil' => 'Stop Profit', 'colr' => 'green', 'icon' => 'trophy' ];
-					if ($trend_following[$key]['stop_loss'] == 0)
-						$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
-				}
-				if (depassementALaBaisse($d[('previous')], $d['price'], $trend_following[$key]['stop_profit']))
-					$notifs[] =  [ 'user_id' => $user_id, 'actif' => $key, 'type' => 'stop_profit', 'sens' => -1, 'seuil' => 'Stop Profit', 'colr' => 'red', 'icon' => 'arrow down' ];
-			}
-
-		}
-		
-		// croisement PRU/stoploss/stopprofit/objectif/MM200 ?
-
-
-	}
-
-}
 
 $file_cache = 'cache/TMP_ALERTES.json';
 cacheData::writeCacheData($file_cache, $notifs);
