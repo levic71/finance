@@ -39,6 +39,7 @@ while ($row = mysqli_fetch_assoc($res)) {
 		<thead>
 			<tr>
 				<th class="center aligned">Date</th>
+				<th class="center aligned">Type</th>
 				<th>Alerte</th>
 				<th class="center aligned">Action</th>
 			</tr>
@@ -51,8 +52,9 @@ while ($row = mysqli_fetch_assoc($res)) {
                     // if ($i == 0) var_dump($val);
                     echo '<tr id="alerte_'.$i.'" data-alerte="'.$val['date'].'|'.$val['user_id'].'|'.$val['actif'].'|'.$val['type'].'">
                         <td class="center aligned">'.$val['date'].'</td>
+                        <td class="center aligned">'.$val['type'].'</td>
                         <td data-value="'.$val['actif'].'"><div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
-                            <div class="ui '.$val['couleur'].' button">
+                                <div class="ui '.$val['couleur'].' button">
                                 <i class="'.$val['icone'].' inverted icon"></i>'.$val['actif'].'
                             </div>
                             <a class="ui basic '.$val['couleur'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>
