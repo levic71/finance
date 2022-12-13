@@ -133,12 +133,18 @@ foreach($stocks as $key => $val) {
 		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => '10%', 'sens' => $sens_up, 'seuil' => $previous, 'colr' => 'green', 'icon' => 'arrow up' ];
 
 	// Depassement +20% PRU
-	if ($pru > 0 && depassementALaHausse($previous, $price, $pru * 1.2))
+	if ($pru > 0 && depassementALaHausse($previous, $price, $pru * 1.2)) {
 		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'pru20%', 'sens' => $sens_up, 'seuil' => $pru, 'colr' => 'green', 'icon' => 'arrow up' ];
+		if ($stop_loss == 0)
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
+	}
 
 	// Depassement a la baisse PRU
-	if ($pru > 0 && depassementALaBaisse($previous, $price, $pru))
+	if ($pru > 0 && depassementALaBaisse($previous, $price, $pru)) {
 		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'pru', 'sens' => $sens_down, 'seuil' => $pru, 'colr' => 'green', 'icon' => 'arrow up' ];
+		if ($stop_loss == 0)
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
+	}
 
 	// Depassement hausse/baisse Objectif avec ctrl StopLoss
 	if ($objectif > 0) {
