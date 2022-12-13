@@ -49,10 +49,23 @@ while($row = mysqli_fetch_array($res)) {
 	$mail_corps .= "Content-Type: text/html; charset=ISO-8859-1\n";
 	$mail_corps .= "Content-Transfer-Encoding: 8bit\n\n";
 
-	foreach($notifs as $key => $val)
-		$mail_corps .= $val['actif'].':'.$val['type'].':'.$val['sens'].':'.$val['couleur'].':'.$val['icone'].':'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'<br />';
+	$mail_corps .= "<html><body><table>";
 
-	$res = mail($mail_to, $mail_sujet, $mail_corps, $mail_header);
+	foreach($notifs as $key => $val) {
+		$mail_corps .= "<tr>";
+		$mail_corps .= "<td>".$val['actif']."</td>";
+		$mail_corps .= "<td>".$val['type']."</td>";
+		$mail_corps .= "<td><span data-tootik-conf=\"left multiline\"><a class=\"ui empty ".$val['couleur']." circular label\"></a></span></td>";
+		$mail_corps .= "<td>".$val['sens']."</td>";
+		$mail_corps .= "<td>".$val['couleur']."</td>";
+		$mail_corps .= "<td>".$val['icone']."</td>";
+		$mail_corps .= "<td>".sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil'])."</td>";
+		$mail_corps .= "</tr>";
+	}
+
+	$mail_corps .= "</table></body></html>";
+
+		$res = mail($mail_to, $mail_sujet, $mail_corps, $mail_header);
 
 	$req3 = "UPDATE alertes SET mail=1 WHERE user_id=".$row['id']." AND mail=0 AND date=CURDATE()";
 	$res3 = dbc::execSql($req3);
