@@ -104,19 +104,25 @@ foreach($stocks as $key => $val) {
 	$stopprofit = isset($trend_following[$key]['stop_profit']) && $trend_following[$key]['stop_profit'] != '' ? $trend_following[$key]['stop_profit'] : 0;
 	$seuils     = explode(';', isset($trend_following[$key]['seuils']) ? $trend_following[$key]['seuils'] : '');
 
-	$colr_up   = $symbol == "VIX" ? "red" : "green";
-	$icon_up   = $symbol == "VIX" ? "arrow down" : "arrow up";
-	$sens_up   = $symbol == "VIX" ? -1 : 1;
-	$colr_down = $symbol == "VIX" ? "green" : "red";
-	$icon_down = $symbol == "VIX" ? "arrow up" : "arrow down";
-	$sens_down = $symbol == "VIX" ? 1 : -1;
+	$colr_up   = "green";
+	$icon_up   = "arrow up";
+	$sens_up   = 1;
+	$colr_down = "red";
+	$icon_down = "arrow down";
+	$sens_down = -1;
 
 	// Parcours du cours de chaque seuil ?
 	foreach($seuils as $i => $v) {
-		if (depassementALaHausse($previous, $price, $v))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'seuil', 'sens' => $sens_up, 'seuil' => $v, 'colr' => $colr_up, 'icon' => $icon_up ];
-		if (depassementALaBaisse($previous, $price, $v))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'seuil', 'sens' => $sens_down, 'seuil' => $v, 'colr' => $colr_down, 'icon' => $icon_down ];
+		$tmp = explode('|', $v);
+		$inverse = isset($tmp[1]) ? $tmp[1] : 1;
+		if ($inverse == -1) {
+			$colr_up = "red";
+			$colr_down = "green";
+		}
+		if (depassementALaHausse($previous, $price, $tmp[0]))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'seuil', 'sens' => $sens_up, 'seuil' => $tmp[0], 'colr' => $colr_up, 'icon' => $icon_up ];
+		if (depassementALaBaisse($previous, $price, $tmp[0]))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'seuil', 'sens' => $sens_down, 'seuil' => $tmp[0], 'colr' => $colr_down, 'icon' => $icon_down ];
 	}
 
 	// Depassement hausse/baisse MM
@@ -179,7 +185,6 @@ foreach($stocks as $key => $val) {
 }
 
 // tools::pretty($notifs);
-
 
 $file_cache = 'cache/TMP_ALERTES.json';
 cacheData::writeCacheData($file_cache, $notifs);
