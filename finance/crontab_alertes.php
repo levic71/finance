@@ -172,9 +172,8 @@ foreach($stocks as $key => $val) {
 	
 }
 
-tools::pretty($notifs);
+// tools::pretty($notifs);
 
-exit(0);
 
 $file_cache = 'cache/TMP_ALERTES.json';
 cacheData::writeCacheData($file_cache, $notifs);
