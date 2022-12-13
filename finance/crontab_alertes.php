@@ -147,7 +147,7 @@ foreach($stocks as $key => $val) {
 		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'pru', 'sens' => $sens_down, 'seuil' => $pru, 'colr' => 'green', 'icon' => 'arrow up' ];
 }
 
-var_dump($notifs);
+tools::pretty($notifs);
 
 exit(0);
 
