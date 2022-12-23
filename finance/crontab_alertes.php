@@ -93,7 +93,11 @@ foreach($stocks as $key => $val) {
 
 	// var_dump($val);
 
+	// Si actif pas suivi dans trendfollowing ou pas dans le portefeuille, bye bye
 	if (!isset($trend_following[$key]) && !isset($positions[$key])) continue;
+
+	// Si actif suivi mais alerte desactive
+	if (isset($trend_following[$key]) && $trend_following[$key]['active'] == 0) continue;
 
 	$symbol     = $val['symbol'];
 	$price      = $val['price'];
