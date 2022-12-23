@@ -172,6 +172,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					$perf  = round($achat != 0 ? (($valo - $achat) * 100) / $achat : 0, 2);
 					$pname = '<button class="tiny ui primary button">'.$key.($val['other_name'] ? '(*)' : '').'</button>';
 
+					$isAlerteActive = isset($lst_trend_following[$key]['active']) && $lst_trend_following[$key]['active'] == 1 ? true : false;
 					$stop_loss   = isset($lst_trend_following[$key]['stop_loss'])   ? $lst_trend_following[$key]['stop_loss']   : 0;
 					$stop_profit = isset($lst_trend_following[$key]['stop_profit']) ? $lst_trend_following[$key]['stop_profit'] : 0;
 					$objectif    = isset($lst_trend_following[$key]['objectif'])    ? $lst_trend_following[$key]['objectif']    : 0;
@@ -210,10 +211,10 @@ $lst_trend_following = $portfolio_data['trend_following'];
 							<label style="color: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%s%.2f", ($pct_mm >= 0 ? '+' : ''), $pct_mm).' %</label>
 						</div></td>
 
-						<td class="center aligned" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
-							<div class="'.(intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
-							<div class="'.(intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
-							<div class="'.(intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
+						<td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
+							<div class="'.(!$isAlerteActive || intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
+							<div class="'.(!$isAlerteActive || intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
+							<div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
 							<div class="hidden grey floating ui label">'.sprintf("%s", $seuils).'</div>
 						</div></td>
 
@@ -716,9 +717,10 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 
 		// On récupère les valeurs dans la cellule du tavleau - Pas tres beau !!!
-		var pname = Dom.attribute(element, 'data-pname');
-		var price = Dom.attribute(element.parentNode, 'data-value');
-		var divs = element.getElementsByTagName("div");
+		var pname  = Dom.attribute(element, 'data-pname');
+		var price  = Dom.attribute(element.parentNode, 'data-value');
+		var active = Dom.attribute(element.parentNode, 'data-active');
+		var divs   = element.getElementsByTagName("div");
 		var stoploss   = divs[0].innerHTML;
 		var objectif   = divs[1].innerHTML;
 		var stopprofit = divs[2].innerHTML;
@@ -735,6 +737,7 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 							'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
 							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
 							'<label>Seuils</label><input type="text"<input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
+							'<label>Active : <input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/></label>' +
 						'</div></div>',
 				showCancelButton: true,
 				confirmButtonText: 'Valider',
@@ -747,12 +750,21 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 					if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) return false;
 					if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999)) return false;
 					var symbol = Dom.attribute(element, 'data-pname');
-					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils' ]) + '&symbol=' + symbol;
+					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils' ]) + '&symbol=' + symbol + '&f_active=' + (valof('f_active') == 0 ? 0 : 1);
 					go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=stops&' + params, no_data: 1 });
 					divs[0].innerHTML = valof('f_stoploss');
 					divs[1].innerHTML = valof('f_objectif');
 					divs[2].innerHTML = valof('f_stopprofit');
 					divs[3].innerHTML = valof('f_seuils');
+					divs[0].className = divs[0].className.replaceAll('grey', '');
+					divs[1].className = divs[1].className.replaceAll('grey', '');
+					divs[2].className = divs[2].className.replaceAll('grey', '');
+					divs[3].className = divs[3].className.replaceAll('grey', '');
+					if (valof('f_active') == 0 || parseInt(valof('f_stoploss'))   == 0) divs[0].className = divs[0].className + ' grey';
+					if (valof('f_active') == 0 || parseInt(valof('f_objectif'))   == 0) divs[1].className = divs[1].className + ' grey';
+					if (valof('f_active') == 0 || parseInt(valof('f_stopprofit')) == 0) divs[2].className = divs[2].className + ' grey';
+					if (valof('f_active') == 0 || parseInt(valof('f_seuils'))     == 0) divs[3].className = divs[3].className + ' grey';
+					Dom.attribute(element.parentNode, { 'data-active'    : valof('f_active') == 0 ? 0 : 1 });
 					Swal.fire('Données modifiées');
 				}
 			});
