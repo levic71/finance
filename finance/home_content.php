@@ -259,7 +259,7 @@ foreach($data2["stocks"] as $key => $val) {
 		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
 		<td>
 			<span data-tootik-conf=\"left  multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['day'] == date("Y-m-d") ? "grey" : "black")." alternate icon\"></i></a></span>
-			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i data-pname=\"".$symbol."\" data-value=\"".$val['price']."\" data-stoploss=\"".$stoploss."\" data-objectif=\"".$objectif."\" data-stopprofit=\"".$stopprofit."\" data-seuils=\"".$seuils."\" class=\"inverted alarm ".($isAlerteActive ? "blue" : "black")." icon\"></i></a></span>
+			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i data-pname=\"".$symbol."\" data-value=\"".$val['price']."\" data-active=\"".($isAlerteActive ? 1 : 0)."\" data-stoploss=\"".$stoploss."\" data-objectif=\"".$objectif."\" data-stopprofit=\"".$stopprofit."\" data-seuils=\"".$seuils."\" class=\"inverted alarm ".($isAlerteActive ? "blue" : "black")." icon\"></i></a></span>
 		</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td data-value=\"".$val['percent']."\" class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
@@ -520,6 +520,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 		// On récupère les valeurs dans la cellule du tavleau - Pas tres beau !!!
 		var pname = Dom.attribute(element, 'data-pname');
 		var price = Dom.attribute(element, 'data-value');
+		var active     = Dom.attribute(element, 'data-active');
 		var stoploss   = Dom.attribute(element, 'data-stoploss');
 		var objectif   = Dom.attribute(element, 'data-objectif');
 		var stopprofit = Dom.attribute(element, 'data-stopprofit');
@@ -536,6 +537,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 							'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
 							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
 							'<label>Seuils</label><input type="text"<input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
+							'<label>Active : <input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/></label>' +
 						'</div></div>',
 				showCancelButton: true,
 				confirmButtonText: 'Valider',
@@ -548,12 +550,14 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 					if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) return false;
 					if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999)) return false;
 					var symbol = Dom.attribute(element, 'data-pname');
-					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils' ]) + '&symbol=' + symbol;
+					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils' ]) + '&symbol=' + symbol + '&f_active=' + (valof('f_active') == 0 ? 0 : 1);
 					go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=stops&' + params, no_data: 1 });
-					Dom.attribute(element, { 'data-stoploss': valof('f_stoploss') });
+					Dom.attribute(element, { 'data-stoploss'  : valof('f_stoploss') });
 					Dom.attribute(element, { 'data-stopprofit': valof('f_stopprofit') });
-					Dom.attribute(element, { 'data-objectif': valof('f_objectif') });
-					Dom.attribute(element, { 'data-seuils': valof('f_seuils') });
+					Dom.attribute(element, { 'data-objectif'  : valof('f_objectif') });
+					Dom.attribute(element, { 'data-seuils'    : valof('f_seuils') });
+					Dom.attribute(element, { 'data-active'    : valof('f_active') == 0 ? 0 : 1 });
+					Dom.attribute(element, { 'class': 'inverted alarm '+(valof('f_active') == 0 ? 'black' : 'blue')+' icon' });
 					Swal.fire('Données modifiées');
 				}
 			});
