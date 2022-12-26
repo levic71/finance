@@ -14,7 +14,7 @@ if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 $pea = 0;
 $engine = "alpha";
 
-foreach(['action', 'engine', 'symbol', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit', 'f_seuils'] as $key)
+foreach(['action', 'engine', 'symbol', 'f_search_type', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit', 'f_seuils'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if ($symbol == "") tools::do_redirect("index.php");
@@ -24,24 +24,33 @@ $db = dbc::connect();
 
 function updateSymbolData($symbol, $engine = "alpha") {
 
+    $ret = [];
+
+    // Mise a jour des valeurs du jour de tous les actifs suivis en utilisant GoogleSheet
     if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
     if ($engine == "alpha")
         $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
-    // Recalcul des indicateurs en fct maj cache
-    computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => true, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
+    if ($engine == "alpha" && $ret['daily']) $ret = false;
 
-    // Mise à jour de la cote de l'actif avec la donnée GSheet
+        // Recalcul des indicateurs en fct maj cache
+    if ($engine == "google" || ($engine == "alpha" && $ret['daily']))
+        computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => true, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
+
+    // Mise à jour de la cote de l'actif avec les donnees GoogleSheet si la valeur existe dans values
     if ($engine != "google" && isset($values[$symbol])) {
         $ret['gsheet'] = updateQuotesWithGSData($values[$symbol]);
 
         // Mise a jour des indicateurs du jour
-        computeDailyIndicatorsSymbol($symbol);
+        if ($engine == "google" || ($engine == "alpha" && $ret['daily']))
+            computeDailyIndicatorsSymbol($symbol);
     }
 
     // On supprime les fichiers cache tmp
     cacheData::deleteTMPFiles();
+
+    return $ret;
 
 }
 
@@ -62,25 +71,44 @@ if ($action == "add") {
     if ($row['total'] == 0) {
 
         if ($engine == "alpha") {
+
             $name = urldecode($name);
             $req = "INSERT INTO stocks (symbol, name, type, region, marketopen, marketclose, timezone, currency, engine) VALUES ('".$symbol."','".addslashes($name)."', '".$f_type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."')";
             $res = dbc::execSql($req);
+
             $ret_add = 1;
+
         } else if ($engine == "google") {
+
             // Attention le symbol dans ce cas la est le gf_symbol et le ":" pose pb en tant que clé symbol donc on remplace pas "."
             $gf_symbol = $symbol;
             $symbol = str_replace(':', '.', $symbol);
-            $ret = cacheData::insertAllDataQuoteFromGS($symbol, $gf_symbol);
-            $ret_add = $ret ? 1 : 0;
-        }
-        updateSymbolData($symbol, $engine);
+            $ret = cacheData::insertAllDataQuoteFromGS($symbol, $gf_symbol, $f_search_type);
 
-        logger::info("STOCK", $symbol, "[OK]");
+            $ret_add = $ret ? 1 : 0;
+
+        }
+
+        // Bizarre mais il faudrait tout recoder proprement et dissocier add form AlphaVantage et GS
+        $ret = updateSymbolData($symbol, $engine);
+
+        if ($engine == "alpha" && !$ret['daily']) {
+
+            $req = "DELETE FROM stocks WHERE symbol='".$symbol."'";
+            $res = dbc::execSql($req);
+
+            $ret_add = 0;
+        }
+
+        logger::info("STOCK", $symbol, $ret_add == 1 ? "[OK]" : "[NOK]");
 
     } else {
+
         updateSymbolData($symbol, $engine);
         logger::info("STOCK", $symbol, "[UPT]");
+
         $ret_add = 2;
+
     }
 }
 
@@ -218,6 +246,7 @@ var p = loadPrompt();
         go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
         p.success('Actif <?= $symbol ?> <?= $ret_add == 1 ? 'ajouté' : 'modifié' ?>');
     <? } else { ?>
+        go({ action: 'home_content', id: 'main', url: 'home_content.php' });
         p.error('Actif <?= $symbol ?> non ajouté');
     <? } ?>
 <? } ?>
