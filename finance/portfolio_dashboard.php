@@ -177,6 +177,7 @@ $lst_trend_following = $portfolio_data['trend_following'];
 					$stop_profit = isset($lst_trend_following[$key]['stop_profit']) ? $lst_trend_following[$key]['stop_profit'] : 0;
 					$objectif    = isset($lst_trend_following[$key]['objectif'])    ? $lst_trend_following[$key]['objectif']    : 0;
 					$seuils      = isset($lst_trend_following[$key]['seuils'])      ? $lst_trend_following[$key]['seuils']      : "";
+					$options     = isset($lst_trend_following[$key]['options'])     ? $lst_trend_following[$key]['options']     : 0;
 
 					$perf_indicator = calc::getPerfIndicator($qs);
 					$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
@@ -211,11 +212,10 @@ $lst_trend_following = $portfolio_data['trend_following'];
 							<label style="color: '.uimx::getRedGreenColr($qs['MM200'], $quote).'">'.sprintf("%s%.2f", ($pct_mm >= 0 ? '+' : ''), $pct_mm).' %</label>
 						</div></td>
 
-						<td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$quote.'"><div class="small ui right group input" data-pname="'.$key.'">
+						<td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$quote.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'"><div class="small ui right group input" data-pname="'.$key.'">
 							<div class="'.(!$isAlerteActive || intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
 							<div class="'.(!$isAlerteActive || intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
 							<div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
-							<div class="hidden grey floating ui label">'.sprintf("%s", $seuils).'</div>
 						</div></td>
 
 						<td id="f_dm_'.$i.'"       class="center aligned '.($qs['DM'] >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$qs['DM'].'">'.$qs['DM'].' %</td>
@@ -717,14 +717,20 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 
 		// On récupère les valeurs dans la cellule du tavleau - Pas tres beau !!!
-		var pname  = Dom.attribute(element, 'data-pname');
-		var price  = Dom.attribute(element.parentNode, 'data-value');
-		var active = Dom.attribute(element.parentNode, 'data-active');
+		var pname      = Dom.attribute(element, 'data-pname');
+		var price      = Dom.attribute(element.parentNode, 'data-value');
+		var active     = Dom.attribute(element.parentNode, 'data-active');
+		var options    = Dom.attribute(element.parentNode, 'data-options');
+		var seuils     = Dom.attribute(element.parentNode, 'data-seuils');
+		var mm200_opt  = 1;
+		var mm100_opt  = 1;
+		var mm50_opt   = 1;
+		var mm20_opt   = 1;
 		var divs   = element.getElementsByTagName("div");
 		var stoploss   = divs[0].innerHTML;
 		var objectif   = divs[1].innerHTML;
 		var stopprofit = divs[2].innerHTML;
-		var seuils     = divs[3].innerHTML;
+		//var seuils     = divs[3].innerHTML;
 		let perf_stoploss   = stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2);
 		let perf_stopprofit = stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2);
 		let perf_objectif   = objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2);
@@ -737,6 +743,7 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 							'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
 							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
 							'<label>Seuils</label><input type="text"<input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
+							'<label style="padding: 10px 0px;">MM200 <input id="f_mm200" type="checkbox" ' + (mm200_opt == 1 ? 'checked="checked"' : '') + '/> MM100 <input id="f_mm100" type="checkbox" ' + (mm100_opt == 1 ? 'checked="checked"' : '') + '/> MM50 <input id="f_mm50" type="checkbox" ' + (mm50_opt == 1 ? 'checked="checked"' : '') + '/> MM20 <input id="f_mm20" type="checkbox" ' + (mm20_opt == 1 ? 'checked="checked"' : '') + '/></label>' +
 							'<label>Active : <input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/></label>' +
 						'</div></div>',
 				showCancelButton: true,
@@ -755,16 +762,15 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 					divs[0].innerHTML = valof('f_stoploss');
 					divs[1].innerHTML = valof('f_objectif');
 					divs[2].innerHTML = valof('f_stopprofit');
-					divs[3].innerHTML = valof('f_seuils');
 					divs[0].className = divs[0].className.replaceAll('grey', '');
 					divs[1].className = divs[1].className.replaceAll('grey', '');
 					divs[2].className = divs[2].className.replaceAll('grey', '');
-					divs[3].className = divs[3].className.replaceAll('grey', '');
 					if (valof('f_active') == 0 || parseInt(valof('f_stoploss'))   == 0) divs[0].className = divs[0].className + ' grey';
 					if (valof('f_active') == 0 || parseInt(valof('f_objectif'))   == 0) divs[1].className = divs[1].className + ' grey';
 					if (valof('f_active') == 0 || parseInt(valof('f_stopprofit')) == 0) divs[2].className = divs[2].className + ' grey';
 					if (valof('f_active') == 0 || parseInt(valof('f_seuils'))     == 0) divs[3].className = divs[3].className + ' grey';
-					Dom.attribute(element.parentNode, { 'data-active'    : valof('f_active') == 0 ? 0 : 1 });
+					Dom.attribute(element.parentNode, { 'data-seuils' : valof('f_seuils') });
+					Dom.attribute(element.parentNode, { 'data-active' : valof('f_active') == 0 ? 0 : 1 });
 					Swal.fire('Données modifiées');
 				}
 			});

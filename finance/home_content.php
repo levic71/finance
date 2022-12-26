@@ -15,6 +15,7 @@ $db = dbc::connect();
 // SQL SCHEMA UPDATE
 // $ret = dbc::addColTable("stocks", "dividende_annualise", "ALTER TABLE `stocks` ADD `dividende_annualise` FLOAT NOT NULL AFTER `rating`, ADD `date_dividende` DATE NOT NULL AFTER `dividende_annualise`;");
 $ret = dbc::addColTable("trend_following", "active", "ALTER TABLE `trend_following` ADD `active` INT NOT NULL DEFAULT '1' AFTER `seuils`;");
+$ret = dbc::addColTable("trend_following", "options", "ALTER TABLE `trend_following` ADD `options` INT NOT NULL DEFAULT '0' AFTER `seuils`;");
 
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
@@ -177,6 +178,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 		<span><i class="inverted podcast icon"></i>Screener</span>
 		<div>
 			<button id="lst_filter10_bt" class="mini ui grey button"><i class="ui briefcase grey inverted icon"></i></button>
+			<button id="lst_filter12_bt" class="mini ui grey button"><i class="ui alarm grey inverted icon"></i></button>
 			<button id="lst_filter9_bt"  class="mini ui grey button"><i class="ui star grey inverted icon"></i></button>
 			<button id="lst_filter7_bt"  class="mini ui grey button">ETF</button>
 			<button id="lst_filter8_bt"  class="mini ui grey button">Action</button>
@@ -232,6 +234,7 @@ foreach($data2["stocks"] as $key => $val) {
 	$stoploss   = isset($trend_following[$key]['stop_loss'])   ? $trend_following[$key]['stop_loss']   : 0;
 	$objectif   = isset($trend_following[$key]['objectif'])    ? $trend_following[$key]['objectif']    : 0;
 	$seuils     = isset($trend_following[$key]['seuils'])      ? $trend_following[$key]['seuils']      : '';
+	$options    = isset($trend_following[$key]['options'])     ? $trend_following[$key]['options']     : 0;
 
 //	$max_histo = calc::getMaxHistoryDate($symbol);
 	$max_histo      = isset($max_histo_tab[$symbol]) ? $max_histo_tab[$symbol] : "0000-00-00";
@@ -245,7 +248,7 @@ foreach($data2["stocks"] as $key => $val) {
 	$curr  = $val['type'] == 'INDICE' ? "" : ($val['currency'] == "EUR" ? "&euro;" : "$");
 	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : ($val['type'] == "INDICE" ? "IND" : "EQY"))." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
 
-	echo "<tr class=\"".$class."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".utf8_decode($val['tags'])."\">";
+	echo "<tr class=\"".$class."\" data-alerte=\"".($isAlerteActive ? 1 : 0)."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".utf8_decode($val['tags'])."\">";
 
 	echo "
 		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
@@ -259,7 +262,7 @@ foreach($data2["stocks"] as $key => $val) {
 		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
 		<td>
 			<span data-tootik-conf=\"left  multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['day'] == date("Y-m-d") ? "grey" : "black")." alternate icon\"></i></a></span>
-			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i data-pname=\"".$symbol."\" data-value=\"".$val['price']."\" data-active=\"".($isAlerteActive ? 1 : 0)."\" data-stoploss=\"".$stoploss."\" data-objectif=\"".$objectif."\" data-stopprofit=\"".$stopprofit."\" data-seuils=\"".$seuils."\" class=\"inverted alarm ".($isAlerteActive ? "blue" : "black")." icon\"></i></a></span>
+			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i data-pname=\"".$symbol."\" data-value=\"".$val['price']."\" data-active=\"".($isAlerteActive ? 1 : 0)."\" data-stoploss=\"".$stoploss."\" data-objectif=\"".$objectif."\" data-stopprofit=\"".$stopprofit."\" data-seuils=\"".$seuils."\"  data-options=\"".$options."\" class=\"inverted alarm ".($isAlerteActive ? "blue" : "black")." icon\"></i></a></span>
 		</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td data-value=\"".$val['percent']."\" class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
@@ -336,16 +339,17 @@ match_tags = function(tags, filters) {
 }
 
 filterLstStocks = function() {
-	f1_on = Dom.hasClass(Dom.id('lst_filter1_bt'), 'orange');
-	f2_on = Dom.hasClass(Dom.id('lst_filter2_bt'), 'orange');
-	f3_on = Dom.hasClass(Dom.id('lst_filter3_bt'), 'orange');
-	f4_on = Dom.hasClass(Dom.id('lst_filter4_bt'), 'orange');
-	f5_on = Dom.hasClass(Dom.id('lst_filter5_bt'), 'orange');
-	f7_on = Dom.hasClass(Dom.id('lst_filter7_bt'), 'orange');
-	f8_on = Dom.hasClass(Dom.id('lst_filter8_bt'), 'orange');
-	f9_on = Dom.hasClass(Dom.id('lst_filter9_bt'), 'orange');
+	f1_on  = Dom.hasClass(Dom.id('lst_filter1_bt'), 'orange');
+	f2_on  = Dom.hasClass(Dom.id('lst_filter2_bt'), 'orange');
+	f3_on  = Dom.hasClass(Dom.id('lst_filter3_bt'), 'orange');
+	f4_on  = Dom.hasClass(Dom.id('lst_filter4_bt'), 'orange');
+	f5_on  = Dom.hasClass(Dom.id('lst_filter5_bt'), 'orange');
+	f7_on  = Dom.hasClass(Dom.id('lst_filter7_bt'), 'orange');
+	f8_on  = Dom.hasClass(Dom.id('lst_filter8_bt'), 'orange');
+	f9_on  = Dom.hasClass(Dom.id('lst_filter9_bt'), 'orange');
 	f10_on = Dom.hasClass(Dom.id('lst_filter10_bt'), 'orange');
 	f11_on = Dom.hasClass(Dom.id('lst_filter11_bt'), 'orange');
+	f12_on = Dom.hasClass(Dom.id('lst_filter12_bt'), 'orange');
 
 	var filter_tags = [];
 	Dom.find('#other_tags button.bt_tags').forEach(function(item) {
@@ -356,21 +360,23 @@ filterLstStocks = function() {
 	for (const element of tab_stocks) Dom.css(element, {'display' : 'table-row'});
 
 	// On passe en revue toutes les lignes et on cache celles qui ne correspondent pas aux boutons allumés
-	if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false && f10_on == false && f11_on == false)) {
+	if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false && f10_on == false && f11_on == false && f12_on == false)) {
 		for (const element of tab_stocks) {
 
 			let in_ptf = Dom.attribute(element, 'data-ptf');
+			let in_alerte = Dom.attribute(element, 'data-alerte');
 
 			if (
-				(!f1_on || (f1_on && Dom.hasClass(element, 'PEA')))    &&
-				(!f2_on || (f2_on && Dom.hasClass(element, 'EUR')))    &&
-				(!f3_on || (f3_on && Dom.hasClass(element, 'USD')))    && 
-				(!f4_on || (f4_on && Dom.hasClass(element, 'FRAIS')))  && 
-				(!f5_on || (f5_on && Dom.hasClass(element, 'ACTIFS'))) &&
-				(!f7_on || (f7_on && Dom.hasClass(element, 'ETF')))    && 
-				(!f8_on || (f8_on && Dom.hasClass(element, 'EQY')))    &&
-				(!f9_on || (f9_on && Dom.hasClass(element, 'FAV')))    &&
-				(!f11_on || (f11_on && Dom.hasClass(element, 'IND')))  &&
+				(!f1_on  || (f1_on && Dom.hasClass(element, 'PEA')))    &&
+				(!f2_on  || (f2_on && Dom.hasClass(element, 'EUR')))    &&
+				(!f3_on  || (f3_on && Dom.hasClass(element, 'USD')))    && 
+				(!f4_on  || (f4_on && Dom.hasClass(element, 'FRAIS')))  && 
+				(!f5_on  || (f5_on && Dom.hasClass(element, 'ACTIFS'))) &&
+				(!f7_on  || (f7_on && Dom.hasClass(element, 'ETF')))    && 
+				(!f8_on  || (f8_on && Dom.hasClass(element, 'EQY')))    &&
+				(!f9_on  || (f9_on && Dom.hasClass(element, 'FAV')))    &&
+				(!f11_on || (f11_on && Dom.hasClass(element, 'IND')))   &&
+				(!f12_on || (f12_on && in_alerte == 1))                 &&
 				(!f10_on || (f10_on && in_ptf == 1))
 			) continue;
 
@@ -435,6 +441,7 @@ Dom.addListener(Dom.id('lst_filter6_bt'),  Dom.Event.ON_CLICK, function(event) {
 
 Dom.addListener(Dom.id('lst_filter9_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
 Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter10_bt'); });
+Dom.addListener(Dom.id('lst_filter12_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter12_bt'); });
 
 // Listener sur bouton ajout strategie et liste des alertes historiques
 <? if ($sess_context->isUserConnected()) { ?>
@@ -467,7 +474,7 @@ Sortable.initTable(el("lst_stock"));
 addCN("strategie_swiper", "showmine");
 <? if ($sess_context->isSuperAdmin() || !$sess_context->isUserConnected()) { ?>
 	<? if ($sess_context->isUserConnected()) { ?>
-		[ 'lst_filter1_bt', 'lst_filter2_bt', 'lst_filter3_bt', 'lst_filter4_bt', 'lst_filter5_bt', 'lst_filter6_bt', 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter9_bt', 'lst_filter10_bt', 'lst_filter11_bt' ].forEach(function(elt) {
+		[ 'lst_filter1_bt', 'lst_filter2_bt', 'lst_filter3_bt', 'lst_filter4_bt', 'lst_filter5_bt', 'lst_filter6_bt', 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter9_bt', 'lst_filter10_bt', 'lst_filter11_bt', 'lst_filter12_bt' ].forEach(function(elt) {
 			if (getCookie(elt) == 1) switchColorElement(elt, 'orange', 'grey');
 		});
 		if (getCookie('strategie_default_bt') != 1) filterLstStrategies('strategie_default_bt');
@@ -525,6 +532,11 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 		var objectif   = Dom.attribute(element, 'data-objectif');
 		var stopprofit = Dom.attribute(element, 'data-stopprofit');
 		var seuils     = Dom.attribute(element, 'data-seuils') ? Dom.attribute(element, 'data-seuils') : '';
+		var options    = Dom.attribute(element, 'data-options');
+		var mm200_opt  = 1;
+		var mm100_opt  = 1;
+		var mm50_opt   = 1;
+		var mm20_opt   = 1;
 		let perf_stoploss   = stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2);
 		let perf_stopprofit = stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2);
 		let perf_objectif   = objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2);
@@ -537,6 +549,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 							'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
 							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
 							'<label>Seuils</label><input type="text"<input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
+							'<label style="padding: 10px 0px;">MM200 <input id="f_mm200" type="checkbox" ' + (mm200_opt == 1 ? 'checked="checked"' : '') + '/> MM100 <input id="f_mm100" type="checkbox" ' + (mm100_opt == 1 ? 'checked="checked"' : '') + '/> MM50 <input id="f_mm50" type="checkbox" ' + (mm50_opt == 1 ? 'checked="checked"' : '') + '/> MM20 <input id="f_mm20" type="checkbox" ' + (mm20_opt == 1 ? 'checked="checked"' : '') + '/></label>' +
 							'<label>Active : <input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/></label>' +
 						'</div></div>',
 				showCancelButton: true,
