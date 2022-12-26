@@ -72,9 +72,15 @@ if (isset($search) && $search != "") {
 
 <div class="ui container inverted segment">
 <div class="ui search">
-        <div class="ui icon input">
+<div class="ui icon input">
             <input class="search" id="search2" name="search2" type="text" placeholder="Google Finance Quote"  value="" />
             <i class="search icon"></i>
+        </div>
+        <div class="ui icon input">
+            <select class="ui fluid search dropdown" id="f_search_type">
+                <option value="">Choisir</option>
+                <? foreach (uimx::$type_actif as $key => $val) echo '<option value="'.$val.'">'.$val.'</option>'; ?>
+            </select>
         </div>
         <div class="ui primary small button" id="search2_bt">Add</div>
     </div>
@@ -83,5 +89,5 @@ if (isset($search) && $search != "") {
 
 <script>
 	Dom.addListener(Dom.id('search_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('search')  != '') go({ action: 'search',    id: 'main', url: 'search.php?engine=alpha&search='+valof('search'), loading_area: 'search_bt' }); });
-	Dom.addListener(Dom.id('search2_bt'), Dom.Event.ON_CLICK, function(event) { if (valof('search2') != '') go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=google&symbol='+valof('search2'), loading_area: 'search2_bt' }); });
+	Dom.addListener(Dom.id('search2_bt'), Dom.Event.ON_CLICK, function(event) { if (valof('f_search_type') == '') { alert('Type invalide !'); return; } if (valof('search2') != '') go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=google&symbol='+valof('search2')+'&f_search_type='+valof('f_search_type'), loading_area: 'search2_bt' }); });
 </script>

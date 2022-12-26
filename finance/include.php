@@ -1266,7 +1266,7 @@ class cacheData {
         return $update_cache;
     }
 
-    public static function insertAllDataQuoteFromGS($symbol, $gf_symbol) {
+    public static function insertAllDataQuoteFromGS($symbol, $gf_symbol, $type) {
 
         $retour = false;
 
@@ -1274,7 +1274,7 @@ class cacheData {
         $stock = [];
         $stock['gf_symbol']   = $gf_symbol;
         $stock['symbol']      = $symbol;
-        $stock['type']        = "INDICE";
+        $stock['type']        = $type;
         $stock['region']      = "Europe";
         $stock['engine']      = "google";
         $stock['marketopen']  = "09:00";
