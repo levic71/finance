@@ -32,10 +32,8 @@ function updateSymbolData($symbol, $engine = "alpha") {
     if ($engine == "alpha")
         $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
-    if ($engine == "alpha" && $ret['daily']) $ret = false;
-
         // Recalcul des indicateurs en fct maj cache
-    if ($engine == "google" || ($engine == "alpha" && $ret['daily']))
+    if ($engine == "google" || ($engine == "alpha" && $ret["daily"]))
         computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => true, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
 
     // Mise à jour de la cote de l'actif avec les donnees GoogleSheet si la valeur existe dans values
@@ -43,7 +41,7 @@ function updateSymbolData($symbol, $engine = "alpha") {
         $ret['gsheet'] = updateQuotesWithGSData($values[$symbol]);
 
         // Mise a jour des indicateurs du jour
-        if ($engine == "google" || ($engine == "alpha" && $ret['daily']))
+        if ($engine == "google" || ($engine == "alpha" && $ret["daily"]))
             computeDailyIndicatorsSymbol($symbol);
     }
 

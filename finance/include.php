@@ -1426,9 +1426,10 @@ class cacheData {
                     $data = cacheData::readCacheData($file_cache);
                 } else {
 //                    if (aafinance::$premium)
-//                        $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+// Ce n'est plus premium 
+                        $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
 //                    else
-                        $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+//                        $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
                 }
     
                 if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
