@@ -173,7 +173,7 @@ if ($action == "reload") {
 
             cacheData::deleteCacheSymbol($symbol);
         } else {
-            $ret = cacheData::insertAllDataQuoteFromGS($row['symbol'], $row['gf_symbol']);
+            $ret = cacheData::insertAllDataQuoteFromGS($row['symbol'], $row['gf_symbol'], $row['type']);
         }
 
         updateSymbolData($row['symbol'], $row['engine']);
