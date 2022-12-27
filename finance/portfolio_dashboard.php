@@ -717,35 +717,21 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 
 		// On récupère les valeurs dans la cellule du tavleau - Pas tres beau !!!
+		var divs   = element.getElementsByTagName("div");
 		var pname      = Dom.attribute(element, 'data-pname');
 		var price      = Dom.attribute(element.parentNode, 'data-value');
 		var active     = Dom.attribute(element.parentNode, 'data-active');
-		var options    = Dom.attribute(element.parentNode, 'data-options');
-		var seuils     = Dom.attribute(element.parentNode, 'data-seuils');
-		var mm200_opt  = 1;
-		var mm100_opt  = 1;
-		var mm50_opt   = 1;
-		var mm20_opt   = 1;
-		var divs   = element.getElementsByTagName("div");
 		var stoploss   = divs[0].innerHTML;
 		var objectif   = divs[1].innerHTML;
 		var stopprofit = divs[2].innerHTML;
-		//var seuils     = divs[3].innerHTML;
-		let perf_stoploss   = stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2);
-		let perf_stopprofit = stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2);
-		let perf_objectif   = objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2);
+		var seuils     = Dom.attribute(element.parentNode, 'data-seuils');
+		var options    = Dom.attribute(element.parentNode, 'data-options');
+
+		tf_ui_html = trendfollowing_ui.getHtml(pname, price, active, stoploss, objectif, stopprofit, seuils, options);
 
 		Swal.fire({
 				title: '',
-				html: '<div class="ui form"><div class="field">' +
-							'<label style="text-align: center"><button class="ui primary button">' + pname + ' : ' + price + ' &euro;</button></label>' +
-							'<label>Stop Loss   <span class="mini_button ' + (perf_stoploss >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stoploss   + '%</span></label><input type="text"<input id="f_stoploss"   class="swal2-input" type="text" placeholder="0.00" value="' + stoploss   + '" />' +
-							'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
-							'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
-							'<label>Seuils</label><input type="text"<input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
-							'<label style="padding: 10px 0px;">MM200 <input id="f_mm200" type="checkbox" ' + (mm200_opt == 1 ? 'checked="checked"' : '') + '/> MM100 <input id="f_mm100" type="checkbox" ' + (mm100_opt == 1 ? 'checked="checked"' : '') + '/> MM50 <input id="f_mm50" type="checkbox" ' + (mm50_opt == 1 ? 'checked="checked"' : '') + '/> MM20 <input id="f_mm20" type="checkbox" ' + (mm20_opt == 1 ? 'checked="checked"' : '') + '/></label>' +
-							'<label>Active : <input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/></label>' +
-						'</div></div>',
+				html: tf_ui_html,
 				showCancelButton: true,
 				confirmButtonText: 'Valider',
 				cancelButtonText: 'Annuler',
@@ -753,12 +739,12 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 				allowOutsideClick: () => !Swal.isLoading()
 			}).then((result) => {
 				if (result.isConfirmed) {
-					if (!check_num(valof('f_stoploss'),   'Stop loss',   0, 999999)) return false;
-					if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) return false;
-					if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999)) return false;
-					var symbol = Dom.attribute(element, 'data-pname');
-					var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils' ]) + '&symbol=' + symbol + '&f_active=' + (valof('f_active') == 0 ? 0 : 1);
-					go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=stops&' + params, no_data: 1 });
+
+					if (!trendfollowing_ui.checkForm()) return false;
+
+
+					go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1 });
+
 					divs[0].innerHTML = valof('f_stoploss');
 					divs[1].innerHTML = valof('f_objectif');
 					divs[2].innerHTML = valof('f_stopprofit');
@@ -769,8 +755,10 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 					if (valof('f_active') == 0 || parseInt(valof('f_objectif'))   == 0) divs[1].className = divs[1].className + ' grey';
 					if (valof('f_active') == 0 || parseInt(valof('f_stopprofit')) == 0) divs[2].className = divs[2].className + ' grey';
 					if (valof('f_active') == 0 || parseInt(valof('f_seuils'))     == 0) divs[3].className = divs[3].className + ' grey';
-					Dom.attribute(element.parentNode, { 'data-seuils' : valof('f_seuils') });
-					Dom.attribute(element.parentNode, { 'data-active' : valof('f_active') == 0 ? 0 : 1 });
+					Dom.attribute(element.parentNode, { 'data-seuils'  : valof('f_seuils') });
+					Dom.attribute(element.parentNode, { 'data-options' : trendfollowing_ui.getOptionsValue() });
+					Dom.attribute(element.parentNode, { 'data-active'  : valof('f_active') == 0 ? 0 : 1 });
+
 					Swal.fire('Données modifiées');
 				}
 			});
