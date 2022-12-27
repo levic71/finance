@@ -889,13 +889,21 @@ class calc {
         return $ret;
     }
 
+    public static function resetCacheUserPortfolio($user_id) {
+
+        $file_cache = 'cache/TMP_AGGREGATE_USER_PTF_'.$user_id.'_.json';
+
+        if (file_exists($file_cache)) unlink($file_cache);
+
+    }
+
     public static function getAggregatePortfoliosByUser($user_id) {
 
         $file_cache = 'cache/TMP_AGGREGATE_USER_PTF_'.$user_id.'_.json';
 
         $ret = array();
 
-        if (tools::isLocalHost() || cacheData::refreshOnceADayCache($file_cache)) {
+        if (tools::isLocalHost() || cacheData::refreshCache($file_cache, 600)) {
 
             // Recuperation de tous les actifs
             $quotes = calc::getIndicatorsLastQuote();

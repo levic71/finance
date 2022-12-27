@@ -37,4 +37,7 @@ if ($action == "manual_price") {
 
 $res = dbc::execSql($req);
 
+calc::resetCacheUserPortfolio($sess_context->getUserId());
+
+
 ?>

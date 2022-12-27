@@ -313,6 +313,6 @@ var overlay = {
 	getUrlRedirect : (pname) => {
 		var options = trendfollowing_ui.getOptionsValue();
 		var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils' ]) + '&symbol=' + pname + '&f_active=' + (valof('f_active') == 0 ? 0 : 1) + '&options=' + options;
-		return 'trend_following_action.php?action=stops&' + params;
+		return ('trend_following_action.php?action=stops' + params);
 	}
   }
