@@ -30,11 +30,12 @@ function updateSymbolData($symbol, $engine = "alpha") {
     if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
 
     if ($engine == "alpha")
-        $ret = cacheData::buildAllCachesSymbol($symbol, true);
+        $ret = cacheData::buildDailyCachesSymbol($symbol, true);
+    //    $ret = cacheData::buildAllCachesSymbol($symbol, true);
 
         // Recalcul des indicateurs en fct maj cache
     if ($engine == "google" || ($engine == "alpha" && $ret["daily"]))
-        computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => true, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
+        computeIndicatorsForSymbolWithOptions($symbol, array("aggregate" => $engine == "alpha" ? true : true, "limited" => 0, "periods" => ['DAILY', 'WEEKLY', 'MONTHLY']));
 
     // Mise à jour de la cote de l'actif avec les donnees GoogleSheet si la valeur existe dans values
     if ($engine != "google" && isset($values[$symbol])) {
@@ -88,7 +89,7 @@ if ($action == "add") {
         }
 
         // Bizarre mais il faudrait tout recoder proprement et dissocier add form AlphaVantage et GS
-        $ret = updateSymbolData($symbol, $engine);
+        if ($ret_add == 1) $ret = updateSymbolData($symbol, $engine);
 
         if ($engine == "alpha" && !$ret['daily']) {
 

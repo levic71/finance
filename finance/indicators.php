@@ -32,6 +32,14 @@ function cumulTabVal($tab, $key, $val) {
     if (!is_numeric($val)) var_dump(debug_backtrace());
     return isset($tab[$key]) ? $tab[$key] + $val : $val;
 }
+function getFirstTabVal($tab, $key, $val) {
+    if (!is_numeric($val)) var_dump(debug_backtrace());
+    return isset($tab[$key]) ? $tab[$key] : $val;
+}
+function getLastTabVal($tab, $key, $val) {
+    if (!is_numeric($val)) var_dump(debug_backtrace());
+    return $val;
+}
 function currentnext(&$t) { $res = current($t); next($t); return $res; }
 function fullFillArray($t1, $t2) {
     // On complete le tableau t2 avec la premiere valeur du tableau t2 pour qu'il ait la meme longueur que le tableau t1
@@ -206,17 +214,37 @@ function aggregateWeeklyMonthlySymbol($symbol, $limited = 0) {
     while($row = mysqli_fetch_assoc($res)) {
 
         // On prend la valeur de cloture ajustée pour avoir les courbes cohérentes
-        $row['close'] = isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) ? $row['adjusted_close'] : $row['close'];
+        if (isset($row['adjusted_close']) && is_numeric($row['adjusted_close']) && $row['close'] != $row['adjusted_close']) {
+
+            // Ajustement proportionnel des valeurs high, low, open
+            $row['open'] = ($row['open'] * $row['adjusted_close']) / $row['close'];
+            $row['high'] = ($row['high'] * $row['adjusted_close']) / $row['close'];
+            $row['low']  = ($row['low']  * $row['adjusted_close']) / $row['close'];
+
+            // Ajustement close sur adjusted_close
+            $row['close'] = $row['adjusted_close'];
+        }
 
         $week  = date("Y-W", strtotime($row['day']));
         $month = date("Y-m", strtotime($row['day']));
 
-        // Cummul weekly et monthly pour calcul RSI14 weekly et monthly
-        foreach(['volume', 'open', 'close', 'adjusted_close'] as $key)
-            $tab_weekly[$key][$week] = cumulTabVal($tab_weekly[$key], $week, $row[$key]);
+        // Cummul volume
+        foreach(['volume'] as $key) {
+            $tab_weekly[$key][$week]   = cumulTabVal($tab_weekly[$key], $week, $row[$key]);
+            $tab_monthly[$key][$month] = cumulTabVal($tab_monthly[$key], $month, $row[$key]);
+        }
 
-        foreach(['volume', 'open', 'close', 'adjusted_close'] as $key)
-        $tab_monthly[$key][$month] = cumulTabVal($tab_monthly[$key], $month, $row[$key]);
+        // Selection open
+        foreach(['open'] as $key) {
+            $tab_weekly[$key][$week]   = getFirstTabVal($tab_weekly[$key], $week, $row[$key]);
+            $tab_monthly[$key][$month] = getFirstTabVal($tab_monthly[$key], $month, $row[$key]);
+        }
+
+        // Selection close
+        foreach(['close', 'adjusted_close'] as $key) {
+            $tab_weekly[$key][$week]   = getLastTabVal($tab_weekly[$key], $week, $row[$key]);
+            $tab_monthly[$key][$month] = getLastTabVal($tab_monthly[$key], $month, $row[$key]);
+        }
 
         // Max/min
         $tab_weekly['high'][$week] = isset($tab_weekly['high'][$week]) ? max($tab_weekly['high'][$week], $row['high']) : $row['high'];
@@ -234,10 +262,6 @@ function aggregateWeeklyMonthlySymbol($symbol, $limited = 0) {
         $tab_weekly['lastday'][$week]   = $row['day'];
         $tab_monthly['lastday'][$month] = $row['day'];
     }
-
-    // Calcul des moyennes weekly/monthly en divisant par le nb de dates
-    $tab_weekly  = calculMoyenne($tab_weekly);
-    $tab_monthly = calculMoyenne($tab_monthly);
 
     // INSERT WEEKLY AND MONTHLY DATA
     insertIntoTimeSeries($symbol, $tab_weekly,  'weekly_time_series_adjusted');
