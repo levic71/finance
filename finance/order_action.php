@@ -45,6 +45,7 @@ if ($action == "save" && isset($portfolio_id) && $portfolio_id != 0) {
 
 }
 
+calc::resetCacheUserPortfolio($sess_context->getUserId());
 
 ?>
 
