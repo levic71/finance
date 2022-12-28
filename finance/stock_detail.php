@@ -165,15 +165,10 @@ function format_data($data, $period) {
 
         reset($data["colrs"]);
         foreach($data["rows"] as $key => $val) {
-            echo sprintf("{ x: '%s', y: %f, v: %f, m1: %f, m2: %f, m3: %f, m4: %f, r: %f, d: %f, c: '%s' }%s",
+            echo sprintf("{ x: '%s', y: %.2f, v: %d, mom: %.2f, c: '%s' }%s",
                 $val["day"],
-                $val["adjusted_close"],
+                (float)$val["adjusted_close"],
                 $val["volume"] == "" ? 0 : round($val["volume"]/1000),
-                $val["MM200"],
-                $val["MM50"],
-                $val["MM20"],
-                $val["MM7"],
-                $val["RSI14"],
                 $val["DM"],
                 current($data["colrs"]),
                 $i++ == $count ? '' : ','
@@ -658,10 +653,10 @@ if (!$readonly) {
         return newDataset2(vals, 'line', 'y1', k, l, mmx_colors[l], '', false);
     }
     getDatasetRSI14 = function(vals) {
-        return newDataset2(vals, 'line', 'y', 'r', "RSI14", 'violet', 'violet', false);
+        return newDataset2(vals, 'line', 'y', 'rsi14', "RSI14", 'violet', 'violet', false);
     }
     getDatasetDM = function(vals) {
-        return newDataset2(vals, 'line', 'y', 'd', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
+        return newDataset2(vals, 'line', 'y', 'mom', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
     }
 
     extractFirstDateYear = function(array_dates) {
@@ -711,7 +706,8 @@ if (!$readonly) {
         ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
 
 
-        // Formattage data et calcul regression logarythmique et/ou lineaire
+
+/*         // Formattage data et calcul regression logarythmique et/ou lineaire
         let i = 1;
         var d_data_reg = [];
         new_data_daily.forEach(function(item) {
@@ -723,6 +719,48 @@ if (!$readonly) {
         let j = 0;
         result.points.forEach(function(item) {
             new_data_daily[j++].log = item[1];
+        });
+ */
+        // //////////////////////////////////////////////
+        // Calcul mmxxx/rsixxx en D/W/M
+        // //////////////////////////////////////////////
+        // [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
+        [ new_data_daily ].forEach(function(tab_item) {
+
+            var tmp_mm  = [];
+            var tmp_rsi = [];
+
+            // Recup des data dans tmp
+            tab_item.forEach(function(item) { tmp_mm.push(item.y); tmp_rsi.push({c:item.y}); });
+
+            // mmxxx
+            [ 7, 20, 50, 200 ].forEach(function(mm_item) {
+                let output_mm = tw.ma(tmp_mm, mm_item);
+                let ind = mm_item - 1;
+                output_mm.forEach(function(item) { tab_item[ind++]['mm' + mm_item] = item; });
+
+                [...Array(mm_item).keys()].forEach(function(i) {
+                    var tmp2 = tmp_mm.slice(0, mm_item - i);
+                    let output2 = tw.ma(tmp2, mm_item - i);
+                    if (output2.length > 0) {
+                        let q = mm_item - i - output2.length + 1;
+                        output2.forEach(function (z) { tab_item[q--]['mm' + mm_item] = z; });
+                    }
+                });
+            });
+
+            // rsixxx
+            [ 14 ].forEach(function(rsi_item) {
+                let output_rsi = tw.rsi(tmp_rsi, rsi_item);
+                ind = 0;
+                output_rsi.forEach(function(item) { tab_item[ind++]['rsi' + rsi_item] = item.rsi; });
+            });
+
+            // Momemtum
+            //let output_mom = tw.momentum(tmp_rsi, 60);
+            //ind = 0;
+            //output_mom.forEach(function(item) { tab_item[ind++]['mom'] = item.mom; });
+
         });
 
         // Ref achat/vente data
@@ -787,10 +825,6 @@ if (!$readonly) {
         ref_d_days  = []; ref_w_days  = []; ref_m_days  = [];
     }
 
-    getMMXKey = function(label) {
-        return label == "MM7" ? 'm4' : (label == "MM20" ? 'm3' : (label == "MM50" ? 'm2' : 'm1'));
-    }
-
     getAlarmLines = function() {
         return isCN('graphe_1Y_bt', '<?= $bt_period_colr ?>') || isCN('graphe_1T_bt', '<?= $bt_period_colr ?>') ? h_lines_1Y : (isCN('graphe_3Y_bt', '<?= $bt_period_colr ?>') ? h_lines_3Y  : h_lines_all);
     }
@@ -830,7 +864,7 @@ if (!$readonly) {
             if (label.toLowerCase() == "volume")
                 chart.data.datasets.push(getDatasetVols(g_new_data, 'VOLUME'));
             else
-                chart.data.datasets.push(getDatasetMMX(g_new_data, getMMXKey(label), label));
+                chart.data.datasets.push(getDatasetMMX(g_new_data, label.toLowerCase(), label));
         }
 
         // Changement couleur bt
@@ -929,10 +963,10 @@ if (!$readonly) {
         // Ajout des data valeurs de cotation
         datasets1.push(getDatasetVals(g_new_data));
         // Ajout des MM & VOLUME en fct si bouton allume
-        if (isCN('graphe_mm7_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm4', 'MM7'));
-        if (isCN('graphe_mm20_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm3', 'MM20'));
-        if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm2', 'MM50'));
-        if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'm1', 'MM200'));
+        if (isCN('graphe_mm7_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm7',   'MM7'));
+        if (isCN('graphe_mm20_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm20',  'MM20'));
+        if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm50',  'MM50'));
+        if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm200', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
         // Ajout de la courbe log
         if (false) datasets1.push(getDatasetMMX(g_new_data, 'log', 'LOG'));
