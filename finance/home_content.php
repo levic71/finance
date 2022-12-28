@@ -555,7 +555,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 					Dom.attribute(element, { 'data-active'    : valof('f_active') == 0 ? 0 : 1 });
 					Dom.attribute(element, { 'class': 'inverted alarm '+(valof('f_active') == 0 ? 'black' : 'blue')+' icon' });
 
-					go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1 });
+					go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1, no_scroll: 1 });
 
 					Swal.fire('Données modifiées');
 				}

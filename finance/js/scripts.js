@@ -58,6 +58,7 @@ go = function(args) {
 	var menu=opt.menu||'';
 	var confirmdel=opt.confirmdel||0;
 	var no_data=opt.no_data||'0';
+	var no_scroll=opt.no_scroll||'0';
 	var no_chg_cn=opt.no_chg_cn||'0';
 	var msg=opt.msg||'';
 	var loading_area=opt.loading_area||'';
@@ -84,7 +85,7 @@ go = function(args) {
 				// Fermeture Sidebar
 				rmCN('sidebar_menu', 'visible');
 				// Top de page
-				scroll(0,0); 
+				if (no_scroll == 0) scroll(0,0); 
 				myconsole('----> go jx out : action='+action+' -- url='+opt.url);
 			},
 			'text', 'post'
