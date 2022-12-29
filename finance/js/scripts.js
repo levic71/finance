@@ -278,10 +278,11 @@ var overlay = {
 
   var trendfollowing_ui = {
 	getHtml : (pname, price, active, stoploss, objectif, stopprofit, seuils, options) => {
-		var mm200_opt  = (options & 8) == 8 ? true : false;
-		var mm100_opt  = (options & 4) == 4 ? true : false;
-		var mm50_opt   = (options & 2) == 2 ? true : false;
-		var mm20_opt   = (options & 1) == 1 ? true : false;
+		var mm200_opt = (options & 16) == 16 ? true : false;
+		var mm100_opt = (options & 8)  == 8  ? true : false;
+		var mm50_opt  = (options & 4)  == 4  ? true : false;
+		var mm20_opt  = (options & 2)  == 2  ? true : false;
+		var mm7_opt   = (options & 1)  == 1  ? true : false;
 		let perf_stoploss   = stoploss   == 0 ? 0 : getPerf(price, stoploss).toFixed(2);
 		let perf_stopprofit = stopprofit == 0 ? 0 : getPerf(price, stopprofit).toFixed(2);
 		let perf_objectif   = objectif   == 0 ? 0 : getPerf(price, objectif).toFixed(2);
@@ -293,7 +294,7 @@ var overlay = {
 			'<label>Objectif    <span class="mini_button ' + (perf_objectif >= 0   ? 'aaf-positive' : 'aaf-negative') + '">' + perf_objectif   + '%</span></label><input type="text"<input id="f_objectif"   class="swal2-input" type="text" placeholder="0.00" value="' + objectif   + '" />' +
 			'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input type="text"<input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
 			'<label>Seuils</label><input type="text"<input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
-			'<label style="padding: 10px 0px;">MM200 <input id="f_mm200" type="checkbox" ' + (mm200_opt ? 'checked="checked"' : '') + '/> MM100 <input id="f_mm100" type="checkbox" ' + (mm100_opt ? 'checked="checked"' : '') + '/> MM50 <input id="f_mm50" type="checkbox" ' + (mm50_opt ? 'checked="checked"' : '') + '/> MM20 <input id="f_mm20" type="checkbox" ' + (mm20_opt ? 'checked="checked"' : '') + '/></label>' +
+			'<label style="padding: 10px 0px;">MM200 <input id="f_mm200" type="checkbox" ' + (mm200_opt ? 'checked="checked"' : '') + '/> MM100 <input id="f_mm100" type="checkbox" ' + (mm100_opt ? 'checked="checked"' : '') + '/> MM50 <input id="f_mm50" type="checkbox" ' + (mm50_opt ? 'checked="checked"' : '') + '/> MM20 <input id="f_mm20" type="checkbox" ' + (mm20_opt ? 'checked="checked"' : '') + '/> MM7 <input id="f_mm7" type="checkbox" ' + (mm7_opt ? 'checked="checked"' : '') + '/></label>' +
 			'<label>Active : <input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/></label>' +
 			'</div></div>';
 
@@ -309,7 +310,7 @@ var overlay = {
 		return ret;
 	},
 	getOptionsValue : () => {
-		return  (valof('f_mm200') == 0 ? 0 : 8) | (valof('f_mm100') == 0 ? 0 : 4) | (valof('f_mm50') == 0 ? 0 : 2) | (valof('f_mm20') == 0 ? 0 : 1);
+		return (valof('f_mm200') == 0 ? 0 : 16) | (valof('f_mm100') == 0 ? 0 : 8) | (valof('f_mm50') == 0 ? 0 : 4) | (valof('f_mm20') == 0 ? 0 : 2) | (valof('f_mm7') == 0 ? 0 : 1);
 	},
 	getUrlRedirect : (pname) => {
 		var options = trendfollowing_ui.getOptionsValue();
