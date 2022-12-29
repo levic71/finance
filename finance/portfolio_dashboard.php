@@ -724,7 +724,7 @@ Dom.find("#lst_position tbody tr td:nth-child(6) > div").forEach(function(elemen
 		var stoploss   = divs[0].innerHTML;
 		var objectif   = divs[1].innerHTML;
 		var stopprofit = divs[2].innerHTML;
-		var seuils     = Dom.attribute(element.parentNode, 'data-seuils');
+		var seuils     = Dom.attribute(element.parentNode, 'data-seuils') ? Dom.attribute(element.parentNode, 'data-seuils') : "";
 		var options    = Dom.attribute(element.parentNode, 'data-options');
 
 		tf_ui_html = trendfollowing_ui.getHtml(pname, price, active, stoploss, objectif, stopprofit, seuils, options);

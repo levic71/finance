@@ -103,6 +103,7 @@ foreach($stocks as $key => $val) {
 	$price      = $val['price'];
 	$previous   = $val['previous'];
 	$pru        = isset($positions[$key]) ? $positions[$key]['pru'] : 0;
+	$options    = isset($trend_following[$key]['options']) ? $trend_following[$key]['options'] : 0;
 	$objectif   = isset($trend_following[$key]['objectif'])    && $trend_following[$key]['objectif']    != '' ? $trend_following[$key]['objectif']    : 0;
 	$stoploss   = isset($trend_following[$key]['stop_loss'])   && $trend_following[$key]['stop_loss']   != '' ? $trend_following[$key]['stop_loss']   : 0;
 	$stopprofit = isset($trend_following[$key]['stop_profit']) && $trend_following[$key]['stop_profit'] != '' ? $trend_following[$key]['stop_profit'] : 0;
@@ -130,12 +131,17 @@ foreach($stocks as $key => $val) {
 	}
 
 	// Depassement hausse/baisse MM
-	$tab_mm = [ 'MM200'];
+	$tab_mm = [];
+	if (($options & 16) == 16) $tab_mm[] = 200;
+	if (($options & 8)  == 8)  $tab_mm[] = 100;
+	if (($options & 4)  == 4)  $tab_mm[] = 50;
+	if (($options & 2)  == 2)  $tab_mm[] = 20;
+	if (($options & 1)  == 1)  $tab_mm[] = 7;
 	foreach ($tab_mm as $i => $mm) {
-		if (depassementALaHausse($previous, $price, $val[$mm]))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => $mm, 'sens' => $sens_up, 'seuil' => $val[$mm], 'colr' => 'green', 'icon' => 'arrow up' ];	
-		if (depassementALaBaisse($previous, $price, $val[$mm]))
-			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => $mm, 'sens' => $sens_down, 'seuil' => $val[$mm], 'colr' => 'red', 'icon' => 'arrow down' ];
+		if (depassementALaHausse($previous, $price, $val['MM'.$mm]))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => $mm, 'sens' => $sens_up, 'seuil' => $val['MM'.$mm], 'colr' => 'green', 'icon' => 'arrow up' ];	
+		if (depassementALaBaisse($previous, $price, $val['MM'.$mm]))
+			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => $mm, 'sens' => $sens_down, 'seuil' => $val['MM'.$mm], 'colr' => 'red', 'icon' => 'arrow down' ];
 	}
 
 	// Hausse journaliere +10% par rapport a la veille
