@@ -711,8 +711,8 @@ if (!$readonly) {
          // //////////////////////////////////////////////
         // Calcul mmxxx/rsixxx en D/W/M
         // //////////////////////////////////////////////
-        // [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
-        [ new_data_daily ].forEach(function(tab_item) {
+        [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
+        // [ new_data_daily ].forEach(function(tab_item) {
 
             var tmp_mm  = [];
             var tmp_rsi = [];
@@ -970,7 +970,7 @@ if (!$readonly) {
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm50',  'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm200', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
-        if (isCN('graphe_reg_bt',    '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetMMX(g_new_data, 'reg', 'REG'));
+        if (isCN('graphe_reg_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'reg', 'REG'));
 
         // MIN/MAX/PRU/STOPLOSS/STOPPROFIT/OBJECTIF (pour verifier si axe y ok)
         limits_ctrl = [];
