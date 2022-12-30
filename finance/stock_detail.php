@@ -722,15 +722,21 @@ if (!$readonly) {
 
             // mmxxx
             [ 7, 20, 50, 200 ].forEach(function(mm_item) {
-                let output_mm = tw.ma(tmp_mm, mm_item);
-                let ind = mm_item - 1;
-                output_mm.forEach(function(item) { tab_item[ind++]['mm' + mm_item] = item; });
+                
+                // Calcul mm
+                if (tab_item.length >= mm_item) {
+                    let ind = 0;
+                    tw.ma(tmp_mm, mm_item).forEach(function(item) {
+                        tab_item[(mm_item - 1 ) + ind++]['mm' + mm_item] = item;
+                    });
+                }
 
-                [...Array(mm_item).keys()].forEach(function(i) {
-                    var tmp2 = tmp_mm.slice(0, mm_item - i);
-                    let output2 = tw.ma(tmp2, mm_item - i);
+                // Completion des data inferieures a mm_item
+                len_tab = Math.min(tab_item.length, mm_item) - 1;
+                [...Array(len_tab).keys()].forEach(function(i) {
+                    let output2 = tw.ma(tmp_mm.slice(0, len_tab - i), len_tab - i);
                     if (output2.length > 0) {
-                        let q = mm_item - i - output2.length + 1;
+                        let q = len_tab - i - output2.length + 1;
                         output2.forEach(function (z) { tab_item[q--]['mm' + mm_item] = z; });
                     }
                 });
@@ -751,17 +757,13 @@ if (!$readonly) {
             // Formattage data et calcul regression logarythmique et/ou lineaire
             let i = 1;
             var d_data_reg = [];
-            tab_item.forEach(function(item) {
-                d_data_reg.push([ i++, item.y ]);
-            });
+            tab_item.forEach(function(item) { d_data_reg.push([ i++, item.y ]); });
             let result = regression.polynomial(d_data_reg, { order: 1 });
             //let result = regression.linear(d_data_reg);
 
             // Remise en conformite pour affichage dans graphe
             let j = 0;
-            result.points.forEach(function(item) {
-                tab_item[j++]['reg'] = item[1];
-            });
+            result.points.forEach(function(item) { tab_item[j++]['reg'] = item[1]; });
 
         });
 
