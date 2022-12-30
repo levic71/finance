@@ -221,6 +221,7 @@ $js_bubbles_data = "";
         <button id="graphe_mm50_bt"   class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM50</button>
         <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">MM200</button>
         <button id="graphe_volume_bt" class="mini ui <?= $volume_choice == 1  ? $bt_volume_colr : $bt_grey_colr ?> button" style="margin-right: 20px;"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
+        <button id="graphe_reg_bt"    class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;"><i style="margin-left: 5px;" class="icon inverted chart line"></i></button>
         <? if ($sess_context->isUserConnected()) { ?>
         <button id="graphe_alarm_bt"  class="mini ui <?= $alarm_choice == 1  ? $bt_alarm_colr  : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted flag"></i></button>
         <button id="graphe_av_bt"     class="mini ui <?= $av_choice    == 1  ? $bt_av_colr     : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted dollar"></i></button>
@@ -565,7 +566,8 @@ if (!$readonly) {
         'graphe_mm20_bt'   : 'MM20',
         'graphe_mm50_bt'   : 'MM50',
         'graphe_mm200_bt'  : 'MM200',
-        'graphe_volume_bt' : 'VOLUME'
+        'graphe_volume_bt' : 'VOLUME',
+        'graphe_reg_bt'    : 'REG'
     };
 
     <? if ($sess_context->isUserConnected()) { ?>
@@ -575,7 +577,7 @@ if (!$readonly) {
 
 
     // Couleurs des MMX
-    var mmx_colors = { 'LOG': '<?= $sess_context->getSpectreColor(4) ?>', 'MM7': '<?= $sess_context->getSpectreColor(4) ?>', 'MM20': '<?= $sess_context->getSpectreColor(2) ?>', 'MM50': '<?= $sess_context->getSpectreColor(1) ?>', 'MM200': '<?= $sess_context->getSpectreColor(6) ?>' };
+    var mmx_colors = { 'REG': '<?= $sess_context->getSpectreColor(4) ?>', 'MM7': '<?= $sess_context->getSpectreColor(4) ?>', 'MM20': '<?= $sess_context->getSpectreColor(2) ?>', 'MM50': '<?= $sess_context->getSpectreColor(1) ?>', 'MM200': '<?= $sess_context->getSpectreColor(6) ?>' };
 
     // Fonction de gestoion des tableaux de valeurs
     min_slice = function(tab, size) {
@@ -706,26 +708,11 @@ if (!$readonly) {
         ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
 
 
-
-/*         // Formattage data et calcul regression logarythmique et/ou lineaire
-        let i = 1;
-        var d_data_reg = [];
-        new_data_daily.forEach(function(item) {
-            d_data_reg.push([ i++, item.y ]);
-        });
-        let result = regression.exponential(d_data_reg, { order: 3 });
-
-        // Remise en conformite pour affichage dans graphe
-        let j = 0;
-        result.points.forEach(function(item) {
-            new_data_daily[j++].log = item[1];
-        });
- */
-        // //////////////////////////////////////////////
+         // //////////////////////////////////////////////
         // Calcul mmxxx/rsixxx en D/W/M
         // //////////////////////////////////////////////
-        // [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
-        [ new_data_daily ].forEach(function(tab_item) {
+        [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
+        // [ new_data_daily ].forEach(function(tab_item) {
 
             var tmp_mm  = [];
             var tmp_rsi = [];
@@ -760,6 +747,21 @@ if (!$readonly) {
             //let output_mom = tw.momentum(tmp_rsi, 60);
             //ind = 0;
             //output_mom.forEach(function(item) { tab_item[ind++]['mom'] = item.mom; });
+
+            // Formattage data et calcul regression logarythmique et/ou lineaire
+            let i = 1;
+            var d_data_reg = [];
+            tab_item.forEach(function(item) {
+                d_data_reg.push([ i++, item.y ]);
+            });
+            let result = regression.polynomial(d_data_reg, { order: 1 });
+            //let result = regression.linear(d_data_reg);
+
+            // Remise en conformite pour affichage dans graphe
+            let j = 0;
+            result.points.forEach(function(item) {
+                tab_item[j++]['reg'] = item[1];
+            });
 
         });
 
@@ -968,8 +970,7 @@ if (!$readonly) {
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm50',  'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm200', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
-        // Ajout de la courbe log
-        if (false) datasets1.push(getDatasetMMX(g_new_data, 'log', 'LOG'));
+        if (isCN('graphe_reg_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'reg', 'REG'));
 
         // MIN/MAX/PRU/STOPLOSS/STOPPROFIT/OBJECTIF (pour verifier si axe y ok)
         limits_ctrl = [];
