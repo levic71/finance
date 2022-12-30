@@ -204,7 +204,7 @@ setCookie = function(cname, cvalue, exdays) {
 	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
   
-getCookie = function(cname) {
+getCookie = function(cname, def = "") {
 	let name = cname + "=";
 	let ca = document.cookie.split(';');
 	for(let i = 0; i < ca.length; i++) {
@@ -216,7 +216,7 @@ getCookie = function(cname) {
 		return c.substring(name.length, c.length);
 	  }
 	}
-	return "";
+	return def;
 }
   
 checkCookie = function() {

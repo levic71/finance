@@ -864,11 +864,13 @@ if (!$readonly) {
             chart.data.datasets.forEach((dataset) => {
                 if (dataset.label == label) dataset.data = null;
             });
+            setCookie('status_stock_bt_' + label.toLowerCase(), 0, 10000);
         } else {
             if (label.toLowerCase() == "volume")
                 chart.data.datasets.push(getDatasetVols(g_new_data, 'VOLUME'));
             else
                 chart.data.datasets.push(getDatasetMMX(g_new_data, label.toLowerCase(), label));
+            setCookie('status_stock_bt_' + label.toLowerCase(), 1, 10000);
         }
 
         // Changement couleur bt
@@ -1018,6 +1020,8 @@ if (!$readonly) {
 
         rmCN(bt, 'loading');
     }
+
+	if (getCookie('status_stock_bt_reg', 0) == 1) switchCN('graphe_reg_bt', '<?= $bt_grey_colr ?>', '<?= $bt_mmx_colr ?>');
 
     // Initialisation des graphes
     update_all_charts('graphe_all_bt');
