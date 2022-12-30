@@ -574,9 +574,8 @@ Dom.find("#lst_stock tbody tr td:nth-child(12) i").forEach(function(element) {
 
 hide('other_tags');
 
-var row_per_page = 20;
 <? if ($sess_context->isUserConnected()) { ?>
-	if (getCookie('home_stock_row_per_page') != "") row_per_page = getCookie('home_stock_row_per_page');
+	row_per_page = getCookie('home_stock_row_per_page', 20);
 <? } ?>
 
 memRowPerPage = function() {
