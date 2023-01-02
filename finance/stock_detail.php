@@ -755,14 +755,16 @@ if (!$readonly) {
             //output_mom.forEach(function(item) { tab_item[ind++]['mom'] = item.mom; });
 
             // Formattage data et calcul regression logarythmique et/ou lineaire
+            let beginAt = 0;
             let i = 1;
             var d_data_reg = [];
-            tab_item.forEach(function(item) { d_data_reg.push([ i++, item.y ]); });
-            let result = regression.polynomial(d_data_reg, { order: 1 });
+            tab_item.slice(beginAt).forEach(function(item) { d_data_reg.push([ i++, item.y ]); });
+            let result = regression.linear(d_data_reg, { order: 1 });
+            console.log(result);
             //let result = regression.linear(d_data_reg);
 
             // Remise en conformite pour affichage dans graphe
-            let j = 0;
+            let j = beginAt;
             result.points.forEach(function(item) { tab_item[j++]['reg'] = item[1]; });
 
         });
