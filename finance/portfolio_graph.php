@@ -30,9 +30,9 @@ while ($row = mysqli_fetch_assoc($res)) {
 
     $data = json_decode($row['data']);
     // var_dump($data);
-    $data_ptf['days'][]  = $row['date'];
-    $data_ptf['valo'][]  = Round($data->valo_ptf);
-    $data_ptf['depot'][] = Round($data->depot);
+    $data_ptf['days'][$row['date']]  = $row['date'];
+    $data_ptf['valo'][$row['date']]  = Round($data->valo_ptf);
+    $data_ptf['depot'][$row['date']] = Round($data->depot);
     $name = $row['name'];
 
 }
@@ -55,6 +55,7 @@ foreach($lst_orders as $key => $val) {
     if ($val['confirme'] == 0) continue;
 
     $sum_commission += $val['commission'];
+    $tab_orders['days'][$val['date']] = $val['date'];
 
     if ($val['action'] == 1 || $val['action'] == -1) $nb_orders++;
 
@@ -75,8 +76,17 @@ foreach($lst_orders as $key => $val) {
 // Completion a zero pour les jours vide
 foreach($data_ptf["days"] as $key => $val) {
     foreach([ 'achat', 'vente', 'depot', 'retrait', 'dividende'] as $key2 => $elt)
-    if (!isset($tab_orders[$elt][$val])) $tab_orders[$elt][$val] = 0;
+        if (!isset($tab_orders[$elt][$val])) $tab_orders[$elt][$val] = 0;
 }
+foreach([ 'achat', 'vente', 'depot', 'retrait', 'dividende'] as $key2 => $elt) ksort($tab_orders[$elt]);
+
+// Completion a zero pour les jours vide
+foreach($tab_orders["days"] as $key => $val) {
+    foreach([ 'days', 'valo', 'depot'] as $key2 => $elt)
+        if (!isset($data_ptf["days"][$val])) $data_ptf[$elt][$val] = $elt == 'days' ? $val : "";
+}
+foreach([ 'days', 'valo', 'depot'] as $key2 => $elt)
+    ksort($data_ptf[$elt]);
 
 ?>
 
@@ -167,19 +177,15 @@ update_all_charts = function() {
     var datasets2 = [];
     datasets2.push(getDatasetVals2('Achat', 'bar', g3_vals,     'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'In'));
     datasets2.push(getDatasetVals2('Vente', 'bar', g4_vals,     'rgba(236, 3, 59, 1)', 'rgba(236, 3, 59, 1)', 'Out'));
-    datasets2.push(getDatasetVals2('Dépot', 'bar', g5_vals,     'rgba(3, 130, 236, 1)', 'rgba(3, 130, 236, 1)', 'In'));
+    datasets2.push(getDatasetVals2('Depot', 'bar', g5_vals,     'rgba(3, 130, 236, 1)', 'rgba(3, 130, 236, 1)', 'In'));
     datasets2.push(getDatasetVals2('Retrait', 'bar', g6_vals,   'rgba(238, 229, 44, 1)', 'rgba(238, 229, 44, 1)', 'Out'));
     datasets2.push(getDatasetVals2('Dividende', 'bar', g7_vals, 'rgba(0, 236, 193, 1)', 'rgba(0, 236, 193, 1)', 'In'));
-    options_Orders_Graphe.scales['x'].ticks.display = false;
+    options_Orders_Graphe.scales['x'].ticks.display = true;
     myChart2 = update_graph_chart(myChart2, ctx2, options_Orders_Graphe, g1_days, datasets2, []);
 
 }
 
 // Initialisation des graphes
 update_all_charts();
-
-Dom.addListener(Dom.id('portfolio_back_bt'), Dom.Event.ON_CLICK, function(event) {
-    go({ action: 'home', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' });
-});
 
 </script>
