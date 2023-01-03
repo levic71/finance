@@ -568,3 +568,64 @@ var options_Valo_Graphe = {
 		}
 	}
 };
+
+var options_Orders_Graphe = {
+    interaction: {
+		intersect: false,
+        mode: 'index'
+	},
+	radius: 0,
+	responsive: true,
+	maintainAspectRatio: true,
+    animation: true,
+    plugins: {
+        legend: {
+			display: false
+		},
+        tooltip: {
+            enabled: false,
+            external: externalTooltipHandler
+        }
+	},
+	scales: {
+		x: {
+            stacked: true,
+			grid: {
+				display: false
+			},
+			ticks: {
+				minRotation: 45,
+				maxRotation: 45,
+                callback: function(value, index, ticks) {
+
+                    let search = this.getLabelForValue(value);
+
+                    if (typeof array_years == 'undefined') return search;
+
+                    let year = this.getLabelForValue(value).split('-')[0];
+                    let found = array_years.find(element => element == search);
+                    if (found != undefined) {
+                        return year;
+                    }
+
+                }
+			}
+		},
+		y: {
+            stacked: true,
+			grid: {
+				color: 'rgba(255, 255, 255, 0.05)'
+			},
+			ticks: {
+				align: 'end',
+				callback: function(value, index, ticks) {
+					var c = (value / 1000) + 'K' + euro;
+					return c;
+				}
+			},
+            beginAtZero: true,
+			type: 'linear',
+			position: 'right'
+		}
+	}
+};
