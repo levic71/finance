@@ -92,15 +92,15 @@ var mydata = [<?
     ksort($data_ptf);
 
     foreach($data_ptf as $key => $val) {
-        echo sprintf("{ d: '%s', vl: %.2f, da: %.2f, ha: %.2f, dj: %.2f, dd: %.2f, vt: %.2f, rt: %.2f }%s",
+        echo sprintf("{ d: '%s', da: %.2f, vl: %.2f, ha: %.2f, vt: %.2f, dj: %.2f, rt: %.2f, dd: %.2f }%s",
             $key,
-            isset($val["valo"])      ? $val["valo"]      : 0,
             isset($val["depot_acc"]) ? $val["depot_acc"] : 0,
+            isset($val["valo"])      ? $val["valo"]      : 0,
             isset($val["achat"])     ? $val["achat"]     : 0,
-            isset($val["depot_j"])   ? $val["depot_j"]   : 0,
-            isset($val["dividende"]) ? $val["dividende"] : 0,
             isset($val["vente"])     ? $val["vente"]     : 0,
+            isset($val["depot_j"])   ? $val["depot_j"]   : 0,
             isset($val["retrait"])   ? $val["retrait"]   : 0,
+            isset($val["dividende"]) ? $val["dividende"] : 0,
             $i++ == $count ? '' : ','
         );
     }
@@ -181,8 +181,8 @@ update_all_charts = function() {
 
     // Update Chart Portfolio
     var ds= [];
-    ds.push(getDatasetVals('Valo',           'line', mydata, 'vl', '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.15) ?>'));
     ds.push(getDatasetVals('D\u00e9pot Acc', 'line', mydata, 'da', '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.3) ?>'));
+    ds.push(getDatasetVals('Valo',           'line', mydata, 'vl', '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.15) ?>'));
     ds.push(getDatasetVals2('Achat',         'bar',  mydata, 'ha', 'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'In'));
     ds.push(getDatasetVals2('Vente',         'bar',  mydata, 'vt', 'rgba(236, 3, 59, 1)',   'rgba(236, 3, 59, 1)',   'Out'));
     ds.push(getDatasetVals2('D\u00e9pot J',  'bar',  mydata, 'dt', 'rgba(3, 130, 236, 1)',  'rgba(3, 130, 236, 1)',  'In'));
