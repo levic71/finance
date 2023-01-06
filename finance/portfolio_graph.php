@@ -158,6 +158,9 @@ var graphe_size_days = 0;
 var ctx1 = document.getElementById('portfolio_canvas').getContext('2d');
 el("portfolio_canvas").height = document.body.offsetWidth > 700 ? 140 : 300;
 
+// Filtre des labels de l'axes des x (date) (on ne garde que les premieres dates du mois)
+var array_years = extractFirstDateYear(mydays);
+
 update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
     if (c) c.destroy();
     c = new Chart(ctx, {

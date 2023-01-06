@@ -4,6 +4,26 @@ var euro = '\u20ac';
 // Valeur par defaut (peut etre modifie en local)
 var stock_currency = euro;
 
+extractFirstDateYear = function(array_dates) {
+
+    var tmp_array_years = [];
+    var ret_array_years = [];
+
+    array_dates.forEach(function(item) {
+        let year = item.split('-')[0];
+        let found = tmp_array_years.find(element => element == year);
+        if (found == undefined) {
+            tmp_array_years.push(year);
+            ret_array_years.push(item);
+        }
+    });
+
+    // On retire le premier label (premier mois cote) pour qu'il n'empiete pas sur la gauche du graphe
+    if (ret_array_years.length > 2) ret_array_years.shift();
+
+    return ret_array_years;
+}
+
 drawLabel = function(chart, text, args = {}) {
 
     const {
@@ -534,8 +554,9 @@ var options_Valo_Graphe = {
 				display: false
 			},
 			ticks: {
-				minRotation: 45,
-				maxRotation: 45,
+
+				minRotation: 0,
+				maxRotation: 0,
                 callback: function(value, index, ticks) {
 
                     let search = this.getLabelForValue(value);
@@ -543,13 +564,15 @@ var options_Valo_Graphe = {
                     if (typeof array_years == 'undefined') return search;
 
                     let year = this.getLabelForValue(value).split('-')[0];
+
                     let found = array_years.find(element => element == search);
+
                     if (found != undefined) {
                         return year;
                     }
-
                 }
-			}
+
+            }		
 		},
 		y: {
 			grid: {
