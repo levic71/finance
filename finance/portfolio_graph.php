@@ -181,8 +181,8 @@ update_all_charts = function() {
 
     // Update Chart Portfolio
     var ds= [];
-    ds.push(getDatasetVals('D\u00e9pot Acc', 'line', mydata, 'vl', '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.15) ?>'));
-    ds.push(getDatasetVals('Valo',           'line', mydata, 'da', '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.3) ?>'));
+    ds.push(getDatasetVals('Valo',           'line', mydata, 'vl', '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.15) ?>'));
+    ds.push(getDatasetVals('D\u00e9pot Acc', 'line', mydata, 'da', '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.3) ?>'));
     ds.push(getDatasetVals2('Achat',         'bar',  mydata, 'ha', 'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'In'));
     ds.push(getDatasetVals2('Vente',         'bar',  mydata, 'vt', 'rgba(236, 3, 59, 1)',   'rgba(236, 3, 59, 1)',   'Out'));
     ds.push(getDatasetVals2('D\u00e9pot J',  'bar',  mydata, 'dt', 'rgba(3, 130, 236, 1)',  'rgba(3, 130, 236, 1)',  'In'));
