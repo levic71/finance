@@ -131,8 +131,18 @@ button.etf { background: #21ba45 !important; color: white !important; }
     color: grey;
     width: 60px;
 }
-#tooltip_stock_graphe_div div div:nth-child(3) {
-    width: 110px;
+#portfolio_canvas + #tooltip_stock_graphe_div {
+    display: block;
+    left: 100px;
+    top: 0px;
+}
+#portfolio_canvas + #tooltip_stock_graphe_div div {
+    width: 200px;
+    float: left;
+    clear: both;
+}
+#portfolio_canvas + #tooltip_stock_graphe_div div div:nth-child(2) {
+    width: 130px;
 }
 #tooltip_stock_graphe_div div:nth-child(2) div:nth-child(3) {
     width: 60px;

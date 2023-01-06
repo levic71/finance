@@ -661,26 +661,6 @@ if (!$readonly) {
         return newDataset2(vals, 'line', 'y', 'mom', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
     }
 
-    extractFirstDateYear = function(array_dates) {
-
-        var tmp_array_years = [];
-        var ret_array_years = [];
-
-        array_dates.forEach(function(item) {
-            let year = item.split('-')[0];
-            let found = tmp_array_years.find(element => element == year);
-            if (found == undefined) {
-                tmp_array_years.push(year);
-                ret_array_years.push(item);
-            }
-        });
-
-        // On retire le premier label (premier mois cote) pour qu'il n'empiete pas sur la gauche du graphe
-        if (ret_array_years.length > 2) ret_array_years.shift();
-
-        return ret_array_years;
-    }
-
     var graphe_size_days = 0;
     var new_data_daily   = [];
     var new_data_weekly  = [];
