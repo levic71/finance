@@ -46,17 +46,20 @@ $lst_positions = $data_ptf_now['positions'];
 $lst_orders    = $data_ptf_now['orders'];
 $lst_trend_following = $data_ptf_now['trend_following'];
 
-$nb_orders = 0;
-$sum_commission = 0;
+$nb_orders[0] = 0;
+$sum_commissions[0] = 0;
 $tab_orders = [];
 foreach($lst_orders as $key => $val) {
 
     if ($val['confirme'] == 0) continue;
 
-    $sum_commission += $val['commission'];
     $tab_orders['days'][$val['date']] = $val['date'];
+    $local_year = substr($val['date'], 0, 4);
+    $sum_commissions[0] += $val['commission'];
+    $sum_commissions[$local_year] = (isset($sum_commissions[$local_year]) ? $sum_commissions[$local_year] : 0) + $val['commission'];
 
-    if ($val['action'] == 1 || $val['action'] == -1) $nb_orders++;
+    if (!isset($nb_orders[$local_year])) $nb_orders[$local_year] = 0;
+    if ($val['action'] == 1 || $val['action'] == -1) { $nb_orders[0]++; $nb_orders[$local_year]++; }
 
     $pricing = $val['price'] * $val['quantity'] * $val['taux_change'];
 
@@ -74,9 +77,26 @@ foreach($lst_orders as $key => $val) {
 
 }
 
+ksort($data_ptf);
+$first_key = array_key_first($data_ptf); // First element's key
+$year_creation = substr($first_key, 0, 4);
+if (!isset($data_ptf[$first_key]['valo'])) $data_ptf[$first_key]['valo'] = 0;
+if (!isset($data_ptf[$first_key]['depot_acc'])) $data_ptf[$first_key]['depot_acc'] = 0;
+// var_dump(current($data_ptf)); exit(0);
+
 ?>
 
-<h2 class="ui left floated"><i class="inverted briefcase icon"></i><?= $name." <small>Nb ordres=".$nb_orders." Commissions=".$sum_commission."&euro;</small>" ?></h2>
+<h2 class="ui left floated">
+    <i class="inverted briefcase icon"></i>
+    <?= $name ?>
+    <select id="year_select_bt" style="float: right;">
+        <option value="0" data-nb-orders="<?= $nb_orders[0] ?>" data-comm="<?= $sum_commissions[0] ?>">All</option>
+        <?
+            for($i=$year_creation; $i <= date('Y'); $i++) echo '<option value="'.$i.'" '.($i == $year ? 'selected="selected"' : '').' data-nb-orders="'.(isset($nb_orders[$i]) ? $nb_orders[$i] : 0).'" data-comm="'.(isset($sum_commissions[$i]) ? $sum_commissions[$i] : 0).'">'.$i.'</option>';
+        ?>
+    </select>
+    <?= "<small style=\"float: right; margin-right: 20px; font-size: 12px; color: black;\">Nb ordres=<span id=\"nb_orders\">".$nb_orders[0]."</span>/Frais=<span id=\"comm\">".$sum_commissions[0]."</span>&euro;</small>" ?>
+</h2>
 
 <div id="canvas_area" class="ui container inverted segment">
     <canvas id="portfolio_canvas" height="100"></canvas>
@@ -177,22 +197,48 @@ update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
     return c;
 }
 
-update_all_charts = function() {
+update_all_charts = function(year) {
+
+    var local_data = mydata;
+
+    // Filtre sur critere annee
+    if (year != 0) {
+
+        local_data = [];
+        mydata.forEach(function(item) {
+            let y = item.d.split('-')[0];
+            if (y == year) {
+                local_data.push(item);
+            }
+        });
+
+    }
+
+    sum_commissions = el('year_select_bt').options[el('year_select_bt').selectedIndex].getAttribute('data-comm');
+    nb_orders       = el('year_select_bt').options[el('year_select_bt').selectedIndex].getAttribute('data-nb-orders');
+
+    el('comm').textContent = sum_commissions;
+    el('nb_orders').textContent = nb_orders;
 
     // Update Chart Portfolio
     var ds= [];
-    ds.push(getDatasetVals('D\u00e9pot Acc', 'line', mydata, 'da', '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.3) ?>'));
-    ds.push(getDatasetVals('Valo',           'line', mydata, 'vl', '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.15) ?>'));
-    ds.push(getDatasetVals2('Achat',         'bar',  mydata, 'ha', 'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'In'));
-    ds.push(getDatasetVals2('Vente',         'bar',  mydata, 'vt', 'rgba(236, 3, 59, 1)',   'rgba(236, 3, 59, 1)',   'Out'));
-    ds.push(getDatasetVals2('D\u00e9pot J',  'bar',  mydata, 'dt', 'rgba(3, 130, 236, 1)',  'rgba(3, 130, 236, 1)',  'In'));
-    ds.push(getDatasetVals2('Retrait',       'bar',  mydata, 'rt', 'rgba(238, 229, 44, 1)', 'rgba(238, 229, 44, 1)', 'Out'));
-    ds.push(getDatasetVals2('Dividende',     'bar',  mydata, 'dd', 'rgba(0, 236, 193, 1)',  'rgba(0, 236, 193, 1)',  'In'));
+    ds.push(getDatasetVals('D\u00e9pot Acc', 'line', local_data, 'da', '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.3) ?>'));
+    ds.push(getDatasetVals('Valo',           'line', local_data, 'vl', '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.15) ?>'));
+    ds.push(getDatasetVals2('Achat',         'bar',  local_data, 'ha', 'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'In'));
+    ds.push(getDatasetVals2('Vente',         'bar',  local_data, 'vt', 'rgba(236, 3, 59, 1)',   'rgba(236, 3, 59, 1)',   'Out'));
+    ds.push(getDatasetVals2('D\u00e9pot J',  'bar',  local_data, 'dt', 'rgba(3, 130, 236, 1)',  'rgba(3, 130, 236, 1)',  'In'));
+    ds.push(getDatasetVals2('Retrait',       'bar',  local_data, 'rt', 'rgba(238, 229, 44, 1)', 'rgba(238, 229, 44, 1)', 'Out'));
+    ds.push(getDatasetVals2('Dividende',     'bar',  local_data, 'dd', 'rgba(0, 236, 193, 1)',  'rgba(0, 236, 193, 1)',  'In'));
     myChart = update_graph_chart(myChart, ctx1, options_Valo_Graphe, null, ds, []);
 
 }
 
 // Initialisation des graphes
-update_all_charts();
+update_all_charts(0);
+
+Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
+    update_all_charts(valof('year_select_bt'));
+});
+
 
 </script>
