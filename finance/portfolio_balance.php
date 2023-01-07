@@ -88,8 +88,8 @@ while($row = mysqli_fetch_assoc($res)) {
 ?>
 
 <h2 class="ui left floated">
-    <i class="inverted dollar icon"></i>Balance sur <?= $name ?>
-    <select id="year_select_bt">
+    <i class="inverted balance icon"></i><?= $name ?>
+    <select id="year_select_bt" style="float: right">
         <?
             for($i=$year_creation; $i <= date('Y'); $i++) echo '<option value="'.$i.'" '.($i == $year ? 'selected="selected"' : '').'>'.$i.'</option>';
         ?>
