@@ -46,8 +46,12 @@ $lst_positions = $data_ptf_now['positions'];
 $lst_orders    = $data_ptf_now['orders'];
 $lst_trend_following = $data_ptf_now['trend_following'];
 
-$nb_orders[0] = 0;
+$oneyearbefore = date('Y-m-d', strtotime('-1 year'));
+
+$nb_orders[0] = 0; // All
+$nb_orders[1] = 0; // 1 an glissant
 $sum_commissions[0] = 0;
+$sum_commissions[1] = 0;
 $tab_orders = [];
 foreach($lst_orders as $key => $val) {
 
@@ -55,14 +59,24 @@ foreach($lst_orders as $key => $val) {
 
     $tab_orders['days'][$val['date']] = $val['date'];
     $local_year = substr($val['date'], 0, 4);
+
+    // Somme des commissions
     $sum_commissions[0] += $val['commission'];
     $sum_commissions[$local_year] = (isset($sum_commissions[$local_year]) ? $sum_commissions[$local_year] : 0) + $val['commission'];
+    if ($val['date'] > $oneyearbefore) $sum_commissions[1] += $val['commission'];
 
+    // Somme du nb d'ordres
     if (!isset($nb_orders[$local_year])) $nb_orders[$local_year] = 0;
-    if ($val['action'] == 1 || $val['action'] == -1) { $nb_orders[0]++; $nb_orders[$local_year]++; }
+    if ($val['action'] == 1 || $val['action'] == -1) {
+        $nb_orders[0]++;
+        $nb_orders[$local_year]++;
+        if ($val['date'] > $oneyearbefore) $nb_orders[1]++;
+    }
 
+    // Valorisation de la transaction
     $pricing = $val['price'] * $val['quantity'] * $val['taux_change'];
 
+    // Cumul par type de transaction
     if ($val['action'] == 1) {
         $data_ptf[$val['date']]['achat'] = (isset($tab_orders[$val['date']]['achat']) ? $tab_orders[$val['date']]['achat'] : 0) + $pricing;
     } if ($val['action'] == 2) {
@@ -91,8 +105,9 @@ if (!isset($data_ptf[$first_key]['depot_acc'])) $data_ptf[$first_key]['depot_acc
     <?= $name ?>
     <select id="year_select_bt" style="float: right;">
         <option value="0" data-nb-orders="<?= $nb_orders[0] ?>" data-comm="<?= $sum_commissions[0] ?>">All</option>
+        <option value="1" data-nb-orders="<?= $nb_orders[1] ?>" data-comm="<?= $sum_commissions[1] ?>">1Y</option>
         <?
-            for($i=$year_creation; $i <= date('Y'); $i++) echo '<option value="'.$i.'" '.($i == $year ? 'selected="selected"' : '').' data-nb-orders="'.(isset($nb_orders[$i]) ? $nb_orders[$i] : 0).'" data-comm="'.(isset($sum_commissions[$i]) ? $sum_commissions[$i] : 0).'">'.$i.'</option>';
+            for($i=date('Y'); $i >= max($year_creation, date('Y') - 9) ; $i--) echo '<option value="'.$i.'" '.($i == $year ? 'selected="selected"' : '').' data-nb-orders="'.(isset($nb_orders[$i]) ? $nb_orders[$i] : 0).'" data-comm="'.(isset($sum_commissions[$i]) ? $sum_commissions[$i] : 0).'">'.$i.'</option>';
         ?>
     </select>
     <?= "<small style=\"float: right; margin-right: 20px; font-size: 12px; color: black;\">Nb ordres=<span id=\"nb_orders\">".$nb_orders[0]."</span>/Frais=<span id=\"comm\">".$sum_commissions[0]."</span>&euro;</small>" ?>
@@ -200,16 +215,17 @@ update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
 update_all_charts = function(year) {
 
     var local_data = mydata;
+    var oneyearbefore = new Date('<?= $oneyearbefore ?>').getTime();
 
     // Filtre sur critere annee
-    if (year != 0) {
+    if (year > 0) {
 
         local_data = [];
         mydata.forEach(function(item) {
             let y = item.d.split('-')[0];
-            if (y == year) {
-                local_data.push(item);
-            }
+            let d = new Date(item.d).getTime();
+            if (year != 1 && y == year) local_data.push(item);
+            if (year == 1 && d > oneyearbefore) local_data.push(item);
         });
 
     }
