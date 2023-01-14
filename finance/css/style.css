@@ -129,7 +129,11 @@ button.etf { background: #21ba45 !important; color: white !important; }
 }
 #tooltip_stock_graphe_div div div:nth-child(2) {
     color: grey;
-    width: 60px;
+    width: 65px;
+}
+#tooltip_stock_graphe_div div div:nth-child(3) {
+    color: grey;
+    width: 80px;
 }
 #portfolio_canvas + #tooltip_stock_graphe_div {
     display: block;
@@ -143,9 +147,6 @@ button.etf { background: #21ba45 !important; color: white !important; }
 }
 #portfolio_canvas + #tooltip_stock_graphe_div div div:nth-child(2) {
     width: 130px;
-}
-#tooltip_stock_graphe_div div:nth-child(2) div:nth-child(3) {
-    width: 60px;
 }
 
 .nav {
@@ -750,6 +751,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 
 #lst_position tbody td:nth-child(1) {
     padding-left: 15px;
+    padding-right: 0px;
 }
 #lst_position tbody td:nth-child(2) {
     color: deepskyblue;

@@ -105,7 +105,7 @@ if (!isset($data_ptf[$first_key]['depot_acc'])) $data_ptf[$first_key]['depot_acc
     <?= $name ?>
     <select id="year_select_bt" style="float: right;">
         <option value="0" data-nb-orders="<?= $nb_orders[0] ?>" data-comm="<?= $sum_commissions[0] ?>">All</option>
-        <option value="1" data-nb-orders="<?= $nb_orders[1] ?>" data-comm="<?= $sum_commissions[1] ?>">1Y</option>
+        <option value="1" data-nb-orders="<?= $nb_orders[1] ?>" data-comm="<?= $sum_commissions[1] ?>">1 Year</option>
         <?
             for($i=date('Y'); $i >= max($year_creation, date('Y') - 9) ; $i--) echo '<option value="'.$i.'" '.($i == $year ? 'selected="selected"' : '').' data-nb-orders="'.(isset($nb_orders[$i]) ? $nb_orders[$i] : 0).'" data-comm="'.(isset($sum_commissions[$i]) ? $sum_commissions[$i] : 0).'">'.$i.'</option>';
         ?>

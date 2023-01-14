@@ -277,6 +277,14 @@ var overlay = {
   document.addEventListener("DOMContentLoaded", overlay.init);
 
   var trendfollowing_ui = {
+
+	tab_geo: {},
+	tab_secteur: {},
+	data_repartition : [[], [], []],
+	labels_repartition: [[], [], []],
+	bg_repartition: [[], [], []],
+	ptf: { valo: 0, achats: 0, stoploss1: 0, stoploss2: 0, stopprofit: 0, objectif: 0 },
+
 	getHtml : (pname, price, active, stoploss, objectif, stopprofit, seuils, options) => {
 		var mm200_opt = (options & 16) == 16 ? true : false;
 		var mm100_opt = (options & 8)  == 8  ? true : false;
@@ -316,5 +324,261 @@ var overlay = {
 		var options = trendfollowing_ui.getOptionsValue();
 		var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils' ]) + '&symbol=' + pname + '&f_active=' + (valof('f_active') == 0 ? 0 : 1) + '&options=' + options;
 		return ('trend_following_action.php?action=stops' + params);
-	}
+	},
+	cal1PositionsTable : (table_id) => {
+
+		Dom.find('#' + table_id + ' tbody tr').forEach(function(item) {
+
+			ind      = Dom.attribute(item, 'id').split('_')[2];
+			other    = Dom.attribute(item, 'data-other');
+			taux     = Dom.attribute(item, 'data-taux');
+			actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
+			pru      = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-pru'));
+			price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
+			nb       = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-nb'));
+			perf_pru = parseFloat(getPerf(pru, price));
+	
+			// Recuperation des stops
+			var stoploss   = 0;
+			var stopprofit = 0;
+			var objectif   = 0;
+	
+			var divs = item.getElementsByTagName("td")[5].getElementsByTagName("div")[0].getElementsByTagName("div");
+	
+			if (divs) {
+				stoploss   = divs[0].innerHTML;
+				objectif   = divs[1].innerHTML;
+				stopprofit = divs[2].innerHTML;
+			}
+	
+			// si devise != EUR, appliquer taux de change
+			achat    = parseFloat(nb * pru * taux);
+			valo     = parseFloat(nb * price * taux);
+			gain_pru = parseFloat(nb * (price - pru) * taux);
+	
+			valo_stoploss1  = parseFloat(nb * (stoploss == 0 ? price : stoploss) * taux);
+			valo_stoploss2  = parseFloat(nb * stoploss * taux);
+			valo_objectif   = parseFloat(nb * (objectif == 0 ? price : objectif) * taux);
+			valo_stopprofit = parseFloat(nb * (stopprofit == 0 ? price : stopprofit) * taux);
+	
+			// Data donuts
+			trendfollowing_ui.labels_repartition[0].push(actif);
+	
+			trendfollowing_ui.ptf.achats += achat;
+			trendfollowing_ui.ptf.valo   += valo;
+	
+			trendfollowing_ui.ptf.stoploss1  += valo_stoploss1;
+			trendfollowing_ui.ptf.stoploss2  += valo_stoploss2;
+			trendfollowing_ui.ptf.objectif   += valo_objectif;
+			trendfollowing_ui.ptf.stopprofit += valo_stopprofit;
+	
+			setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
+			setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label></div>');
+	
+			if (other == 1) {
+				Dom.id('f_pct_jour_'  + ind).innerHTML = 'N/A';
+			}
+		});
+
+	},
+	cal2PositionsTable : (table_id) => {
+
+		// On reparcours les lignes du tableau positions pour le % de chaque actif dans le portefeuille
+		Dom.find('#' + table_id + ' tbody tr').forEach(function(item) {
+
+			ind = Dom.attribute(item, 'id').split('_')[2];
+
+			secteur  = Dom.attribute(item.getElementsByTagName("td")[0], 'data-tootik');
+			geo      = Dom.attribute(item.getElementsByTagName("td")[0], 'data-geo');
+
+			price = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
+			nb    = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-nb'));
+			valo  = parseFloat(nb * price);
+			ratio = getRatio(trendfollowing_ui.ptf.valo, valo).toFixed(2);
+
+			trendfollowing_ui.tab_secteur[secteur] = (trendfollowing_ui.tab_secteur[secteur] ? parseFloat(trendfollowing_ui.tab_secteur[secteur]) : 0) + parseFloat(ratio);
+			trendfollowing_ui.tab_geo[geo] = (trendfollowing_ui.tab_geo[geo] ? parseFloat(trendfollowing_ui.tab_geo[geo]) : 0) + parseFloat(ratio);
+
+			setColNumericTab('f_poids_' + ind, Math.round(ratio), Math.round(ratio) + ' %', false);
+
+			trendfollowing_ui.data_repartition[0].push(ratio);
+
+		});
+
+	},
+
+	addStockDetailLinkPositionsTable : (table_id, ptf_id) => {
+
+		// Listener sur button detail sur actif
+		Dom.find('#' + table_id + ' tbody tr td:nth-child(2) button').forEach(function(element) {
+			// pru = Dom.attribute(Dom.id('f_pru_' + element.parentNode.id.split('_')[2]), 'data-pru');
+			Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+				other = Dom.attribute(element.parentNode.parentNode, 'data-other');
+				if (other == 1)
+					Swal.fire('Actif non suivi');
+				else
+					go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?ptf_id=' + ptf_id + '&symbol=' + element.innerHTML, loading_area: 'main' });
+			});
+		});
+
+	},
+
+	addUpdatePricePopupPositionsTable : (table_id) => {
+
+		// Listener sur buttons manuel price ligne tableau si actif other
+		Dom.find('#' + table_id + ' tbody tr td:nth-child(4) button').forEach(function(element) {
+
+			let other = Dom.attribute(element.parentNode.parentNode.parentNode, 'data-other');
+			let pname = Dom.attribute(element.parentNode.parentNode.parentNode, 'data-pname');
+
+			if (other == 1) {
+				Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+
+					// On récupère la valeur dans le button
+					let quote = Dom.attribute(element, 'data-value');
+
+					Swal.fire({
+						title: '',
+						html: '<div class="ui form"><div class="field">' +
+									'<label>Saisie manuelle de la cotation</label><input type="text"<input id="f_quote" class="swal2-input" type="text" placeholder="0.00" value="' + quote + '" />' +
+								'</div></div>',
+						showCancelButton: true,
+						confirmButtonText: 'Valider',
+						cancelButtonText: 'Annuler',
+						showLoaderOnConfirm: true,
+						allowOutsideClick: () => !Swal.isLoading()
+					}).then((result) => {
+						if (result.isConfirmed) {
+							if (!check_num(valof('f_quote'), 'Cotation', 0, 999999)) return false;
+							let params = attrs([ 'f_quote' ]) + '&symbol=' + pname;
+							go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=manual_price&' + params, no_data: 1 });
+							element.innerHTML = valof('f_quote') + '&euro;';
+							Dom.attribute(element, { 'data-value': valof('f_quote') });
+							computeLines('change');
+							Swal.fire('Données modifiées');
+						}
+					});
+
+				});
+			}
+		});
+
+	},
+
+	addUpdateOptionsPopupPositionsTable : (table_id) => {
+
+		// Listener sur buttons stoploss/stoplimit ligne tableau
+		Dom.find('#' + table_id + ' tbody tr td:nth-child(6) > div').forEach(function(element) {
+			Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+
+				// On récupère les valeurs dans la cellule du tavleau - Pas tres beau !!!
+				var divs   = element.getElementsByTagName("div");
+				var pname      = Dom.attribute(element, 'data-pname');
+				var price      = Dom.attribute(element.parentNode, 'data-value');
+				var active     = Dom.attribute(element.parentNode, 'data-active');
+				var stoploss   = divs[0].innerHTML;
+				var objectif   = divs[1].innerHTML;
+				var stopprofit = divs[2].innerHTML;
+				var seuils     = Dom.attribute(element.parentNode, 'data-seuils') ? Dom.attribute(element.parentNode, 'data-seuils') : "";
+				var options    = Dom.attribute(element.parentNode, 'data-options');
+
+				tf_ui_html = trendfollowing_ui.getHtml(pname, price, active, stoploss, objectif, stopprofit, seuils, options);
+
+				Swal.fire({
+						title: '',
+						html: tf_ui_html,
+						showCancelButton: true,
+						confirmButtonText: 'Valider',
+						cancelButtonText: 'Annuler',
+						showLoaderOnConfirm: true,
+						allowOutsideClick: () => !Swal.isLoading()
+					}).then((result) => {
+						if (result.isConfirmed) {
+
+							if (!trendfollowing_ui.checkForm()) return false;
+
+
+							go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1 });
+
+							divs[0].innerHTML = valof('f_stoploss');
+							divs[1].innerHTML = valof('f_objectif');
+							divs[2].innerHTML = valof('f_stopprofit');
+							divs[0].className = divs[0].className.replaceAll('grey', '');
+							divs[1].className = divs[1].className.replaceAll('grey', '');
+							divs[2].className = divs[2].className.replaceAll('grey', '');
+							if (valof('f_active') == 0 || parseInt(valof('f_stoploss'))   == 0) divs[0].className = divs[0].className + ' grey';
+							if (valof('f_active') == 0 || parseInt(valof('f_objectif'))   == 0) divs[1].className = divs[1].className + ' grey';
+							if (valof('f_active') == 0 || parseInt(valof('f_stopprofit')) == 0) divs[2].className = divs[2].className + ' grey';
+							if (valof('f_active') == 0 || parseInt(valof('f_seuils'))     == 0) divs[3].className = divs[3].className + ' grey';
+							Dom.attribute(element.parentNode, { 'data-seuils'  : valof('f_seuils') });
+							Dom.attribute(element.parentNode, { 'data-options' : trendfollowing_ui.getOptionsValue() });
+							Dom.attribute(element.parentNode, { 'data-active'  : valof('f_active') == 0 ? 0 : 1 });
+
+							Swal.fire('Données modifiées');
+						}
+					});
+			});
+		});
+
+	},
+
+	computePositionsTable : (table_id, ptf_id) => {
+		// Reset
+		trendfollowing_ui.tab_geo = {};
+		trendfollowing_ui.tab_secteur = {};
+		trendfollowing_ui.data_repartition = [[], [], []];
+		trendfollowing_ui.labels_repartition = [[], [], []];
+		trendfollowing_ui.bg_repartition = [[], [], []];
+		trendfollowing_ui.ptf = { valo: 0, achats: 0, stoploss1: 0, stoploss2: 0, stopprofit: 0, objectif: 0 };
+
+		// Computing	
+		trendfollowing_ui.cal1PositionsTable(table_id);
+		trendfollowing_ui.cal2PositionsTable(table_id);
+
+		// On garnit les data du donut secteur
+		for (var key in trendfollowing_ui.tab_secteur) {
+			trendfollowing_ui.labels_repartition[1].push(key);
+			trendfollowing_ui.data_repartition[1].push(trendfollowing_ui.tab_secteur[key]);
+		}
+
+		// On garnit les data du donut geo
+		for (var key in trendfollowing_ui.tab_geo) {
+			trendfollowing_ui.labels_repartition[2].push(key);
+			trendfollowing_ui.data_repartition[2].push(trendfollowing_ui.tab_geo[key]);
+		}
+
+		// Garanissage des tablaux de couleurs
+		[ 0, 1, 2].forEach(function(ind) {
+
+			let nb_actifs = trendfollowing_ui.data_repartition[ind].length;
+			if (nb_actifs == 0) {
+
+				trendfollowing_ui.data_repartition[ind].push(100);
+				trendfollowing_ui.labels_repartition[ind].push('None');
+				trendfollowing_ui.bg_repartition[ind].push('rgb(200, 200, 200)');
+
+			} else {
+
+				// var colrs = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'];
+				// var colrs = [ '#9b59b6', '#2980b9', '#1abc9c', '#27ae60', '#f1c40f', '#e67e22', '#7d3c98', '#e74c3c' ];
+				var colrs = [];
+				var h = 225;
+				for (var n = 0; n < nb_actifs; n++) {
+					var c = new KolorWheel([h, 63, 62]);
+					colrs.push(c.getHex());
+					h += Math.round(360 / nb_actifs);
+				}
+
+				colrs.forEach((item) => { trendfollowing_ui.bg_repartition[ind].push(item); });
+			}
+		});
+
+		trendfollowing_ui.addStockDetailLinkPositionsTable(table_id, ptf_id);
+		trendfollowing_ui.addUpdatePricePopupPositionsTable(table_id);
+		trendfollowing_ui.addUpdateOptionsPopupPositionsTable(table_id);
+
+	},
+	getData: () => { return { a: trendfollowing_ui.tab_geo, b: trendfollowing_ui.tab_secteur, c: trendfollowing_ui.data_repartition, d: trendfollowing_ui.labels_repartition } }
+
   }
+

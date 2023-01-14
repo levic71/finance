@@ -7,10 +7,8 @@ session_start();
 include "common.php";
 
 $symbol        = "";
-$rsi_choice    = 0;
-$volume_choice = 1;
-$alarm_choice  = 1;
-$av_choice     = 1;
+
+$default_button_choice = [ 'rsi' => 0, 'volume' => 1, 'alarm' => 1, 'av' => 1, 'reg' => 0 ];
 
 foreach (['symbol', 'edit', 'ptf_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -39,35 +37,54 @@ $res = dbc::execSql($req);
 // Bye bye si inexistant
 if (!$row = mysqli_fetch_assoc($res)) exit(0);
 
-// Traitement des donnees
-$links = json_decode($row['links'], true);
+// Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
+$aggregate_ptf = $sess_context->isUserConnected() ? calc::getAggregatePortfoliosByUser($sess_context->getUserId()) : array();
 
-$row['link1'] = isset($links['link1']) ? $links['link1'] : "";
-$row['link2'] = isset($links['link2']) ? $links['link2'] : "";
+// Récupération des devises
+$devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
 
-$tags = array_flip(explode("|", utf8_decode($row['tags'])));
+// Recuperation de tous les actifs
+$quotes = calc::getIndicatorsLastQuote();
 
 // Recuperation des min/max des cotations
 $minmax = calc::getMinMaxQuotations();
 
-// Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
-$aggregate_ptf = $sess_context->isUserConnected() ? calc::getAggregatePortfoliosByUser($sess_context->getUserId()) : array();
+$sc = new StockComputing($quotes, $aggregate_ptf, $devises);
 
-// Actif dans le ptf ?
-$in_ptf = isset($aggregate_ptf['positions'][$symbol]);
+$ptf_nb_positions = $sc->getCountPositionsInPtf();
 
-// PRU si actif dans le ptf
-$pru = isset($aggregate_ptf['positions'][$symbol]['pru']) ? $aggregate_ptf['positions'][$symbol]['pru'] : 0;
+$qc = new QuoteComputing($sc, $symbol);
+$qc->refreshQuote($row);
 
-// Nb positions en portefeuille
-$ptf_nb_positions = isset($aggregate_ptf['positions']) ? count($aggregate_ptf['positions']) : 0;
+$currency       = $qc->getCurrency();
+$tags           = $qc->getQuoteAttr('tags');
+$tags_infos     = uimx::getIconTooltipTag($tags);
+$links          = json_decode($qc->getQuoteAttr('links'), true);
+$link1          = isset($links['link1']) ? $links['link1'] : "";
+$link2          = isset($links['link2']) ? $links['link2'] : "";
+$position_pru   = $qc->getPru();
+$position_nb    = $qc->getNbPositions();
+$price          = $qc->getPrice();
+$pct            = $qc->getPct();
+$pct_mm200      = $qc->getPctMM200();
+$isAlerteActive = $qc->isAlerteActive();
+$stop_loss      = $qc->getStopLoss();
+$stop_profit    = $qc->getStopProfit();
+$objectif       = $qc->getObjectif();
+$seuils         = $qc->getSeuils();
+$options        = $qc->getOptions();
+$perf_indicator = $qc->getPerfIndicator();
+$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
+$taux           = $qc->getTaux();
+$dividende      = $qc->getDividendeAnnuel();
+$curr           = uimx::getCurrencySign($currency);
+$curr_graphe    = $qc->isTypeIndice() ? "" : uimx::getGraphCurrencySign($currency);
+$other_name     = $qc->getOtherName2();
+$pname          = '<button class="tiny ui primary button">'.$qc->getPName().'</button>';
+$mm200          = $qc->getMM200();
+$dm             = $qc->getDM();
 
-// Recuperation des indicateurs de l'actif de la derniere cotation
-$data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
-$curr = $row['type'] == "INDICE" ? "" : ($row['currency'] == "EUR" ? "&euro;" : "$");
-$curr_graphe = $row['type'] == "INDICE" ? "" : ($row['currency'] == "EUR" ? "\u20ac" : "$");
-
-$trend_following = isset($aggregate_ptf['trend_following']) ? $aggregate_ptf['trend_following'] : [];
+$lst_trend_following = $sc->getTrendFollowing();
 
 ?>
 
@@ -76,7 +93,6 @@ $trend_following = isset($aggregate_ptf['trend_following']) ? $aggregate_ptf['tr
     <h2 class="ui left">
         <span>
             <?= utf8_decode($row['name']) ?>
-            <button style="position: relative; left: 10px; top:-4px;" id="symbol_refresh_bt" class="mini ui floated right button"><?= $row['symbol'] ?></button>
         </span>
         <? if ($sess_context->isSuperAdmin()) { ?>
             <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float small trash icon"></i>
@@ -91,27 +107,65 @@ $trend_following = isset($aggregate_ptf['trend_following']) ? $aggregate_ptf['tr
         ?>
     </h2>
 
-    <table id="detail_stock" class="ui selectable inverted single line table">
-        <thead>
-            <tr><?
-                foreach (['Devise', 'Type', 'Région', 'Marché', 'TZ', 'Cotation', 'Prix', '%', 'DM', 'MM200', 'MM7'] as $key)
-                    echo "<th>" . $key . "</th>";
-                ?></tr>
-        </thead>
+    <table class="ui selectable inverted single line unstackable very compact sortable-theme-minimal table" id="lst_position" data-sortable>
+        <thead><tr>
+            <th class="center aligned"></th>
+            <th class="center aligned">Actif</th>
+            <th class="center aligned" data-sortable="false">PRU<br />Qté</th>
+            <th class="center aligned">Cotation<br />%</th>
+            <th class="center aligned">MM200<br />%</th>
+            <th class="center aligned" data-sortable="false">Alertes</th>
+            <th class="center aligned">DM</th>
+            <th class="center aligned">Tendance</th>
+            <th class="center aligned">Poids</th>
+            <th class="center aligned">Valorisation (&euro;)</th>
+            <th class="center aligned">Performance</th>
+            <th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
+        </tr></thead>
         <tbody>
-            <tr>
-                <td data-label="Devise"><?= $row['currency'] ?></td>
-                <td data-label="Région"><?= $row['type'] ?></td>
-                <td data-label="Région"><?= $row['region'] ?></td>
-                <td data-label="Marché"><?= $row['marketopen'] . "-" . $row['marketclose'] ?></td>
-                <td data-label="TZ"><?= $row['timezone'] ?></td>
-                <td data-label="Cotation"><?= ($row['day'] == "" ? "N/A" : $row['day']) ?></td>
-                <td data-label="Prix"><?= $row['price'] == "" ? "N/A" : sprintf("%.2f", $row['price']) . $curr ?></td>
-                <td data-label="%" class="<?= ($row['percent'] >= 0 ? "aaf-positive" : "aaf-negative") ?>"><?= sprintf("%.2f", $row['percent']) ?>%</td>
-                <td data-label="DM" class="<?= ($data['DM'] >= 0 ? "aaf-positive" : "aaf-negative") ?>"><?= $data['DM'] ?>%</td>
-                <td data-label="M200"><?= sprintf("%.2f", $data['MM200']) . $curr ?></td>
-                <td data-label="MM7"><?= sprintf("%.2f", $data['MM7']) . $curr ?></td>
-            </tr>
+<?
+            $i = 0;
+            echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'">
+            <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
+                <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
+            </td>
+
+            <td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
+
+            <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'"><div>
+                <button class="tiny ui button">'.sprintf("%.2f %s", $position_pru, uimx::getCurrencySign($currency)).'</button>
+                <label>'.$position_nb.'</label>
+            </div></td>
+
+            <td class="center aligned" data-value="'.$pct.'"><div>
+                <button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $price).'" data-name="'.$key.'" data-pru="'.($qc->isPriceFromPru() ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $price, uimx::getCurrencySign($currency)).'</button>
+                <label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
+            </div></td>
+        
+            <td class="center aligned" data-value="'.$pct_mm200.'"><div>
+                <button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%.2f %s", $mm200, uimx::getCurrencySign($currency)).'</button>
+                <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).' %</label>
+            </div></td>
+
+            <td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'"><div class="small ui right group input" data-pname="'.$key.'">
+                <div class="'.(!$isAlerteActive || intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
+                <div class="'.(!$isAlerteActive || intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
+                <div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
+            </div></td>
+
+            <td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.$dm.' %</td>
+            <td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
+            <td id="f_poids_'.$i.'"    class="center aligned"></td>
+            <td id="f_valo_'.$i.'"     class="right  aligned"></td>
+            <td id="f_perf_pru_'.$i.'" class="center aligned"></td>
+            <td id="f_rand_'.$i.'"     class="center aligned">
+                <div>
+                    <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $position_pru)).'</label>
+                    <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
+                </div>
+            </td>
+        </tr>';
+?>
         </tbody>
     </table>
 
@@ -209,23 +263,32 @@ $js_bubbles_data = "";
 
 <div id="canvas_area" class="ui container inverted segment" style="padding-top: 0px;">
     <span>
-        <button id="graphe_D_bt"      class="mini ui <?= $rsi_choice == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">Daily</button>
-        <button id="graphe_W_bt"      class="mini ui <?= $rsi_choice == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">Weekly</button>
-        <button id="graphe_M_bt"      class="mini ui <?= $rsi_choice == 2  ? $bt_interval_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">Monthly</button>
-        <button id="graphe_all_bt"    class="mini ui <?= $bt_period_colr ?> button">All</button>
-        <button id="graphe_3Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">3Y</button>
-        <button id="graphe_1Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">1Y</button>
-        <button id="graphe_1T_bt"     class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;">1T</button>
-        <button id="graphe_mm7_bt"    class="mini ui <?= ($mmx & 1) == 1 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM7</button>
-        <button id="graphe_mm20_bt"   class="mini ui <?= ($mmx & 2) == 2 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM20</button>
-        <button id="graphe_mm50_bt"   class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">MM50</button>
-        <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">MM200</button>
-        <button id="graphe_volume_bt" class="mini ui <?= $volume_choice == 1  ? $bt_volume_colr : $bt_grey_colr ?> button" style="margin-right: 20px;"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
-        <button id="graphe_reg_bt"    class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;"><i style="margin-left: 5px;" class="icon inverted chart line"></i></button>
+        <span class="ui buttons">
+            <button id="graphe_D_bt"      class="mini ui <?= $default_button_choice['rsi'] == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">D</button>
+            <button id="graphe_W_bt"      class="mini ui <?= $default_button_choice['rsi'] == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">W</button>
+            <button id="graphe_M_bt"      class="mini ui <?= $default_button_choice['rsi'] == 2  ? $bt_interval_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">M</button>
+        </span>
+        <span class="ui buttons">
+            <button id="graphe_all_bt"    class="mini ui <?= $bt_period_colr ?> button">All</button>
+            <button id="graphe_3Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">3Y</button>
+            <button id="graphe_1Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">1Y</button>
+            <button id="graphe_1T_bt"     class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;">1T</button>
+        </span>
+        <span class="ui buttons">
+            <button id="graphe_mm"        class="mini ui <?= $bt_grey_colr ?> button">MM</button>
+            <button id="graphe_mm7_bt"    class="mini ui <?= ($mmx & 1) == 1 ? $bt_mmx_colr : $bt_grey_colr ?> button">7</button>
+            <button id="graphe_mm20_bt"   class="mini ui <?= ($mmx & 2) == 2 ? $bt_mmx_colr : $bt_grey_colr ?> button">20</button>
+            <button id="graphe_mm50_bt"   class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">50</button>
+            <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">200</button>
+        </span>
+        <span class="ui buttons">
+            <button id="graphe_volume_bt" class="mini ui <?= $default_button_choice['volume'] == 1 ? $bt_volume_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
+            <button id="graphe_reg_bt"    class="mini ui <?= $default_button_choice['reg']    == 1 ? $bt_mmx_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted chart line"></i></button>
         <? if ($sess_context->isUserConnected()) { ?>
-        <button id="graphe_alarm_bt"  class="mini ui <?= $alarm_choice == 1  ? $bt_alarm_colr  : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted flag"></i></button>
-        <button id="graphe_av_bt"     class="mini ui <?= $av_choice    == 1  ? $bt_av_colr     : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted dollar"></i></button>
+            <button id="graphe_alarm_bt"  class="mini ui <?= $default_button_choice['alarm'] == 1 ? $bt_alarm_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted flag"></i></button>
+            <button id="graphe_av_bt"     class="mini ui <?= $default_button_choice['av']    == 1 ? $bt_av_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted dollar"></i></button>
         <? } ?>
+        </span>
     </span>
     <canvas id="stock_canvas1" height="100"></canvas>
     <canvas id="stock_canvas2" height="30"></canvas>
@@ -297,11 +360,11 @@ $js_bubbles_data = "";
                 </div>
                 <div class="field">
                     <label>Morning Star</label>
-                    <input type="text" id="f_link1" value="<?= $row['link1'] ?>" placeholder="Lien http">
+                    <input type="text" id="f_link1" value="<?= $link1 ?>" placeholder="Lien http">
                 </div>
                 <div class="field">
                     <label>JustETF</label>
-                    <input type="text" id="f_link2" value="<?= $row['link2'] ?>" placeholder="Lien http">
+                    <input type="text" id="f_link2" value="<?= $link2 ?>" placeholder="Lien http">
                 </div>
             </div>
             <? } ?>
@@ -407,10 +470,10 @@ $js_bubbles_data = "";
     <div class="field">
         <div class="two fields">
             <div class="field">
-                <i class="ui icon inverted external"></i><a href="<?= $row['link1'] ?>">Morning Star</a>
+                <i class="ui icon inverted external"></i><a href="<?= $link1 ?>">Morning Star</a>
             </div>
             <div class="field">
-                <i class="ui icon inverted external"></i><a href="<?= $row['link2'] ?>">JustETF</a>
+                <i class="ui icon inverted external"></i><a href="<?= $link2 ?>">JustETF</a>
             </div>
         </div>
     </div>
@@ -764,10 +827,10 @@ if (!$readonly) {
         var h_lines_3Y  = [];
         var h_lines_all = [];
 
-        <? if ($pru > 0) { ?>
-            h_lines_1Y.push({  lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
-            h_lines_3Y.push({  lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
-            h_lines_all.push({ lineColor: 'orange', yPosition: <?= $pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
+        <? if ($position_pru > 0) { ?>
+            h_lines_1Y.push({  lineColor: 'orange', yPosition: <?= $position_pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
+            h_lines_3Y.push({  lineColor: 'orange', yPosition: <?= $position_pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
+            h_lines_all.push({ lineColor: 'orange', yPosition: <?= $position_pru ?>, text: 'PRU', lineDash: [ 2, 2 ] });
         <? } ?>
        
         <? if ($minmax[$symbol]['all_min_price'] > 0) { ?>
@@ -788,8 +851,8 @@ if (!$readonly) {
         <? 
             $pki_colr = [ 'stop_loss' => 'rgba(247,143,3, 0.6)', 'stop_profit' => 'rgba(181, 87, 87, 0.6)', 'objectif' => 'rgba(58, 48, 190, 0.6)'];
             foreach($pki_colr as $key => $val)
-                if (isset($trend_following[$symbol][$key]) && $trend_following[$symbol][$key] > 0) {
-                    echo sprintf("axe_infos.push({ title: '%.1f'+stock_currency, colr: 'white', bgcolr: '%s', valueY: '%s' });", $trend_following[$symbol][$key], $val, $trend_following[$symbol][$key]);
+                if (isset($lst_trend_following[$symbol][$key]) && $lst_trend_following[$symbol][$key] > 0) {
+                    echo sprintf("axe_infos.push({ title: '%.1f'+stock_currency, colr: 'white', bgcolr: '%s', valueY: '%s' });", $lst_trend_following[$symbol][$key], $val, $lst_trend_following[$symbol][$key]);
                 }
         ?>
 
@@ -962,8 +1025,8 @@ if (!$readonly) {
         limits_ctrl = [];
         <? 
             foreach([ 'stop_loss', 'stop_profit', 'objectif' ] as $key => $val)
-                if (isset($trend_following[$symbol][$val]) && $trend_following[$symbol][$val] > 0)
-                    echo sprintf("limits_ctrl.push(%s);", $trend_following[$symbol][$val]);
+                if (isset($lst_trend_following[$symbol][$val]) && $lst_trend_following[$symbol][$val] > 0)
+                    echo sprintf("limits_ctrl.push(%s);", $lst_trend_following[$symbol][$val]);
         ?>;
 
         // MIN/MAX values cotations

@@ -15,9 +15,8 @@ $dbg_data = false;
 // On place la timezone à UTC pour pouvoir gerer les fuseaux horaires des places boursieres
 date_default_timezone_set("UTC");
 
-//
-// Boite a outils
-//
+
+// ///////////////////////////////////////////////////////////////////////////////////////
 class tools {
 
     public static function pretty($data) {
@@ -123,9 +122,8 @@ class tools {
     }
 }
 
-//
-// Connection DB
-//
+
+// ///////////////////////////////////////////////////////////////////////////////////////
 class dbc {
 
     public static $link;
@@ -184,9 +182,157 @@ class dbc {
     }
 }
 
-//
-// Compute Data
-//
+
+// ///////////////////////////////////////////////////////////////////////////////////////
+class StockComputing {
+
+    protected $quotes  = [];
+    protected $ptf     = [];
+    protected $devises = [];
+    protected $infos   = [];
+    protected $positions = [];
+    protected $orders    = [];
+    protected $trend_following = [];
+
+    protected $save_quotes = [];
+
+    public function __construct($quotes, $ptf, $devises) {
+
+        $this->quotes  = $quotes;
+        $this->ptf     = $ptf;
+        $this->devises = $devises;
+
+        // On récupère les infos du portefeuille + les positions et les ordres
+        $this->infos     = $this->ptf['infos'];
+        $this->positions = $this->ptf['positions'];
+        $this->orders    = $this->ptf['orders'];
+        $this->trend_following = $this->ptf['trend_following'];
+
+        $this->saveQuotes();
+
+    }
+
+    public function isPtfSynthese()     { return $this->ptf['infos']['synthese'] == 1 ? true : false; }
+    public function getTrendFollowing() { return $this->trend_following; }
+    public function getPositions()      { return $this->positions; }
+    public function getOrders()         { return $this->orders; }
+    public function getInfos()          { return $this->infos; }
+
+    public function saveQuotes() {
+        $t = explode(',', $this->ptf['infos']['quotes']);
+        if ($t[0] != '') {
+            foreach($t as $key => $val) {
+                $x = explode('|', $val);
+                $this->save_quotes[$x[0]] = $x[1];
+            }
+        }
+    }
+
+    public function getPositionAttr($symbol, $attr, $def = null) {
+        return isset($this->positions[$symbol][$attr]) ? $this->positions[$symbol][$attr] : $def;
+    }
+
+    public function getTrendFollowingAttr($symbol, $attr, $def = null) {
+        return isset($this->trend_following[$symbol][$attr]) ? $this->trend_following[$symbol][$attr] : $def; 
+    }
+
+    public function isSavedQuteExits($symbol) { return !isset($this->save_quotes[$symbol]) ? false : true; }
+    public function getSavedQuote($symbol)    { return $this->save_quotes[$symbol]; }
+    public function getQuote($symbol)         { return isset($this->quotes['stocks'][$symbol]) ? $this->quotes['stocks'][$symbol] : [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0]; }
+    public function getDeviseTaux($currency)  { return $currency == "EUR" ? 1 : calc::getCurrencyRate($currency."EUR", $this->devises); }
+    public function getPtfName()              { return $this->infos['name']; }
+    public function isInPtf($symbol)          { return isset($this->positions[$symbol]) ? true : false; }
+    public function getCountPositionsInPtf()  { return count($this->positions); }
+
+}
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////
+class QuoteComputing {
+
+    protected $symbol;
+    protected $sc;
+
+    protected $quote; // Contient toutes les data de l'actif
+    protected $is_price_from_pru = false;
+    protected $price;
+    protected $currency;
+
+
+    // $val -> $sc->getPositionAttr($symbol,
+    // $qs -> this->quote
+
+    public function __construct($sc, $symbol) {
+        
+        $this->symbol = $symbol;
+        $this->sc = $sc;
+
+        // Infos sur actif courant
+        $this->quote = $sc->getQuote($symbol);
+
+        // Si aucun pricing enregistré, on prend le pru
+        $this->is_price_from_pru = isset($this->quote['price']) && !$sc->isSavedQuteExits($symbol) ? false : true;
+
+        // Si aucun pricing enregistré, on prend le pru
+        $this->price = $this->is_price_from_pru ? ($sc->isSavedQuteExits($symbol) ? $sc->getSavedQuote($symbol) : $sc->getPositionAttr($symbol, 'pru')) : $this->quote['price'];
+        $this->quote['price'] = $this->price; // On force au cas ou ce serait vide
+
+        $this->currency = $this->getOtherName() ? $sc->getPositionAttr($symbol, 'devise') : $this->quote['currency'];
+    }
+
+    public function getQuote()    { return $this->quote; }
+    public function getCurrency() { return $this->currency; }
+    public function getPrice()    { return $this->price; }
+
+    public function refreshQuote($row) {
+        foreach($row as $key => $val) $this->quote[$key] = $val;
+    }
+
+    public function getPositionAttr($attr, $def = null) {
+        return $this->sc->getPositionAttr($this->symbol, $attr, $def);
+    }
+
+    public function getQuoteAttr($attr, $def = "") {
+        return isset($this->quote[$attr]) ? $this->quote[$attr] : $def;
+    }
+
+    public function getOtherName()       { return $this->sc->getPositionAttr($this->symbol, 'other_name'); }
+    public function getPru()             { return $this->sc->getPositionAttr($this->symbol, 'pru', 0); }
+    public function getNbPositions()     { return $this->sc->getPositionAttr($this->symbol, 'nb', 0); }
+    public function getStopLoss()        { return $this->sc->getTrendFollowingAttr($this->symbol, 'stop_loss')   ? $this->sc->getTrendFollowingAttr($this->symbol, 'stop_loss')   : 0; }
+    public function getStopProfit()      { return $this->sc->getTrendFollowingAttr($this->symbol, 'stop_profit') ? $this->sc->getTrendFollowingAttr($this->symbol, 'stop_profit') : 0; }
+    public function getObjectif()        { return $this->sc->getTrendFollowingAttr($this->symbol, 'objectif')    ? $this->sc->getTrendFollowingAttr($this->symbol, 'objectif')    : 0; }
+    public function getSeuils()          { return $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      ? $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      : ""; }
+    public function getOptions()         { return $this->sc->getTrendFollowingAttr($this->symbol, 'options')     ? $this->sc->getTrendFollowingAttr($this->symbol, 'options')     : 0; }
+    public function getTaux()            { return $this->sc->getDeviseTaux($this->currency); }
+
+    public function getRegion()          { return $this->getQuoteAttr('region'); }
+    public function getOpenCloseMarket() { return $this->getQuoteAttr('marketopen')."-".$this->getQuoteAttr('marketclose'); }
+    public function getTimeZone()        { return $this->getQuoteAttr('timezone'); }
+    public function getDateCotation()    { return $this->getQuoteAttr('day'); }
+    public function getMM7()             { return $this->getQuoteAttr('MM7'); }
+    public function getMM200()           { return $this->getQuoteAttr('MM200'); }
+    public function getDM()              { return $this->getQuoteAttr('DM'); }
+    public function getType()            { return $this->getQuoteAttr('type'); }
+    public function getTags()            { return $this->getQuoteAttr('tags'); }
+    public function getOtherName2()      { return $this->getQuoteAttr('other_name', null); }
+    public function getPct()             { return $this->getQuoteAttr('percent', 0); }
+    public function getDividendeAnnuel() { return $this->getQuoteAttr('dividende_annualise', 0); }
+
+    public function getPName()         { return $this->symbol.($this->getOtherName() ? '(*)' : ''); /* Concatenation de 2 strings */ }
+    public function getValo()          { return sprintf("%.2f", $this->sc->getPositionAttr($this->symbol, 'nb') * $this->price); }
+    public function getPctMM200()      { return $this->getQuoteAttr('MM200') ? (($this->getQuoteAttr('MM200') - $this->price) * 100) / $this->price : 0; }
+    public function getPerf()          { return round($this->getPru() ? ($this->getPru() * 100) / $this->getPru() : 0, 2); }
+    public function getPerfIndicator() { return calc::getPerfIndicator($this->quote); }
+    public function getEstimationDividende() { return $this->getDividendeAnnuel() * $this->sc->getPositionAttr($this->symbol, 'nb') * $this->getTaux(); }
+
+    public function isPriceFromPru()   { return $this->is_price_from_pru; }
+    public function isAlerteActive()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'active') && $this->sc->getTrendFollowingAttr($this->symbol, 'active') == 1 ? true : false; }
+    public function isTypeIndice()     { return $this->getType() == "INDICE"; }
+}
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////
 class calc {
 
     public static function formatDataOrder($val) {
@@ -910,7 +1056,6 @@ class calc {
 
             // Aggregation de tous les portefeuilles de l'utilisateur connecte
             $ret = calc::aggregatePortfolioByUser($user_id, $quotes);
-            unset($ret['orders']);
 
             // On met en cache uniquement s'il y a des data
             if (count($ret) > 0) cacheData::writeCacheData($file_cache, $ret);
@@ -1827,13 +1972,17 @@ class uimx {
     ];
 
     public static function getCurrencySign($cur) {
-
         $ret = "&euro;";
-
         if ($cur == "USD") $ret = "$";
 
         return $ret;
+    }
 
+    public static function getGraphCurrencySign($cur) {
+        $ret = "\u20ac";
+        if ($cur == "USD") $ret = "$";
+
+        return $ret;
     }
 
     public static function getRedGreenColr($x, $y) {
