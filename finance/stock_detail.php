@@ -335,31 +335,6 @@ $js_bubbles_data = "";
                     </div>
                 </div>
             </div>
-<? if ($sess_context->isUserConnected()) { ?>
-            <div class="four fields">
-                <div class="field">
-                    <label>Stop loss</label>
-                    <input type="text" id="f_stoploss" value="<?= $row['stop_loss'] ?>" placeholder="0">
-                </div>
-                <div class="field">
-                    <label>Objectif</label>
-                    <input type="text" id="f_objectif" value="<?= $row['objectif'] ?>" placeholder="0">
-                </div>
-                <div class="field">
-                    <label>Stop profit</label>
-                    <input type="text" id="f_stopprofit" value="<?= $row['stop_profit'] ?>" placeholder="0">
-                </div>
-                <div class="field">
-                    <label>Seuils</label>
-                    <input type="text" id="f_seuils" value="<?= $row['seuils'] ?>" placeholder="0.00;0.00;...">
-                </div>
-            </div>
-<? } else { ?>
-            <input type="hidden" name="f_stoploss"   value="" />
-            <input type="hidden" name="f_objectif"   value="" />
-            <input type="hidden" name="f_stopprofit" value="" />
-            <input type="hidden" name="f_seuils"     value="" />
-<? } ?>
         </div>
     </form>
 </div>
@@ -1022,7 +997,7 @@ if (!$readonly) {
     <? if (!$readonly) { ?>
 
     getFormValues = function() {
-        params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_stoploss', 'f_objectif', 'f_stopprofit', 'f_seuils' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
+        params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
 
         var tags = '';
         Dom.find('button.bt_tags').forEach(function(item) {
@@ -1033,14 +1008,10 @@ if (!$readonly) {
         return params;
     }
 
-    // Listenet sur bt edit
+    // Listener sur bt edit
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
 
-        [   { key: 'f_dividende',  label: 'Dividende'   },
-            { key: 'f_stoploss',   label: 'Stop Loss'   },
-            { key: 'f_stopprofit', label: 'Stop Profit' },
-            { key: 'f_objectif',   label: 'Objectif'    }
-        ].forEach(function(item) {
+        [   { key: 'f_dividende',  label: 'Dividende' } ].forEach(function(item) {
             let val = valof(item.key);
             if (val != '' && !check_num(val, item.label, 0, 999999999999)) return false;
         });
