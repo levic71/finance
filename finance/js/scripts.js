@@ -332,6 +332,7 @@ var overlay = {
 			ind      = Dom.attribute(item, 'id').split('_')[2];
 			other    = Dom.attribute(item, 'data-other');
 			taux     = Dom.attribute(item, 'data-taux');
+			in_ptf   = Dom.attribute(item, 'data-in-ptf');
 			actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
 			pru      = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-pru'));
 			price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
@@ -388,18 +389,20 @@ var overlay = {
 
 			ind = Dom.attribute(item, 'id').split('_')[2];
 
+			in_ptf   = Dom.attribute(item, 'data-in-ptf');
+
 			secteur  = Dom.attribute(item.getElementsByTagName("td")[0], 'data-tootik');
 			geo      = Dom.attribute(item.getElementsByTagName("td")[0], 'data-geo');
 
 			price = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
 			nb    = parseFloat(Dom.attribute(Dom.id('f_pru_' + ind), 'data-nb'));
 			valo  = parseFloat(nb * price);
-			ratio = getRatio(trendfollowing_ui.ptf.valo, valo).toFixed(2);
+			ratio = in_ptf == 0 ? 0 : getRatio(trendfollowing_ui.ptf.valo, valo).toFixed(2);
 
 			trendfollowing_ui.tab_secteur[secteur] = (trendfollowing_ui.tab_secteur[secteur] ? parseFloat(trendfollowing_ui.tab_secteur[secteur]) : 0) + parseFloat(ratio);
 			trendfollowing_ui.tab_geo[geo] = (trendfollowing_ui.tab_geo[geo] ? parseFloat(trendfollowing_ui.tab_geo[geo]) : 0) + parseFloat(ratio);
 
-			setColNumericTab('f_poids_' + ind, Math.round(ratio), Math.round(ratio) + ' %', false);
+			setColNumericTab('f_poids_' + ind, Math.round(ratio), in_ptf == 0 ? '-' : Math.round(ratio) + ' %', false);
 
 			trendfollowing_ui.data_repartition[0].push(ratio);
 

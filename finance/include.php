@@ -338,8 +338,8 @@ class QuoteComputing {
         $taux      = $this->getTaux();                       // Taux conversion devise
         $dividende = $this->getDividendeAnnuel();            // Dividende annualise s'il existe
         $price     = $this->getPrice();                      // Prix de l'actif
-        $pct   = $this->getPct();
-        $pname = '<button class="tiny ui primary button">'.$this->getPName().'</button>';
+        $pct       = $this->getPct();
+        $pname     = '<button class="tiny ui primary button">'.$this->getPName().'</button>';
         $isAlerteActive = $this->isAlerteActive();
         $stop_loss   = $this->getStopLoss();
         $stop_profit = $this->getStopProfit();
@@ -357,8 +357,10 @@ class QuoteComputing {
         $position_nb  = $this->getNbPositions();
         $position_pru = $this->getPru();
         $type         = $this->getType();
+        $isInPtf      = $this->sc->isInPtf($this->symbol);
+
     
-        $ret .= '<tr id="tr_item_'.$i.'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" class="'.strtolower($type).'">
+        $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>
@@ -393,7 +395,7 @@ class QuoteComputing {
             <td id="f_perf_pru_'.$i.'" class="center aligned"></td>
             <td id="f_rand_'.$i.'"     class="center aligned">
                 <div>
-                    <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $position_pru)).'</label>
+                    <label>'.($dividende == 0 || $isInPtf == 1 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $position_pru)).'</label>
                     <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
                 </div>
             </td>
