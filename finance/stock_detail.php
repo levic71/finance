@@ -57,33 +57,13 @@ $qc = new QuoteComputing($sc, $symbol);
 $qc->refreshQuote($row);
 
 $currency       = $qc->getCurrency();
-$tags           = $qc->getQuoteAttr('tags');
-$tags_infos     = uimx::getIconTooltipTag($tags);
+$position_pru   = $qc->getPru();
+$curr_graphe    = $qc->isTypeIndice() ? "" : uimx::getGraphCurrencySign($currency);
 $links          = json_decode($qc->getQuoteAttr('links'), true);
 $link1          = isset($links['link1']) ? $links['link1'] : "";
 $link2          = isset($links['link2']) ? $links['link2'] : "";
-$position_pru   = $qc->getPru();
-$position_nb    = $qc->getNbPositions();
-$price          = $qc->getPrice();
-$pct            = $qc->getPct();
-$pct_mm200      = $qc->getPctMM200();
-$isAlerteActive = $qc->isAlerteActive();
-$stop_loss      = $qc->getStopLoss();
-$stop_profit    = $qc->getStopProfit();
-$objectif       = $qc->getObjectif();
-$seuils         = $qc->getSeuils();
-$options        = $qc->getOptions();
-$perf_indicator = $qc->getPerfIndicator();
-$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
-$taux           = $qc->getTaux();
-$dividende      = $qc->getDividendeAnnuel();
-$curr           = uimx::getCurrencySign($currency);
-$curr_graphe    = $qc->isTypeIndice() ? "" : uimx::getGraphCurrencySign($currency);
-$other_name     = $qc->getOtherName2();
-$pname          = '<button class="tiny ui primary button">'.$qc->getPName().'</button>';
-$mm200          = $qc->getMM200();
-$dm             = $qc->getDM();
 
+// Necessaire pour combo choix actif
 $lst_trend_following = $sc->getTrendFollowing();
 
 ?>
@@ -92,7 +72,7 @@ $lst_trend_following = $sc->getTrendFollowing();
 
     <h2 class="ui left">
         <span>
-            <?= utf8_decode($row['name']) ?>
+            <?= mb_convert_encoding($row['name'], 'UTF-8', 'ISO-8859-1'); ?>
         </span>
         <? if ($sess_context->isSuperAdmin()) { ?>
             <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float small trash icon"></i>
@@ -123,49 +103,7 @@ $lst_trend_following = $sc->getTrendFollowing();
             <th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
         </tr></thead>
         <tbody>
-<?
-            $i = 0;
-            echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'">
-            <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
-                <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
-            </td>
-
-            <td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
-
-            <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'"><div>
-                <button class="tiny ui button">'.sprintf("%.2f %s", $position_pru, uimx::getCurrencySign($currency)).'</button>
-                <label>'.$position_nb.'</label>
-            </div></td>
-
-            <td class="center aligned" data-value="'.$pct.'"><div>
-                <button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $price).'" data-name="'.$key.'" data-pru="'.($qc->isPriceFromPru() ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $price, uimx::getCurrencySign($currency)).'</button>
-                <label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
-            </div></td>
-        
-            <td class="center aligned" data-value="'.$pct_mm200.'"><div>
-                <button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%.2f %s", $mm200, uimx::getCurrencySign($currency)).'</button>
-                <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).' %</label>
-            </div></td>
-
-            <td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'"><div class="small ui right group input" data-pname="'.$key.'">
-                <div class="'.(!$isAlerteActive || intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
-                <div class="'.(!$isAlerteActive || intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
-                <div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
-            </div></td>
-
-            <td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.$dm.' %</td>
-            <td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
-            <td id="f_poids_'.$i.'"    class="center aligned"></td>
-            <td id="f_valo_'.$i.'"     class="right  aligned"></td>
-            <td id="f_perf_pru_'.$i.'" class="center aligned"></td>
-            <td id="f_rand_'.$i.'"     class="center aligned">
-                <div>
-                    <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $position_pru)).'</label>
-                    <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
-                </div>
-            </td>
-        </tr>';
-?>
+            <? echo $qc->getHtmlTableLine(1); ?>
         </tbody>
     </table>
 
@@ -936,6 +874,14 @@ if (!$readonly) {
         return isCN('graphe_all_bt', '<?= $bt_period_colr ?>') ? "ALL" : (isCN('graphe_3Y_bt', '<?= $bt_period_colr ?>') ? "3Y" : (isCN('graphe_1Y_bt', '<?= $bt_period_colr ?>') ? "1Y" : "1T"));
     }
 
+    updateDataPage = function(opt) {
+        if (opt == 'init') {
+        }
+
+        // On parcours les lignes du tableau positions pour calculer valo, perf, gain, atio et des tooltip du tableau des positions
+        trendfollowing_ui.computePositionsTable('lst_position', <?= $ptf_id ?>);
+    }
+
     update_data = function(size) {
 
         interval = getIntervalStatus();
@@ -1160,9 +1106,9 @@ if (!$readonly) {
     }); */
 
     // Refresh button
-    Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
-    });
+//    Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) {
+//        go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
+//    });
 
     // Choix actif dans select actif ptf
     <? if ($ptf_nb_positions > 0) { ?>
@@ -1193,6 +1139,8 @@ if (!$readonly) {
         go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol=<?= $symbol ?>', loading_area: 'main', confirmdel: 1 });
     });
     <? } ?>
+
+    updateDataPage('init');
     
     scroll(0,0); // Top de page
 

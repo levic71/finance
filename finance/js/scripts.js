@@ -454,7 +454,7 @@ var overlay = {
 							go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=manual_price&' + params, no_data: 1 });
 							element.innerHTML = valof('f_quote') + '&euro;';
 							Dom.attribute(element, { 'data-value': valof('f_quote') });
-							computeLines('change');
+							updateDataPage('change');
 							Swal.fire('Données modifiées');
 						}
 					});

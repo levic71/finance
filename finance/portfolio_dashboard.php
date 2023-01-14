@@ -94,9 +94,9 @@ $lst_orders    = $sc->getOrders();
 			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
 				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
 				<div class="ui buttons">
-					<button id="0" class="mini ui primary button">Répartition</button>
-					<button id="1" class="mini ui grey button">Secteurs</button>
-					<button id="2" class="mini ui grey button">Géographie</button>
+					<button id="donut_0" class="mini ui primary button">Répartition</button>
+					<button id="donut_1" class="mini ui grey button">Secteurs</button>
+					<button id="donut_2" class="mini ui grey button">Géographie</button>
 				</div>
 				<canvas id="pft_donut" height="130" style="margin-top: 10px"></canvas>
 			</div>
@@ -135,77 +135,9 @@ $lst_orders    = $sc->getOrders();
 				foreach($lst_positions as $key => $val) {
 
 					$qc = new QuoteComputing($sc, $key);
-
-					$currency  = $qc->getCurrency();                   // Choix de la devise
-					$taux      = $qc->getTaux();                       // Taux conversion devise
-					$dividende = $qc->getDividendeAnnuel();            // Dividende annualise s'il existe
-					$price     = $qc->getPrice();                      // Prix de l'actif
+					echo $qc->getHtmlTableLine($i++);
 					$div_per_year += $qc->getEstimationDividende();    // Estimation dividende annuel
-					$pct   = $qc->getPct();
-					$valo  = $qc->getValo();
-					$perf  = $qc->getPerf();
-					$pname = '<button class="tiny ui primary button">'.$qc->getPName().'</button>';
-					$isAlerteActive = $qc->isAlerteActive();
-					$stop_loss   = $qc->getStopLoss();
-					$stop_profit = $qc->getStopProfit();
-					$objectif    = $qc->getObjectif();
-					$seuils      = $qc->getSeuils();
-					$options     = $qc->getOptions();
-					$perf_indicator = $qc->getPerfIndicator();
-					$perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
-					$tooltip      = "Entreprise";
-					$icon         = "copyright outline";
-					$icon_tag     = "bt_filter_SEC_99999";
-					$mm200        = $qc->getMM200();
-					$dm           = $qc->getDM();
-					$pct_mm200    = $qc->getPctMM200();
-					$tags         = $qc->getTags();
-					$tags_infos   = uimx::getIconTooltipTag($tags);
-					$other_name   = $qc->getOtherName();
-					$position_nb  = $qc->getNbPositions();
-					$position_pru = $qc->getPru();
-				
-					echo '<tr id="tr_item_'.$i.'" data-pname="'.$key.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'">
-						<td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
-							<i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
-						</td>
 
-						<td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$key.'">'.$pname.'</td>
-
-						<td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'"><div>
-							<button class="tiny ui button">'.sprintf("%.2f %s", $position_pru, uimx::getCurrencySign($currency)).'</button>
-							<label>'.$position_nb.'</label>
-						</div></td>
-
-						<td class="center aligned" data-value="'.$pct.'"><div>
-							<button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $price).'" data-name="'.$key.'" data-pru="'.($qc->isPriceFromPru() ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $price, uimx::getCurrencySign($currency)).'</button>
-							<label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
-						</div></td>
-					
-						<td class="center aligned" data-value="'.$pct_mm200.'"><div>
-							<button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%.2f %s", $mm200, uimx::getCurrencySign($currency)).'</button>
-							<label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).' %</label>
-						</div></td>
-
-						<td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'"><div class="small ui right group input" data-pname="'.$key.'">
-							<div class="'.(!$isAlerteActive || intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
-							<div class="'.(!$isAlerteActive || intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
-							<div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
-						</div></td>
-
-						<td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.$dm.' %</td>
-						<td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
-						<td id="f_poids_'.$i.'"    class="center aligned"></td>
-						<td id="f_valo_'.$i.'"     class="right  aligned"></td>
-						<td id="f_perf_pru_'.$i.'" class="center aligned"></td>
-						<td id="f_rand_'.$i.'"     class="center aligned">
-							<div>
-								<label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $position_pru)).'</label>
-								<label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
-							</div>
-						</td>
-					</tr>';
-					$i++;
 				}
 	?>
 					</tbody>
@@ -375,7 +307,7 @@ update_infos_areas = function(o) {
 	});
 }
 
-computeLines = function(opt) {
+updateDataPage = function(opt) {
 
 	glob_perf = 0;
 	glob_gain = 0;
@@ -458,7 +390,7 @@ computeLines = function(opt) {
 }
 
 // Init du calcul
-computeLines('init');
+updateDataPage('init');
 
 // Filtre de la table des ordres
 filter = function() {
@@ -489,7 +421,7 @@ Dom.addListener(Dom.id('ptf_pos_sync_bt'),     Dom.Event.ON_CLICK, function(even
 
 // Gestion des boutons du graphe donut
 changeButtonState = function(bt) {
-	['0', '1', '2'].forEach(function(item) { replaceCN(item, 'primary', 'grey'); });
+	['0', '1', '2'].forEach(function(item) { replaceCN('donut_' + item, 'primary', 'grey'); });
 	replaceCN(bt, 'grey', 'primary');
 }
 // Maj data donut
@@ -502,13 +434,10 @@ updateDonut = function(bt) {
     myChart.update();
 }
 
-// Changement onglet donut
-Dom.addListener(Dom.id('0'), Dom.Event.ON_CLICK, function(event) { updateDonut('0'); });
-Dom.addListener(Dom.id('1'), Dom.Event.ON_CLICK, function(event) { updateDonut('1'); });
-Dom.addListener(Dom.id('2'), Dom.Event.ON_CLICK, function(event) { updateDonut('2'); });
-
-['0', '1', '2'].forEach(function(item) {
-	Dom.addListener(Dom.id(item), Dom.Event.ON_CLICK, function(event) { updateDonut(item); });
+// N'aime pas le ['0', '1', '2'].forEach() !!! 
+const list = ['0', '1', '2'];
+list.forEach(function(element) {
+	Dom.addListener(Dom.id('donut_' + element), Dom.Event.ON_CLICK, function(event) { updateDonut(element); });
 });
 
 get_orders_list = function() {
