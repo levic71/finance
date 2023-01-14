@@ -17,6 +17,9 @@
  *     page: page to display
  *         default page is 1
  *
+ *     page_limits: nb max boutons affichés
+ *         default page limits is 10
+ *
  *     box_mode: "list", "buttons", or function. determines how the page number buttons are built.
  *         "list" builds the page index in list format and adds class "pagination" to the ul element. Meant for use with bootstrap
  *         "buttons" builds the page index out of buttons
@@ -54,6 +57,11 @@ function paginator(config) {
     // get/set if things are disabled
     if (typeof config.disable == "undefined") {
         config.disable = false;
+    }
+
+    // get/set page_limits
+    if (typeof config.page_limits == "undefined") {
+        config.page_limits = 10;
     }
 
     // get/make an element for storing the page numbers in
@@ -211,9 +219,11 @@ function paginator(config) {
         var left = make_button("&laquo;", (page>1?page-1:1), config, (page == 1), false);
         page_box.appendChild(left);
 
-        for (var i=1;i<=pages;i++) {
-            var li = make_button(i, i, config, false, (page == i));
-            page_box.appendChild(li);
+        if (pages < config.page_limits) {
+            for (var i=1;i<=pages;i++) {
+                var li = make_button(i, i, config, false, (page == i));
+                page_box.appendChild(li);
+            }
         }
 
         var right = make_button("&raquo;", (pages>page?page+1:page), config, (page == pages), false);
