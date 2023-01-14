@@ -88,7 +88,7 @@ $lst_trend_following = $sc->getTrendFollowing();
     </h2>
 
     <table class="ui selectable inverted single line unstackable very compact sortable-theme-minimal table" id="lst_position" data-sortable>
-        <thead><tr>
+        <thead><tr class="<?= strtolower($qc->getType()) ?>">
             <th class="center aligned"></th>
             <th class="center aligned">Actif</th>
             <th class="center aligned" data-sortable="false">PRU<br />Qté</th>

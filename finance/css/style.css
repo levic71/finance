@@ -180,6 +180,12 @@ button.etf { background: #21ba45 !important; color: white !important; }
     flex-wrap: wrap;
     margin: 5px 15px;
 }
+.tabnav button:first-child, .tabnav button:last-child {
+    font-size: 20px;
+}
+.tabnav button:hover {
+    background:rgba(255, 255, 255, .3);
+}
 .tabnav button {
     background: #222;
     color: white;
@@ -860,6 +866,15 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 .stock_detail_page div.checkbox {
     padding: 8px 0px !important;
+}
+.stock_detail_page #canvas_area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.stock_detail_page #lst_position .indice th:nth-child(3), .stock_detail_page #lst_position .indice th:nth-child(9), .stock_detail_page #lst_position .indice th:nth-child(10), .stock_detail_page #lst_position .indice th:nth-child(11), .stock_detail_page #lst_position .indice th:nth-child(12),
+.stock_detail_page #lst_position .indice td:nth-child(3), .stock_detail_page #lst_position .indice td:nth-child(9), .stock_detail_page #lst_position .indice td:nth-child(10), .stock_detail_page #lst_position .indice td:nth-child(11), .stock_detail_page #lst_position .indice td:nth-child(12) {
+    display: none;
 }
 
 .filters {
