@@ -601,3 +601,19 @@ var options_Valo_Graphe = {
 		}
 	}
 };
+
+var options_donut_graphe = {
+    responsive: false,
+    maintainAspectRatio: true,
+	plugins: {
+		legend: {
+			display: true,
+			position: 'right'
+		},
+		title: {
+			display: false,
+			color: 'white',
+			text: 'Répartition'
+		}
+	}
+};
