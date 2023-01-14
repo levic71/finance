@@ -356,8 +356,9 @@ class QuoteComputing {
         $other_name   = $this->getOtherName();
         $position_nb  = $this->getNbPositions();
         $position_pru = $this->getPru();
+        $type         = $this->getType();
     
-        $ret .= '<tr id="tr_item_'.$i.'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'">
+        $ret .= '<tr id="tr_item_'.$i.'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>
@@ -370,12 +371,12 @@ class QuoteComputing {
             </div></td>
 
             <td class="center aligned" data-value="'.$pct.'"><div>
-                <button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $price).'" data-name="'.$this->symbol.'" data-pru="'.($this->isPriceFromPru() ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $price, uimx::getCurrencySign($currency)).'</button>
+                <button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $price).'" data-name="'.$this->symbol.'" data-pru="'.($this->isPriceFromPru() ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $price, $type == "INDICE" ? "" : uimx::getCurrencySign($currency)).'</button>
                 <label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
             </div></td>
         
             <td class="center aligned" data-value="'.$pct_mm200.'"><div>
-                <button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%.2f %s", $mm200, uimx::getCurrencySign($currency)).'</button>
+                <button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%.2f %s", $mm200, $type == "INDICE" ? "" : uimx::getCurrencySign($currency)).'</button>
                 <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).' %</label>
             </div></td>
 
