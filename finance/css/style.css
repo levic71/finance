@@ -877,6 +877,22 @@ table th { color: burlywood !important; cursor: pointer !important; }
     display: none;
 }
 
+.trendfollowing_ui_form label {
+    padding-top: 5px;
+}
+
+.trendfollowing_ui_form .checkbox {
+    padding: 15px 0px 0px;
+}
+
+.trendfollowing_ui_form .checkbox input {
+    margin: 2px 5px 0px 15px;
+}
+
+.trendfollowing_ui_form .checkbox input:first-child {
+    margin-left: 0px;
+}
+
 .filters {
     display: inline-flex;
 }

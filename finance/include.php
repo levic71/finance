@@ -296,28 +296,31 @@ class QuoteComputing {
         return isset($this->quote[$attr]) ? $this->quote[$attr] : $def;
     }
 
-    public function getOtherName()       { return $this->sc->getPositionAttr($this->symbol, 'other_name'); }
-    public function getPru()             { return $this->sc->getPositionAttr($this->symbol, 'pru', 0); }
-    public function getNbPositions()     { return $this->sc->getPositionAttr($this->symbol, 'nb', 0); }
-    public function getStopLoss()        { return $this->sc->getTrendFollowingAttr($this->symbol, 'stop_loss')   ? $this->sc->getTrendFollowingAttr($this->symbol, 'stop_loss')   : 0; }
-    public function getStopProfit()      { return $this->sc->getTrendFollowingAttr($this->symbol, 'stop_profit') ? $this->sc->getTrendFollowingAttr($this->symbol, 'stop_profit') : 0; }
-    public function getObjectif()        { return $this->sc->getTrendFollowingAttr($this->symbol, 'objectif')    ? $this->sc->getTrendFollowingAttr($this->symbol, 'objectif')    : 0; }
-    public function getSeuils()          { return $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      ? $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      : ""; }
-    public function getOptions()         { return $this->sc->getTrendFollowingAttr($this->symbol, 'options')     ? $this->sc->getTrendFollowingAttr($this->symbol, 'options')     : 0; }
-    public function getTaux()            { return $this->sc->getDeviseTaux($this->currency); }
+    public function getOtherName()        { return $this->sc->getPositionAttr($this->symbol, 'other_name'); }
+    public function getPru()              { return $this->sc->getPositionAttr($this->symbol, 'pru', 0); }
+    public function getNbPositions()      { return $this->sc->getPositionAttr($this->symbol, 'nb', 0); }
+    public function getStopLoss()         { return $this->sc->getTrendFollowingAttr($this->symbol, 'stop_loss')   ? $this->sc->getTrendFollowingAttr($this->symbol, 'stop_loss')   : 0; }
+    public function getStopProfit()       { return $this->sc->getTrendFollowingAttr($this->symbol, 'stop_profit') ? $this->sc->getTrendFollowingAttr($this->symbol, 'stop_profit') : 0; }
+    public function getObjectif()         { return $this->sc->getTrendFollowingAttr($this->symbol, 'objectif')    ? $this->sc->getTrendFollowingAttr($this->symbol, 'objectif')    : 0; }
+    public function getSeuils()           { return $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      ? $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      : ""; }
+    public function getOptions()          { return $this->sc->getTrendFollowingAttr($this->symbol, 'options')     ? $this->sc->getTrendFollowingAttr($this->symbol, 'options')     : 0; }
+    public function getStrategieType()    { return $this->sc->getTrendFollowingAttr($this->symbol, 'strategie_type');    }
+    public function getRegressionType()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_type');   }
+    public function getRegressionPeriod() { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_period'); }
+    public function getTaux()             { return $this->sc->getDeviseTaux($this->currency); }
 
-    public function getRegion()          { return $this->getQuoteAttr('region'); }
-    public function getOpenCloseMarket() { return $this->getQuoteAttr('marketopen')."-".$this->getQuoteAttr('marketclose'); }
-    public function getTimeZone()        { return $this->getQuoteAttr('timezone'); }
-    public function getDateCotation()    { return $this->getQuoteAttr('day'); }
-    public function getMM7()             { return $this->getQuoteAttr('MM7'); }
-    public function getMM200()           { return $this->getQuoteAttr('MM200'); }
-    public function getDM()              { return $this->getQuoteAttr('DM'); }
-    public function getType()            { return $this->getQuoteAttr('type'); }
-    public function getTags()            { return $this->getQuoteAttr('tags'); }
-    public function getOtherName2()      { return $this->getQuoteAttr('other_name', null); }
-    public function getPct()             { return $this->getQuoteAttr('percent', 0); }
-    public function getDividendeAnnuel() { return $this->getQuoteAttr('dividende_annualise', 0); }
+    public function getRegion()           { return $this->getQuoteAttr('region'); }
+    public function getOpenCloseMarket()  { return $this->getQuoteAttr('marketopen')."-".$this->getQuoteAttr('marketclose'); }
+    public function getTimeZone()         { return $this->getQuoteAttr('timezone'); }
+    public function getDateCotation()     { return $this->getQuoteAttr('day'); }
+    public function getMM7()              { return $this->getQuoteAttr('MM7'); }
+    public function getMM200()            { return $this->getQuoteAttr('MM200'); }
+    public function getDM()               { return $this->getQuoteAttr('DM'); }
+    public function getType()             { return $this->getQuoteAttr('type'); }
+    public function getTags()             { return $this->getQuoteAttr('tags'); }
+    public function getOtherName2()       { return $this->getQuoteAttr('other_name', null); }
+    public function getPct()              { return $this->getQuoteAttr('percent', 0); }
+    public function getDividendeAnnuel()  { return $this->getQuoteAttr('dividende_annualise', 0); }
 
     public function getPName()         { return $this->symbol.($this->getOtherName() ? '(*)' : ''); /* Concatenation de 2 strings */ }
     public function getValo()          { return sprintf("%.2f", $this->sc->getPositionAttr($this->symbol, 'nb') * $this->price); }
@@ -345,6 +348,9 @@ class QuoteComputing {
         $stop_profit = $this->getStopProfit();
         $objectif    = $this->getObjectif();
         $seuils      = $this->getSeuils();
+        $strat_type  = $this->getStrategieType();
+        $reg_type    = $this->getRegressionType();
+        $reg_period  = $this->getRegressionPeriod();
         $options     = $this->getOptions();
         $perf_indicator = $this->getPerfIndicator();
         $perf_bullet    = "<span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span>";
@@ -382,7 +388,7 @@ class QuoteComputing {
                 <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).' %</label>
             </div></td>
 
-            <td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'"><div class="small ui right group input" data-pname="'.$this->symbol.'">
+            <td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'" data-strat-type="'.$strat_type.'" data-reg-type="'.$reg_type.'" data-reg-period="'.$reg_period.'"><div class="small ui right group input" data-pname="'.$this->symbol.'">
                 <div class="'.(!$isAlerteActive || intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
                 <div class="'.(!$isAlerteActive || intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
                 <div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
