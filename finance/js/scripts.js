@@ -303,7 +303,7 @@ var overlay = {
 			'<label>Stop Profit <span class="mini_button ' + (perf_stopprofit >= 0 ? 'aaf-positive' : 'aaf-negative') + '">' + perf_stopprofit + '%</span></label><input id="f_stopprofit" class="swal2-input" type="text" placeholder="0.00" value="' + stopprofit + '" />' +
 			'<label>Seuils</label><input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
 			'<label>Type stratégie</label><select id="f_strat_type"><option value="1" ' + (strat_type == 1 ? 'selected="selected"' : '') + '">Spéculatif</option><option value="2" ' + (strat_type == 2 ? 'selected="selected"' : '') + '">Dividende</option><option value="3" ' + (strat_type == 3 ? 'selected="selected"' : '') + '">Croissance</option><option value="4" ' + (strat_type == 4 ? 'selected="selected"' : '') + '">Dividende & croissance</option></select>' +
-			'<label>Type régression</label><select id="f_reg_type"><option value="1" ' + (reg_type == 1 ? 'selected="selected"' : '') + '">Linéaire</option><option value="2" ' + (reg_type == 2 ? 'selected="selected"' : '') + '">Exponetielle</option><option value="3" ' + (reg_type == 3 ? 'selected="selected"' : '') + '">logarithmique</option><option value="4" ' + (reg_type == 4 ? 'selected="selected"' : '') + '">Polynomiale</option><option value="4" ' + (reg_type == 5 ? 'selected="selected"' : '') + '">Power</option></select>' +
+			'<label>Type régression</label><select id="f_reg_type"><option value="1" ' + (reg_type == 1 ? 'selected="selected"' : '') + '">Linéaire</option><option value="2" ' + (reg_type == 2 ? 'selected="selected"' : '') + '">Exponetielle</option><option value="3" ' + (reg_type == 3 ? 'selected="selected"' : '') + '">logarithmique</option><option value="4" ' + (reg_type == 4 ? 'selected="selected"' : '') + '">Polynomiale</option><option value="5" ' + (reg_type == 5 ? 'selected="selected"' : '') + '">Power</option></select>' +
 			'<label>Période régression</label><input id="f_reg_period" class="swal2-input" type="text" placeholder="0" value="' + reg_period   + '" />' +
 			'<label class="checkbox"><input id="f_mm200" type="checkbox" ' + (mm200_opt ? 'checked="checked"' : '') + '/> MM200 <input id="f_mm100" type="checkbox" ' + (mm100_opt ? 'checked="checked"' : '') + '/> MM100 <input id="f_mm50" type="checkbox" ' + (mm50_opt ? 'checked="checked"' : '') + '/> MM50 <input id="f_mm20" type="checkbox" ' + (mm20_opt ? 'checked="checked"' : '') + '/> MM20 <input id="f_mm7" type="checkbox" ' + (mm7_opt ? 'checked="checked"' : '') + '/> MM7</label>' +
 			'<label class="checkbox"><input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/> Active</label>' +
@@ -488,8 +488,11 @@ var overlay = {
 				var stopprofit = divs[2].innerHTML;
 				var seuils     = Dom.attribute(element.parentNode, 'data-seuils') ? Dom.attribute(element.parentNode, 'data-seuils') : "";
 				var options    = Dom.attribute(element.parentNode, 'data-options');
-
-				tf_ui_html = trendfollowing_ui.getHtml(pname, price, active, stoploss, objectif, stopprofit, seuils, options);
+				var strat_type = parseInt(Dom.attribute(element.parentNode, 'data-strat-type'));
+				var reg_type   = parseInt(Dom.attribute(element.parentNode, 'data-reg-type'));
+				var reg_period = parseInt(Dom.attribute(element.parentNode, 'data-reg-period'));
+		
+				tf_ui_html = trendfollowing_ui.getHtml(pname, price, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period);
 
 				Swal.fire({
 						title: '',
@@ -517,6 +520,9 @@ var overlay = {
 							if (valof('f_active') == 0 || parseInt(valof('f_stopprofit')) == 0) divs[2].className = divs[2].className + ' grey';
 							if (valof('f_active') == 0 || parseInt(valof('f_seuils'))     == 0) divs[3].className = divs[3].className + ' grey';
 							Dom.attribute(element.parentNode, { 'data-seuils'  : valof('f_seuils') });
+							Dom.attribute(element.parentNode, { 'data-strat-type' : valof('f_strat_type') });
+							Dom.attribute(element.parentNode, { 'data-reg-type'   : valof('f_reg_type') });
+							Dom.attribute(element.parentNode, { 'data-reg-period' : valof('f_reg_period') });
 							Dom.attribute(element.parentNode, { 'data-options' : trendfollowing_ui.getOptionsValue() });
 							Dom.attribute(element.parentNode, { 'data-active'  : valof('f_active') == 0 ? 0 : 1 });
 

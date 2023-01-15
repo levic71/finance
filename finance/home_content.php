@@ -14,7 +14,7 @@ $db = dbc::connect();
 
 // SQL SCHEMA UPDATE
 // $ret = dbc::addColTable("stocks", "dividende_annualise", "ALTER TABLE `stocks` ADD `dividende_annualise` FLOAT NOT NULL AFTER `rating`, ADD `date_dividende` DATE NOT NULL AFTER `dividende_annualise`;");
-$ret = dbc::addColTable("stocks", "strategie_type", "ALTER TABLE `stocks` ADD `strategie_type` INT NOT NULL DEFAULT '1' AFTER `date_dividende`, ADD `regression_type` INT NOT NULL DEFAULT '1' AFTER `strategie_type`, ADD `regression_period` VARCHAR(32) NOT NULL DEFAULT '0' AFTER `regression_type`;");
+$ret = dbc::addColTable("trend_following", "strategie_type", "ALTER TABLE `trend_following` ADD `strategie_type` INT NOT NULL DEFAULT '1' AFTER `options`, ADD `regression_type` INT NOT NULL DEFAULT '1' AFTER `strategie_type`, ADD `regression_period` VARCHAR(32) NOT NULL DEFAULT '0' AFTER `regression_type`;");
 
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
@@ -234,9 +234,9 @@ foreach($data2["stocks"] as $key => $val) {
 	$objectif   = isset($trend_following[$key]['objectif'])    ? $trend_following[$key]['objectif']    : 0;
 	$seuils     = isset($trend_following[$key]['seuils'])      ? $trend_following[$key]['seuils']      : '';
 	$options    = isset($trend_following[$key]['options'])     ? $trend_following[$key]['options']     : 0;
-	$strat_type = $val['strategie_type'];
-	$reg_type   = $val['regression_type'];
-	$reg_period = $val['regression_period'];
+	$strat_type = isset($trend_following[$key]['strategie_type'])    ? $trend_following[$key]['strategie_type']    : 1;
+	$reg_type   = isset($trend_following[$key]['regression_type'])   ? $trend_following[$key]['regression_type']   : 1;
+	$reg_period = isset($trend_following[$key]['regression_period']) ? $trend_following[$key]['regression_period'] : 0;
 
 //	$max_histo = calc::getMaxHistoryDate($symbol);
 	$max_histo      = isset($max_histo_tab[$symbol]) ? $max_histo_tab[$symbol] : "0000-00-00";
@@ -535,7 +535,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 		var stopprofit = Dom.attribute(element, 'data-stopprofit');
 		var seuils     = Dom.attribute(element, 'data-seuils') ? Dom.attribute(element, 'data-seuils') : '';
 		var options    = parseInt(Dom.attribute(element, 'data-options'));
-		var strat_type = parseInt(Dom.attribute(element, 'data-strat_type'));
+		var strat_type = parseInt(Dom.attribute(element, 'data-strat-type'));
 		var reg_type   = parseInt(Dom.attribute(element, 'data-reg-type'));
 		var reg_period = parseInt(Dom.attribute(element, 'data-reg-period'));
 
@@ -566,7 +566,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 					Dom.attribute(element, { 'data-active'     : valof('f_active') == 0 ? 0 : 1 });
 					Dom.attribute(element, { 'class': 'inverted alarm '+(valof('f_active') == 0 ? 'black' : 'blue')+' icon' });
 
-					go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 0, no_scroll: 1 });
+					go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1, no_scroll: 1 });
 
 					Swal.fire('Données modifiées');
 				}

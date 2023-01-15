@@ -16,20 +16,11 @@ $db = dbc::connect();
 if ($action == "stops") {
 
     $req = "
-        INSERT INTO trend_following (user_id, symbol, stop_loss, stop_profit, objectif, seuils, options, active)
-        VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_stoploss)."', '".sprintf("%2.f", $f_stopprofit)."', '".sprintf("%2.f", $f_objectif)."', '".sprintf("%s", $f_seuils)."', '".$options."', '".$f_active."')
+        INSERT INTO trend_following (user_id, symbol, stop_loss, stop_profit, objectif, seuils, options, strategie_type, regression_type, regression_period, active)
+        VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_stoploss)."', '".sprintf("%2.f", $f_stopprofit)."', '".sprintf("%2.f", $f_objectif)."', '".sprintf("%s", $f_seuils)."', '".$options."', ".$f_strat_type.", ".$f_reg_type.", '".$f_reg_period."', '".$f_active."')
         ON DUPLICATE KEY UPDATE
-        stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."', seuils='".sprintf("%s", $f_seuils)."', options='".$options."', active='".$f_active."'
+        stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."', seuils='".sprintf("%s", $f_seuils)."', options='".$options."', active='".$f_active."', strategie_type=".$f_strat_type.", regression_type=".$f_reg_type.", regression_period='".$f_reg_period."'
     ";
-    $res = dbc::execSql($req);
-
-    echo $req;
-
-    $req2 = "UPDATE stocks SET strategie_type=".$f_strat_type.", regression_type=".$f_reg_type.", regression_period='".$f_reg_period."'";
-    $res2 = dbc::execSql($req2);
-
-    echo $req2;
-    exit(0);
 
 }
 
@@ -41,9 +32,10 @@ if ($action == "manual_price") {
         ON DUPLICATE KEY UPDATE
         manual_price='".sprintf("%2.f", $f_quote)."'
     ";
-    $res = dbc::execSql($req);
 
 }
+
+$res = dbc::execSql($req);
 
 calc::resetCacheUserPortfolio($sess_context->getUserId());
 
