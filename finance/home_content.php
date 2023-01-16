@@ -522,9 +522,11 @@ Dom.find("#lst_stock tbody tr td:nth-child(2) i").forEach(function(element) {
 	});
 });
 
-// Listener sur icon secteur ligne tableau
+// Listener sur icon alerte ligne tableau
 Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(function(element) {
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+
+<? if ($sess_context->isUserConnected()) { ?>
 
 		// On récupère les valeurs dans la cellule du tableau - Pas tres beau !!!
 		var pname      = Dom.attribute(element, 'data-pname');
@@ -571,6 +573,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 					Swal.fire('Données modifiées');
 				}
 			});
+<? } ?>
 
 	});
 });
