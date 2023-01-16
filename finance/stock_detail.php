@@ -663,10 +663,14 @@ if (!$readonly) {
         ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
         ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
 
+        let elt = Dom.find('#lst_position tbody tr td:nth-child(6)')[0];
+        let reg_type   = Dom.attribute(elt, 'data-reg-type');
+        let reg_period = Dom.attribute(elt, 'data-reg-period');
 
          // //////////////////////////////////////////////
         // Calcul mmxxx/rsixxx en D/W/M
         // //////////////////////////////////////////////
+        let k = 0;
         [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
         // [ new_data_daily ].forEach(function(tab_item) {
 
@@ -711,17 +715,30 @@ if (!$readonly) {
             //output_mom.forEach(function(item) { tab_item[ind++]['mom'] = item.mom; });
 
             // Formattage data et calcul regression logarythmique et/ou lineaire
-            let beginAt = 0;
+            let beginAt = k== 0 ? reg_period : 0;
             let i = 1;
             var d_data_reg = [];
             tab_item.slice(beginAt).forEach(function(item) { d_data_reg.push([ i++, item.y ]); });
-            let result = regression.linear(d_data_reg, { order: 1 });
-            console.log(result);
+            let result = [];
+            if (reg_type == 1)
+                result = regression.linear(d_data_reg, { order: 1 });
+            else if (reg_type == 2)
+                result = regression.exponential(d_data_reg, { order: 1 });
+            else if (reg_type == 3)
+                result = regression.logarithmic(d_data_reg, { order: 1 });
+            else if (reg_type == 4)
+                result = regression.polynomial(d_data_reg, { order: 1 });
+            else
+                result = regression.power(d_data_reg, { order: 1 });
+
+            // console.log(result);
             //let result = regression.linear(d_data_reg);
 
             // Remise en conformite pour affichage dans graphe
             let j = beginAt;
             result.points.forEach(function(item) { tab_item[j++]['reg'] = item[1]; });
+
+            k++;
 
         });
 
