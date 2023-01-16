@@ -203,10 +203,10 @@ class StockComputing {
         $this->devises = $devises;
 
         // On récupère les infos du portefeuille + les positions et les ordres
-        $this->infos     = $this->ptf['infos'];
-        $this->positions = $this->ptf['positions'];
-        $this->orders    = $this->ptf['orders'];
-        $this->trend_following = $this->ptf['trend_following'];
+        if (isset($this->ptf['infos']))           $this->infos     = $this->ptf['infos'];
+        if (isset($this->ptf['positions']))       $this->positions = $this->ptf['positions'];
+        if (isset($this->ptf['orders']))          $this->orders    = $this->ptf['orders'];
+        if (isset($this->ptf['trend_following'])) $this->trend_following = $this->ptf['trend_following'];
 
         $this->saveQuotes();
 
@@ -219,11 +219,13 @@ class StockComputing {
     public function getInfos()          { return $this->infos; }
 
     public function saveQuotes() {
-        $t = explode(',', $this->ptf['infos']['quotes']);
-        if ($t[0] != '') {
-            foreach($t as $key => $val) {
-                $x = explode('|', $val);
-                $this->save_quotes[$x[0]] = $x[1];
+        if (isset($this->ptf['infos']['quotes'])) {
+            $t = explode(',', $this->ptf['infos']['quotes']);
+            if ($t[0] != '') {
+                foreach($t as $key => $val) {
+                    $x = explode('|', $val);
+                    $this->save_quotes[$x[0]] = $x[1];
+                }
             }
         }
     }
