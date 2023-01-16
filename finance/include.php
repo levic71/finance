@@ -336,6 +336,8 @@ class QuoteComputing {
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
 
     public function getHtmlTableLine($i) { 
+    
+        global $sess_context;
 
         $ret = "";
 
@@ -368,7 +370,7 @@ class QuoteComputing {
         $isInPtf      = $this->sc->isInPtf($this->symbol);
 
     
-        $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" class="'.strtolower($type).'">
+        $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>

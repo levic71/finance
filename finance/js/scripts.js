@@ -478,8 +478,13 @@ var overlay = {
 		Dom.find('#' + table_id + ' tbody tr td:nth-child(6) > div').forEach(function(element) {
 			Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 
+				// data sur tr
+				var connected  = Dom.attribute(element.parentNode.parentNode, 'data-iuc');
+				if (connected == 0) return;
+
 				// On récupère les valeurs dans la cellule du tavleau - Pas tres beau !!!
 				var divs   = element.getElementsByTagName("div");
+
 				var pname      = Dom.attribute(element, 'data-pname');
 				var price      = Dom.attribute(element.parentNode, 'data-value');
 				var active     = Dom.attribute(element.parentNode, 'data-active');
@@ -529,6 +534,7 @@ var overlay = {
 							Swal.fire('Données modifiées');
 						}
 					});
+				
 			});
 		});
 
