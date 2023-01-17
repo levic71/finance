@@ -250,6 +250,11 @@ foreach($data2["stocks"] as $key => $val) {
 	$curr  = $val['type'] == 'INDICE' ? "" : ($val['currency'] == "EUR" ? "&euro;" : "$");
 	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : ($val['type'] == "INDICE" ? "IND" : "EQY"))." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
 
+	$now = time();
+	$your_date = strtotime($val['day']);
+	$datediff = $now - $your_date;
+	$diff_days = round($datediff / (60 * 60 * 24));
+
 	echo "<tr class=\"".$class."\" data-alerte=\"".($isAlerteActive ? 1 : 0)."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".utf8_decode($val['tags'])."\">";
 
 	echo "
@@ -263,7 +268,7 @@ foreach($data2["stocks"] as $key => $val) {
 		<td data-value=\"".$val['frais']."\">".sprintf("%.2f", $val['frais'])." %</td>
 		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
 		<td>
-			<span data-tootik-conf=\"left  multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['day'] == date("Y-m-d") ? "grey" : "black")." alternate icon\"></i></a></span>
+			<span data-tootik-conf=\"left  multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['day'] == date("Y-m-d") ? "grey" : ($diff_days > 3 ? "red" : "orange"))." alternate icon\"></i></a></span>
 			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i data-pname=\"".$symbol."\" data-value=\"".$val['price']."\" data-active=\"".($isAlerteActive ? 1 : 0)."\" data-stoploss=\"".$stoploss."\" data-objectif=\"".$objectif."\" data-stopprofit=\"".$stopprofit."\" data-seuils=\"".$seuils."\" data-options=\"".$options."\" data-strat-type=\"".$strat_type."\" data-reg-type=\"".$reg_type."\" data-reg-period=\"".$reg_period."\" class=\"inverted alarm ".($isAlerteActive ? "blue" : "black")." icon\"></i></a></span>
 		</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
