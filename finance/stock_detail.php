@@ -72,7 +72,7 @@ $lst_trend_following = $sc->getTrendFollowing();
 
     <h2 class="ui left">
         <span>
-            <?= mb_convert_encoding($row['name'], 'UTF-8', 'ISO-8859-1'); ?>
+            <?= mb_convert_encoding($row['name'], 'ISO-8859-1', 'UTF-8'); // EX UT8_ENCODE ?>
         </span>
         <? if ($sess_context->isSuperAdmin()) { ?>
             <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float small trash icon"></i>
@@ -715,7 +715,8 @@ if (!$readonly) {
             //output_mom.forEach(function(item) { tab_item[ind++]['mom'] = item.mom; });
 
             // Formattage data et calcul regression logarythmique et/ou lineaire
-            let beginAt = k== 0 ? reg_period : 0;
+            // beginAt proportionnel à la ref en daily
+            let beginAt = Math.round((reg_period * tab_item.length) / new_data_daily.length);
             let i = 1;
             var d_data_reg = [];
             tab_item.slice(beginAt).forEach(function(item) { d_data_reg.push([ i++, item.y ]); });
@@ -957,7 +958,11 @@ if (!$readonly) {
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm50',  'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm200', 'MM200'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
-        if (isCN('graphe_reg_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'reg', 'REG'));
+
+        var ds = getDatasetMMX(g_new_data, 'reg', 'REG');
+        ds.borderDash = [5, 2];
+        ds.borderWidth = 2;
+        if (isCN('graphe_reg_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(ds);
 
         // MIN/MAX/PRU/STOPLOSS/STOPPROFIT/OBJECTIF (pour verifier si axe y ok)
         limits_ctrl = [];
