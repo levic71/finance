@@ -80,8 +80,9 @@ $lst_trend_following = $sc->getTrendFollowing();
         <?
             if ($ptf_nb_positions > 0) {
                 echo '<select id="ptf_select_bt" style="float: right; top: -4px; right: 10px;" class="ui dropdown"><option />';
+                ksort($aggregate_ptf['positions']);
                 foreach($aggregate_ptf['positions'] as $key => $val)
-                    if (!$val['other_name']) echo "<option>$key</option>";
+                    if (!$val['other_name']) echo "<option ".($key == $symbol ? "selected=\"selected\"" : "").">$key</option>";
                 echo "</select>";
             }
         ?>
@@ -628,7 +629,15 @@ if (!$readonly) {
         return newDatasetVols(vals, 'bar', 'y2', 'v', l);
     }
     getDatasetMMX = function(vals, k, l) {
-        return newDataset2(vals, 'line', 'y1', k, l, mmx_colors[l], '', false);
+        var ds = newDataset2(vals, 'line', 'y1', k, l, mmx_colors[l], '', false);
+
+        if (l == 'REG') {
+            ds.borderDash = [5, 2];
+            ds.borderWidth = 2;
+            options_Stock_Graphe.plugins.insiderText = [ { title: 'R2:'+vals[0]['r2'], colr: '#e77fe8', bgcolr: '#1b1c1d', alignX: 'left', alignY: 'top' } ];
+        }
+
+        return ds;
     }
     getDatasetRSI14 = function(vals) {
         return newDataset2(vals, 'line', 'y', 'rsi14', "RSI14", 'violet', 'violet', false);
@@ -670,9 +679,7 @@ if (!$readonly) {
          // //////////////////////////////////////////////
         // Calcul mmxxx/rsixxx en D/W/M
         // //////////////////////////////////////////////
-        let k = 0;
         [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
-        // [ new_data_daily ].forEach(function(tab_item) {
 
             var tmp_mm  = [];
             var tmp_rsi = [];
@@ -717,29 +724,27 @@ if (!$readonly) {
             // Formattage data et calcul regression logarythmique et/ou lineaire
             // beginAt proportionnel à la ref en daily
             let beginAt = Math.round((reg_period * tab_item.length) / new_data_daily.length);
+
+            // Recuperation et reformatage des data 
             let i = 1;
             var d_data_reg = [];
             tab_item.slice(beginAt).forEach(function(item) { d_data_reg.push([ i++, item.y ]); });
-            let result = [];
-            if (reg_type == 1)
-                result = regression.linear(d_data_reg, { order: 1 });
-            else if (reg_type == 2)
-                result = regression.exponential(d_data_reg, { order: 1 });
-            else if (reg_type == 3)
-                result = regression.logarithmic(d_data_reg, { order: 1 });
-            else if (reg_type == 4)
-                result = regression.polynomial(d_data_reg, { order: 1 });
-            else
-                result = regression.power(d_data_reg, { order: 1 });
 
-            // console.log(result);
-            //let result = regression.linear(d_data_reg);
+            // Liste des fcts
+            var fct_name = [ '', 'linear', 'exponential', 'logarithmic', 'polynomial', 'power' ];
+
+            // Calcul de la regression
+            let result = regression[fct_name[reg_type]](d_data_reg, { order: 1 });
 
             // Remise en conformite pour affichage dans graphe
             let j = beginAt;
-            result.points.forEach(function(item) { tab_item[j++]['reg'] = item[1]; });
+            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2; j++; });
 
-            k++;
+            // Ajout complément si linear et beginAt > 0
+            for(j=-1*beginAt; j < 0; j++) {
+                tab_item[beginAt + j]['reg'] = result.predict(j)[1];
+                tab_item[beginAt + j]['r2']  = result.r2;
+            }
 
         });
 
@@ -836,6 +841,10 @@ if (!$readonly) {
 
         // Pour alarm et av on ne fait rien pas gerer dans les datasets
         if (isCN(bt, ref_colr)) {
+            // On retire zone texte R2
+            if (label == 'REG')
+                options_Stock_Graphe.plugins.insiderText  = [];
+
             // On retire les data de la courbe ou volume du bouton selectionne
             chart.data.datasets.forEach((dataset) => {
                 if (dataset.label == label) dataset.data = null;
@@ -950,6 +959,9 @@ if (!$readonly) {
 
         // Update Chart Stock
         var datasets1 = [];
+        options_Stock_Graphe.plugins.vertical     = [];
+        options_Stock_Graphe.plugins.insiderText  = [];
+
         // Ajout des data valeurs de cotation
         datasets1.push(getDatasetVals(g_new_data));
         // Ajout des MM & VOLUME en fct si bouton allume
@@ -957,12 +969,8 @@ if (!$readonly) {
         if (isCN('graphe_mm20_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm20',  'MM20'));
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm50',  'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm200', 'MM200'));
+        if (isCN('graphe_reg_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'reg',   'REG'));
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
-
-        var ds = getDatasetMMX(g_new_data, 'reg', 'REG');
-        ds.borderDash = [5, 2];
-        ds.borderWidth = 2;
-        if (isCN('graphe_reg_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(ds);
 
         // MIN/MAX/PRU/STOPLOSS/STOPPROFIT/OBJECTIF (pour verifier si axe y ok)
         limits_ctrl = [];
@@ -985,13 +993,12 @@ if (!$readonly) {
         });
 
         // Options des alertes
-        options_Stock_Graphe.plugins.vertical     = [];
         options_Stock_Graphe.plugins.horizontal   = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
         options_Stock_Graphe.plugins.rightAxeText = axe_infos;
         options_Stock_Graphe.plugins.bubbles      = isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : [];
         options_Stock_Graphe.scales['y1'].max     = l_max;
         options_Stock_Graphe.scales['y1'].min     = l_min;
-        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ rightAxeText, horizontal, vertical, bubbles ]);
+        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ insiderText, rightAxeText, horizontal, vertical, bubbles ]);
 
         // Update Chart RSI
         var datasets2 = [];
