@@ -46,6 +46,9 @@ $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
 
+// Gestion des tags
+$tags = array_flip(explode("|", mb_convert_encoding($row['tags'], 'ISO-8859-1', 'UTF-8')));
+
 // Recuperation des min/max des cotations
 $minmax = calc::getMinMaxQuotations();
 
@@ -55,6 +58,10 @@ $ptf_nb_positions = $sc->getCountPositionsInPtf();
 
 $qc = new QuoteComputing($sc, $symbol);
 $qc->refreshQuote($row);
+
+$data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
+
+$data = $qc->getQuote();
 
 $currency       = $qc->getCurrency();
 $position_pru   = $qc->getPru();
@@ -72,7 +79,7 @@ $lst_trend_following = $sc->getTrendFollowing();
 
     <h2 class="ui left">
         <span>
-            <?= mb_convert_encoding($row['name'], 'ISO-8859-1', 'UTF-8'); // EX UT8_ENCODE ?>
+            <?= mb_convert_encoding($row['name'], 'ISO-8859-1', 'UTF-8'); // VFE - EX UT8_ENCODE ?>
         </span>
         <? if ($sess_context->isSuperAdmin()) { ?>
             <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float small trash icon"></i>
@@ -821,7 +828,7 @@ if (!$readonly) {
         chart.options.plugins.rightAxeText   = [];
         options_Stock_Graphe.plugins.bubbles = [];
 
-
+        <? if ($sess_context->isUserConnected()) { ?>
         if (isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>')) {
             chart.options.plugins.horizontal   = getAlarmLines();
             chart.options.plugins.rightAxeText = axe_infos;
@@ -830,7 +837,7 @@ if (!$readonly) {
         if (isCN('graphe_av_bt', '<?= $bt_av_colr ?>')) {
             options_Stock_Graphe.plugins.bubbles = bubbles_data;
         }
-
+        <? } ?>
     }
 
     toogleMMX = function(chart, label) {
@@ -993,9 +1000,9 @@ if (!$readonly) {
         });
 
         // Options des alertes
-        options_Stock_Graphe.plugins.horizontal   = isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
+        options_Stock_Graphe.plugins.horizontal   = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : []; <? } ?> [];
         options_Stock_Graphe.plugins.rightAxeText = axe_infos;
-        options_Stock_Graphe.plugins.bubbles      = isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : [];
+        options_Stock_Graphe.plugins.bubbles      = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : <? } ?> [];
         options_Stock_Graphe.scales['y1'].max     = l_max;
         options_Stock_Graphe.scales['y1'].min     = l_min;
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ insiderText, rightAxeText, horizontal, vertical, bubbles ]);

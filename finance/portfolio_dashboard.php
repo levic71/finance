@@ -46,9 +46,7 @@ $lst_orders    = $sc->getOrders();
 	<h2 class="ui left floated">
 		<i class="inverted briefcase icon"></i><?= utf8_decode($sc->getPtfName()) ?><small id="subtitle"></small>
 		<button id="portfolio_graph_bt" class="circular ui icon very small right floated labelled button"><i class="inverted black chart bar outline icon"></i></button>
-		<? if (!$sc->isPtfSynthese()) { ?>
 		<button id="ptf_balance_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black balance icon"></i></button>
-		<? } ?>
 	</h2>
 	<div class="ui stackable column grid">
 		<div class="row">
@@ -407,8 +405,8 @@ filter = function() {
 // Listener sur les boutons ADD et BACK
 <? if (!$sc->isPtfSynthese()) { ?>
 Dom.addListener(Dom.id('order_add_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
-Dom.addListener(Dom.id('ptf_balance_bt'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_balance.php', { 'portfolio_id' : <?= $portfolio_id ?> }); });
 <? } ?>
+Dom.addListener(Dom.id('ptf_balance_bt'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_balance.php', { 'portfolio_id' : <?= $portfolio_id ?> }); });
 Dom.addListener(Dom.id('order_back_bt'),      Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) {
 //	go({ action: 'portfolio', id: 'main', url: 'portfolio_graph.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' });

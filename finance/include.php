@@ -307,7 +307,7 @@ class QuoteComputing {
     public function getSeuils()           { return $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      ? $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      : ""; }
     public function getOptions()          { return $this->sc->getTrendFollowingAttr($this->symbol, 'options')     ? $this->sc->getTrendFollowingAttr($this->symbol, 'options')     : 0; }
     public function getStrategieType()    { return $this->sc->getTrendFollowingAttr($this->symbol, 'strategie_type');    }
-    public function getRegressionType()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_type');   }
+    public function getRegressionType()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_type', 1);   }
     public function getRegressionPeriod() { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_period'); }
     public function getTaux()             { return $this->sc->getDeviseTaux($this->currency); }
 
