@@ -29,6 +29,15 @@ if (!($row = mysqli_fetch_assoc($res))) { echo "Portefeuille inexistant"; exit(0
 $name = $row['name'];
 $year_creation = $row['year'];
 
+// Recalcul de l'annee de reference si ptf synthese
+if ($row['synthese'] == 1) {
+
+    $req2 = "SELECT min(YEAR(creation)) year FROM portfolios WHERE id IN (".$row['all_ids'].") AND user_id=".$sess_context->getUserId();
+    $res2 = dbc::execSql($req2);
+    if (!($row2 = mysqli_fetch_assoc($res2))) { $year_creation = min($year_creation, $row2['year']); }
+
+}
+
 function plusoumoinsvalue($order) {
 
     $ret = "0";
@@ -67,8 +76,12 @@ function plusoumoinsvalue($order) {
 
 // Recuperation des ordres de vente depuis le début de l'année courante
 $date_deb = $year."-01-01";
-$date_fin = $year."-31-12";
+$date_fin = ($year == "1900" ? date("Y") : $year)."-31-12";
+
+// Selection du/des portefeuille
 $select_where_ptf = $row['synthese'] == 1 ? "portfolio_id IN (".$row['all_ids'].")" : "portfolio_id=".$portfolio_id;
+
+// Selection des ordres de vente
 $req = "SELECT * FROM orders WHERE ".$select_where_ptf." AND action=-1 AND date >= '".$date_deb."' AND date <= '".$date_fin."' AND confirme=1 ORDER BY datetime ASC ";
 $res = dbc::execSql($req);
 
@@ -91,6 +104,7 @@ while($row = mysqli_fetch_assoc($res)) {
 <h2 class="ui left floated">
     <i class="inverted balance icon"></i><?= $name ?>
     <select id="year_select_bt" style="float: right">
+        <option value="1900" <?= $year == "1900" ? 'selected="selected"' : '' ?>>All</option>';
         <?
             for($i=$year_creation; $i <= date('Y'); $i++) echo '<option value="'.$i.'" '.($i == $year ? 'selected="selected"' : '').'>'.$i.'</option>';
         ?>
