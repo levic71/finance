@@ -127,15 +127,28 @@ echo "<tr><td></td><td class=\"right aligned ".($total >=0 ? "aaf-positive" : "a
 
 ?>
             </table>
+            <div id="pagination_box"></div>
+
         </div>
     </div>
 </div>
 
 <script>
+
 Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
     element = Dom.id('year_select_bt');
     var selection = "";
     for (i=0; i < element.length; i++) if (element[i].selected) selection = element[i].value;
     if (selection != "") overlay.load('portfolio_balance.php', { 'portfolio_id' : <?= $portfolio_id ?>, 'year' : selection });
 });
+
+// Pagination
+paginator({
+	table: document.getElementById("tab_balance"),
+	box: document.getElementById("pagination_box")
+});
+
+// Tri sur tableau
+Sortable.initTable(el("tab_balance"));
+
 </script>
