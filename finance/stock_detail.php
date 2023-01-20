@@ -504,6 +504,7 @@ if (!$readonly) {
 ?>
             </tbody>
         </table>
+        <div id="pagination_box"></div>
     </div>
 </div>
 <? } ?>
@@ -1149,6 +1150,13 @@ if (!$readonly) {
 
     updateDataPage('init');
     
+
+    // Pagination
+    paginator({
+        table: document.getElementById("lst_order"),
+        box: document.getElementById("pagination_box")
+    });
+
     scroll(0,0); // Top de page
 
 </script>
