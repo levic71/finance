@@ -68,7 +68,8 @@ function plusoumoinsvalue($order) {
 // Recuperation des ordres de vente depuis le début de l'année courante
 $date_deb = $year."-01-01";
 $date_fin = $year."-31-12";
-$req = "SELECT * FROM orders WHERE portfolio_id=".$portfolio_id." AND action=-1 AND date >= '".$date_deb."' AND date <= '".$date_fin."' AND confirme=1 ORDER BY datetime ASC ";
+$select_where_ptf = $row['synthese'] == 1 ? "portfolio_id IN (".$row['all_ids'].")" : "portfolio_id=".$portfolio_id;
+$req = "SELECT * FROM orders WHERE ".$select_where_ptf." AND action=-1 AND date >= '".$date_deb."' AND date <= '".$date_fin."' AND confirme=1 ORDER BY datetime ASC ";
 $res = dbc::execSql($req);
 
 $plusoumoinsvalue = [];
