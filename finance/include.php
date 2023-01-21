@@ -405,7 +405,7 @@ class QuoteComputing {
             <td id="f_perf_pru_'.$i.'" class="center aligned"></td>
             <td id="f_rand_'.$i.'"     class="center aligned">
                 <div>
-                    <label>'.($dividende == 0 || $isInPtf == 1 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $position_pru)).'</label>
+                    <label>'.($dividende == 0 || !$isInPtf ? "-" : sprintf("%.2f%%", ($dividende * 100) / $position_pru)).'</label>
                     <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
                 </div>
             </td>
