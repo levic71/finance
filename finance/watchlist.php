@@ -21,6 +21,7 @@ if (!$sess_context->isUserConnected()) { ?>
 	exit(0);
 }
 
+// Reuperation des devises
 $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
 
 // Recuperation de tous les actifs
@@ -33,7 +34,9 @@ $sc = new StockComputing($quotes, $portfolio_data, $devises);
 
 // On récupère les infos du portefeuille + les positions et les ordres
 $lst_positions = $sc->getPositions();
-$lst_orders    = $sc->getOrders();
+
+// Recupération de tous les actifs suivi
+$lst_trendfollowing = $sc->getTrendFollowing();
 
 ?>
 
@@ -63,15 +66,25 @@ $lst_orders    = $sc->getOrders();
 					</tr></thead>
 					<tbody>
 	<?
-				$i = 1;
-				ksort($lst_positions);
-				foreach($lst_positions as $key => $val) {
+						$watchlist_selection = [];
 
-					$qc = new QuoteComputing($sc, $key);
-					echo $qc->getHtmlTableLine($i++);
+						foreach($lst_positions as $key => $val)
+							$watchlist_selection[$key] = $key;
 
-				}
-	?>
+						foreach($lst_trendfollowing as $key => $val) {
+							$q = $sc->getQuote($key);
+							if (isset($q['type']) && $q['type'] != 'INDICE') $watchlist_selection[$key] = $key;
+						}
+
+						$i = 1;
+						ksort($watchlist_selection);
+						foreach($watchlist_selection as $key => $val) {
+
+							$qc = new QuoteComputing($sc, $key);
+							echo $qc->getHtmlTableLine($i++);
+
+						}
+?>
 					</tbody>
 				</table>
 			</div>
@@ -82,6 +95,11 @@ $lst_orders    = $sc->getOrders();
 
 
 <script>
+
+updateDataPage = function(opt) {
+	// On parcours les lignes du tableau positions pour calculer valo, perf, gain, atio et des tooltip du tableau des positions
+	trendfollowing_ui.computePositionsTable('lst_position', -1);
+}('init');
 
 // Tri sur tableau
 Sortable.initTable(el("lst_position"));

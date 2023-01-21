@@ -884,14 +884,6 @@ if (!$readonly) {
         return isCN('graphe_all_bt', '<?= $bt_period_colr ?>') ? "ALL" : (isCN('graphe_3Y_bt', '<?= $bt_period_colr ?>') ? "3Y" : (isCN('graphe_1Y_bt', '<?= $bt_period_colr ?>') ? "1Y" : "1T"));
     }
 
-    updateDataPage = function(opt) {
-        if (opt == 'init') {
-        }
-
-        // On parcours les lignes du tableau positions pour calculer valo, perf, gain, atio et des tooltip du tableau des positions
-        trendfollowing_ui.computePositionsTable('lst_position', <?= $ptf_id ?>);
-    }
-
     update_data = function(size) {
 
         interval = getIntervalStatus();
@@ -1079,7 +1071,7 @@ if (!$readonly) {
 
     // Listener sur bt back
     Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'home', id: 'main', url: '<?= $ptf_id == "" ?  "home_content.php" : "portfolio_dashboard.php?portfolio_id=".$ptf_id ?>', loading_area: 'main' });
+        go({ action: 'home', id: 'main', url: '<?= $ptf_id == "" ?  "home_content.php" : ($ptf_id == -1 ? "watchlist.php" : "portfolio_dashboard.php?portfolio_id=".$ptf_id) ?>', loading_area: 'main' });
     });
 
     <? if ($edit == 0 && $sess_context->isSuperAdmin()) { ?>
@@ -1148,9 +1140,14 @@ if (!$readonly) {
     });
     <? } ?>
 
-    updateDataPage('init');
-    
+    // On parcours les lignes du tableau positions pour calculer valo, perf, gain, atio et des tooltip du tableau des positions
+    updateDataPage = function(opt) {
 
+        if (opt == 'init') { }
+        trendfollowing_ui.computePositionsTable('lst_position', <?= $ptf_id ?>);
+
+    }('init');
+    
     // Pagination
     paginator({
         table: document.getElementById("lst_order"),
