@@ -336,6 +336,30 @@ class QuoteComputing {
     public function isAlerteActive()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'active') && $this->sc->getTrendFollowingAttr($this->symbol, 'active') == 1 ? true : false; }
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
 
+    public static function getHtmlTableHeader() {
+
+        $ret = '';
+
+        $ret .= '
+            <thead><tr>
+            <th class="center aligned"></th>
+            <th class="center aligned">Actif</th>
+            <th class="center aligned" data-sortable="false">PRU<br />Qté</th>
+            <th class="center aligned">Cotation<br />%</th>
+            <th class="center aligned">MM200<br />%</th>
+            <th class="center aligned" data-sortable="false">Alertes</th>
+            <th class="center aligned">DM</th>
+            <th class="center aligned">Tendance</th>
+            <th class="center aligned">Poids</th>
+            <th class="center aligned">Valo (&euro;)</th>
+            <th class="center aligned">Performance</th>
+            <th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
+            </tr></thead>
+        ';
+
+        return $ret;
+    }
+
     public function getHtmlTableLine($i) { 
     
         global $sess_context;

@@ -96,23 +96,8 @@ $lst_trend_following = $sc->getTrendFollowing();
     </h2>
 
     <table class="ui selectable inverted single line unstackable very compact sortable-theme-minimal table" id="lst_position" data-sortable>
-        <thead><tr class="<?= strtolower($qc->getType()) ?>">
-            <th class="center aligned"></th>
-            <th class="center aligned">Actif</th>
-            <th class="center aligned" data-sortable="false">PRU<br />Qté</th>
-            <th class="center aligned">Cotation<br />%</th>
-            <th class="center aligned">MM200<br />%</th>
-            <th class="center aligned" data-sortable="false">Alertes</th>
-            <th class="center aligned">DM</th>
-            <th class="center aligned">Tendance</th>
-            <th class="center aligned">Poids</th>
-            <th class="center aligned">Valorisation (&euro;)</th>
-            <th class="center aligned">Performance</th>
-            <th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
-        </tr></thead>
-        <tbody>
-            <? echo $qc->getHtmlTableLine(1); ?>
-        </tbody>
+        <thead><? echo QuoteComputing::getHtmlTableHeader(); ?></thead>
+        <tbody><? echo $qc->getHtmlTableLine(1); ?></tbody>
     </table>
 
 </div>
