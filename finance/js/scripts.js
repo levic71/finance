@@ -379,6 +379,7 @@ var overlay = {
 			trendfollowing_ui.ptf.stopprofit += valo_stopprofit;
 	
 			setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
+			Dom.attribute(Dom.id('f_valo2_' + ind), { 'data-value': valo.toFixed(2) } );
 			setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label></div>');
 	
 			if (other == 1) {

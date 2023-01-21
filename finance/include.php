@@ -426,7 +426,7 @@ class QuoteComputing {
             <td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.$dm.' %</td>
             <td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
 
-            <td class="center aligned">
+            <td id="f_valo2_'.$i.'" class="center aligned" data-value="0">
                 <button id="f_valo_'.$i.'" class="tiny ui button"></button>
                 <label id="f_poids_'.$i.'"></label>
             </td>
