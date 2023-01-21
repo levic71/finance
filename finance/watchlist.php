@@ -1,5 +1,7 @@
 <?
 
+use GuzzleHttp\Promise\Is;
+
 require_once "sess_context.php";
 
 session_start();
@@ -72,8 +74,8 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 							$watchlist_selection[$key] = $key;
 
 						foreach($lst_trendfollowing as $key => $val) {
-							$q = $sc->getQuote($key);
-							if (isset($q['type']) && $q['type'] != 'INDICE') $watchlist_selection[$key] = $key;
+							$qc = new QuoteComputing($sc, $key);
+							if (!$qc->isTypeIndice() && $qc->isAlerteActive()) $watchlist_selection[$key] = $key;
 						}
 
 						$i = 1;
