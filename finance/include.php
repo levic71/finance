@@ -246,6 +246,7 @@ class StockComputing {
 
     public function isSavedQuoteExits($symbol) { return !isset($this->save_quotes[$symbol]) ? false : true; }
     public function isInPtf($symbol)           { return isset($this->positions[$symbol]) ? true : false; }
+    public function isInQuotes($symbol)        { return isset($this->quotes['stocks'][$symbol]); }
 }
 
 
@@ -334,7 +335,6 @@ class QuoteComputing {
     public function isPriceFromPru()   { return $this->is_price_from_pru; }
     public function isAlerteActive()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'active') && $this->sc->getTrendFollowingAttr($this->symbol, 'active') == 1 ? true : false; }
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
-    public function isInQuotes()       { return isset($this->sc->quotes['stocks'][$this->symbol]); }
 
     public function getHtmlTableLine($i) { 
     
