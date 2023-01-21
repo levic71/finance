@@ -341,20 +341,20 @@ class QuoteComputing {
         $ret = '';
 
         $ret .= '
-            <thead><tr>
-            <th class="center aligned"></th>
-            <th class="center aligned">Actif</th>
-            <th class="center aligned" data-sortable="false">PRU<br />Qté</th>
-            <th class="center aligned">Cotation<br />%</th>
-            <th class="center aligned">MM200<br />%</th>
-            <th class="center aligned" data-sortable="false">Alertes</th>
-            <th class="center aligned">DM</th>
-            <th class="center aligned">Tendance</th>
-            <th class="center aligned">Poids</th>
-            <th class="center aligned">Valo (&euro;)</th>
-            <th class="center aligned">Performance</th>
-            <th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
-            </tr></thead>
+            <tr>
+                <th class="center aligned"></th>
+                <th class="center aligned">Actif</th>
+                <th class="center aligned" data-sortable="false">PRU<br />Qté</th>
+                <th class="center aligned">Cotation<br />%</th>
+                <th class="center aligned">MM200<br />%</th>
+                <th class="center aligned" data-sortable="false">Alertes</th>
+                <th class="center aligned">DM</th>
+                <th class="center aligned">Tendance</th>
+                <th class="center aligned">Valorisation<br />Poids</th>
+                <th class="center aligned">Performance</th>
+                <th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
+                <th class="center aligned">Conseil</th>
+            </tr>
         ';
 
         return $ret;
@@ -425,8 +425,12 @@ class QuoteComputing {
 
             <td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.$dm.' %</td>
             <td id="f_tendance_'.$i.'" class="center aligned">'.$perf_bullet.'</td>
-            <td id="f_poids_'.$i.'"    class="center aligned"></td>
-            <td id="f_valo_'.$i.'"     class="right  aligned"></td>
+
+            <td class="center aligned">
+                <button id="f_valo_'.$i.'" class="tiny ui button"></button>
+                <label id="f_poids_'.$i.'"></label>
+            </td>
+
             <td id="f_perf_pru_'.$i.'" class="center aligned"></td>
             <td id="f_rand_'.$i.'"     class="center aligned">
                 <div>
@@ -434,6 +438,7 @@ class QuoteComputing {
                     <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
                 </div>
             </td>
+            <td class="center aligned"><div class="ui red horizontal label">Acheter</div></td>
         </tr>';
 
         return $ret;
