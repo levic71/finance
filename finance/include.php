@@ -238,14 +238,14 @@ class StockComputing {
         return isset($this->trend_following[$symbol][$attr]) ? $this->trend_following[$symbol][$attr] : $def; 
     }
 
-    public function isSavedQuteExits($symbol) { return !isset($this->save_quotes[$symbol]) ? false : true; }
     public function getSavedQuote($symbol)    { return $this->save_quotes[$symbol]; }
     public function getQuote($symbol)         { return isset($this->quotes['stocks'][$symbol]) ? $this->quotes['stocks'][$symbol] : [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0]; }
     public function getDeviseTaux($currency)  { return $currency == "EUR" ? 1 : calc::getCurrencyRate($currency."EUR", $this->devises); }
     public function getPtfName()              { return $this->infos['name']; }
-    public function isInPtf($symbol)          { return isset($this->positions[$symbol]) ? true : false; }
     public function getCountPositionsInPtf()  { return count($this->positions); }
 
+    public function isSavedQuoteExits($symbol) { return !isset($this->save_quotes[$symbol]) ? false : true; }
+    public function isInPtf($symbol)           { return isset($this->positions[$symbol]) ? true : false; }
 }
 
 
@@ -273,10 +273,10 @@ class QuoteComputing {
         $this->quote = $sc->getQuote($symbol);
 
         // Si aucun pricing enregistré, on prend le pru
-        $this->is_price_from_pru = isset($this->quote['price']) && !$sc->isSavedQuteExits($symbol) ? false : true;
+        $this->is_price_from_pru = isset($this->quote['price']) && !$sc->isSavedQuoteExits($symbol) ? false : true;
 
         // Si aucun pricing enregistré, on prend le pru
-        $this->price = $this->is_price_from_pru ? ($sc->isSavedQuteExits($symbol) ? $sc->getSavedQuote($symbol) : $sc->getPositionAttr($symbol, 'pru')) : $this->quote['price'];
+        $this->price = $this->is_price_from_pru ? ($sc->isSavedQuoteExits($symbol) ? $sc->getSavedQuote($symbol) : $sc->getPositionAttr($symbol, 'pru')) : $this->quote['price'];
         $this->quote['price'] = $this->price; // On force au cas ou ce serait vide
 
         $this->currency = $this->getOtherName() ? $sc->getPositionAttr($symbol, 'devise') : $this->quote['currency'];
@@ -334,6 +334,7 @@ class QuoteComputing {
     public function isPriceFromPru()   { return $this->is_price_from_pru; }
     public function isAlerteActive()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'active') && $this->sc->getTrendFollowingAttr($this->symbol, 'active') == 1 ? true : false; }
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
+    public function isInQuotes()       { return isset($this->sc->quotes['stocks'][$this->symbol]); }
 
     public function getHtmlTableLine($i) { 
     
