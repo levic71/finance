@@ -385,10 +385,7 @@ updateDataPage = function(opt) {
 	myChart = new Chart(ctx, { type: 'doughnut', data: data_donut, options: options_donut_graphe } );
 	myChart.update();
 
-}
-
-// Init du calcul
-updateDataPage('init');
+}('init');
 
 // Filtre de la table des ordres
 filter = function() {
