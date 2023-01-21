@@ -52,20 +52,7 @@ $lst_trendfollowing = $sc->getTrendFollowing();
       	<div class="row">
 			<div class="column">
 				<table class="ui selectable inverted single line unstackable very compact sortable-theme-minimal table" id="lst_position" data-sortable>
-					<thead><tr>
-						<th class="center aligned"></th>
-						<th class="center aligned">Actif</th>
-						<th class="center aligned" data-sortable="false">PRU<br />Qté</th>
-						<th class="center aligned">Cotation<br />%</th>
-						<th class="center aligned">MM200<br />%</th>
-						<th class="center aligned" data-sortable="false">Alertes</th>
-						<th class="center aligned">DM</th>
-						<th class="center aligned">Tendance</th>
-						<th class="center aligned">Poids</th>
-						<th class="center aligned">Valorisation (&euro;)</th>
-						<th class="center aligned">Performance</th>
-						<th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
-					</tr></thead>
+					<thead><? echo QuoteComputing::getHtmlTableHeader(); ?></thead>
 					<tbody>
 	<?
 						$watchlist_selection = [];
