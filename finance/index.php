@@ -46,6 +46,7 @@ foreach(['action', 'goto'] as $key)
 		<link rel="stylesheet" href="css/prompt.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/style.css?ver=<?= $ver ?>" />
 
+		<script type="text/javascript" src="js/math.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/trendyways.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/regression.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/kwheel.min.js?ver=<?= $ver ?>"></script>
