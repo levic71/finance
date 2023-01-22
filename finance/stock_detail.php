@@ -622,12 +622,16 @@ if (!$readonly) {
         return newDatasetVols(vals, 'bar', 'y2', 'v', l);
     }
     getDatasetMMX = function(vals, k, l) {
-        var ds = newDataset2(vals, 'line', 'y1', k, l, mmx_colors[l], '', false);
+        var colr = l.substr(0, 3) == 'REG' ? mmx_colors['REG'] : mmx_colors[l];
+        var ds = newDataset2(vals, 'line', 'y1', k, l, colr, '', false);
 
-        if (l == 'REG') {
-            ds.borderDash = [5, 2];
-            ds.borderWidth = 2;
+        if (l == 'REG')
             options_Stock_Graphe.plugins.insiderText = [ { title: 'R2:'+vals[0]['r2'], colr: '#e77fe8', bgcolr: '#1b1c1d', alignX: 'left', alignY: 'top' } ];
+
+        // Pour tous les traces REG
+        if (l.substr(0, 3) == 'REG') {
+            ds.borderDash  = l == 'REG' ? [5, 2] : [1, 3];
+            ds.borderWidth = l == 'REG' ? 2 : 1;
         }
 
         return ds;
@@ -739,6 +743,15 @@ if (!$readonly) {
                 tab_item[beginAt + j]['r2']  = result.r2;
             }
 
+            // Regression linéaire +11 ecart type 
+            for(j=-1*beginAt; j < result.points.length; j++) {
+                v = result.predict(j)[1];
+                tab_item[beginAt + j]['reg1'] = v -10;
+                tab_item[beginAt + j]['reg2'] = v - 5;
+                tab_item[beginAt + j]['reg3'] = v + 5;
+                tab_item[beginAt + j]['reg4'] = v + 10;
+            }
+
         });
 
         // Ref achat/vente data
@@ -840,14 +853,21 @@ if (!$readonly) {
 
             // On retire les data de la courbe ou volume du bouton selectionne
             chart.data.datasets.forEach((dataset) => {
-                if (dataset.label == label) dataset.data = null;
+                if (dataset.label == label || (label.substr(0, 3) == 'REG' && dataset.label.substr(0, 3) == 'REG')) dataset.data = null;
             });
             setCookie('status_stock_bt_' + label.toLowerCase(), 0, 10000);
         } else {
             if (label.toLowerCase() == "volume")
                 chart.data.datasets.push(getDatasetVols(g_new_data, 'VOLUME'));
-            else
+            else {
                 chart.data.datasets.push(getDatasetMMX(g_new_data, label.toLowerCase(), label));
+                // Pour REG on rajoute les traces complementaires
+                if (label == 'REG') {
+                    [ 1, 2, 3, 4 ].forEach(function (i) {
+                        chart.data.datasets.push(getDatasetMMX(g_new_data, label.toLowerCase() + i, label + i));
+                    });
+                }
+            }
             setCookie('status_stock_bt_' + label.toLowerCase(), 1, 10000);
         }
 
@@ -954,7 +974,11 @@ if (!$readonly) {
         if (isCN('graphe_mm20_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm20',  'MM20'));
         if (isCN('graphe_mm50_bt',   '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm50',  'MM50'));
         if (isCN('graphe_mm200_bt',  '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'mm200', 'MM200'));
-        if (isCN('graphe_reg_bt',    '<?= $bt_mmx_colr ?>'))    datasets1.push(getDatasetMMX(g_new_data, 'reg',   'REG'));
+        if (isCN('graphe_reg_bt',    '<?= $bt_mmx_colr ?>')) {
+            [ '', 1, 2, 3, 4 ].forEach(function (i) {
+                datasets1.push(getDatasetMMX(g_new_data, 'reg' + i,   'REG' + i));
+            });
+        }
         if (isCN('graphe_volume_bt', '<?= $bt_volume_colr ?>')) datasets1.push(getDatasetVols(g_new_data, 'VOLUME'));
 
         // MIN/MAX/PRU/STOPLOSS/STOPPROFIT/OBJECTIF (pour verifier si axe y ok)
