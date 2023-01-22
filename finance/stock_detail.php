@@ -724,8 +724,9 @@ if (!$readonly) {
 
             // Recuperation et reformatage des data 
             let i = 1;
+            var tmp = [];
             var d_data_reg = [];
-            tab_item.slice(beginAt).forEach(function(item) { d_data_reg.push([ i++, item.y ]); });
+            tab_item.slice(beginAt).forEach(function(item) { d_data_reg.push([ i++, item.y ]); tmp.push(item.y); });
 
             // Liste des fcts
             var fct_name = [ '', 'linear', 'exponential', 'logarithmic', 'polynomial', 'power' ];
@@ -735,7 +736,7 @@ if (!$readonly) {
 
             // Remise en conformite pour affichage dans graphe
             let j = beginAt;
-            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2; j++; });
+            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2 + '/' + result.string; j++; });
 
             // Ajout complément si linear et beginAt > 0
             for(j=-1*beginAt; j < 0; j++) {
@@ -743,13 +744,16 @@ if (!$readonly) {
                 tab_item[beginAt + j]['r2']  = result.r2;
             }
 
+            var d = math.std(tmp) / 2;
+            console.log(d);
+
             // Regression linéaire +11 ecart type 
             for(j=-1*beginAt; j < result.points.length; j++) {
                 v = result.predict(j)[1];
-                tab_item[beginAt + j]['reg1'] = v -10;
-                tab_item[beginAt + j]['reg2'] = v - 5;
-                tab_item[beginAt + j]['reg3'] = v + 5;
-                tab_item[beginAt + j]['reg4'] = v + 10;
+                tab_item[beginAt + j]['reg1'] = v - (2 * d);
+                tab_item[beginAt + j]['reg2'] = v - d;
+                tab_item[beginAt + j]['reg3'] = v + d;
+                tab_item[beginAt + j]['reg4'] = v + (2 * d);
             }
 
         });
