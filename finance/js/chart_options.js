@@ -266,6 +266,8 @@ const externalTooltipHandler = (context) => {
 
             var t = body[0].split(': ');
 
+            if (chart.canvas.id == 'stock_canvas1' && t[0] != 'REG' && t[0].substr(0, 3) == 'REG') return;
+
             // div parent
             const div = document.createElement('div');
             div.style.backgroundColor = 'inherit';
