@@ -758,9 +758,9 @@ if (!$readonly) {
 
             console.log(tab_item);
             // Ajout complément si linear et beginAt > 0
-            for(j=-1*beginAt + 1; j < 0; j++) {
-                tab_item[beginAt + j]['reg'] = result.predict(j)[1];
-                tab_item[beginAt + j]['r2']  = result.r2;
+            for(let x=-1*beginAt; x < 0; x++) {
+                tab_item[beginAt + x]['reg'] = result.predict(x)[1];
+                tab_item[beginAt + x]['r2']  = result.r2;
             }
             console.log(tab_item);
 
@@ -768,12 +768,12 @@ if (!$readonly) {
             console.log(d);
 
             // Regression linéaire +11 ecart type 
-            for(j=-1*beginAt + 1; j < result.points.length; j++) {
-                v = result.predict(j)[1];
-                tab_item[beginAt + j]['reg1'] = v - (2 * d);
-                tab_item[beginAt + j]['reg2'] = v - d;
-                tab_item[beginAt + j]['reg3'] = v + d;
-                tab_item[beginAt + j]['reg4'] = v + (2 * d);
+            for(let z=-1*beginAt; z < result.points.length; z++) {
+                v = result.predict(z)[1];
+                tab_item[beginAt + z]['reg1'] = v - (2 * d);
+                tab_item[beginAt + z]['reg2'] = v - d;
+                tab_item[beginAt + z]['reg3'] = v + d;
+                tab_item[beginAt + z]['reg4'] = v + (2 * d);
             }
 
         });
