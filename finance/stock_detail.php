@@ -749,6 +749,13 @@ if (!$readonly) {
             // Liste des fcts
             var fct_name = [ '', 'linear', 'exponential', 'logarithmic', 'polynomial', 'power' ];
 
+            // Calcul de la regression
+            let result = regression[fct_name[reg_type]](d_data_reg, { order: 1 });
+
+            // Remise en conformite pour affichage dans graphe
+            let j = beginAt;
+            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2 + '/' + result.string; j++; });
+
 
         });
 
