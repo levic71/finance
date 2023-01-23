@@ -758,6 +758,7 @@ if (!$readonly) {
             let j = beginAt;
             result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2 + '/' + result.string; j++; });
 
+            console.log(result);
             console.log(tab_item);
             // Ajout complément si linear et beginAt > 0
 //            for(let x=-1*beginAt; x < 0; x++) {
