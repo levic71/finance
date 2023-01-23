@@ -759,7 +759,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 0, 0, 0.1);
     display: none;
 }
-
 #lst_position tbody td:nth-child(1) {
     padding-left: 15px !important;
     padding-right: 0px !important;
@@ -861,6 +860,15 @@ table th { color: burlywood !important; cursor: pointer !important; }
 }
 #lst_position td:nth-child(12) label:nth-child(1) {
     color: aquamarine;
+}
+
+#lst_position tr[data-in-ptf="0"] td:nth-child(3) button, #lst_position tr[data-in-ptf="0"] td:nth-child(9) button, #lst_position tr[data-in-ptf="0"] td:nth-child(10) button {
+    background: rgba(87, 87, 87) !important;
+    color: #444 !important;
+    border: none;
+}
+#lst_position tr[data-in-ptf="0"] td:nth-child(3) label, #lst_position tr[data-in-ptf="0"] td:nth-child(9) label, #lst_position tr[data-in-ptf="0"] td:nth-child(10) label {
+    color: rgba(87, 87, 87) !important;
 }
 
 #other_tags [data-tootik][data-tootik-conf*=multiline]:after, .stock_detail_page [data-tootik][data-tootik-conf*=multiline]:after {
