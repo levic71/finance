@@ -758,10 +758,15 @@ if (!$readonly) {
 
             console.log(tab_item);
             // Ajout complément si linear et beginAt > 0
-            for(let x=-1*beginAt; x < 0; x++) {
+//            for(let x=-1*beginAt; x < 0; x++) {
 //                tab_item[beginAt + x]['reg'] = result.predict(x)[1];
 //                tab_item[beginAt + x]['r2']  = result.r2;
-            }
+//            }
+            [...Array(beginAt).keys()].forEach(function(x) {
+                tab_item[x]['reg'] = result.predict((-1 * beginAt) + x)[1];
+                tab_item[x]['r2']  = result.r2;
+            });
+
             console.log(tab_item);
 
             // Calcul de la standard deviation
@@ -774,7 +779,7 @@ if (!$readonly) {
 //                tab_item[beginAt + z]['reg1'] = v - (2 * d);
 //                tab_item[beginAt + z]['reg2'] = v - d;
 //                tab_item[beginAt + z]['reg3'] = v + d;
- //               tab_item[beginAt + z]['reg4'] = v + (2 * d);
+//                tab_item[beginAt + z]['reg4'] = v + (2 * d);
             }
 
         });
