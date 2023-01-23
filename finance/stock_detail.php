@@ -741,6 +741,9 @@ if (!$readonly) {
             // beginAt proportionnel à la ref en daily
             let beginAt = Math.round((reg_period * tab_item.length) / new_data_daily.length);
 
+            // Controle de non depassement de la taille du tableau des data
+            beginAt = beginAt > tab_item.length - 100 ? tab_item.length - 100 : beginAt;
+
             // Recuperation et reformatage des data 
             let i = 1;
             var tmp = [];
@@ -757,37 +760,25 @@ if (!$readonly) {
             let j = beginAt;
             result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2 + '/' + result.string; j++; });
 
-            console.log(beginAt);
-            console.log(d_data_reg);
-            console.log(result);
-            console.log(tab_item);
             // Ajout complément si linear et beginAt > 0
-//            for(let x=-1*beginAt; x < 0; x++) {
-//                tab_item[beginAt + x]['reg'] = result.predict(x)[1];
-//                tab_item[beginAt + x]['r2']  = result.r2;
-//            }
             [...Array(beginAt).keys()].forEach(function(x) {
-                let rlt = result.predict((-1 * beginAt) + x);
-                if (!isNaN(rlt[1])) {
-                    tab_item[x]['reg'] = rlt[1];
-                    tab_item[x]['r2']  = result.r2;
-                }
+                tab_item[x]['reg'] = result.predict((-1 * beginAt) + x)[1];
+                tab_item[x]['r2']  = result.r2;
             });
 
             console.log(tab_item);
 
             // Calcul de la standard deviation
             var d = dev(tmp) / 2;
-            console.log(d);
 
             // Regression linéaire +11 ecart type 
-            for(let z=-1*beginAt; z < result.points.length; z++) {
-//                v = result.predict(z)[1];
-//                tab_item[beginAt + z]['reg1'] = v - (2 * d);
-//                tab_item[beginAt + z]['reg2'] = v - d;
-//                tab_item[beginAt + z]['reg3'] = v + d;
-//                tab_item[beginAt + z]['reg4'] = v + (2 * d);
-            }
+            [...Array(tab_item.length).keys()].forEach(function(x) {
+                v = result.predict(-1*beginAt + x)[1];
+                tab_item[x]['reg1'] = v - (2 * d);
+                tab_item[x]['reg2'] = v - d;
+                tab_item[x]['reg3'] = v + d;
+                tab_item[x]['reg4'] = v + (2 * d);
+            });
 
         });
 
