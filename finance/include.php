@@ -351,9 +351,9 @@ class QuoteComputing {
                 <th class="center aligned">DM</th>
                 <th class="center aligned">Tendance</th>
                 <th class="center aligned">Valorisation<br />Poids</th>
-                <th class="center aligned">Performance</th>
+                <th class="center aligned">Perf</th>
                 <th class="center aligned">Rendement<br /><small>PRU/Cours</small></th>
-                <th class="center aligned">Conseil</th>
+                <th class="center aligned">Avis</th>
             </tr>
         ';
 
@@ -403,18 +403,18 @@ class QuoteComputing {
             <td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$this->symbol.'">'.$pname.'</td>
 
             <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'"><div>
-                <button class="tiny ui button">'.sprintf("%.2f %s", $position_pru, uimx::getCurrencySign($currency)).'</button>
+                <button class="tiny ui button">'.sprintf("%.2f%s", $position_pru, uimx::getCurrencySign($currency)).'</button>
                 <label>'.$position_nb.'</label>
             </div></td>
 
             <td class="center aligned" data-value="'.$pct.'"><div>
-                <button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $price).'" data-name="'.$this->symbol.'" data-pru="'.($this->isPriceFromPru() ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f %s", $price, $type == "INDICE" ? "" : uimx::getCurrencySign($currency)).'</button>
-                <label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).' %</label>
+                <button id="f_price_'.$i.'" data-value="'.sprintf("%.2f", $price).'" data-name="'.$this->symbol.'" data-pru="'.($this->isPriceFromPru() ? 1 : 0).'" class="tiny ui button">'.sprintf("%.2f%s", $price, $type == "INDICE" ? "" : uimx::getCurrencySign($currency)).'</button>
+                <label id="f_pct_jour_'.$i.'" class="'.($pct >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $pct).'%</label>
             </div></td>
         
             <td class="center aligned" data-value="'.$pct_mm200.'"><div>
-                <button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%.2f %s", $mm200, $type == "INDICE" ? "" : uimx::getCurrencySign($currency)).'</button>
-                <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).' %</label>
+                <button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%.2f%s", $mm200, $type == "INDICE" ? "" : uimx::getCurrencySign($currency)).'</button>
+                <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).'%</label>
             </div></td>
 
             <td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'" data-strat-type="'.$strat_type.'" data-reg-type="'.$reg_type.'" data-reg-period="'.$reg_period.'"><div class="small ui right group input" data-pname="'.$this->symbol.'">
@@ -423,7 +423,7 @@ class QuoteComputing {
                 <div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
             </div></td>
 
-            <td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.$dm.' %</td>
+            <td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.$dm.'%</td>
             <td id="f_tendance_'.$i.'" class="center aligned" data-value="'.$perf_indicator.'">'.$perf_bullet.'</td>
 
             <td id="f_valo2_'.$i.'" class="center aligned" data-value="0">
@@ -2239,7 +2239,7 @@ class uimx {
             <div class="ui '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).'  button">
                 <i class="chart pie inverted icon"></i>'.sprintf("%.2f &euro;", $portfolio_data['valo_ptf']).'
             </div>
-            <a class="ui basic '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).' %</a>
+            <a class="ui basic '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).'%</a>
         </div>';
 
         $title = utf8_decode($portfolio['name']).($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");

@@ -87,10 +87,10 @@ $lst_orders    = $sc->getOrders();
 
 					</div>
 				</div>
-				<div id="perf_ribbon3" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
+				<div id="perf_ribbon3" style="right: 2rem; height: 5rem !important" class="ribbon">Perf<br /><small>0.00%</small></div>
 			</div>
-			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
-				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0.00 %</small></div>
+			<div class="six wide column" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey; width: 36.5% !important;">
+				<div id="perf_ribbon2" style="height: 5rem !important" class="ribbon">Perf<br /><small>0.00%</small></div>
 				<div class="ui buttons">
 					<button id="donut_0" class="mini ui primary button">Répartition</button>
 					<button id="donut_1" class="mini ui grey button">Secteurs</button>
@@ -212,7 +212,7 @@ $lst_orders    = $sc->getOrders();
 						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>
 						<td data-value="'.$val['price'].'">'.$val['price_signed'].'</td>
 						<td data-value="'.sprintf("%.2f", $val['valo']).'" class="'.$val['action_colr'].'">'.$val['valo_signed'].'</td>
-						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).' &euro;/'.sprintf("%.2f", $val['ttf']).' &euro;</td>
+						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).'&euro;/'.sprintf("%.2f", $val['ttf']).'&euro;</td>
 						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
 						<td class="collapsing">
 							'.($sc->isPtfSynthese() ? '' : '<i id="order_edit_'.$val['id'].'_bt" class="edit inverted icon"></i>').'
@@ -310,14 +310,14 @@ updateDataPage = function(opt) {
 	ttf = <?= sprintf("%.2f", $portfolio_data['ttf']) ?>;
 
 	if (opt == 'init') {
-		infos_area.l[0] = "Estimation Portefeuille";         infos_area.v[0] = valo_ptf.toFixed(2) + ' \u20AC';
-		infos_area.l[1] = "Cash disponible";                 infos_area.v[1] = cash.toFixed(2) + ' \u20AC';
-		infos_area.l[2] = "+/- Value";                       infos_area.v[2] = gain_perte.toFixed(2) + ' \u20AC';
-		infos_area.l[3] = "&sum; Dépots";                    infos_area.v[3] = depots.toFixed(2) + ' \u20AC';
-		infos_area.l[4] = "&sum; Retraits";                  infos_area.v[4] = retraits.toFixed(2) + ' \u20AC';
-		infos_area.l[5] = "&sum; Dividendes (Div to Depot)"; infos_area.v[5] = dividendes.toFixed(2) + ' \u20AC' + ' (' + div2depot.toFixed(2) + ' %)';
-		setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + ' &euro;');
-		setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + ' &euro;');
+		infos_area.l[0] = "Estimation Portefeuille";         infos_area.v[0] = valo_ptf.toFixed(2) + '\c';
+		infos_area.l[1] = "Cash disponible";                 infos_area.v[1] = cash.toFixed(2) + '\u20AC';
+		infos_area.l[2] = "+/- Value";                       infos_area.v[2] = gain_perte.toFixed(2) + '\u20AC';
+		infos_area.l[3] = "&sum; Dépots";                    infos_area.v[3] = depots.toFixed(2) + '\u20AC';
+		infos_area.l[4] = "&sum; Retraits";                  infos_area.v[4] = retraits.toFixed(2) + '\u20AC';
+		infos_area.l[5] = "&sum; Dividendes (Div to Depot)"; infos_area.v[5] = dividendes.toFixed(2) + '\u20AC' + ' (' + div2depot.toFixed(2) + '%)';
+		setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + '&euro;');
+		setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + '&euro;');
 		Dom.id('subtitle').innerHTML = ' (<?= $portfolio_data['interval_year'] > 0 ? $portfolio_data['interval_year'].($portfolio_data['interval_year'] > 1 ? " ans " : " an") : "" ?> <?= $portfolio_data['interval_month'] ?> mois)';
 	}
 
@@ -327,31 +327,31 @@ updateDataPage = function(opt) {
 	glob_perf = getPerf(trendfollowing_ui.ptf.achats, trendfollowing_ui.ptf.valo);
 	glob_gain = trendfollowing_ui.ptf.valo - trendfollowing_ui.ptf.achats;
 
-	setColNumericTab('sum_valo',  trendfollowing_ui.ptf.valo,  trendfollowing_ui.ptf.valo.toFixed(2)  + ' &euro;');
-	setColNumericTab('glob_perf', glob_perf, '<div><button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + ' %</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + ' &euro;</label></div>');
+	setColNumericTab('sum_valo',  trendfollowing_ui.ptf.valo,  trendfollowing_ui.ptf.valo.toFixed(2)  + '&euro;');
+	setColNumericTab('glob_perf', glob_perf, '<div><button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + 's%</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + '&euro;</label></div>');
 
 	addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
-	Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + ' %';
+	Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + '%';
 
 	addCN('perf_ribbon3', perf_ptf >= 0 ? "ribbon--green" : "ribbon--red");
-	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf.toFixed(2) + ' %';
+	Dom.find('#perf_ribbon3 small')[0].innerHTML = perf_ptf.toFixed(2) + '%';
 
 	perf_stoploss1  = getPerf(valo_ptf, trendfollowing_ui.ptf.stoploss1).toFixed(2);
 	perf_objectif   = getPerf(valo_ptf, trendfollowing_ui.ptf.objectif).toFixed(2);
 	perf_stopprofit = getPerf(valo_ptf, trendfollowing_ui.ptf.stopprofit).toFixed(2);
 
 	infos_area_bis.l[0] = 'Estimation Stop Loss <a class="ui mini '   + (perf_stoploss1 >= 0  ? 'green' : 'red') + ' tag label">' + perf_stoploss1 + '%</a>';
-	infos_area_bis.v[0] = trendfollowing_ui.ptf.stoploss1.toFixed(2) + ' \u20AC';
+	infos_area_bis.v[0] = trendfollowing_ui.ptf.stoploss1.toFixed(2) + '\u20AC';
 	infos_area_bis.l[1] = 'Estimation Objectif <a class="ui mini '    + (perf_objectif >= 0   ? 'green' : 'red') + ' tag label">' + perf_objectif + '%</a>';
-	infos_area_bis.v[1] = trendfollowing_ui.ptf.objectif.toFixed(2) + ' \u20AC';
+	infos_area_bis.v[1] = trendfollowing_ui.ptf.objectif.toFixed(2) + '\u20AC';
 	infos_area_bis.l[2] = 'Estimation Stop Profit <a class="ui mini ' + (perf_stopprofit >= 0 ? 'green' : 'red') + ' tag label">' + perf_stopprofit + '%</a>';
-	infos_area_bis.v[2] = trendfollowing_ui.ptf.stopprofit.toFixed(2) + ' \u20AC';
+	infos_area_bis.v[2] = trendfollowing_ui.ptf.stopprofit.toFixed(2) + '\u20AC';
 	infos_area_bis.l[3] = "&sum; Dépots";
-	infos_area_bis.v[3] = depots.toFixed(2) + ' \u20AC';
+	infos_area_bis.v[3] = depots.toFixed(2) + '\u20AC';
 	infos_area_bis.l[4] = 'Couverture Stop Loss';
-	infos_area_bis.v[4] = trendfollowing_ui.ptf.stoploss2.toFixed(2) + ' \u20AC';
+	infos_area_bis.v[4] = trendfollowing_ui.ptf.stoploss2.toFixed(2) + '\u20AC';
 	infos_area_bis.l[5] = 'Estimation dividende annuel (Div to Depot)';
-	infos_area_bis.v[5] = '<?= sprintf("%.2f", $div_per_year) ?> \u20AC' + ' ( <?= sprintf("%.2f", ($div_per_year * 100) / $portfolio_data['depot']) ?> %)';
+	infos_area_bis.v[5] = '<?= sprintf("%.2f", $div_per_year) ?>\u20AC' + ' ( <?= sprintf("%.2f", ($div_per_year * 100) / $portfolio_data['depot']) ?>%)';
 
 	const data_donut = {
 		labels: trendfollowing_ui.labels_repartition[0],

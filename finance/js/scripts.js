@@ -312,9 +312,18 @@ var overlay = {
 
 		return html;
 	},
+	formatValo : (price) => {
+		var ret = price.toFixed(2) + '';
+		if (price > 999999) {
+			ret = (price / 1000000).toFixed(1) + 'M';
+		} else if (price > 999) {
+			ret = (price / 1000).toFixed(1) + 'K';
+		}
+		return ret;
+	},
 	checkForm : () => {
 		var ret = true;
-
+	
 		if (!check_num(valof('f_stoploss'),   'Stop loss',   0, 999999)) ret = false;
 		if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) ret = false;
 		if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999)) ret = false;
@@ -378,9 +387,9 @@ var overlay = {
 			trendfollowing_ui.ptf.objectif   += valo_objectif;
 			trendfollowing_ui.ptf.stopprofit += valo_stopprofit;
 	
-			setColNumericTab('f_valo_'  + ind, valo,  valo.toFixed(2)  + ' &euro;');
+			setColNumericTab('f_valo_'  + ind, valo, trendfollowing_ui.formatValo(valo)  + '&euro;');
 			Dom.attribute(Dom.id('f_valo2_' + ind), { 'data-value': valo.toFixed(2) } );
-			setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + ' %</button><label>' + (gain_pru >= 0 ? '+' : '') + gain_pru.toFixed(2) + ' &euro;</label></div>');
+			setColNumericTab('f_perf_pru_' + ind, perf_pru, '<div><button class="tiny ui ' + (perf_pru >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + perf_pru.toFixed(2) + '%</button><label>' + (gain_pru >= 0 ? '+' : '') + trendfollowing_ui.formatValo(gain_pru) + '&euro;</label></div>');
 	
 			if (other == 1) {
 				Dom.id('f_pct_jour_'  + ind).innerHTML = 'N/A';
@@ -408,7 +417,7 @@ var overlay = {
 			trendfollowing_ui.tab_secteur[secteur] = (trendfollowing_ui.tab_secteur[secteur] ? parseFloat(trendfollowing_ui.tab_secteur[secteur]) : 0) + parseFloat(ratio);
 			trendfollowing_ui.tab_geo[geo] = (trendfollowing_ui.tab_geo[geo] ? parseFloat(trendfollowing_ui.tab_geo[geo]) : 0) + parseFloat(ratio);
 
-			setColNumericTab('f_poids_' + ind, Math.round(ratio), in_ptf == 0 ? '-' : Math.round(ratio) + ' %', false);
+			setColNumericTab('f_poids_' + ind, Math.round(ratio), in_ptf == 0 ? '-' : Math.round(ratio) + '%', false);
 
 			trendfollowing_ui.data_repartition[0].push(ratio);
 

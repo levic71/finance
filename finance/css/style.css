@@ -13,6 +13,10 @@ button.equity { background: #2185d0 !important; color: white !important; }
 button.indice { background: brown !important; color: white !important; }
 button.etf { background: #21ba45 !important; color: white !important; }
 
+.ui.segment {
+    padding: 1em 0em !important;
+}
+
 /* (A) FULL PAGE OVERLAY */
 #owrap {
     /* (A1) COVER ENTIRE SCREEN */
@@ -816,7 +820,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 255, 255, 0.3);
     color: white;
 }
-#lst_position tbody td:nth-child(5) button {
+#lst_position td button {
     margin-bottom: 2px;
     font-size: 11px;
 }
@@ -846,13 +850,13 @@ table th { color: burlywood !important; cursor: pointer !important; }
     flex-direction: column;
     align-items: center;
 }
-#lst_position tbody td:nth-child(3) button, #lst_position tbody td:nth-child(4) button, #lst_position tbody td:nth-child(9) button, #lst_position tbody td:nth-child(5) button, #lst_position td:nth-child(11) button, #lst_position tfoot td:nth-child(5) button {
+#lst_position tbody td:nth-child(3) button, #lst_position tbody td:nth-child(4) button, #lst_position tbody td:nth-child(9) button, #lst_position tbody td:nth-child(5) button, #lst_position td:nth-child(10) button, #lst_position td:nth-child(11) button, #lst_position tfoot td:nth-child(5) button {
     padding: 5px 10px;
 }
 #lst_position tbody td:nth-child(4) button, #lst_position tbody td:nth-child(9) button {   
     border: 1px solid grey;
 }
-#lst_position tbody td:nth-child(3) label, #lst_position tbody td:nth-child(4) label, #lst_position tbody td:nth-child(5) label, #lst_position td:nth-child(11) label, #lst_position td:nth-child(12) label, #lst_position tfoot td:nth-child(5) label {
+#lst_position td label {
     font-size: 11px;
 }
 #lst_position td:nth-child(12) label:nth-child(1) {

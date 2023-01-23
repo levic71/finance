@@ -252,7 +252,7 @@
       var coeffA = round((sum[2] - coeffB * sum[0]) / len, options.precision);
 
       var predict = function predict(x) {
-        return [round(x, options.precision), round(round(coeffA + coeffB * Math.log(x), options.precision), options.precision)];
+        return [round(x, options.precision), round(round(coeffA + coeffB * Math.log(x < 0 ? 0.00000000000000001 : x), options.precision), options.precision)];
       };
 
       var points = data.map(function (point) {
@@ -286,7 +286,7 @@
       var coeffB = round(b, options.precision);
 
       var predict = function predict(x) {
-        return [round(x, options.precision), round(round(coeffA * Math.pow(x, coeffB), options.precision), options.precision)];
+        return [round(x, options.precision), round(round(coeffA * Math.pow(x < 0 ? 0.00000000000000001 : x, coeffB), options.precision), options.precision)];
       };
 
       var points = data.map(function (point) {
