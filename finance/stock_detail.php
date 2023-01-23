@@ -6,7 +6,8 @@ session_start();
 
 include "common.php";
 
-$symbol        = "";
+$symbol = "";
+$ptf_id = -1;
 
 $default_button_choice = [ 'rsi' => 0, 'volume' => 1, 'alarm' => 1, 'av' => 1, 'reg' => 0 ];
 
@@ -743,7 +744,7 @@ if (!$readonly) {
             let beginAt = Math.round((reg_period * tab_item.length) / new_data_daily.length);
 
             // Controle de non depassement de la taille du tableau des data
-            beginAt = beginAt > tab_item.length - 100 ? tab_item.length - 100 : beginAt;
+            beginAt = Math.max(beginAt > tab_item.length - 100 ? tab_item.length - 100 : beginAt, 0);
 
             // Recuperation et reformatage des data 
             let i = 1;
@@ -766,8 +767,6 @@ if (!$readonly) {
                 tab_item[x]['reg'] = result.predict((-1 * beginAt) + x)[1];
                 tab_item[x]['r2']  = result.r2;
             });
-
-            console.log(tab_item);
 
             // Calcul de la standard deviation
             var d = dev(tmp) / 2;
