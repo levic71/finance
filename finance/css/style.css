@@ -867,6 +867,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     color: #444 !important;
     border: none;
 }
+
 #lst_position tr[data-in-ptf="0"] td:nth-child(3) label, #lst_position tr[data-in-ptf="0"] td:nth-child(9) label, #lst_position tr[data-in-ptf="0"] td:nth-child(10) label {
     color: rgba(87, 87, 87) !important;
 }
