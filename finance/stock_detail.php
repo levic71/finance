@@ -771,10 +771,10 @@ if (!$readonly) {
             // Regression linéaire +11 ecart type 
             for(let z=-1*beginAt; z < result.points.length; z++) {
                 v = result.predict(z)[1];
-                tab_item[beginAt + z]['reg1'] = v - (2 * d);
-                tab_item[beginAt + z]['reg2'] = v - d;
-                tab_item[beginAt + z]['reg3'] = v + d;
-                tab_item[beginAt + z]['reg4'] = v + (2 * d);
+//                tab_item[beginAt + z]['reg1'] = v - (2 * d);
+//                tab_item[beginAt + z]['reg2'] = v - d;
+//                tab_item[beginAt + z]['reg3'] = v + d;
+ //               tab_item[beginAt + z]['reg4'] = v + (2 * d);
             }
 
         });
