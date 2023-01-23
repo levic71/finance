@@ -765,10 +765,10 @@ if (!$readonly) {
 //                tab_item[beginAt + x]['r2']  = result.r2;
 //            }
             [...Array(beginAt).keys()].forEach(function(x) {
-                let r = result.predict((-1 * beginAt) + x);
-                if (!isNaN(r[1])) {
-                    tab_item[x].reg = r[1];
-                    tab_item[x].r2  = result.r2;
+                let rlt = result.predict((-1 * beginAt) + x);
+                if (!isNaN(rlt[1])) {
+                    tab_item[x]['reg'] = rlt[1];
+                    tab_item[x]['r2']  = result.r2;
                 }
             });
 
