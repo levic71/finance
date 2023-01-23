@@ -763,8 +763,8 @@ if (!$readonly) {
 //                tab_item[beginAt + x]['r2']  = result.r2;
 //            }
             [...Array(beginAt).keys()].forEach(function(x) {
-                tab_item[x]['reg'] = result.predict((-1 * beginAt) + x)[1];
-                tab_item[x]['r2']  = result.r2;
+                tab_item[x].reg = result.predict((-1 * beginAt) + x)[1];
+                tab_item[x].r2  = result.r2;
             });
 
             console.log(tab_item);
