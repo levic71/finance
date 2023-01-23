@@ -749,32 +749,6 @@ if (!$readonly) {
             // Liste des fcts
             var fct_name = [ '', 'linear', 'exponential', 'logarithmic', 'polynomial', 'power' ];
 
-            // Calcul de la regression
-            let result = regression[fct_name[reg_type]](d_data_reg, { order: 1 });
-
-            // Remise en conformite pour affichage dans graphe
-            let j = beginAt;
-            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2 + '/' + result.string; j++; });
-
-            console.log(tab_item);
-            // Ajout complément si linear et beginAt > 0
-            for(j=-1*beginAt; j < 0; j++) {
-                tab_item[beginAt + j]['reg'] = result.predict(j)[1];
-                tab_item[beginAt + j]['r2']  = result.r2;
-            }
-            console.log(tab_item);
-
-            var d = dev(tmp) / 2;
-            console.log(d);
-
-            // Regression linéaire +11 ecart type 
-            for(j=-1*beginAt; j < result.points.length; j++) {
-                v = result.predict(j)[1];
-                tab_item[beginAt + j]['reg1'] = v - (2 * d);
-                tab_item[beginAt + j]['reg2'] = v - d;
-                tab_item[beginAt + j]['reg3'] = v + d;
-                tab_item[beginAt + j]['reg4'] = v + (2 * d);
-            }
 
         });
 
