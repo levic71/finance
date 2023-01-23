@@ -708,6 +708,7 @@ if (!$readonly) {
                 // Calcul mm
                 if (tab_item.length >= mm_item) {
                     let ind = 0;
+                    // Trendways
                     tw.ma(tmp_mm, mm_item).forEach(function(item) {
                         tab_item[(mm_item - 1 ) + ind++]['mm' + mm_item] = item;
                     });
@@ -763,7 +764,7 @@ if (!$readonly) {
 //                tab_item[beginAt + x]['r2']  = result.r2;
 //            }
             [...Array(beginAt).keys()].forEach(function(x) {
-//                tab_item[x].reg = result.predict((-1 * beginAt) + x)[1];
+                tab_item[1].reg = result.predict((-1 * beginAt) + x)[1];
 //                tab_item[x].r2  = result.r2;
             });
 
