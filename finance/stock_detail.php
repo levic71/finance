@@ -759,11 +759,12 @@ if (!$readonly) {
             console.log(tab_item);
             // Ajout complément si linear et beginAt > 0
             for(let x=-1*beginAt; x < 0; x++) {
-                tab_item[beginAt + x]['reg'] = result.predict(x)[1];
-                tab_item[beginAt + x]['r2']  = result.r2;
+//                tab_item[beginAt + x]['reg'] = result.predict(x)[1];
+//                tab_item[beginAt + x]['r2']  = result.r2;
             }
             console.log(tab_item);
 
+            // Calcul de la standard deviation
             var d = dev(tmp) / 2;
             console.log(d);
 
