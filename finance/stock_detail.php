@@ -643,6 +643,24 @@ if (!$readonly) {
         return newDataset2(vals, 'line', 'y', 'mom', "DM", 'rgba(255, 255, 0, 0.5)', 'rgba(255, 255, 0, 0.75)', false, 2, 0.4, 0);
     }
 
+    // Javascript program to calculate the standard deviation of an array
+    dev = function(arr) {
+        // Creating the mean with Array.reduce
+        let mean = arr.reduce((acc, curr) => { return acc + curr; }, 0) / arr.length;
+
+        // Assigning (value - mean) ^ 2 to every array item
+        arr = arr.map((k) => { return (k - mean) ** 2; });
+
+        // Calculating the sum of updated array
+        let sum = arr.reduce((acc, curr)=> acc + curr, 0);
+
+        // Calculating the variance
+        let variance = sum / arr.length;
+
+        // Returning the standard deviation
+        return Math.sqrt(sum / arr.length);
+    }
+
     var graphe_size_days = 0;
     var new_data_daily   = [];
     var new_data_weekly  = [];
@@ -738,13 +756,15 @@ if (!$readonly) {
             let j = beginAt;
             result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2 + '/' + result.string; j++; });
 
+            console.log(tab_item);
             // Ajout complément si linear et beginAt > 0
             for(j=-1*beginAt; j < 0; j++) {
                 tab_item[beginAt + j]['reg'] = result.predict(j)[1];
                 tab_item[beginAt + j]['r2']  = result.r2;
             }
+            console.log(tab_item);
 
-            var d = math.std(tmp) / 2;
+            var d = dev(tmp) / 2;
             console.log(d);
 
             // Regression linéaire +11 ecart type 
