@@ -590,8 +590,7 @@ class calc {
                 $valo_ope = $row['quantity'] * $row['price'] * $row['taux_change'];
 
                 // Maj cash
-                if ($row['action'] != 6)
-                    $cash += $valo_ope * ($achat ? -1 : 1); // ajout si vente, retrait achat
+                $cash += $valo_ope * ($achat ? -1 : 1); // ajout si vente, retrait achat
 
                 // TTF si actif FR 
                 if (isset($quotes['stocks'][$pname]['type']) && $quotes['stocks'][$pname]['type'] == 'Equity' && strstr($pname, ".PAR")) $row['ttf'] = $valo_ope * 0.003;
