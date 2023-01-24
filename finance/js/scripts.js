@@ -347,11 +347,11 @@ var overlay = {
 			other    = Dom.attribute(item, 'data-other');
 			taux     = Dom.attribute(item, 'data-taux');
 			in_ptf   = Dom.attribute(item, 'data-in-ptf');
+			sum_valo_in_euro = Dom.attribute(item, 'data-sum-valo-in-euro');
 			actif    = Dom.attribute(Dom.id('f_actif_' + ind), 'data-pname');
 			pru      = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-pru'));
 			price    = parseFloat(Dom.attribute(Dom.id('f_price_' + ind), 'data-value'));
 			nb       = parseFloat(Dom.attribute(Dom.id('f_pru_'   + ind), 'data-nb'));
-			perf_pru = parseFloat(getPerf(pru, price));
 	
 			// Recuperation des stops
 			var stoploss   = 0;
@@ -369,7 +369,10 @@ var overlay = {
 			// si devise != EUR, appliquer taux de change
 			achat    = parseFloat(nb * pru * taux);
 			valo     = parseFloat(nb * price * taux);
-			gain_pru = parseFloat(nb * (price - pru) * taux);
+			gain_pru = parseFloat((nb * price * taux) - sum_valo_in_euro);
+			perf_pru = parseFloat(getPerf(sum_valo_in_euro, nb * price * taux));
+//			gain_pru = parseFloat(nb * (price - pru) * taux);
+//			perf_pru = parseFloat(getPerf(pru, price));
 	
 			valo_stoploss1  = parseFloat(nb * (stoploss == 0 ? price : stoploss) * taux);
 			valo_stoploss2  = parseFloat(nb * stoploss * taux);

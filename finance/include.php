@@ -299,6 +299,7 @@ class QuoteComputing {
         return isset($this->quote[$attr]) ? $this->quote[$attr] : $def;
     }
 
+    public function getSumValoInEuro()    { return $this->sc->getPositionAttr($this->symbol, 'sum_valo_in_euro'); }
     public function getOtherName()        { return $this->sc->getPositionAttr($this->symbol, 'other_name'); }
     public function getPru()              { return $this->sc->getPositionAttr($this->symbol, 'pru', 0); }
     public function getNbPositions()      { return $this->sc->getPositionAttr($this->symbol, 'nb', 0); }
@@ -393,9 +394,10 @@ class QuoteComputing {
         $position_pru = $this->getPru();
         $type         = $this->getType();
         $isInPtf      = $this->sc->isInPtf($this->symbol);
+        $sum_valo_in_euro = $this->getSumValoInEuro();
 
     
-        $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
+        $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>
@@ -595,6 +597,7 @@ class calc {
                 if (isset($quotes['stocks'][$pname]['type']) && $quotes['stocks'][$pname]['type'] == 'Equity' && strstr($pname, ".PAR")) $row['ttf'] = $valo_ope * 0.003;
                 $sum_ttf += $row['ttf'];
 
+                $positions[$pname]['sum_valo_in_euro'] = (isset($positions[$pname]['sum_valo_in_euro']) ? $positions[$pname]['sum_valo_in_euro'] : 0) + ($valo_ope * ($achat ? 1 : -1));
                 $positions[$pname]['nb']  = $nb;
                 $positions[$pname]['pru'] = $pru;
                 $positions[$pname]['other_name'] = $row['other_name'];

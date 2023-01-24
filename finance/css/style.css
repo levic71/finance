@@ -1180,8 +1180,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     }
     
     #lst_order th:nth-child(1), #lst_order th:nth-child(3), #lst_order th:nth-child(4), #lst_order th:nth-child(8), #lst_order th:nth-child(9),
-    #lst_order td:nth-child(1), #lst_order td:nth-child(3), #lst_order td:nth-child(4), #lst_order td:nth-child(8), #lst_order td:nth-child(9),
-    #lst_order tfoot td:nth-child(1) {
+    #lst_order td:nth-child(1), #lst_order td:nth-child(3), #lst_order td:nth-child(4), #lst_order td:nth-child(8), #lst_order td:nth-child(9) {
         display: none;
     }
     #lst_order td {

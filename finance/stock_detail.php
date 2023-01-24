@@ -487,7 +487,7 @@ if (!$readonly) {
                             <td>'.sprintf("%.2f", $row['commission']).'&euro;</td>
                         </tr>';
                     $sum_comm += $row['commission'];
-                    $sum_orders += $row['valo'];
+                    $sum_orders += ($row['valo'] * ($row['action'] >= 0 ? 1 : -1));
                     $nb_orders++;
                     if ($row['action'] == 1 || $row['action'] == -1)
                         $js_bubbles_data .= "bubbles_data.push({ valueX: '".$row['date']."', valueY: ".floatval($row['price']).", rayon: ".(max(3, 5 * ($row['valo'] / 2000) )).", rgb: '".($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0")."' });";
