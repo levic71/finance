@@ -309,7 +309,7 @@ class QuoteComputing {
     public function getOptions()          { return $this->sc->getTrendFollowingAttr($this->symbol, 'options')     ? $this->sc->getTrendFollowingAttr($this->symbol, 'options')     : 0; }
     public function getStrategieType()    { return $this->sc->getTrendFollowingAttr($this->symbol, 'strategie_type');    }
     public function getRegressionType()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_type', 1);   }
-    public function getRegressionPeriod() { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_period'); }
+    public function getRegressionPeriod() { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_period', 0); }
     public function getTaux()             { return $this->sc->getDeviseTaux($this->currency); }
 
     public function getRegion()           { return $this->getQuoteAttr('region'); }
@@ -457,8 +457,8 @@ class calc {
         $val['action_lib']   = uimx::$order_actions[$val['action']];
         $val['devise_sign']  = uimx::getCurrencySign($val['devise']);
         $val['action_colr']  = $val['action'] >= 0 ? "aaf-positive" : "aaf-negative";
-        $val['price_signed'] = sprintf("%.2f %s", $val['price'], $val['devise_sign']);
-        $val['valo_signed']  = sprintf("%s%.2f %s", $val['action'] >= 0 ? '+' : '-', $val['valo'], '&euro;');
+        $val['price_signed'] = sprintf("%.2f%s", $val['price'], $val['devise_sign']);
+        $val['valo_signed']  = sprintf("%s%.2f%s", $val['action'] >= 0 ? '+' : '-', $val['valo'], '&euro;');
 
         return $val;
     }

@@ -76,7 +76,7 @@ $lst_trend_following = $sc->getTrendFollowing();
 
 ?>
 
-<div class="ui container inverted segment" style="padding-bottom: 0px;">
+<div class="ui container inverted segment" style="padding-bottom: 0px !important;">
 
     <h2 class="ui left">
         <span>
@@ -193,8 +193,8 @@ $js_bubbles_data = "";
 </style>
 
 
-<div id="canvas_area" class="ui container inverted segment" style="padding-top: 0px;">
-    <span>
+<div id="canvas_area" class="ui container inverted segment" style="padding-top: 0px !important; margin-top: 0px !important;">
+    <span style="margin-bottom: 10px;">
         <span class="ui buttons">
             <button id="graphe_D_bt"      class="mini ui <?= $default_button_choice['rsi'] == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">D</button>
             <button id="graphe_W_bt"      class="mini ui <?= $default_button_choice['rsi'] == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">W</button>
@@ -458,14 +458,17 @@ if (!$readonly) {
                 <th>Date</th>
                 <th>Actif</th>
                 <th>Action</th>
-                <th>Qté</th>
-                <th>Prix</th>
-                <th>Total</th>
-                <th>Comm</th>
+                <th class="center aligned">Qté</th>
+                <th class="center aligned">Prix</th>
+                <th class="center aligned">Total(&euro;)</th>
+                <th class="center aligned">Comm</th>
             </tr></thead>
             <tbody>
 <?
                 
+                $sum_comm = 0;
+                $sum_orders = 0;
+                $nb_orders = 0;
                 $req_option = "AND o.product_name='".$symbol."'";
                 $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
                 $res = dbc::execSql($req);
@@ -481,14 +484,25 @@ if (!$readonly) {
                             <td>'.$row['quantity'].'</td>
                             <td>'.$row['price_signed'].'</td>
                             <td class="'.$row['action_colr'].'">'.$row['valo_signed'].'</td>
-                            <td>'.sprintf("%.2f", $row['commission']).' &euro;</td>
+                            <td>'.sprintf("%.2f", $row['commission']).'&euro;</td>
                         </tr>';
+                    $sum_comm += $row['commission'];
+                    $sum_orders += $row['valo'];
+                    $nb_orders++;
                     if ($row['action'] == 1 || $row['action'] == -1)
                         $js_bubbles_data .= "bubbles_data.push({ valueX: '".$row['date']."', valueY: ".floatval($row['price']).", rayon: ".(max(3, 5 * ($row['valo'] / 2000) )).", rgb: '".($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0")."' });";
                 }
 
 ?>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5"></td>
+                    <td style="text-align: right"><?= $nb_orders ?></td>
+                    <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_orders) ?></td>
+                    <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_comm) ?></td>
+                </tr>
+            </tfoot>
         </table>
         <div id="pagination_box"></div>
     </div>
