@@ -53,8 +53,8 @@ while ($row = mysqli_fetch_assoc($res)) {
                     echo '<tr id="alerte_'.$i.'" data-alerte="'.$val['date'].'|'.$val['user_id'].'|'.$val['actif'].'|'.$val['type'].'">
                         <td class="center aligned">'.$val['date'].'</td>
                         <td class="center aligned">'.$val['type'].'</td>
-                        <td data-value="'.$val['actif'].'"><div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
-                                <div class="ui '.$val['couleur'].' button">
+                        <td><div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
+                                <div class="ui '.($val['sens'] == -1 && $val['couleur'] == "green" ? "positive " : "").$val['couleur'].' button">
                                 <i class="'.$val['icone'].' inverted icon"></i>'.$val['actif'].'
                             </div>
                             <a class="ui basic '.$val['couleur'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>

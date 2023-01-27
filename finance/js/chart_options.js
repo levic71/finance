@@ -296,7 +296,7 @@ const externalTooltipHandler = (context) => {
 
             // div valeur y
             const label2 = document.createElement('div');
-            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? ' K' : ' ' + euro) + (chart.canvas.id == 'portfolio_canvas' && i == 1 ? ' [' + (perf >=0 ? '+' : '') + perf.toFixed(2) + '%]' : '' ));
+            const text2 = document.createTextNode(t[1] + (t[0] == 'VOLUME' ? 'K' : '' + euro) + (chart.canvas.id == 'portfolio_canvas' && i == 1 ? ' [' + (perf >=0 ? '+' : '') + perf.toFixed(2) + '%]' : '' ));
             label2.appendChild(text2);
 
             div.appendChild(span);
@@ -363,7 +363,7 @@ var options_Stock_Graphe = {
 			ticks: {
 				align: 'end',
 				callback: function(value, index, ticks) {
-					var c = value + ' ' + stock_currency + '       ';
+					var c = value + '' + stock_currency + '       ';
 					return c.substring(0, 6);
 				}
 			},
@@ -419,7 +419,7 @@ var options_RSI_Graphe = {
 				display: true,
 				align: 'end',
 				callback: function(value, index, values) {
-					var c = value+" %       ";
+					var c = value+"%       ";
 					return c.substring(0, 6);
 				}
 			},
@@ -484,7 +484,7 @@ var options_DM_Graphe = {
                 min: -40,
                 stepSize: 10,
 				callback: function(value, index, values) {
-					var c = value+" %       ";
+					var c = value+"%       ";
 					return c.substring(0, 6);
 				}
 			},
