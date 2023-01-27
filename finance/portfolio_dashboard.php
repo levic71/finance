@@ -44,7 +44,7 @@ $lst_orders    = $sc->getOrders();
 <div class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<i class="inverted briefcase icon"></i><?= utf8_decode($sc->getPtfName()) ?><small id="subtitle"></small>
+		<i class="inverted briefcase icon"></i><?= mb_convert_encoding($sc->getPtfName(), 'ISO-8859-1', 'UTF-8') ?><small id="subtitle"></small>
 		<button id="portfolio_graph_bt" class="circular ui icon very small right floated labelled button"><i class="inverted black chart bar outline icon"></i></button>
 		<button id="ptf_balance_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black balance icon"></i></button>
 	</h2>

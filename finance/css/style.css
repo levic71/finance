@@ -428,7 +428,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 .portfolio_alerte .green i {
     transform: rotate(45deg);
 }
-.portfolio_alerte .red i {
+.portfolio_alerte .red i, .portfolio_alerte .positive.green i {
     transform: rotate(-45deg);
 }
 #strategie_container h2 span button {

@@ -47,6 +47,10 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 	<h2 class="ui left floated">
 		<i class="inverted bullseye icon"></i>Actifs
 		<button id="ptf_pos_sync_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black sync icon"></i></button>
+		<div class="ui right floated buttons">
+			<button id="donut_0" class="mini ui primary button">Passive</button>
+			<button id="donut_1" class="mini ui grey button">Offensive</button>
+		</div>
 	</h2>
 	<div class="ui stackable column grid">
       	<div class="row">

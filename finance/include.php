@@ -337,6 +337,28 @@ class QuoteComputing {
     public function isAlerteActive()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'active') && $this->sc->getTrendFollowingAttr($this->symbol, 'active') == 1 ? true : false; }
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
 
+    public function getAvis() {
+        $ret = 3;
+
+        return $ret;
+    }
+
+    public function getColorAvis() {
+        $tab_colr = [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "yellow", 5 => "red"];
+
+        return $tab_colr[$this->getAvis()];
+    }
+
+    public function getLabelAvis() {
+
+        $tab_libelle = [
+            1 => [ 1 => "Acheter", 2 => "Renforcer",  3 => "Observer", 4 => "Alléger",  5 => "Vendre"],
+            2 => [ 1 => "Acheter", 2 => "Initier",    3 => "Observer", 4 => "Attendre", 5 => "Attendre"]
+        ];
+
+        return $tab_libelle[$this->sc->isInPtf($this->symbol) ? 1 : 2][$this->getAvis()];
+    }
+
     public static function getHtmlTableHeader() {
 
         $ret = '';
@@ -395,8 +417,9 @@ class QuoteComputing {
         $type         = $this->getType();
         $isInPtf      = $this->sc->isInPtf($this->symbol);
         $sum_valo_in_euro = $this->getSumValoInEuro();
+        $avis_lib     = $this->getLabelAvis();
+        $avis_colr    = $this->getColorAvis();
 
-    
         $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
@@ -440,7 +463,7 @@ class QuoteComputing {
                     <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
                 </div>
             </td>
-            <td class="center aligned"><div class="ui red horizontal label">Acheter</div></td>
+            <td class="center aligned"><div class="ui '.$avis_colr.' horizontal label">'.$avis_lib.'</div></td>
         </tr>';
 
         return $ret;
