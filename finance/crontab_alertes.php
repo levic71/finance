@@ -157,7 +157,7 @@ foreach($stocks as $key => $val) {
 
 	// Depassement a la baisse PRU
 	if ($pru > 0 && depassementALaBaisse($previous, $price, $pru)) {
-		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'pru', 'sens' => $sens_down, 'seuil' => $pru, 'colr' => 'green', 'icon' => 'arrow up' ];
+		$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'pru', 'sens' => $sens_down, 'seuil' => $pru, 'colr' => 'red', 'icon' => 'arrow down' ];
 		if ($stop_loss == 0)
 			$notifs[] =  [ 'user_id' => $user_id, 'actif' => $symbol, 'type' => 'no_stoploss', 'sens' => 0, 'seuil' => 'No Stoploss', 'colr' => 'orange', 'icon' => 'bell' ];
 	}

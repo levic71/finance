@@ -76,7 +76,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 			if ($val['user_id'] == 0 || ($sess_context->isUserConnected() && $val['user_id'] == $sess_context->getUserId())) {
 				echo '
 					<div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
-						<div class="ui '.($val['sens'] == -1 && $val['couleur'] == "green" ? "positive " : "").$val['couleur'].' button">
+						<div class="ui '.($val['sens'] == -1 && $val['couleur'] == "green" ? "positive " : "").($val['sens'] == 1 && $val['couleur'] == "red" ? "negative " : "").$val['couleur'].' button">
 							<i class="'.$val['icone'].' inverted icon"></i>'.$val['actif'].'
 						</div>
 						<a class="ui basic '.$val['couleur'].' left pointing label">'.sprintf(is_numeric($val['seuil']) ? "%.2f " : "%s ", $val['seuil']).'</a>
