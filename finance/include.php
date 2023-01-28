@@ -359,6 +359,152 @@ class QuoteComputing {
         return $tab_libelle[$this->sc->isInPtf($this->symbol) ? 1 : 2][$this->getAvis()];
     }
 
+    public function getColorAlert($sens) {
+        $colr = [ 1 => "green", -1 => "red", 0 => "orange", 2 => "green"];
+        return $colr[$sens];
+    }
+    
+    public function getIconAlert($sens) {
+        $colr = [ 1 => "arrow up", -1 => "red", 0 => "bell", 2 => "trophy"];
+        return $colr[$sens];
+    }
+    
+    public function pourcentagevariation($vi, $vf) {
+        return $vi == 0 ? 0 : (($vf / $vi) - 1) * 100;
+    }
+    
+    public function depassementJournalierALaHausse($vi, $vf, $s) {
+        $ret = false;
+    
+        if ($vi < $s && $vf > $s) $ret = true;
+    
+        return $ret;
+    }
+    
+    public function depassementJournalierALaBaisse($vi, $vf, $s) {
+        $ret = false;
+    
+        if ($vi > $s && $vf < $s) $ret = true;
+    
+        return $ret;
+    }
+    
+    public function hausseJournaliere($seuil) {
+        
+        $ret = [];
+
+        $price    = $this->getPrice();
+        $previous = $this->getQuoteAttr('previous');
+
+        if ($this->pourcentagevariation($previous, $price) >= $seuil)
+            $ret[] = [ 1, $seuil.'%',  $previous ];
+
+        return $ret;
+    }
+
+    public function performancePRU($seuil) {
+        
+        $ret = [];
+
+        $price    = $this->getPrice();
+        $pru      = $this->getPru();
+        $stoploss = $this->getStoploss();
+
+
+        if ($pru > 0 && $this->pourcentagevariation($price, $pru) >= $seuil) {
+            $ret[] = [ 1, 'PRU+'.$seuil.'%',  $price ];
+            if ($stoploss == 0)
+                $ret[] = [ 0, 'NO_STOPLOSS',  $pru ];
+            }
+    
+        return $ret;
+    }
+
+    public function depassementALaBaissePRU() {
+        
+        $ret = [];
+
+        $price    = $this->getPrice();
+        $previous = $this->getQuoteAttr('previous');
+        $pru      = $this->getPru();
+
+        if ($pru > 0 && $this->depassementJournalierALaBaisse($previous, $price, $pru)) {
+            $ret[] = [ -1, 'PRU',  $price ];
+        }
+    
+        return $ret;
+    }
+
+    public function depassementJournalier($type) {
+
+        $ret = [];
+
+        $price    = $this->getPrice();
+        $previous = $this->getQuoteAttr('previous');
+        $stoploss = $this->getStopLoss();
+        $seuil    = 0;
+
+        if ($type == "objectif")   $seuil = $this->getObjectif();
+        if ($type == "stoploss")   $seuil = $this->getStopLoss();
+        if ($type == "stopprofit") $seuil = $this->getStopProfit();
+
+        if ($seuil > 0) {
+
+            if ($this->depassementJournalierALaHausse($previous, $price, $seuil)) {
+                $ret[] = [ 1, $type,  $seuil ];
+                if ($stoploss == 0)
+                    $ret[] = [ 0, 'NO_STOPLOSS',  $seuil ];
+            }
+            if ($this->depassementJournalierALaBaisse($previous, $price, $seuil))
+                $ret[] = [ -1, $type,  $seuil ];
+        }
+
+        return $ret;
+    }
+
+    public function depassementJournalierSeuils() {
+        
+        $ret = [];
+
+        $price    = $this->getPrice();
+        $previous = $this->getQuoteAttr('previous');
+        $seuils   = explode(';', $this->getSeuils());
+        
+        // Parcours du cours de chaque seuil
+        foreach($seuils as $i => $v) {
+            $tmp = explode('|', $v);
+            $inverse = isset($tmp[1]) ? $tmp[1] : 1;
+            if ($this->depassementJournalierALaHausse($previous, $price, $tmp[0])) $ret[] = [ $inverse == 1 ? 1 : -1, 'seuil', $tmp[0] ];
+            if ($this->depassementJournalierALaBaisse($previous, $price, $tmp[0])) $ret[] = [ $inverse == 1 ? -1 : 1, 'seuil', $tmp[0] ];
+        }
+
+        return $ret;
+    }
+
+    public function depassementJournalierMM() {
+        
+        $ret = [];
+
+        $price    = $this->getPrice();
+        $previous = $this->getQuoteAttr('previous');
+        $options  = $this->getOptions();
+        
+        $tab_mm = [];
+        if (($options & 16) == 16) $tab_mm[] = 200;
+        if (($options & 8)  == 8)  $tab_mm[] = 100;
+        if (($options & 4)  == 4)  $tab_mm[] = 50;
+        if (($options & 2)  == 2)  $tab_mm[] = 20;
+        if (($options & 1)  == 1)  $tab_mm[] = 7;
+
+        foreach ($tab_mm as $i => $mm) {
+            $val_mm = $this->getQuoteAttr('MM'.$mm);
+            if ($this->depassementJournalierALaHausse($previous, $price, $val_mm)) $ret[] = [ 1, 'MM'.$mm,  $val_mm ];
+            if ($this->depassementJournalierALaBaisse($previous, $price, $val_mm)) $ret[] = [ 2, 'MM'.$mm,  $val_mm ];
+        }
+    
+        return $ret;
+    }
+
     public static function getHtmlTableHeader() {
 
         $ret = '';
