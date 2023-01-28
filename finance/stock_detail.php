@@ -36,7 +36,7 @@ $req = "SELECT *, s.symbol symbol FROM stocks s LEFT JOIN quotes q ON s.symbol =
 $res = dbc::execSql($req);
 
 // Bye bye si inexistant
-if (!$row = mysqli_fetch_assoc($res)) exit(0);
+if (!$row_stock = mysqli_fetch_assoc($res)) exit(0);
 
 // Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
 $aggregate_ptf = $sess_context->isUserConnected() ? calc::getAggregatePortfoliosByUser($sess_context->getUserId()) : array();
@@ -48,22 +48,22 @@ $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
 $quotes = calc::getIndicatorsLastQuote();
 
 // Gestion des tags
-$tags = array_flip(explode("|", mb_convert_encoding($row['tags'], 'ISO-8859-1', 'UTF-8')));
+$tags = array_flip(explode("|", mb_convert_encoding($row_stock['tags'], 'ISO-8859-1', 'UTF-8')));
 
 // Recuperation des min/max des cotations
 $minmax = calc::getMinMaxQuotations();
 
+// Computing portfolio/quotes
 $sc = new StockComputing($quotes, $aggregate_ptf, $devises);
 
 $ptf_nb_positions = $sc->getCountPositionsInPtf();
 
+// Computing specific quote
 $qc = new QuoteComputing($sc, $symbol);
-$qc->refreshQuote($row);
+$qc->refreshQuote($row_stock);
 
-$data = calc::getSymbolIndicatorsLastQuote($row['symbol']);
-
-$data = $qc->getQuote();
-
+$data           = $qc->getQuote();
+$name           = $qc->getPName();
 $currency       = $qc->getCurrency();
 $position_pru   = $qc->getPru();
 $curr_graphe    = $qc->isTypeIndice() ? "" : uimx::getGraphCurrencySign($currency);
@@ -80,7 +80,7 @@ $lst_trend_following = $sc->getTrendFollowing();
 
     <h2 class="ui left">
         <span>
-            <?= mb_convert_encoding($row['name'], 'ISO-8859-1', 'UTF-8'); // VFE - EX UT8_ENCODE ?>
+            <?= mb_convert_encoding($name, 'ISO-8859-1', 'UTF-8'); // VFE - EX UT8_ENCODE ?>
         </span>
         <? if ($sess_context->isSuperAdmin()) { ?>
             <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float small trash icon"></i>
@@ -229,16 +229,16 @@ $js_bubbles_data = "";
 
 <div class="ui container inverted segment">
     <form class="ui inverted form <?= $readonly ? "readonly" : "" ?>">
-        <h4 class="ui inverted dividing header">Asset Informations (<?= $row['engine'] ?>)</h4>
+        <h4 class="ui inverted dividing header">Asset Informations (<?= $qc->getQuoteAttr('engine') ?>)</h4>
         <div class="field">
             <div class="three fields">
                 <div class="field">
                     <label>Provider</label>
-                    <input type="text" id="f_provider" value="<?= $row['provider'] ?>" placeholder="Provider">
+                    <input type="text" id="f_provider" value="<?= $qc->getQuoteAttr('provider') ?>" placeholder="Provider">
                 </div>
                 <div class="field">
                     <label>ISIN</label>
-                    <input type="text" id="f_isin" value="<?= $row['ISIN'] ?>" placeholder="ISIN">
+                    <input type="text" id="f_isin" value="<?= $qc->getQuoteAttr('ISIN') ?>" placeholder="ISIN">
                 </div>
                 <div class="field">
                     <label>Risque</label>
@@ -246,22 +246,22 @@ $js_bubbles_data = "";
                         <select class="ui fluid search dropdown" id="f_rating">
                             <?
                             foreach ([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7] as $key => $val)
-                                echo '<option value="' . $key . '" ' . ($row['rating'] == $key ? 'selected="selected"' : '') . '>' . $val . '</option>';
+                                echo '<option value="' . $key . '" ' . ($qc->getQuoteAttr('rating') == $key ? 'selected="selected"' : '') . '>' . $val . '</option>';
                             ?>
                         </select>
                     <? } else { ?>
-                        <input type="text" id="f_rating" value="<?= $row['rating'] ?>" placeholder="Rating">
+                        <input type="text" id="f_rating" value="<?= $qc->getQuoteAttr('rating') ?>" placeholder="Rating">
                     <? } ?>
                 </div>
             </div>
             <div class="three fields">
                 <div class="field">
                     <label>Frais de gestion (%)</label>
-                    <input type="text" id="f_frais" value="<?= $row['frais'] ?>" placeholder="Frais de gestion">
+                    <input type="text" id="f_frais" value="<?= $qc->getQuoteAttr('frais') ?>" placeholder="Frais de gestion">
                 </div>
                 <div class="field">
                     <label>Actifs (Million)</label>
-                    <input type="text" id="f_actifs" value="<?= $row['actifs'] ?>" placeholder="Actifs">
+                    <input type="text" id="f_actifs" value="<?= $qc->getQuoteAttr('actifs') ?>" placeholder="Actifs">
                 </div>
                 <div class="field">
                     <label>Politique de distribution</label>
@@ -270,11 +270,11 @@ $js_bubbles_data = "";
                             <option value="">Choisir</option>
                             <?
                             foreach (uimx::$invest_distribution as $key => $val)
-                                echo '<option value="' . $key . '" ' . ($row['distribution'] == $key ? 'selected="selected"' : '') . '>' . $val . '</option>';
+                                echo '<option value="' . $key . '" ' . ($qc->getQuoteAttr('distribution') == $key ? 'selected="selected"' : '') . '>' . $val . '</option>';
                             ?>
                         </select>
                     <? } else { ?>
-                        <input type="text" id="f_distribution" value="<?= $row['distribution'] == "" ? "" : uimx::$invest_distribution[$row['distribution']] ?>" placeholder="Distribution">
+                        <input type="text" id="f_distribution" value="<?= $qc->getQuoteAttr('distribution') == "" ? "" : uimx::$invest_distribution[$qc->getQuoteAttr('distribution')] ?>" placeholder="Distribution">
                     <? } ?>
                 </div>
             </div>
@@ -286,7 +286,7 @@ $js_bubbles_data = "";
                         <option value="">Choisir</option>
                         <?
                         foreach (uimx::$type_actif as $key => $val)
-                            echo '<option value="' . $val . '" ' . ($row['type'] == $val ? 'selected="selected"' : '') . '>' . $val . '</option>';
+                            echo '<option value="' . $val . '" ' . ($qc->getQuoteAttr('type') == $val ? 'selected="selected"' : '') . '>' . $val . '</option>';
                         ?>
                     </select>
                 </div>
@@ -303,28 +303,28 @@ $js_bubbles_data = "";
             <div class="four fields">
                 <div class="field">
                     <label>GF Symbole</label>
-                    <input type="text" id="f_gf_symbol" value="<?= $row['gf_symbol'] ?>" placeholder="Google finance symbole">
+                    <input type="text" id="f_gf_symbol" value="<?= $qc->getQuoteAttr('gf_symbol') ?>" placeholder="Google finance symbole">
                 </div>
                 <div class="field">
                     <? if (!$readonly) { ?>
                         <label>&nbsp;</label>
                         <div class="ui toggle inverted checkbox" onclick="toogleCheckBox('f_pea');">
-                            <input type="checkbox" id="f_pea" <?= $row['pea'] == 1 ? 'checked="checked' : '' ?> tabindex="0" class="hidden">
+                            <input type="checkbox" id="f_pea" <?= $qc->getQuoteAttr('pea') == 1 ? 'checked="checked' : '' ?> tabindex="0" class="hidden">
                             <label>Eligible PEA</label>
                         </div>
                     <? } else { ?>
                         <label>Eligible PEA</label>
-                        <input type="text" id="f_pea" value="<?= $row['pea'] == 0 ? "Non" : "Oui" ?>" placeholder="">
+                        <input type="text" id="f_pea" value="<?= $qc->getQuoteAttr('pea') == 0 ? "Non" : "Oui" ?>" placeholder="">
                     <? } ?>
                 </div>
                 <div class="field">
                     <label>Dividende annualisé</label>
-                    <input type="text" id="f_dividende" value="<?= $row['dividende_annualise'] > 0 ? $row['dividende_annualise'] : "" ?>" placeholder="0">
+                    <input type="text" id="f_dividende" value="<?= $qc->getQuoteAttr('dividende_annualise') > 0 ? $qc->getQuoteAttr('dividende_annualise') : "" ?>" placeholder="0">
                 </div>
                 <div class="field">
                     <label>Date dividende</label>
                     <div class="ui right icon inverted left labeled fluid input">
-                        <input type="text" size="10" id="f_date_dividende" value="<?= $row['date_dividende'] ?>" placeholder="0000-00-00">
+                        <input type="text" size="10" id="f_date_dividende" value="<?= $qc->getQuoteAttr('date_dividende') ?>" placeholder="0000-00-00">
                         <i class="inverted black calendar alternate outline icon"></i>
                     </div>
                 </div>

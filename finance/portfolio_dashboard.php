@@ -127,11 +127,12 @@ $lst_orders    = $sc->getOrders();
 	?>
 					</tbody>
 					<tfoot><tr>
-						<td colspan="7"></th>
+						<td colspan="6"></th>
 						<td></td>
 						<td></td>
 						<td id="sum_valo"  class="right aligned"></td>
 						<td id="glob_perf" class="center aligned"></td>
+						<td></td>
 						<td></td>
 					</tr></tfoot>
 				</table>
