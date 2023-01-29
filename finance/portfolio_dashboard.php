@@ -370,6 +370,7 @@ updateDataPage = function(opt) {
 	};
 
 	if (myChart) myChart.destroy();
+	options_donut_graphe.plugins.legend.display = window.innerWidth < 600 ? false : true;
 	myChart = new Chart(ctx, { type: 'doughnut', data: data_donut, options: options_donut_graphe } );
 	myChart.update();
 
