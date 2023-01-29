@@ -338,15 +338,56 @@ class QuoteComputing {
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
 
     public function getAvis() {
+
         $ret = 3;
+
+        $price      = $this->getPrice();
+        $previous   = $this->getQuoteAttr('previous');
+        $pru        = $this->getPru();
+        $stoploss   = $this->getStoploss();
+        $objectif   = $this->getObjectif();
+        $stopprofit = $this->getStopProfit();
+        $options    = $this->getOptions();
+        $seuils     = explode(';', $this->getSeuils());
+
+        $strat = 1; // 1 : Defensive, 2 : Aggressive
+
+        $seuil_objectif_atteint = [ 1 => 0,  2 => 20 ];
+        $seuil_objectif_depasse = [ 1 => 25, 2 => 50 ];
+        $pru_depasse1           = [ 1 => 15, 2 => 30 ];
+        $pru_depasse2           = [ 1 => 30, 2 => 60 ];
+
+
+        //
+        // Criteres de hausse
+        // 
+        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $seuil_objectif_atteint[$strat])
+            $ret = 4;
+
+        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $seuil_objectif_depasse[$strat])
+            $ret = 5;
+
+
+        $perf = $this->performancePRU($pru_depasse1[$strat]);
+        if (count($perf) > 1 && $perf[0][0] == 1) $ret = 4;
+
+        $perf = $this->performancePRU($pru_depasse2[$strat]);
+        if (count($perf) > 1 && $perf[0][0] == 1) $ret = 5;
+
+        //
+        // Criteres pour rentrer sur un titre
+        // 
 
         return $ret;
     }
 
     public function getColorAvis() {
-        $tab_colr = [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "yellow", 5 => "red"];
+        $tab_colr = [
+            1 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "yellow", 5 => "red"],
+            2 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "black", 5 => "black"]
+        ];
 
-        return $tab_colr[$this->getAvis()];
+        return $tab_colr[$this->sc->isInPtf($this->symbol) ? 1 : 2][$this->getAvis()];
     }
 
     public function getLabelAvis() {
@@ -410,8 +451,7 @@ class QuoteComputing {
         $pru      = $this->getPru();
         $stoploss = $this->getStoploss();
 
-
-        if ($pru > 0 && $this->pourcentagevariation($price, $pru) >= $seuil) {
+        if ($pru > 0 && $this->pourcentagevariation($pru, $price) >= $seuil) {
             $ret[] = [ 1, 'PRU+'.$seuil.'%',  $price ];
             if ($stoploss == 0)
                 $ret[] = [ 0, 'NO_STOPLOSS',  $pru ];
