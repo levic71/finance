@@ -261,6 +261,31 @@ class QuoteComputing {
     protected $price;
     protected $currency;
 
+    protected $seuil_objectif_atteint = [
+        1 => [ 1 => 0,  2 => 20 ],
+        2 => [ 1 => 20, 2 => 50 ],
+        3 => [ 1 => 20, 2 => 50 ], 
+        4 => [ 1 => 20, 2 => 50 ]
+    ];
+    protected $seuil_objectif_depasse = [
+        1 => [ 1 => 25, 2 => 50 ], 
+        2 => [ 1 => 40, 2 => 60 ], 
+        3 => [ 1 => 40, 2 => 60 ], 
+        4 => [ 1 => 40, 2 => 60 ]
+    ];
+    protected $pru_depasse1 = [ 
+        1 => [ 1 => 15, 2 => 30 ], 
+        2 => [ 1 => 30, 2 => 60 ], 
+        3 => [ 1 => 15, 2 => 30 ], 
+        4 => [ 1 => 15, 2 => 30 ]
+    ];
+    protected $pru_depasse2 = [
+        1 => [ 1 => 30, 2 => 60 ], 
+        2 => [ 1 => 50, 2 => 80 ], 
+        3 => [ 1 => 30, 2 => 60 ], 
+        4 => [ 1 => 30, 2 => 60 ]
+    ];
+
 
     // $val -> $sc->getPositionAttr($symbol,
     // $qs -> this->quote
@@ -308,7 +333,7 @@ class QuoteComputing {
     public function getObjectif()         { return $this->sc->getTrendFollowingAttr($this->symbol, 'objectif')    ? $this->sc->getTrendFollowingAttr($this->symbol, 'objectif')    : 0; }
     public function getSeuils()           { return $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      ? $this->sc->getTrendFollowingAttr($this->symbol, 'seuils')      : ""; }
     public function getOptions()          { return $this->sc->getTrendFollowingAttr($this->symbol, 'options')     ? $this->sc->getTrendFollowingAttr($this->symbol, 'options')     : 0; }
-    public function getStrategieType()    { return $this->sc->getTrendFollowingAttr($this->symbol, 'strategie_type');    }
+    public function getStrategieType()    { return $this->sc->getTrendFollowingAttr($this->symbol, 'strategie_type', 1);    }
     public function getRegressionType()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_type', 1);   }
     public function getRegressionPeriod() { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_period', 0); }
     public function getTaux()             { return $this->sc->getDeviseTaux($this->currency); }
@@ -349,29 +374,23 @@ class QuoteComputing {
         $stopprofit = $this->getStopProfit();
         $options    = $this->getOptions();
         $seuils     = explode(';', $this->getSeuils());
+        $strat_type = $this->getStrategieType(); // 1: Speculatif, 2: Dividende, 3: Croissance, 4: D&C
 
-        $strat = 1; // 1 : Defensive, 2 : Aggressive
-
-        $seuil_objectif_atteint = [ 1 => 0,  2 => 20 ];
-        $seuil_objectif_depasse = [ 1 => 25, 2 => 50 ];
-        $pru_depasse1           = [ 1 => 15, 2 => 30 ];
-        $pru_depasse2           = [ 1 => 30, 2 => 60 ];
-
+        $strat = 1; // 1: Defensive, 2: Aggressive
 
         //
         // Criteres de hausse
         // 
-        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $seuil_objectif_atteint[$strat])
+        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_atteint[$strat_type][$strat])
             $ret = 4;
 
-        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $seuil_objectif_depasse[$strat])
+        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_depasse[$strat_type][$strat])
             $ret = 5;
 
-
-        $perf = $this->performancePRU($pru_depasse1[$strat]);
+        $perf = $this->performancePRU($this->pru_depasse1[$strat_type][$strat]);
         if (count($perf) > 1 && $perf[0][0] == 1) $ret = 4;
 
-        $perf = $this->performancePRU($pru_depasse2[$strat]);
+        $perf = $this->performancePRU($this->pru_depasse2[$strat_type][$strat]);
         if (count($perf) > 1 && $perf[0][0] == 1) $ret = 5;
 
         //
