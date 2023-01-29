@@ -926,6 +926,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
     margin: 0px 10px 10px !important;
 }
 
+.ptf_secteur {
+    width: 36.5% !important;
+}
+
 .ptf_infos label {
     font-size: 11px !important;
     margin: 0px !important;
@@ -1229,6 +1233,23 @@ table th { color: burlywood !important; cursor: pointer !important; }
 
     #tooltip_stock_graphe_div {
         flex-flow: column;
+    }
+
+    .ribbon {
+        font-size: 1.5em;
+        height: 3.5rem;
+    }
+
+    .palmares_page .ribbon {
+        height: 2.5rem;
+    }
+
+    .ribbon:after {
+        top: 3.5rem;
+    }
+
+    #tooltip_stock_graphe, #tooltip_stock_graphe_div {
+        top: 90px;
     }
 
 }
