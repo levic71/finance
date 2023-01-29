@@ -989,6 +989,8 @@ if (!$readonly) {
         // Ajustement des données
         var nb_items = update_data(interval_period_days[getIntervalStatus()][getPeriodStatus()]);
 
+        options_Stock_Graphe.scales.y1.type = 'logarithmic';
+
         // Changement dynamique option graphe
         if (g_new_data.length > 2000) {
             options_Stock_Graphe.animation = false;

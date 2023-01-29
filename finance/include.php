@@ -364,7 +364,7 @@ class QuoteComputing {
 
     public function getAvis() {
 
-        $ret = 3;
+        $ret = [];
 
         $price      = $this->getPrice();
         $previous   = $this->getQuoteAttr('previous');
@@ -381,17 +381,19 @@ class QuoteComputing {
         //
         // Criteres de hausse
         // 
+        $ret['obj_atteint'] = 0;
         if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_atteint[$strat_type][$strat])
-            $ret = 4;
+            $ret['obj_atteint'] = 4;
 
         if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_depasse[$strat_type][$strat])
-            $ret = 5;
+            $ret['obj_atteint'] = 5;
 
+        $ret['obj_depasse'] = 0;
         $perf = $this->performancePRU($this->pru_depasse1[$strat_type][$strat]);
-        if (count($perf) > 1 && $perf[0][0] == 1) $ret = 4;
+        if (count($perf) > 1 && $perf[0][0] == 1) $ret['obj_depasse'] = 4;
 
         $perf = $this->performancePRU($this->pru_depasse2[$strat_type][$strat]);
-        if (count($perf) > 1 && $perf[0][0] == 1) $ret = 5;
+        if (count($perf) > 1 && $perf[0][0] == 1) $ret['obj_depasse'] = 5;
 
         //
         // Criteres pour rentrer sur un titre
@@ -400,23 +402,29 @@ class QuoteComputing {
         return $ret;
     }
 
-    public function getColorAvis() {
+    public function getResumeAvis($avis) {
+        $ret = 3;
+
+        return $ret;
+    }
+
+    public function getColorAvis($avis) {
         $tab_colr = [
             1 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "yellow", 5 => "red"],
             2 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "black", 5 => "black"]
         ];
 
-        return $tab_colr[$this->sc->isInPtf($this->symbol) ? 1 : 2][$this->getAvis()];
+        return $tab_colr[$this->sc->isInPtf($this->symbol) ? 1 : 2][$avis];
     }
 
-    public function getLabelAvis() {
+    public function getLabelAvis($avis) {
 
         $tab_libelle = [
             1 => [ 1 => "Acheter", 2 => "Renforcer",  3 => "Observer", 4 => "Alléger",  5 => "Vendre"],
             2 => [ 1 => "Acheter", 2 => "Initier",    3 => "Observer", 4 => "Attendre", 5 => "Attendre"]
         ];
 
-        return $tab_libelle[$this->sc->isInPtf($this->symbol) ? 1 : 2][$this->getAvis()];
+        return $tab_libelle[$this->sc->isInPtf($this->symbol) ? 1 : 2][$avis];
     }
 
     public function getColorAlert($sens) {
@@ -622,8 +630,9 @@ class QuoteComputing {
         $type         = $this->getType();
         $isInPtf      = $this->sc->isInPtf($this->symbol);
         $sum_valo_in_euro = $this->getSumValoInEuro();
-        $avis_lib     = $this->getLabelAvis();
-        $avis_colr    = $this->getColorAvis();
+        $avis         = $this->getAvis();
+        $avis_lib     = $this->getLabelAvis($this->getResumeAvis($avis));
+        $avis_colr    = $this->getColorAvis($this->getResumeAvis($avis));
 
         $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
