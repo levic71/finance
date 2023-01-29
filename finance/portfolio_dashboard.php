@@ -89,7 +89,7 @@ $lst_orders    = $sc->getOrders();
 				</div>
 				<div id="perf_ribbon3" class="ribbon">Perf<br /><small>0.00%</small></div>
 			</div>
-			<div class="six wide column ptf_secteur" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
+			<div class="six wide column" id="ptf_secteur" style="background: #222; border-bottom-right-radius: 50px; border-bottom: 1px solid grey;">
 				<div id="perf_ribbon2" class="ribbon">Perf<br /><small>0.00%</small></div>
 				<div class="ui buttons">
 					<button id="donut_0" class="mini ui primary button">Répartition</button>
