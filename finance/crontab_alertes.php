@@ -75,13 +75,16 @@ foreach($quotes['stocks'] as $key => $val) {
 	$alerts = [];
 	
 	$alerts[] = $qc->depassementJournalierSeuils();         // Recherche dépassement de seuils
-	$alerts[] = $qc->depassementJournalierMM();             // Recherche depassement MM
-	$alerts[] = $qc->hausseJournaliere(10);                 // Hausse journaliere +10% par rapport a la veille
-	$alerts[] = $qc->performancePRU(20);                    // Depassement +20% PRU
-	$alerts[] = $qc->depassementALaBaissePRU();             // Depassement a la baisse PRU
-	$alerts[] = $qc->depassementJournalier('objectif');     // Depassement hausse/baisse Objectif avec ctrl StopLoss
-	$alerts[] = $qc->depassementJournalier('stopprofit');   // Depassement hausse/baisse Stopprofil avec ctrl StopLoss
-	$alerts[] = $qc->depassementJournalier('stoploss');     // Depassement hausse/baisse Stoploss avec ctrl StopLoss
+
+	if ($qc->isInPtf()) {
+		$alerts[] = $qc->depassementJournalierMM();             // Recherche depassement MM
+		$alerts[] = $qc->hausseJournaliere(10);                 // Hausse journaliere +10% par rapport a la veille
+		$alerts[] = $qc->performancePRU(20);                    // Depassement +20% PRU
+		$alerts[] = $qc->depassementALaBaissePRU();             // Depassement a la baisse PRU
+		$alerts[] = $qc->depassementJournalier('objectif');     // Depassement hausse/baisse Objectif avec ctrl StopLoss
+		$alerts[] = $qc->depassementJournalier('stopprofit');   // Depassement hausse/baisse Stopprofil avec ctrl StopLoss
+		$alerts[] = $qc->depassementJournalier('stoploss');     // Depassement hausse/baisse Stoploss avec ctrl StopLoss
+	}
 
 	// Reformat in one array
 	foreach($alerts as $kk => $tt)

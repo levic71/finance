@@ -337,6 +337,7 @@ class QuoteComputing {
     public function getRegressionType()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_type', 1);   }
     public function getRegressionPeriod() { return $this->sc->getTrendFollowingAttr($this->symbol, 'regression_period', 0); }
     public function getTaux()             { return $this->sc->getDeviseTaux($this->currency); }
+    public function getTauxChangeMoyen()  { return $this->sc->getPositionAttr($this->symbol, 'taux_change_moyen', 1); }
 
     public function getRegion()           { return $this->getQuoteAttr('region'); }
     public function getOpenCloseMarket()  { return $this->getQuoteAttr('marketopen')."-".$this->getQuoteAttr('marketclose'); }
@@ -361,6 +362,7 @@ class QuoteComputing {
     public function isPriceFromPru()   { return $this->is_price_from_pru; }
     public function isAlerteActive()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'active') && $this->sc->getTrendFollowingAttr($this->symbol, 'active') == 1 ? true : false; }
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
+    public function isInPtf()          { return $this->sc->isInPtf($this->symbol); }
 
     public function getAvis() {
 
@@ -604,6 +606,7 @@ class QuoteComputing {
 
         $currency  = $this->getCurrency();                   // Choix de la devise
         $taux      = $this->getTaux();                       // Taux conversion devise
+        $taux_change_moyen = $this->getTauxChangeMoyen();    // Taux change moyen
         $dividende = $this->getDividendeAnnuel();            // Dividende annualise s'il existe
         $price     = $this->getPrice();                      // Prix de l'actif
         $pct       = $this->getPct();
@@ -634,7 +637,7 @@ class QuoteComputing {
         $avis_lib     = $this->getLabelAvis($this->getResumeAvis($avis));
         $avis_colr    = $this->getColorAvis($this->getResumeAvis($avis));
 
-        $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
+        $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>
@@ -807,20 +810,23 @@ class calc {
             // Achat/Vente/Dividende Action
             if ($row['action'] == 1 || $row['action'] == -1 || $row['action'] == 6) {
 
-                $nb = 0;
-                $pru = 0;
+                $nb    = 0;
+                $pru   = 0;
+                $taux_change_moyen = 0;
                 $achat = $row['action'] >= 0 ? true : false;
                 
                 if (isset($positions[$pname]['nb'])) {
 
                     $nb = $positions[$pname]['nb'] + ($row['quantity'] * ($achat ? 1 : -1));
                     
-                    // Si achat on recalcule PRU mais pas si vente
+                    // Si achat on recalcule mais pas si vente
                     $pru = $achat ? ($positions[$pname]['pru'] * $positions[$pname]['nb'] + $row['quantity'] * $row['price']) / $nb : $positions[$pname]['pru'];
+                    $taux_change_moyen = $achat ? ($positions[$pname]['taux_change_moyen'] * $positions[$pname]['nb'] + $row['taux_change'] * $row['quantity']) / $nb : $positions[$pname]['taux_change_moyen'];
 
                 } else {
                     $nb  = $row['quantity'];
                     $pru = $row['price'];
+                    $taux_change_moyen = $row['taux_change'];
                 }
 
                 // Valorisation operation avec le taux de change le jour de la transaction
@@ -836,6 +842,7 @@ class calc {
                 $positions[$pname]['sum_valo_in_euro'] = (isset($positions[$pname]['sum_valo_in_euro']) ? $positions[$pname]['sum_valo_in_euro'] : 0) + ($valo_ope * ($achat ? 1 : -1));
                 $positions[$pname]['nb']  = $nb;
                 $positions[$pname]['pru'] = $pru;
+                $positions[$pname]['taux_change_moyen'] = $taux_change_moyen;
                 $positions[$pname]['other_name'] = $row['other_name'];
                 $positions[$pname]['devise'] = $row['devise'];
                 $sum_commission += $row['commission'];
