@@ -368,11 +368,12 @@ var overlay = {
 			}
 	
 			// si devise != EUR, appliquer taux de change
-			achat    = parseFloat(nb * pru * taux);
+			achat    = parseFloat(nb * pru * taux_moyen);
 			valo     = parseFloat(nb * price * taux);
-			gain_pru = parseFloat(nb * (price - pru) * taux);
+//			gain_pru = parseFloat(nb * (price - pru) * taux);
+//			perf_pru = parseFloat(getPerf(pru, price));
 			gain_pru = parseFloat(nb * ((price * taux) - (pru * taux_moyen))); // Taux moyen PRU ?
-			perf_pru = parseFloat(getPerf(pru, price));
+			perf_pru = parseFloat(getPerf(achat, valo));
 //			gain_pru = parseFloat((nb * price * taux) - sum_valo_in_euro);
 //			perf_pru = parseFloat(getPerf(sum_valo_in_euro, nb * price * taux));
 	
