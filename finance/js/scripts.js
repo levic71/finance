@@ -475,7 +475,7 @@ var overlay = {
 						if (result.isConfirmed) {
 							if (!check_num(valof('f_quote'), 'Cotation', 0, 999999)) return false;
 							let params = attrs([ 'f_quote' ]) + '&symbol=' + pname;
-							go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=manual_price&' + params, no_data: 1 });
+							go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=manual_price&' + params, no_data: 1, no_chg_cn: 1 });
 							element.innerHTML = valof('f_quote') + '&euro;';
 							Dom.attribute(element, { 'data-value': valof('f_quote') });
 							updateDataPage('change');
@@ -529,7 +529,7 @@ var overlay = {
 
 							if (!trendfollowing_ui.checkForm()) return false;
 
-							go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1 });
+							go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1, no_chg_cn: 1 });
 
 							divs[0].innerHTML = valof('f_stoploss');
 							divs[1].innerHTML = valof('f_objectif');
