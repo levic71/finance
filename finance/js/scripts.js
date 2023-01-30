@@ -369,8 +369,8 @@ var overlay = {
 			// si devise != EUR, appliquer taux de change
 			achat    = parseFloat(nb * pru * taux);
 			valo     = parseFloat(nb * price * taux);
-//			gain_pru = parseFloat((nb * price * taux) - sum_valo_in_euro);
-//			perf_pru = parseFloat(getPerf(sum_valo_in_euro, nb * price * taux));
+			gain_pru = parseFloat((nb * price * taux) - sum_valo_in_euro);
+			perf_pru = parseFloat(getPerf(sum_valo_in_euro, nb * price * taux));
 			gain_pru = parseFloat(nb * (price - pru) * taux);
 			perf_pru = parseFloat(getPerf(pru, price));
 	
