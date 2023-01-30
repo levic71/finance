@@ -773,26 +773,26 @@ if (!$readonly) {
             // Calcul de la regression
             let result = regression[fct_name[reg_type]](d_data_reg, { order: 1 });
 
-            // Calcul de la standard deviation
-            var d = dev(tmp) / 2;
+            // Calcul de la standard deviation (ecart type)
+            var ec = dev(tmp) / 2;
 
             // Remise en conformite pour affichage dans graphe
             let j = beginAt;
-            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2+'/EC:'+d.toFixed(2); j++; });
+            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2+'/EC:'+ec.toFixed(2); j++; });
 
             // Ajout complément si linear et beginAt > 0
             [...Array(beginAt).keys()].forEach(function(x) {
                 tab_item[x]['reg'] = result.predict((-1 * beginAt) + x)[1];
-                tab_item[x]['r2']  = result.r2;
+                tab_item[x]['r2']  = result.r2+'/EC:'+ec.toFixed(2);
             });
 
             // Regression linéaire +11 ecart type 
             [...Array(tab_item.length).keys()].forEach(function(x) {
                 v = result.predict(-1*beginAt + x)[1];
-                tab_item[x]['reg1'] = v - (2 * d);
-                tab_item[x]['reg2'] = v - d;
-                tab_item[x]['reg3'] = v + d;
-                tab_item[x]['reg4'] = v + (2 * d);
+                tab_item[x]['reg1'] = v - (2 * ec);
+                tab_item[x]['reg2'] = v - ec;
+                tab_item[x]['reg3'] = v + ec;
+                tab_item[x]['reg4'] = v + (2 * ec);
             });
 
         });
