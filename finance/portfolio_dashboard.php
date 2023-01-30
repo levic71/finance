@@ -329,7 +329,7 @@ updateDataPage = function(opt) {
 	glob_gain = trendfollowing_ui.ptf.valo - trendfollowing_ui.ptf.achats;
 
 	setColNumericTab('sum_valo',  trendfollowing_ui.ptf.valo,  trendfollowing_ui.ptf.valo.toFixed(2)  + '&euro;');
-	setColNumericTab('glob_perf', glob_perf, '<div><button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + 's%</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + '&euro;</label></div>');
+	setColNumericTab('glob_perf', glob_perf, '<div><button class="tiny ui ' + (glob_perf >= 0 ? 'aaf-positive' : 'aaf-negative') + ' button">' + glob_perf.toFixed(2) + '%</button><label>' + (glob_gain >= 0 ? '+' : '') + glob_gain.toFixed(2) + '&euro;</label></div>');
 
 	addCN('perf_ribbon2', glob_perf >= 0 ? "ribbon--green" : "ribbon--red");
 	Dom.find('#perf_ribbon2 small')[0].innerHTML = glob_perf.toFixed(2) + '%';

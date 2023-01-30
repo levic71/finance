@@ -9,7 +9,7 @@ include "common.php";
 $symbol = "";
 $ptf_id = -1;
 
-$default_button_choice = [ 'rsi' => 0, 'volume' => 1, 'alarm' => 1, 'av' => 1, 'reg' => 0 ];
+$default_button_choice = [ 'rsi' => 0, 'volume' => 1, 'alarm' => 1, 'av' => 1, 'reg' => 0, 'scale' => 0 ];
 
 foreach (['symbol', 'edit', 'ptf_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -216,6 +216,7 @@ $js_bubbles_data = "";
         <span class="ui buttons">
             <button id="graphe_volume_bt" class="mini ui <?= $default_button_choice['volume'] == 1 ? $bt_volume_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
             <button id="graphe_reg_bt"    class="mini ui <?= $default_button_choice['reg']    == 1 ? $bt_mmx_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted chart line"></i></button>
+            <button id="graphe_scale_bt"  class="mini ui <?= $default_button_choice['scale']  == 1 ? $bt_mmx_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted text height"></i></button>
         <? if ($sess_context->isUserConnected()) { ?>
             <button id="graphe_alarm_bt"  class="mini ui <?= $default_button_choice['alarm'] == 1 ? $bt_alarm_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted flag"></i></button>
             <button id="graphe_av_bt"     class="mini ui <?= $default_button_choice['av']    == 1 ? $bt_av_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted dollar"></i></button>
@@ -552,7 +553,8 @@ if (!$readonly) {
         'graphe_mm50_bt'   : 'MM50',
         'graphe_mm200_bt'  : 'MM200',
         'graphe_volume_bt' : 'VOLUME',
-        'graphe_reg_bt'    : 'REG'
+        'graphe_reg_bt'    : 'REG',
+        'graphe_scale_bt'  : 'SCALE'
     };
 
     <? if ($sess_context->isUserConnected()) { ?>
@@ -771,18 +773,18 @@ if (!$readonly) {
             // Calcul de la regression
             let result = regression[fct_name[reg_type]](d_data_reg, { order: 1 });
 
+            // Calcul de la standard deviation
+            var d = dev(tmp) / 2;
+
             // Remise en conformite pour affichage dans graphe
             let j = beginAt;
-            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2 + '/' + result.string; j++; });
+            result.points.forEach(function(item) { tab_item[j]['reg'] = item[1]; tab_item[j]['r2'] = result.r2+'/EC:'+d.toFixed(2); j++; });
 
             // Ajout complément si linear et beginAt > 0
             [...Array(beginAt).keys()].forEach(function(x) {
                 tab_item[x]['reg'] = result.predict((-1 * beginAt) + x)[1];
                 tab_item[x]['r2']  = result.r2;
             });
-
-            // Calcul de la standard deviation
-            var d = dev(tmp) / 2;
 
             // Regression linéaire +11 ecart type 
             [...Array(tab_item.length).keys()].forEach(function(x) {
