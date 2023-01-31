@@ -128,15 +128,15 @@ check_JJMMAAAA = function(str, label)
 	return true;
 }
 
-check_num = function(num, label, min, max)
+check_num = function(num, label, min, max, display_err = true)
 {
-	if (num.length == 0) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
+	if (num.length == 0) { if (display_err) Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
 	for(var i=0; i < num.length; i++)
 	{
 		var car=num.substring(i, i+1);
-		if (!((car >= "0" && car <= "9") || car == '.')) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" doit être numérique' }); return false; }
+		if (!((car >= "0" && car <= "9") || car == '.')) { if (display_err) Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" doit être numérique' }); return false; }
 	}
-	if (num > max || num < min) { Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" doit être compris entre '+min+' et '+max }); return false; }
+	if (num > max || num < min) { if (display_err) Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" doit être compris entre '+min+' et '+max }); return false; }
 	return true;
 }
 isacar = function(car) { if ((car >= "0" && car <= "9") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z")) return true; return false; }
@@ -324,10 +324,10 @@ var overlay = {
 	checkForm : () => {
 		var ret = true;
 	
-		if (!check_num(valof('f_stoploss'),   'Stop loss',   0, 999999)) ret = false;
-		if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999)) ret = false;
-		if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999)) ret = false;
-		if (!check_num(valof('f_reg_period'), 'Période régression', 0, 999999)) ret = false;
+		if (!check_num(valof('f_stoploss'),   'Stop loss',   0, 999999, false)) ret = false;
+		if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999, false)) ret = false;
+		if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999, false)) ret = false;
+		if (!check_num(valof('f_reg_period'), 'Période régression', 0, 999999, false)) ret = false;
 
 		return ret;
 	},
@@ -523,11 +523,14 @@ var overlay = {
 						confirmButtonText: 'Valider',
 						cancelButtonText: 'Annuler',
 						showLoaderOnConfirm: true,
+						preConfirm: () => {
+							let c = trendfollowing_ui.checkForm();
+							if (!c) Swal.showValidationMessage(`Formulaire invalide`);
+							return c;
+						},
 						allowOutsideClick: () => !Swal.isLoading()
 					}).then((result) => {
 						if (result.isConfirmed) {
-
-							if (!trendfollowing_ui.checkForm()) return false;
 
 							go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1, no_chg_cn: 1 });
 

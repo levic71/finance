@@ -944,6 +944,10 @@ table th { color: burlywood !important; cursor: pointer !important; }
     padding: 4px 10px !important;
 }
 
+.stock_detail_page .graph_bts span {
+    margin-right: 10px;
+}
+
 #ptf_pos_sync_bt { display: none; }
 
 @media only screen and (max-width: 1024px) {
@@ -997,6 +1001,16 @@ table th { color: burlywood !important; cursor: pointer !important; }
         padding: 0px 5px 50px !important;
     }
 
+    .graph_bts {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    .stock_detail_page .graph_bts span {
+        margin: 5px 0px;
+    }
+
     .foot_buttons {
         background: transparent;
         display: grid;
@@ -1042,9 +1056,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
     #stocks_box h2 div {
         margin-left: 0px;
         display: none;
-    }
-    .stock_detail_page span:first-child {
-        padding-bottom: 10px;
     }
     #sim_card2 table td:nth-child(2) {
         display: none;
@@ -1250,10 +1261,18 @@ table th { color: burlywood !important; cursor: pointer !important; }
     .ribbon:after {
         top: 3.5rem;
     }
+    .portfolio_page .ribbon:after {
+        top: 4.95rem;
+    }
 
     #tooltip_stock_graphe, #tooltip_stock_graphe_div {
         top: 90px;
     }
+
+    #ptf_secteur {
+        width: 100% !important;
+    }
+        
 
 }
 
