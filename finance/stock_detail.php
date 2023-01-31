@@ -1075,7 +1075,8 @@ if (!$readonly) {
         rmCN(bt, 'loading');
     }
 
-	if (getCookie('status_stock_bt_reg', 0) == 1) switchCN('graphe_reg_bt', '<?= $bt_grey_colr ?>', '<?= $bt_mmx_colr ?>');
+	if (getCookie('status_stock_bt_reg',   0) == 1) switchCN('graphe_reg_bt', '<?= $bt_grey_colr ?>', '<?= $bt_mmx_colr ?>');
+	if (getCookie('status_stock_bt_scale', 0) == 1) switchCN('graphe_scale_bt', '<?= $bt_grey_colr ?>', '<?= $bt_mmx_colr ?>');
 
     // Initialisation des graphes
     update_all_charts('graphe_all_bt');
