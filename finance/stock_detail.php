@@ -194,29 +194,31 @@ $js_bubbles_data = "";
 
 
 <div id="canvas_area" class="ui container inverted segment" style="padding-top: 0px !important; margin-top: 0px !important;">
-    <span style="margin-bottom: 10px;">
+    <span class="graph_bts">
         <span class="ui buttons">
             <button id="graphe_D_bt"      class="mini ui <?= $default_button_choice['rsi'] == 0  ? $bt_interval_colr : $bt_grey_colr ?> button">D</button>
             <button id="graphe_W_bt"      class="mini ui <?= $default_button_choice['rsi'] == 1  ? $bt_interval_colr : $bt_grey_colr ?> button">W</button>
-            <button id="graphe_M_bt"      class="mini ui <?= $default_button_choice['rsi'] == 2  ? $bt_interval_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">M</button>
+            <button id="graphe_M_bt"      class="mini ui <?= $default_button_choice['rsi'] == 2  ? $bt_interval_colr : $bt_grey_colr ?> button">M</button>
         </span>
         <span class="ui buttons">
             <button id="graphe_all_bt"    class="mini ui <?= $bt_period_colr ?> button">All</button>
             <button id="graphe_3Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">3Y</button>
             <button id="graphe_1Y_bt"     class="mini ui <?= $bt_grey_colr ?> button">1Y</button>
-            <button id="graphe_1T_bt"     class="mini ui <?= $bt_grey_colr ?> button" style="margin-right: 20px;">1T</button>
+            <button id="graphe_1T_bt"     class="mini ui <?= $bt_grey_colr ?> button">1T</button>
+        </span>
+        <span class="ui buttons">
+            <button id="graphe_reg_bt"    class="mini ui <?= $default_button_choice['reg']    == 1 ? $bt_mmx_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted chart line"></i></button>
+            <button id="graphe_scale_bt"  class="mini ui <?= $default_button_choice['scale']  == 1 ? $bt_mmx_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted text height"></i></button>
         </span>
         <span class="ui buttons">
             <button id="graphe_mm"        class="mini ui <?= $bt_grey_colr ?> button">MM</button>
             <button id="graphe_mm7_bt"    class="mini ui <?= ($mmx & 1) == 1 ? $bt_mmx_colr : $bt_grey_colr ?> button">7</button>
             <button id="graphe_mm20_bt"   class="mini ui <?= ($mmx & 2) == 2 ? $bt_mmx_colr : $bt_grey_colr ?> button">20</button>
             <button id="graphe_mm50_bt"   class="mini ui <?= ($mmx & 4) == 4 ? $bt_mmx_colr : $bt_grey_colr ?> button">50</button>
-            <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button" style="margin-right: 20px;">200</button>
+            <button id="graphe_mm200_bt"  class="mini ui <?= ($mmx & 8) == 8 ? $bt_mmx_colr : $bt_grey_colr ?> button">200</button>
         </span>
         <span class="ui buttons">
             <button id="graphe_volume_bt" class="mini ui <?= $default_button_choice['volume'] == 1 ? $bt_volume_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted signal"></i></button>
-            <button id="graphe_reg_bt"    class="mini ui <?= $default_button_choice['reg']    == 1 ? $bt_mmx_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted chart line"></i></button>
-            <button id="graphe_scale_bt"  class="mini ui <?= $default_button_choice['scale']  == 1 ? $bt_mmx_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted text height"></i></button>
         <? if ($sess_context->isUserConnected()) { ?>
             <button id="graphe_alarm_bt"  class="mini ui <?= $default_button_choice['alarm'] == 1 ? $bt_alarm_colr : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted flag"></i></button>
             <button id="graphe_av_bt"     class="mini ui <?= $default_button_choice['av']    == 1 ? $bt_av_colr    : $bt_grey_colr ?> button"><i style="margin-left: 5px;" class="icon inverted dollar"></i></button>
@@ -918,6 +920,9 @@ if (!$readonly) {
         // Changement couleur bt
         switchCN(bt, '<?= $bt_grey_colr ?>', ref_colr);
 
+        // Prise en compte changement scale log ou lineaire
+        options_Stock_Graphe.scales.y1.type = isCN('graphe_scale_bt', '<?= $bt_mmx_colr ?>') ? 'logarithmic' : 'linear';
+
         // Update sinon pas ok pour bt alarm et bt achatvente
         updateAlarmAVDisplay(chart);
 
@@ -992,7 +997,7 @@ if (!$readonly) {
         // Ajustement des données
         var nb_items = update_data(interval_period_days[getIntervalStatus()][getPeriodStatus()]);
 
-        options_Stock_Graphe.scales.y1.type = 'logarithmic';
+        options_Stock_Graphe.scales.y1.type = isCN('graphe_scale_bt', '<?= $bt_mmx_colr ?>') ? 'logarithmic' : 'linear';
 
         // Changement dynamique option graphe
         if (g_new_data.length > 2000) {
@@ -1143,7 +1148,7 @@ if (!$readonly) {
         });
     });
 
-    // Listenet sur bt 1T, 1Y, 3Y, ALL, D, W, M
+    // Listener sur bt 1T, 1Y, 3Y, ALL, D, W, M
     ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt', 'graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((item) => {
         Dom.addListener(Dom.id(item), Dom.Event.ON_CLICK, function(event) {
             update_all_charts(item);
