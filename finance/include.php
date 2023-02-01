@@ -261,31 +261,32 @@ class QuoteComputing {
     protected $price;
     protected $currency;
 
+    // Type strategie actif => 1: Speculatif, 2: Dividende, 3: Croissance, 4: D&C
+    // Type strategie investisseur => 1 : Defensive, 2: Offensive, 3: Aggressive, 4: Protectrice
     protected $seuil_objectif_atteint = [
-        1 => [ 1 => 0,  2 => 20 ],
-        2 => [ 1 => 20, 2 => 50 ],
-        3 => [ 1 => 20, 2 => 50 ], 
-        4 => [ 1 => 20, 2 => 50 ]
+        1 => [ 1 => 0,  2 => 20, 3 => 60,  4 => 0 ],
+        2 => [ 1 => 20, 2 => 50, 3 => 100, 4 => 0 ],
+        3 => [ 1 => 20, 2 => 50, 3 => 80,  4 => 0 ], 
+        4 => [ 1 => 20, 2 => 50, 3 => 90,  4 => 0 ]
     ];
     protected $seuil_objectif_depasse = [
-        1 => [ 1 => 25, 2 => 50 ], 
-        2 => [ 1 => 40, 2 => 60 ], 
-        3 => [ 1 => 40, 2 => 60 ], 
-        4 => [ 1 => 40, 2 => 60 ]
+        1 => [ 1 => 25, 2 => 50, 3 => 40, 4 => 0 ], 
+        2 => [ 1 => 40, 2 => 60, 3 => 40, 4 => 0 ], 
+        3 => [ 1 => 40, 2 => 60, 3 => 40, 4 => 0 ], 
+        4 => [ 1 => 40, 2 => 60, 3 => 40, 4 => 0 ]
     ];
-    protected $pru_depasse1 = [ 
-        1 => [ 1 => 15, 2 => 30 ], 
-        2 => [ 1 => 30, 2 => 60 ], 
-        3 => [ 1 => 15, 2 => 30 ], 
-        4 => [ 1 => 15, 2 => 30 ]
+    protected $pru_depasseN1 = [ 
+        1 => [ 1 => 15, 2 => 30, 3 => 60, 4 => 7 ], 
+        2 => [ 1 => 30, 2 => 60, 3 => 80, 4 => 20 ], 
+        3 => [ 1 => 15, 2 => 30, 3 => 70, 4 => 10 ], 
+        4 => [ 1 => 15, 2 => 40, 3 => 75, 4 => 15 ]
     ];
-    protected $pru_depasse2 = [
-        1 => [ 1 => 30, 2 => 60 ], 
-        2 => [ 1 => 50, 2 => 80 ], 
-        3 => [ 1 => 30, 2 => 60 ], 
-        4 => [ 1 => 30, 2 => 60 ]
+    protected $pru_depasseN2 = [
+        1 => [ 1 => 30, 2 => 60, 3 => 90,  4 => 10 ], 
+        2 => [ 1 => 50, 2 => 80, 3 => 120, 4 => 25 ], 
+        3 => [ 1 => 30, 2 => 60, 3 => 80,  4 => 15 ], 
+        4 => [ 1 => 30, 2 => 60, 3 => 100, 4 => 20 ]
     ];
-
 
     // $val -> $sc->getPositionAttr($symbol,
     // $qs -> this->quote
@@ -352,6 +353,7 @@ class QuoteComputing {
     public function getPct()              { return $this->getQuoteAttr('percent', 0); }
     public function getDividendeAnnuel()  { return $this->getQuoteAttr('dividende_annualise', 0); }
 
+    public function getName()          { return $this->getQuoteAttr(('name')); /* Concatenation de 2 strings */ }
     public function getPName()         { return $this->symbol.($this->getOtherName() ? '(*)' : ''); /* Concatenation de 2 strings */ }
     public function getValo()          { return sprintf("%.2f", $this->sc->getPositionAttr($this->symbol, 'nb') * $this->price); }
     public function getPctMM200()      { return $this->getQuoteAttr('MM200') ? (($this->getQuoteAttr('MM200') - $this->price) * 100) / $this->price : 0; }
@@ -364,7 +366,7 @@ class QuoteComputing {
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
     public function isInPtf()          { return $this->sc->isInPtf($this->symbol); }
 
-    public function getAvis() {
+    public function getAvis($strat_ptf = 4) {
 
         $ret = [];
 
@@ -376,26 +378,24 @@ class QuoteComputing {
         $stopprofit = $this->getStopProfit();
         $options    = $this->getOptions();
         $seuils     = explode(';', $this->getSeuils());
-        $strat_type = $this->getStrategieType(); // 1: Speculatif, 2: Dividende, 3: Croissance, 4: D&C
-
-        $strat = 1; // 1: Defensive, 2: Aggressive
+        $strat_type = $this->getStrategieType();
 
         //
         // Criteres de hausse
         // 
-        $ret['obj_atteint'] = 0;
-        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_atteint[$strat_type][$strat])
-            $ret['obj_atteint'] = 4;
+        $ret['obj_N1_atteint'] = 0;
+        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_atteint[$strat_type][$strat_ptf])
+            $ret['obj_N1_atteint'] = 4;
 
-        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_depasse[$strat_type][$strat])
-            $ret['obj_atteint'] = 5;
+        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_depasse[$strat_type][$strat_ptf])
+            $ret['obj_N1_atteint'] = 5;
 
-        $ret['obj_depasse'] = 0;
-        $perf = $this->performancePRU($this->pru_depasse1[$strat_type][$strat]);
-        if (count($perf) > 1 && $perf[0][0] == 1) $ret['obj_depasse'] = 4;
+        $ret['obj_N2_atteint'] = 0;
+        $perf = $this->performancePRU($this->pru_depasseN1[$strat_type][$strat_ptf]);
+        if (count($perf) > 1 && $perf[0][0] == 1) $ret['obj_N2_atteint'] = 4;
 
-        $perf = $this->performancePRU($this->pru_depasse2[$strat_type][$strat]);
-        if (count($perf) > 1 && $perf[0][0] == 1) $ret['obj_depasse'] = 5;
+        $perf = $this->performancePRU($this->pru_depasseN2[$strat_type][$strat_ptf]);
+        if (count($perf) > 1 && $perf[0][0] == 1) $ret['obj_N2_atteint'] = 5;
 
         //
         // Criteres pour rentrer sur un titre
@@ -404,7 +404,7 @@ class QuoteComputing {
         return $ret;
     }
 
-    public function getResumeAvis($avis) {
+    public function getScoreAvis($avis) {
         $ret = 3;
 
         return $ret;
@@ -634,8 +634,10 @@ class QuoteComputing {
         $isInPtf      = $this->sc->isInPtf($this->symbol);
         $sum_valo_in_euro = $this->getSumValoInEuro();
         $avis         = $this->getAvis();
-        $avis_lib     = $this->getLabelAvis($this->getResumeAvis($avis));
-        $avis_colr    = $this->getColorAvis($this->getResumeAvis($avis));
+        $avis_lib     = $this->getLabelAvis($this->getScoreAvis($avis));
+        $avis_colr    = $this->getColorAvis($this->getScoreAvis($avis));
+
+        echo $this->symbol; var_dump($avis);
 
         $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">

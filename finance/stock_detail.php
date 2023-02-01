@@ -63,7 +63,7 @@ $qc = new QuoteComputing($sc, $symbol);
 $qc->refreshQuote($row_stock);
 
 $data           = $qc->getQuote();
-$name           = $qc->getPName();
+$name           = $qc->getName();
 $currency       = $qc->getCurrency();
 $position_pru   = $qc->getPru();
 $curr_graphe    = $qc->isTypeIndice() ? "" : uimx::getGraphCurrencySign($currency);
