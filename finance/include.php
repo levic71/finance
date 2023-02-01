@@ -637,7 +637,7 @@ class QuoteComputing {
         $avis_lib     = $this->getLabelAvis($this->getScoreAvis($avis));
         $avis_colr    = $this->getColorAvis($this->getScoreAvis($avis));
 
-        echo $this->symbol; var_dump($avis);
+//        echo $this->symbol; var_dump($avis);
 
         $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
