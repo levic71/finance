@@ -543,7 +543,6 @@ var overlay = {
 							if (valof('f_active') == 0 || parseInt(valof('f_stoploss'))   == 0) divs[0].className = divs[0].className + ' grey';
 							if (valof('f_active') == 0 || parseInt(valof('f_objectif'))   == 0) divs[1].className = divs[1].className + ' grey';
 							if (valof('f_active') == 0 || parseInt(valof('f_stopprofit')) == 0) divs[2].className = divs[2].className + ' grey';
-							if (valof('f_active') == 0 || parseInt(valof('f_seuils'))     == 0) divs[3].className = divs[3].className + ' grey';
 							Dom.attribute(element.parentNode, { 'data-seuils'  : valof('f_seuils') });
 							Dom.attribute(element.parentNode, { 'data-strat-type' : valof('f_strat_type') });
 							Dom.attribute(element.parentNode, { 'data-reg-type'   : valof('f_reg_type') });
