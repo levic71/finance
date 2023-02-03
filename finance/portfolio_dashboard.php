@@ -311,7 +311,7 @@ updateDataPage = function(opt) {
 	ttf = <?= sprintf("%.2f", $portfolio_data['ttf']) ?>;
 
 	if (opt == 'init') {
-		infos_area.l[0] = "Estimation Portefeuille";         infos_area.v[0] = valo_ptf.toFixed(2) + '\c';
+		infos_area.l[0] = "Estimation Portefeuille";         infos_area.v[0] = valo_ptf.toFixed(2) + '\u20AC';
 		infos_area.l[1] = "Cash disponible";                 infos_area.v[1] = cash.toFixed(2) + '\u20AC';
 		infos_area.l[2] = "+/- Value";                       infos_area.v[2] = gain_perte.toFixed(2) + '\u20AC';
 		infos_area.l[3] = "&sum; Dépots";                    infos_area.v[3] = depots.toFixed(2) + '\u20AC';
