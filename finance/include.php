@@ -193,8 +193,8 @@ class StockComputing {
     protected $positions = [];
     protected $orders    = [];
     protected $trend_following = [];
-
     protected $save_quotes = [];
+    protected $strat_ptf   = 1;
 
     public function __construct($quotes, $ptf, $devises) {
 
@@ -212,6 +212,8 @@ class StockComputing {
 
     }
 
+    public function setStratPtf($strat) { $this->strat_ptf = $strat; }
+    public function getStratPtf()       { return $this->strat_ptf; }
     public function isPtfSynthese()     { return $this->ptf['infos']['synthese'] == 1 ? true : false; }
     public function getTrendFollowing() { return $this->trend_following; }
     public function getPositions()      { return $this->positions; }
@@ -360,7 +362,7 @@ class QuoteComputing {
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
     public function isInPtf()          { return $this->sc->isInPtf($this->symbol); }
 
-    public function getAvis($strat_ptf = 1) {
+    public function getAvis() {
 
         $ret = [];
 
@@ -373,6 +375,7 @@ class QuoteComputing {
         $options    = $this->getOptions();
         $seuils     = explode(';', $this->getSeuils());
         $strat_type = $this->getStrategieType();
+        $strat_ptf  = $this->sc->getStratPtf();
 
         //
         // Limites atteintes

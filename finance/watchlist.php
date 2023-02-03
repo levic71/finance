@@ -9,8 +9,9 @@ session_start();
 include "common.php";
 
 $portfolio_id = 0;
+$strat_ptf    = 1;
 
-foreach([] as $key)
+foreach([ 'strat_ptf' ] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -33,6 +34,7 @@ $quotes = calc::getIndicatorsLastQuote();
 $portfolio_data = calc::aggregatePortfolioByUser($sess_context->getUserId());
 
 $sc = new StockComputing($quotes, $portfolio_data, $devises);
+$sc->setStratPtf($strat_ptf);
 
 // On récupère les infos du portefeuille + les positions et les ordres
 $lst_positions = $sc->getPositions();
@@ -45,11 +47,13 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 <div class="ui container inverted segment">
 
 	<h2 class="ui left floated">
-		<i class="inverted bullseye icon"></i>Actifs
+		<i class="inverted bullseye icon"></i>Watchlist
 		<button id="ptf_pos_sync_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black sync icon"></i></button>
-		<div class="ui right floated buttons">
-			<button id="donut_0" class="mini ui primary button">Passive</button>
-			<button id="donut_1" class="mini ui grey button">Offensive</button>
+		<div class="ui right floated buttons" id="strat_bts">
+			<button data-value="1" class="mini ui <?= $strat_ptf == 1 ? "primary" : "grey" ?> button">Défensive</button>
+			<button data-value="2" class="mini ui <?= $strat_ptf == 2 ? "primary" : "grey" ?> button">Passive</button>
+			<button data-value="3" class="mini ui <?= $strat_ptf == 3 ? "primary" : "grey" ?> button">Offensive</button>
+			<button data-value="4" class="mini ui <?= $strat_ptf == 4 ? "primary" : "grey" ?> button">Aggressive</button>
 		</div>
 	</h2>
 	<div class="ui stackable column grid">
@@ -93,6 +97,13 @@ updateDataPage = function(opt) {
 	// On parcours les lignes du tableau positions pour calculer valo, perf, gain, atio et des tooltip du tableau des positions
 	trendfollowing_ui.computePositionsTable('lst_position', -1);
 }('init');
+
+// Listener sur boutons tags
+Dom.find('#strat_bts button').forEach(function(item) {
+	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
+        go({ action: 'home', id: 'main', url: 'watchlist.php?strat_ptf=' + Dom.attribute(item, 'data-value'), loading_area: 'main' });
+	});
+});
 
 // Tri sur tableau
 Sortable.initTable(el("lst_position"));
