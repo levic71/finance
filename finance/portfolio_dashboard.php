@@ -7,6 +7,7 @@ session_start();
 include "common.php";
 
 $portfolio_id = 0;
+$strat_ptf    = isset($_COOKIE["strat_ptf"]) ? $_COOKIE["strat_ptf"] :  1;
 
 foreach(['portfolio_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -34,6 +35,7 @@ $quotes = calc::getIndicatorsLastQuote();
 $portfolio_data = calc::aggregatePortfolioById($portfolio_id);
 
 $sc = new StockComputing($quotes, $portfolio_data, $devises);
+$sc->setStratPtf($strat_ptf);
 
 // On récupère les infos du portefeuille + les positions et les ordres
 $lst_positions = $sc->getPositions();
