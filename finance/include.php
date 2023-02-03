@@ -261,31 +261,25 @@ class QuoteComputing {
     protected $price;
     protected $currency;
 
+    // Type strategie ptf   => 1: Protectrice,  2: Passive, 3: Offensive, 4: Aggressive
     // Type strategie actif => 1: Speculatif, 2: Dividende, 3: Croissance, 4: D&C
-    // Type strategie investisseur => 1 : Defensive, 2: Offensive, 3: Aggressive, 4: Protectrice
-    protected $seuil_objectif_atteint = [
-        1 => [ 1 => 0,  2 => 20, 3 => 60,  4 => 0 ],
-        2 => [ 1 => 20, 2 => 50, 3 => 100, 4 => 0 ],
-        3 => [ 1 => 20, 2 => 50, 3 => 80,  4 => 0 ], 
-        4 => [ 1 => 20, 2 => 50, 3 => 90,  4 => 0 ]
+    protected $limits_objectif = [
+        1 => [ 1 => 0,  2 => 0,  3 => 0,  4 => 0  ],
+        2 => [ 1 => 0,  2 => 30, 3 => 20, 4 => 25 ],
+        3 => [ 1 => 20, 2 => 60, 3 => 40, 4 => 50 ], 
+        4 => [ 1 => 60, 2 => 90, 3 => 60, 4 => 75 ]
     ];
-    protected $seuil_objectif_depasse = [
-        1 => [ 1 => 25, 2 => 50, 3 => 40, 4 => 0 ], 
-        2 => [ 1 => 40, 2 => 60, 3 => 40, 4 => 0 ], 
-        3 => [ 1 => 40, 2 => 60, 3 => 40, 4 => 0 ], 
-        4 => [ 1 => 40, 2 => 60, 3 => 40, 4 => 0 ]
+    protected $limits_stopprofit = [
+        1 => [ 1 => 0,  2 => 0,  3 => 0,  4 => 0 ],
+        2 => [ 1 => 0,  2 => 0,  3 => 0,  4 => 0 ],
+        3 => [ 1 => 10, 2 => 20, 3 => 10, 4 => 10 ], 
+        4 => [ 1 => 20, 2 => 40, 3 => 20, 4 => 30 ]
     ];
-    protected $pru_depasseN1 = [ 
-        1 => [ 1 => 15, 2 => 30, 3 => 60, 4 => 7 ], 
-        2 => [ 1 => 30, 2 => 60, 3 => 80, 4 => 20 ], 
-        3 => [ 1 => 15, 2 => 30, 3 => 70, 4 => 10 ], 
-        4 => [ 1 => 15, 2 => 40, 3 => 75, 4 => 15 ]
-    ];
-    protected $pru_depasseN2 = [
-        1 => [ 1 => 30, 2 => 60, 3 => 90,  4 => 10 ], 
-        2 => [ 1 => 50, 2 => 80, 3 => 120, 4 => 25 ], 
-        3 => [ 1 => 30, 2 => 60, 3 => 80,  4 => 15 ], 
-        4 => [ 1 => 30, 2 => 60, 3 => 100, 4 => 20 ]
+    protected $limits_pru = [
+        1 => [ 1 => 0,  2 => 0,  3 => 0,  4 => 0 ], 
+        2 => [ 1 => 10, 2 => 20, 3 => 20, 4 => 20 ], 
+        3 => [ 1 => 30, 2 => 50, 3 => 80, 4 => 60 ], 
+        4 => [ 1 => 30, 2 => 60, 3 => 90, 4 => 70 ]
     ];
 
     // $val -> $sc->getPositionAttr($symbol,
@@ -366,7 +360,7 @@ class QuoteComputing {
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
     public function isInPtf()          { return $this->sc->isInPtf($this->symbol); }
 
-    public function getAvis($strat_ptf = 4) {
+    public function getAvis($strat_ptf = 1) {
 
         $ret = [];
 
@@ -381,25 +375,11 @@ class QuoteComputing {
         $strat_type = $this->getStrategieType();
 
         //
-        // Criteres de hausse
+        // Limites atteintes
         // 
-        $ret['obj_N1_atteint'] = 0;
-        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_atteint[$strat_type][$strat_ptf])
-            $ret['obj_N1_atteint'] = 4;
-
-        if ($objectif > 0 && $this->pourcentagevariation($objectif, $price) >= $this->seuil_objectif_depasse[$strat_type][$strat_ptf])
-            $ret['obj_N1_atteint'] = 5;
-
-        $ret['obj_N2_atteint'] = 0;
-        $perf = $this->performancePRU($this->pru_depasseN1[$strat_type][$strat_ptf]);
-        if (count($perf) > 1 && $perf[0][0] == 1) $ret['obj_N2_atteint'] = 4;
-
-        $perf = $this->performancePRU($this->pru_depasseN2[$strat_type][$strat_ptf]);
-        if (count($perf) > 1 && $perf[0][0] == 1) $ret['obj_N2_atteint'] = 5;
-
-        //
-        // Criteres pour rentrer sur un titre
-        // 
+        $ret['limit_objectif']   = $objectif > 0   && $this->pourcentagevariation($objectif,   $price) >= $this->limits_objectif[$strat_ptf][$strat_type]   ? 1 : 0;
+        $ret['limit_stopprofit'] = $stopprofit > 0 && $this->pourcentagevariation($stopprofit, $price) >= $this->limits_stopprofit[$strat_ptf][$strat_type] ? 1 : 0;
+        $ret['limit_pru']        = $pru > 0        && $this->pourcentagevariation($pru, $price)        >= $this->limits_pru[$strat_ptf][$strat_type]        ? 1 : 0;
 
         return $ret;
     }
@@ -407,13 +387,22 @@ class QuoteComputing {
     public function getScoreAvis($avis) {
         $ret = 3;
 
+        if ($this->isInPtf()) {
+
+            if ($avis['limit_stopprofit'] == 1) $ret = 5;
+            if ($avis['limit_objectif']   == 1) $ret = 4;
+
+        } else {
+
+        }
+
         return $ret;
     }
 
     public function getColorAvis($avis) {
         $tab_colr = [
             1 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "yellow", 5 => "red"],
-            2 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "black", 5 => "black"]
+            2 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "black",  5 => "black"]
         ];
 
         return $tab_colr[$this->sc->isInPtf($this->symbol) ? 1 : 2][$avis];
@@ -633,9 +622,9 @@ class QuoteComputing {
         $type         = $this->getType();
         $isInPtf      = $this->sc->isInPtf($this->symbol);
         $sum_valo_in_euro = $this->getSumValoInEuro();
-        $avis         = $this->getAvis();
-        $avis_lib     = $this->getLabelAvis($this->getScoreAvis($avis));
-        $avis_colr    = $this->getColorAvis($this->getScoreAvis($avis));
+        $avis         = $this->getScoreAvis($this->getAvis());
+        $avis_lib     = $this->getLabelAvis($avis);
+        $avis_colr    = $this->getColorAvis($avis);
 
 //        echo $this->symbol; var_dump($avis);
 
