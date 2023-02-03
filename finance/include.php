@@ -384,6 +384,17 @@ class QuoteComputing {
         $ret['limit_stopprofit'] = $stopprofit > 0 && $this->pourcentagevariation($stopprofit, $price) >= $this->limits_stopprofit[$strat_ptf][$strat_type] ? 1 : 0;
         $ret['limit_pru']        = $pru > 0        && $this->pourcentagevariation($pru, $price)        >= $this->limits_pru[$strat_ptf][$strat_type]        ? 1 : 0;
 
+        if (count($seuils) > 0) {
+
+            // Parcours du cours de chaque seuil
+            $x = 1;
+            foreach($seuils as $i => $v) {
+                $tmp = explode('|', $v);
+                $inverse = isset($tmp[1]) ? $tmp[1] : 1;
+                $ret['limit_seuil'] = $price < $tmp[0] ? -1 * $x++ : 0;
+            }
+        }
+
         return $ret;
     }
 
@@ -392,11 +403,13 @@ class QuoteComputing {
 
         if ($this->isInPtf()) {
 
-            if ($avis['limit_pru']        == 1) $ret = 4;
-            if ($avis['limit_objectif']   == 1) $ret = 4;
-            if ($avis['limit_stopprofit'] == 1) $ret = 5;
+            if ($avis['limit_pru']        >= 1) $ret = 4;
+            if ($avis['limit_objectif']   >= 1) $ret = 4;
+            if ($avis['limit_stopprofit'] >= 1) $ret = 5;
 
         } else {
+
+            if ($avis['limit_seuil']        < 0) $ret = 2;
 
         }
 

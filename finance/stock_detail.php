@@ -11,6 +11,8 @@ $ptf_id = -1;
 
 $default_button_choice = [ 'rsi' => 0, 'volume' => 1, 'alarm' => 1, 'av' => 1, 'reg' => 0, 'scale' => 0 ];
 
+$strat_ptf    = isset($_COOKIE["strat_ptf"]) ? $_COOKIE["strat_ptf"] :  1;
+
 foreach (['symbol', 'edit', 'ptf_id'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
@@ -55,6 +57,7 @@ $minmax = calc::getMinMaxQuotations();
 
 // Computing portfolio/quotes
 $sc = new StockComputing($quotes, $aggregate_ptf, $devises);
+$sc->setStratPtf($strat_ptf);
 
 $ptf_nb_positions = $sc->getCountPositionsInPtf();
 

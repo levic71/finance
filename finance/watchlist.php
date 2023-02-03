@@ -9,7 +9,7 @@ session_start();
 include "common.php";
 
 $portfolio_id = 0;
-$strat_ptf    = 1;
+$strat_ptf    = isset($_COOKIE["strat_ptf"]) ? $_COOKIE["strat_ptf"] :  1;
 
 foreach([ 'strat_ptf' ] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -101,7 +101,9 @@ updateDataPage = function(opt) {
 // Listener sur boutons tags
 Dom.find('#strat_bts button').forEach(function(item) {
 	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'home', id: 'main', url: 'watchlist.php?strat_ptf=' + Dom.attribute(item, 'data-value'), loading_area: 'main' });
+		let strat = Dom.attribute(item, 'data-value');
+		setCookie('strat_ptf', strat, 10000);
+        go({ action: 'home', id: 'main', url: 'watchlist.php?strat_ptf=' + strat, loading_area: 'main' });
 	});
 });
 
