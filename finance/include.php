@@ -384,6 +384,8 @@ class QuoteComputing {
         $ret['limit_stopprofit'] = $stopprofit > 0 && $this->pourcentagevariation($stopprofit, $price) >= $this->limits_stopprofit[$strat_ptf][$strat_type] ? 1 : 0;
         $ret['limit_pru']        = $pru > 0        && $this->pourcentagevariation($pru, $price)        >= $this->limits_pru[$strat_ptf][$strat_type]        ? 1 : 0;
 
+        $ret['limit_pru']        = $pru > 0        && $this->pourcentagevariation($pru, $price) < 0 ? -1 : $ret['limit_pru'];
+
         if (count($seuils) > 0) {
 
             // Parcours du cours de chaque seuil
@@ -403,23 +405,25 @@ class QuoteComputing {
 
         if ($this->isInPtf()) {
 
-            if ($avis['limit_pru']        >= 1) $ret = 4;
-            if ($avis['limit_objectif']   >= 1) $ret = 4;
-            if ($avis['limit_stopprofit'] >= 1) $ret = 5;
+            if ($avis['limit_pru']        >= 1) $ret = 4;   // Alléger
+            if ($avis['limit_objectif']   >= 1) $ret = 4;   // Alléger
+            if ($avis['limit_stopprofit'] >= 1) $ret = 5;   // Vendre
+
+            if ($avis['limit_pru']        < 0) $ret = 2;    // Renforcer position, price < pru
 
         } else {
 
-            if ($avis['limit_seuil']        < 0) $ret = 2;
+            if ($avis['limit_seuil']       < 0) $ret = 1;    // Initier position
 
         }
 
         return $ret;
     }
 
-    public function getColorAvis($avis) {
+    public function getBGColorAvis($avis) {
         $tab_colr = [
-            1 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "pink", 5 => "red"],
-            2 => [ 1 => "green", 2 => "blue", 3 => " ", 4 => "grey",  5 => "black"]
+            1 => [ 1 => "green", 2 => "blue", 3 => "lightgrey", 4 => "yellow", 5 => "red"],    // In Ptf
+            2 => [ 1 => "green", 2 => "blue", 3 => "lightgrey", 4 => "black",  5 => "black"]   // Out
         ];
 
         return $tab_colr[$this->sc->isInPtf($this->symbol) ? 1 : 2][$avis];
@@ -428,8 +432,8 @@ class QuoteComputing {
     public function getLabelAvis($avis) {
 
         $tab_libelle = [
-            1 => [ 1 => "Acheter", 2 => "Renforcer",  3 => "Observer", 4 => "Alléger",  5 => "Vendre"],
-            2 => [ 1 => "Acheter", 2 => "Initier",    3 => "Observer", 4 => "Attendre", 5 => "Attendre"]
+            1 => [ 1 => "Acheter", 2 => "Renforcer",  3 => "Observer", 4 => "Alléger",  5 => "Vendre"],   // In Ptf
+            2 => [ 1 => "Initier", 2 => "Observer",   3 => "Attendre" ]  // Out
         ];
 
         return $tab_libelle[$this->sc->isInPtf($this->symbol) ? 1 : 2][$avis];
@@ -641,7 +645,7 @@ class QuoteComputing {
         $sum_valo_in_euro = $this->getSumValoInEuro();
         $avis         = $this->getScoreAvis($this->getAvis());
         $avis_lib     = $this->getLabelAvis($avis);
-        $avis_colr    = $this->getColorAvis($avis);
+        $avis_bg_colr = $this->getBGColorAvis($avis);
 
 //        echo $this->symbol; var_dump($avis);
 
@@ -688,7 +692,7 @@ class QuoteComputing {
                     <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
                 </div>
             </td>
-            <td class="center aligned"><div class="ui '.$avis_colr.' horizontal label">'.$avis_lib.'</div></td>
+            <td class="center aligned"><div class="ui '.$avis_bg_colr.' horizontal label">'.$avis_lib.'</div></td>
         </tr>';
 
         return $ret;
