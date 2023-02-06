@@ -402,6 +402,8 @@ class QuoteComputing {
 
     public function getScoreAvis($avis) {
         $ret = 3;
+        $DM  = $this->getDM();
+        $PI  = $this->getPerfIndicator();
 
         if ($this->isInPtf()) {
 
@@ -409,7 +411,7 @@ class QuoteComputing {
             if ($avis['limit_objectif']   >= 1) $ret = 4;   // Alléger
             if ($avis['limit_stopprofit'] >= 1) $ret = 5;   // Vendre
 
-            if ($avis['limit_pru']        < 0) $ret = 2;    // Renforcer position, price < pru
+            if ($avis['limit_pru']        < 0 && ($DM >= 0 || ($PI >= 2 && $PI <= 8))) $ret = 2;    // Renforcer position, price < pru
 
         } else {
 
@@ -422,8 +424,8 @@ class QuoteComputing {
 
     public function getBGColorAvis($avis) {
         $tab_colr = [
-            1 => [ 1 => "green", 2 => "blue", 3 => "lightgrey", 4 => "yellow", 5 => "red"],    // In Ptf
-            2 => [ 1 => "green", 2 => "blue", 3 => "lightgrey", 4 => "black",  5 => "black"]   // Out
+            1 => [ 1 => "green", 2 => "blue", 3 => "lightgrey", 4 => "yellow", 5 => "red" ],    // In Ptf
+            2 => [ 1 => "green", 2 => "lightgrey", 3 => "black" ]   // Out
         ];
 
         return $tab_colr[$this->sc->isInPtf($this->symbol) ? 1 : 2][$avis];
