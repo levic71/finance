@@ -418,8 +418,8 @@ class QuoteComputing {
 
     public function getColorAvis($avis) {
         $tab_colr = [
-            1 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "yellow", 5 => "red"],
-            2 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "black",  5 => "black"]
+            1 => [ 1 => "green", 2 => "blue", 3 => "grey", 4 => "pink", 5 => "red"],
+            2 => [ 1 => "green", 2 => "blue", 3 => " ", 4 => "grey",  5 => "black"]
         ];
 
         return $tab_colr[$this->sc->isInPtf($this->symbol) ? 1 : 2][$avis];
