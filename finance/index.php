@@ -25,7 +25,7 @@ include_once "include.php";
 
 $ver = tools::isLocalHost() ? rand() : "1.5.15";
 
-foreach(['action', 'goto'] as $key)
+foreach(['action', 'goto', 'debug'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 ?>
