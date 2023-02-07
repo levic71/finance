@@ -414,8 +414,7 @@ class QuoteComputing {
         echo $this->symbol.":obj  :".$this->pourcentagevariation($objectif,   $price).":".$this->limits_objectif[$strat_ptf][$strat_type]."<br/>";
         echo $this->symbol.":stopp:".$this->pourcentagevariation($stopprofit, $price).":".$this->limits_stopprofit[$strat_ptf][$strat_type]."<br/>";
         echo $this->symbol.":pru  :".$this->pourcentagevariation($pru,   $price).":".$this->limits_pru[$strat_ptf][$strat_type]."<br/>";
-        echo $this->symbol.":tend :".$ret['limit_tendance']."<br />";
-        echo $this->symbol.":mm200:".$ret['limit_mm200']."<br />";
+        var_dump($ret);
 
         return $ret;
     }
