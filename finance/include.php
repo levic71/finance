@@ -405,7 +405,7 @@ class QuoteComputing {
         $ret['limit_tendance'] = $DM >= 0 && ($PI >= 2 && $PI <= 8) ? 1 : 0;    // Renforcer position, price < pru
 
         // Position par rapport MM200
-        $ret['limit_mm200'] = $MM200 >= $price ? 1 : -1;    // Renforcer position, price < pru
+        $ret['limit_mm200'] = $MM200 >= $price ? -1 : 1;    // Renforcer position, price < pru
 
         // Position par rapport 1 ou 2 EC
 
