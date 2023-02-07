@@ -402,7 +402,7 @@ class QuoteComputing {
         }
 
         // Tendance de fond
-        $ret['limit_tendance'] = $DM >= 0 || ($PI >= 2 && $PI <= 8) ? 1 : 0;    // Renforcer position, price < pru
+        $ret['limit_tendance'] = $DM >= 0 && ($PI >= 2 && $PI <= 8) ? 1 : 0;    // Renforcer position, price < pru
 
         // Position par rapport MM200
         $ret['limit_mm200'] = $MM200 >= $price ? 1 : -1;    // Renforcer position, price < pru
@@ -410,11 +410,13 @@ class QuoteComputing {
         // Position par rapport 1 ou 2 EC
 
 
-        echo $this->symbol.":".$price.":".$pru.":".$objectif.":".$stopprofit.":".$this->getSeuils().":".$DM.":".$PI.":".$MM200."<br/>";
-        echo $this->symbol.":obj  :".$this->pourcentagevariation($objectif,   $price).":".$this->limits_objectif[$strat_ptf][$strat_type]."<br/>";
-        echo $this->symbol.":stopp:".$this->pourcentagevariation($stopprofit, $price).":".$this->limits_stopprofit[$strat_ptf][$strat_type]."<br/>";
-        echo $this->symbol.":pru  :".$this->pourcentagevariation($pru,   $price).":".$this->limits_pru[$strat_ptf][$strat_type]."<br/>";
-        var_dump($ret);
+        if (false) { 
+            echo $this->symbol.":".$price.":".$pru.":".$objectif.":".$stopprofit.":".$this->getSeuils().":".$DM.":".$PI.":".$MM200."<br/>";
+            echo $this->symbol.":obj  :".$this->pourcentagevariation($objectif,   $price).":".$this->limits_objectif[$strat_ptf][$strat_type]."<br/>";
+            echo $this->symbol.":stopp:".$this->pourcentagevariation($stopprofit, $price).":".$this->limits_stopprofit[$strat_ptf][$strat_type]."<br/>";
+            echo $this->symbol.":pru  :".$this->pourcentagevariation($pru,   $price).":".$this->limits_pru[$strat_ptf][$strat_type]."<br/>";
+            var_dump($ret);
+        }
 
         return $ret;
     }
