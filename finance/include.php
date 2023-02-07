@@ -402,7 +402,7 @@ class QuoteComputing {
         }
 
         // Tendance de fond
-        $ret['limit_tendance'] = $DM >= 0 && ($PI >= 2 && $PI <= 8) ? 1 : 0;    // Renforcer position, price < pru
+        $ret['limit_tendance'] = $DM >= 0 && ($PI >= 2 && $PI <= 8) ? 1 : -1;    // Renforcer position, price < pru
 
         // Position par rapport MM200
         $ret['limit_mm200'] = $MM200 >= $price ? -1 : 1;    // Renforcer position, price < pru
@@ -433,8 +433,9 @@ class QuoteComputing {
 
         } else {
 
-            if ($avis['limit_seuil'] < 0) $ret = 1;                                      // Initier position
+            if ($avis['limit_seuil'] < 0) $ret = 1;                                    // Initier position
             if ($avis['limit_mm200'] < 0 && $avis['limit_tendance'] >= 1) $ret = 1;    // Initier position
+            if ($avis['limit_tendance'] < 0 && $ret == 2) $ret = 1;                    // Attendre plutot qu'observer
 
         }
 
