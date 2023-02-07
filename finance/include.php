@@ -376,6 +376,10 @@ class QuoteComputing {
         $seuils     = explode(';', $this->getSeuils());
         $strat_type = $this->getStrategieType();
         $strat_ptf  = $this->sc->getStratPtf();
+        $DM    = $this->getDM();
+        $PI    = $this->getPerfIndicator();
+        $MM200 = $this->getMM200();
+
 
         //
         // Limites atteintes
@@ -384,7 +388,8 @@ class QuoteComputing {
         $ret['limit_stopprofit'] = $stopprofit > 0 && $this->pourcentagevariation($stopprofit, $price) >= $this->limits_stopprofit[$strat_ptf][$strat_type] ? 1 : 0;
         $ret['limit_pru']        = $pru > 0        && $this->pourcentagevariation($pru, $price)        >= $this->limits_pru[$strat_ptf][$strat_type]        ? 1 : 0;
 
-        $ret['limit_pru']        = $pru > 0        && $this->pourcentagevariation($pru, $price) < 0 ? -1 : $ret['limit_pru'];
+        // Price < PRU
+        if ($pru > 0 && $this->pourcentagevariation($pru, $price) < 0) $ret['limit_pru'] = -1;
 
         if (count($seuils) > 0) {
 
@@ -397,25 +402,32 @@ class QuoteComputing {
             }
         }
 
+        // Tendance de fond
+        $ret['limit_tendance'] = $DM >= 0 || ($PI >= 2 && $PI <= 8) ? 1 : 0;    // Renforcer position, price < pru
+
+        // Position par rapport MM200
+        $ret['limit_mm200'] = $MM200 >= $price ? 1 : 0;    // Renforcer position, price < pru
+
+        // Position par rapport 1 ou 2 EC
+
+
         return $ret;
     }
 
     public function getScoreAvis($avis) {
         $ret = 3;
-        $DM  = $this->getDM();
-        $PI  = $this->getPerfIndicator();
 
         if ($this->isInPtf()) {
 
             if ($avis['limit_pru']        >= 1) $ret = 4;   // Alléger
             if ($avis['limit_objectif']   >= 1) $ret = 4;   // Alléger
             if ($avis['limit_stopprofit'] >= 1) $ret = 5;   // Vendre
-
-            if ($avis['limit_pru']        < 0 && ($DM >= 0 || ($PI >= 2 && $PI <= 8))) $ret = 2;    // Renforcer position, price < pru
+            if ($avis['limit_tendance']   >= 1 && $avis['limit_pru'] < 0) $ret = 2;   // Renforcer position, price < pru
 
         } else {
 
             if ($avis['limit_seuil']       < 0) $ret = 1;    // Initier position
+            if ($avis['limit_mm200']       < 0) $ret = 1;    // Initier position
 
         }
 
