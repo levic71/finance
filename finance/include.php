@@ -1232,6 +1232,8 @@ class calc {
             $ref_D3Y = self::getClosestExistingDateInMonth((intval(substr($c['day'], 0, 4)) - 3).substr($c['day'], 4), $data);
             $ref_T3Y = calc::getClosedValue($ref_D3Y, $data);
 
+            if (!isset($data[$ref_DD1M]['day']) || !isset($data[$ref_DD3M]['day']) || !isset($data[$ref_DD6M]['day'])) { $k--; continue; }; 
+
             $item['MMJ0MPrice'] = $ref_TJ0;
             $item['MMJ0MDate']  = $ref_DAY;
             $item['MMZ1MPrice'] = calc::getClosedValue($ref_DD1M, $data);

@@ -366,14 +366,12 @@ $indicators_force   = 0;
 $indicators_reset   = 0;
 $indicators_limited = 0;
 $indicators_filter  = "";
-$indicators_periods  = [ 'DAILY' ];
 $indicators_aggregate = false;
 
-foreach(['indicators_force', 'indicators_reset', 'indicators_limited', 'indicators_filter', 'indicators_periods', 'indicators_aggregate'] as $key)
+foreach(['indicators_force', 'indicators_reset', 'indicators_limited', 'indicators_filter', 'indicators_aggregate'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
 if ($indicators_aggregate == 1) $indicators_aggregate = true;
-$indicators_periods  = [ 'DAILY' ];
 
 $db = dbc::connect();
 

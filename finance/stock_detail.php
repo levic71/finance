@@ -141,6 +141,10 @@ function getTimeSeriesData($table_name, $period, $sym)
         $ret = cacheData::readCacheData($file_cache);
     }
 
+// VFE
+//    foreach($ret['rows'] as $key => $value)
+//        echo '['.($key+1).','.$value['adjusted_close'].'],';
+
     return $ret;
 }
 
@@ -623,7 +627,7 @@ if (!$readonly) {
             data: mydata,
             label: mylabel,
             borderColor: 0,
-            backgroundColor: mydata.map(function(item) { return item.c == 1 ? 'green' : 'red'; }),
+            backgroundColor: mydata.map(function(item) { return item.c == 1 ? 'rgba(0, 255, 0, 0.5)' : 'rgba(255, 0, 0, 0.5)'; }),
             borderWidth: 0,
             yAxisID: yaxeid,
             parsing: {
@@ -901,9 +905,12 @@ if (!$readonly) {
                 options_Stock_Graphe.plugins.insiderText  = [];
 
             // On retire les data de la courbe ou volume du bouton selectionne
+            let new_array = [];
             chart.data.datasets.forEach((dataset) => {
-                if (dataset.label == label || (label.substr(0, 3) == 'REG' && dataset.label.substr(0, 3) == 'REG')) dataset.data = null;
+                if (!(dataset.label == label || (label.substr(0, 3) == 'REG' && dataset.label.substr(0, 3) == 'REG')))
+                    new_array.push(dataset);
             });
+            chart.data.datasets = new_array;
             setCookie('status_stock_bt_' + label.toLowerCase(), 0, 10000);
         } else {
             if (label.toLowerCase() == "volume")
