@@ -390,7 +390,8 @@ class QuoteComputing {
         // Price < PRU
         if ($pru > 0 && $this->pourcentagevariation($pru, $price) < 0) $ret['limit_pru'] = -1;
 
-        if (count($seuils) > 0) {
+        $ret['limit_seuil'] = 0;
+        if (count($seuils) > 0 && $seuils[0] != "") {
 
             // Parcours du cours de chaque seuil
             $x = 1;
@@ -401,11 +402,17 @@ class QuoteComputing {
             }
         }
 
-        // Tendance de fond
-        $ret['limit_tendance'] = $DM >= 0 && ($PI >= 2 && $PI <= 8) ? 1 : -1;    // Renforcer position, price < pru
+        $ret['limit_tendance'] = 0;
+        $ret['limit_mm200']    = 0;
 
-        // Position par rapport MM200
-        $ret['limit_mm200'] = $MM200 >= $price ? 1 : -1;    // Renforcer position, price < pru
+        // Si aucun seuil fixé
+        if (count($seuils) == 0 || $seuils[0] == "") {
+            // Tendance de fond
+            $ret['limit_tendance'] = $DM >= 0 && ($PI >= 2 && $PI <= 8) ? 1 : -1;    // Renforcer position, price < pru
+
+            // Price par rapport MM200
+            $ret['limit_mm200'] = $MM200 >= $price ? 1 : -1;    // Renforcer position, price < pru
+        }
 
         // Position par rapport 1 ou 2 EC
 

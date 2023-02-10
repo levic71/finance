@@ -1200,9 +1200,6 @@ table th { color: burlywood !important; cursor: pointer !important; }
         display: none;
     }
 
-    .watchlist_page #lst_position th:nth-child(10), .watchlist_page #lst_position td:nth-child(10) {
-        display: none;
-    }
     .watchlist_page #lst_position th:nth-child(12), .watchlist_page #lst_position td:nth-child(12) {
         display: block;
     }
@@ -1236,14 +1233,16 @@ table th { color: burlywood !important; cursor: pointer !important; }
     }
 
     #lst_position.alternate thead th:nth-child(3), #lst_position.alternate tbody td:nth-child(3),
-    #lst_position.alternate thead th:nth-child(11), #lst_position.alternate tbody td:nth-child(11) {
+    #lst_position.alternate thead th:nth-child(10), #lst_position.alternate tbody td:nth-child(10) {
             display: none;
     }
 
     #lst_position.alternate thead th:nth-child(6), #lst_position.alternate tbody td:nth-child(6),
+    #lst_position.alternate thead th:nth-child(11), #lst_position.alternate tbody td:nth-child(11),
     #lst_position.alternate thead th:nth-child(12), #lst_position.alternate tbody td:nth-child(12) {
-            display: table-cell;
+        display: table-cell;
     }
+    watchlist_page
 
     #tooltip_stock_graphe_div {
         flex-flow: column;
