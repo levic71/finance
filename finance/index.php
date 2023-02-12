@@ -64,37 +64,58 @@ foreach(['action', 'goto', 'debug'] as $key)
 		<script>
 		window.onload = function() {
 
-			go({ action: 'home', id: 'main', url: '<?= $goto == "" ? "home_content.php" : $goto.".php" ?>', loading_area: '' <?= $goto == "" ? "" : ", menu: '".($goto == "portfolio" ? "m1_pft_bt" : $goto)."'" ?> });
+			go({ action: 'home', id: 'main', url: '<?= $goto == "" ? "home_content.php" : $goto.".php" ?>', loading_area: '' <?= $goto == "" ? "" : ", menu: '".($goto == "portfolio" ? "m1_portfolio_bt" : $goto)."'" ?> });
+
+			let user_connected = <?= $sess_context->isUserConnected() ? 'true' : 'false' ?>;
+			let user_admin     = <?= $sess_context->isSuperAdmin()    ? 'true' : 'false' ?>;
+
+			var tab_menu = {
+				home:       { url: "home_content.php", title: 'Home', icon: 'home' },
+				palmares:   { url: "palmares.php", title: 'Palmarès', icon: 'trophy' },
+				portfolio:  { url: "portfolio.php", title: 'Portefeuilles', icon: 'briefcase' },
+				watchlist:  { url: "watchlist.php", title: 'Watchlist', icon: 'bullseye' },
+				predict:    { url: "prediction_list.php", title: 'Prédiction', icon: 'magic' },
+				tools:      { url: "tools_dca_calculator.php", title: 'Outils', icon: 'tools' },
+				users:      { url: user_connected ? "user_list.php" : "", title: 'Users', icon: 'users download alternate' },
+				admin:      { url: user_connected ? "admin.php" : "", title: 'Admin', icon: 'sort amount down' },
+				login:      { url: !user_connected ? "login.php" : "", title: 'Login', icon: 'user' },
+				logout:     { url: user_connected ? "login_action.php?action=logout" : "", title: 'Logout', icon: 'user' }
+			};
+
+			Object.keys(tab_menu).forEach(function(key) {
+
+				if (tab_menu[key].url == "") return;
+
+				if (key != 'login' && key != 'logout') {
+					let a1 = document.createElement('a');
+					a1.text = tab_menu[key].title;
+					a1.className = 'item';
+					a1.id = 'm1_'+key+'_bt';
+					let wide_menu = el('wide_menu');
+					wide_menu.insertBefore(a1, wide_menu.children.item(wide_menu.children.length - 2).nextSibling); // Insertion apres le premier item
+
+					let i2 = document.createElement('i');
+					i2.className = 'ui inverted '+tab_menu[key].icon+' icon';
+					let a2 = document.createElement('a');
+					a2.text = tab_menu[key].title;
+					a2.appendChild(i2);
+					a2.className = 'item';
+					a2.id = 'm2_'+key+'_bt';
+					let sidebar_menu = el('sidebar_menu');
+					sidebar_menu.insertBefore(a2, sidebar_menu.children.item(sidebar_menu.children.length - 1)); // Insertion apres le premier item
+
+				}
+
+				Dom.addListener(Dom.id('m1_'+key+'_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: tab_menu[key], id: 'main', menu: 'm1_'+key+'_bt', url: tab_menu[key].url, loading_area: 'main' }); });
+				Dom.addListener(Dom.id('m2_'+key+'_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: tab_menu[key], id: 'main', menu: 'm2_'+key+'_bt', url: tab_menu[key].url, loading_area: 'main' }); });
+			});
 
 			Dom.addListener(Dom.id('m1_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
 			Dom.addListener(Dom.id('m2_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { rmCN('sidebar_menu', 'visible'); });
-			Dom.addListener(Dom.id('m1_home_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_home_bt', url: 'home_content.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_home_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_home_bt', url: 'home_content.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m1_tools_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'tools', id: 'main', menu: 'm1_tools_bt', url: 'tools_dca_calculator.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_tools_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'tools', id: 'main', menu: 'm2_tools_bt', url: 'tools_dca_calculator.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m1_pft_bt'),      Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', menu: 'm1_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_pft_bt'),      Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', menu: 'm2_pft_bt', url: 'portfolio.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m1_watchlist_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'watchlist', id: 'main', menu: 'm1_watchlist_bt', url: 'watchlist.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_watchlist_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'watchlist', id: 'main', menu: 'm2_watchlist_bt', url: 'watchlist.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m1_palmares_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', menu: 'm1_palmares_bt', url: 'palmares.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_palmares_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'palmares', id: 'main', menu: 'm1_palmares_bt', url: 'palmares.php', loading_area: 'main' }); });
-<? if (!$sess_context->isUserConnected()) { ?>
-			Dom.addListener(Dom.id('m1_login_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'login', id: 'main', menu: 'm1_login_bt', url: 'login.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_login_bt'),    Dom.Event.ON_CLICK, function(event) { go({ action: 'login', id: 'main', menu: 'm2_login_bt', url: 'login.php', loading_area: 'main' }); });
-<? } else { ?>
-			Dom.addListener(Dom.id('m1_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm1_logout_bt', url: 'login_action.php?action=logout', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_logout_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'm2_logout_bt', url: 'login_action.php?action=logout', loading_area: 'main' }); });
-<? } ?>
+
 			Dom.addListener(Dom.id('footer_contact_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'footer_contact_bt', url: 'contact.php' }); });
 			Dom.addListener(Dom.id('footer_terms_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'footer_terms_bt',   url: 'terms.php' }); });
 			Dom.addListener(Dom.id('footer_faq_bt'),     Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', menu: 'footer_faq_bt',     url: 'faq.php' }); });
-
-<? if ($sess_context->isSuperAdmin()) { ?>
-			Dom.addListener(Dom.id('m1_users_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'user', id: 'main', menu: 'm1_users_bt', url: 'user_list.php' }); });
-			Dom.addListener(Dom.id('m2_users_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'user', id: 'main', menu: 'm1_users_bt', url: 'user_list.php' }); });
-			Dom.addListener(Dom.id('m1_admin_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'admin',  id: 'main', menu: 'm1_log_bt',   url: 'admin.php', loading_area: 'main' }); });
-			Dom.addListener(Dom.id('m2_admin_bt'),  Dom.Event.ON_CLICK, function(event) { go({ action: 'admin',  id: 'main', menu: 'm2_log_bt',   url: 'admin.php', loading_area: 'main' }); });
-<? } ?>
 
 <? if ($action == "status") { ?>
 			Swal.fire({ title: '', icon: 'success', html: "Utilisateur déactivé" });
@@ -111,17 +132,8 @@ foreach(['action', 'goto', 'debug'] as $key)
 
 	<!-- Sidebar Menu -->
 	<div class="ui vertical inverted sidebar menu" id="sidebar_menu">
-		<a class="item" id="m2_sidebar_bt"><i style="float: left; margin: 0px;" class="ui inverted arrow left icon"></i>&nbsp;</a>
-		<a class="item" id="m2_home_bt"><i class="ui inverted home icon"></i>Home</a>
-		<a class="item" id="m2_palmares_bt"><i class="ui inverted trophy icon"></i>Palmarès</a>
-		<a class="item" id="m2_pft_bt"><i class="ui inverted briefcase icon"></i>Portefeuilles</a>
-		<a class="item" id="m2_watchlist_bt"><i class="ui inverted briefcase icon"></i>Watchlist</a>
-		<a class="item" id="m2_tools_bt"><i class="ui inverted tools icon"></i>Outils</a>
-<? if ($sess_context->isSuperAdmin()) { ?>
-		<a class="item" id="m2_users_bt"><i class="ui inverted users download alternate icon"></i>Users</a>
-		<a class="item" id="m2_admin_bt"><i class="ui inverted sort amount down icon"></i>Admin</a>
-<? } ?>
 
+		<a class="item" id="m2_sidebar_bt"><i style="float: left; margin: 0px;" class="ui inverted arrow left icon"></i>&nbsp;</a>
 <? if ($sess_context->isUserConnected()) { ?>
 		<a class="item" id="m2_logout_bt"><i class="ui inverted user icon"></i>Logout</a>
 <? } else { ?>
@@ -137,15 +149,6 @@ foreach(['action', 'goto', 'debug'] as $key)
 			<div class="ui inverted container">
     			<div class="ui large secondary inverted pointing menu" id="wide_menu">
 					<a class="toc inverted item" id="m1_sidebar_bt"><i class="sidebar inverted icon"></i></a>
-					<a class="active item" id="m1_home_bt">Home</a>
-					<a class="item" id="m1_palmares_bt">Palmarès</a>
-					<a class="item" id="m1_pft_bt">Portefeuilles</a>
-					<a class="item" id="m1_watchlist_bt">Watchlist</a>
-					<a class="item" id="m1_tools_bt">Outils</a>
-<? if ($sess_context->isSuperAdmin()) { ?>
-					<a class="item" id="m1_users_bt">Users</a>
-					<a class="item" id="m1_admin_bt">Admin</a>
-<? } ?>
 					<div class="right item">
 <? if ($sess_context->isUserConnected()) { ?>
 						Hello !
@@ -170,8 +173,8 @@ foreach(['action', 'goto', 'debug'] as $key)
 			<div class="ui inverted section divider"></div>
 			<div class="ui horizontal inverted small divided link list">
 				<a id="footer_contact_bt" class="item" href="#">Contact</a>
-				<a id="footer_terms_bt" class="item" href="#">Conditions d'utilisation</a>
-				<a id="footer_faq_bt" class="item" href="#">FAQ</a>
+				<a id="footer_terms_bt"   class="item" href="#">Conditions d'utilisation</a>
+				<a id="footer_faq_bt"     class="item" href="#">FAQ</a>
 			</div>
 			<div class="disclaimer">
 				<div class="ui inverted section"><small>Le site ne couvre pas le cours de toutes les actions de toutes les places boursières, le choix est à la discrétion de l'administrateur du site.</small></div>
