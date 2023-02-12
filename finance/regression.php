@@ -41,6 +41,7 @@ $db = mysqli_connect("localhost", "root", "root", "finance") or die("Error conne
 
 $test_regression = true;
 $test_talib      = true;
+$stdd            = 0;
 
 $testData = [];
 $labels = [];
@@ -131,7 +132,6 @@ function Stand_Deviation($arr)
 }
 
 $stdd = Stand_Deviation($testData2);
-echo "<div>".$stdd."</div>";
 
 }
 
@@ -186,19 +186,20 @@ $regressionModel_pow = $powerReg->getRegressionModel();
     		font-family: sans-serif;
 		}
 		#tooltip_stock_graphe_div {
-			opacity: 0;
-			position: absolute;
 			top: 0px;
 			right: 100px;
+			position: absolute;
 		}
 	</style>
 </head>
 <body>
-<h1>Chart</h1>
+<h1>Chart (standard deviation=<?= $stdd ?>)</h1>
 
-<canvas id="myChart1" height="100%"></canvas>
-<canvas id="myChart2" height="20%"></canvas>
-<canvas id="myChart3" height="20%"></canvas>
+<div>
+	<canvas id="myChart1" height="100%"></canvas>
+	<canvas id="myChart2" height="20%"></canvas>
+	<canvas id="myChart3" height="20%"></canvas>
+</div>
 
 <script>
 
@@ -250,7 +251,7 @@ const data = {
 			data: [ 0, <? foreach($regressionModel_lin->getResultSequence() as $key => $value) echo ','.$value[1]; ?>],
 			fill: false,
 			borderColor: 'rgb(75, 192, 192)',
-			borderWidth: 1,s
+			borderWidth: 1,
 			cubicInterpolationMode: 'monotone',
 			tension: 0.1
 		},
