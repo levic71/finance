@@ -242,7 +242,7 @@ var p = loadPrompt();
 
 <? if ($action == "add") { ?>
     <? if ($ret_add > 0) { ?>
-        go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
+        go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?action=upt&symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
         p.success('Actif <?= $symbol ?> <?= $ret_add == 1 ? 'ajouté' : 'modifié' ?>');
     <? } else { ?>
         go({ action: 'home_content', id: 'main', url: 'home_content.php' });
