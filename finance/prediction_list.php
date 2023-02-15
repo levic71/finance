@@ -58,7 +58,7 @@ while($row = mysqli_fetch_array($res)) {
                 <th class="center aligned">Objectif</th>
                 <th class="center aligned">Stoploss</th>
                 <th>Conseiller</th>
-                <th class="center aligned">Atteinte en</th>
+                <th class="center aligned">Délai</th>
                 <th class="center aligned">Status</th>
 				<th class="center aligned"></th>
 			</tr>
@@ -70,7 +70,7 @@ while($row = mysqli_fetch_array($res)) {
         	while($row = mysqli_fetch_array($res)) {
 
 				$datetime1 = new DateTime($row['date_avis']);
-				$datetime2 = new DateTime($row['date_status'] == 0 ? date("Y-m-d") : $row['date_status']);
+				$datetime2 = new DateTime($row['status'] == 0 ? date("Y-m-d") : $row['date_status']);
 				$difference = $datetime1->diff($datetime2);
 
 				$lib_diff = ($difference->y > 0 ? $difference->y.' ans, ' : '').($difference->m > 0 ? $difference->m.' mois, ' : '').$difference->d.' jours';
