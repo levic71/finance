@@ -11,6 +11,7 @@ $prediction_id = -1;
 foreach(['prediction_id', 'action'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
+
 $db = dbc::connect();
 
 if (!$sess_context->isUserConnected()) {

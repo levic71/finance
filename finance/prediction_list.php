@@ -70,7 +70,7 @@ while($row = mysqli_fetch_array($res)) {
         	while($row = mysqli_fetch_array($res)) {
 
 				$datetime1 = new DateTime($row['date_avis']);
-				$datetime2 = new DateTime($row['date_status'] ==0 ? date("Y-m-d") : $row['date_status']);
+				$datetime2 = new DateTime($row['date_status'] == 0 ? date("Y-m-d") : $row['date_status']);
 				$difference = $datetime1->diff($datetime2);
 
 				$lib_diff = ($difference->y > 0 ? $difference->y.' ans, ' : '').($difference->m > 0 ? $difference->m.' mois, ' : '').$difference->d.' jours';
@@ -83,8 +83,8 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned"><?= $row['stoploss'] ?></td>
 					<td><?= $row['conseiller'] ?></td>
 					<td class="center aligned"><?= $lib_diff ?></td>
-					<td class="center aligned"><i class="inverted <?= $row['status'] == 1 ? "calendar check outline green" : ($row['status'] == -1 ? "calendar times outline red" : ($row['status'] == -2 ? "calendar minus outline red" : "clock outline")) ?> icon"></i></td>
-					<td class="center aligned collapsing" data-tootik="toto"><i data-value="<?= $row['id'] ?>" class="edit inverted icon"></i></td>
+					<td class="center aligned" data-tootik="<?= $row['date_status'] ?>"><i class="inverted <?= $row['status'] == 1 ? "calendar check outline green" : ($row['status'] == -1 ? "calendar times outline red" : ($row['status'] == -2 ? "calendar minus outline red" : "clock outline")) ?> icon"></i></td>
+					<td class="center aligned collapsing"><i data-value="<?= $row['id'] ?>" class="edit inverted icon"></i></td>
 				<tr>
 <?
 			}
@@ -97,9 +97,9 @@ while($row = mysqli_fetch_array($res)) {
 <script>
 
 Dom.find('#lst_prediction tbody tr td:last-child i').forEach(function(item) {
-	id = Dom.attribute(item, 'data-value');
+	let predict_id = Dom.attribute(item, 'data-value');
 	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
-		go({ action: 'prediction', id: 'main', url: 'prediction.php?action=upt&prediction_id='+id, loading_area: 'main' });
+		go({ action: 'prediction', id: 'main', url: 'prediction.php?action=upt&prediction_id='+predict_id, loading_area: 'main' });
 	});
 });
 
