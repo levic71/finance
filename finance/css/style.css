@@ -828,6 +828,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: rgba(255, 255, 255, 0.3);
     color: white;
 }
+#lst_prediction td button,
 #lst_position td button {
     margin-bottom: 2px;
     font-size: 11px;
@@ -853,17 +854,34 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(9) button {
     background: grey !important; color: white !important;
 }
-#lst_position tbody td:nth-child(3) div, #lst_position tbody td:nth-child(4) div, #lst_position tbody td:nth-child(5) div, #lst_position td:nth-child(9), #lst_position td:nth-child(10) div, #lst_position tbody td:nth-child(11) div, #lst_position tfoot td:nth-child(5) div {
+#lst_prediction tbody td:nth-child(4) div,
+#lst_prediction tbody td:nth-child(5) div,
+#lst_position tbody td:nth-child(3) div,
+#lst_position tbody td:nth-child(4) div,
+#lst_position tbody td:nth-child(5) div,
+#lst_position td:nth-child(9),
+#lst_position td:nth-child(10) div,
+#lst_position tbody td:nth-child(11) div,
+#lst_position tfoot td:nth-child(5) div {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-#lst_position tbody td:nth-child(3) button, #lst_position tbody td:nth-child(4) button, #lst_position tbody td:nth-child(9) button, #lst_position tbody td:nth-child(5) button, #lst_position td:nth-child(10) button, #lst_position td:nth-child(11) button, #lst_position tfoot td:nth-child(5) button {
+#lst_prediction tbody td:nth-child(4) button,
+#lst_prediction tbody td:nth-child(5) button,
+#lst_position tbody td:nth-child(3) button,
+#lst_position tbody td:nth-child(4) button,
+#lst_position tbody td:nth-child(9) button,
+#lst_position tbody td:nth-child(5) button,
+#lst_position td:nth-child(10) button,
+#lst_position td:nth-child(11) button,
+#lst_position tfoot td:nth-child(5) button {
     padding: 5px 10px;
 }
 #lst_position tbody td:nth-child(4) button, #lst_position tbody td:nth-child(9) button {   
     border: 1px solid grey;
 }
+#lst_prediction td label,
 #lst_position td label {
     font-size: 11px;
 }

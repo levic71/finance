@@ -13,6 +13,12 @@ foreach([''] as $key)
 
 $db = dbc::connect();
 
+// Récupération des devises
+$devises = calc::getGSDevisesWithNoUpdate();
+
+// Recuperation de tous les actifs
+$quotes = calc::getIndicatorsLastQuote();
+
 $req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." AND status = 0";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
@@ -53,8 +59,8 @@ while($row = mysqli_fetch_array($res)) {
 		<thead>
 			<tr>
 				<th class="center aligned">Date</th>
-                <th>Actif</th>
-                <th class="center aligned">Cours</th>
+                <th class="center aligned">Actif</th>
+                <th class="center aligned">Cours J</th>
                 <th class="center aligned">Objectif</th>
                 <th class="center aligned">Stoploss</th>
                 <th>Conseiller</th>
@@ -65,9 +71,11 @@ while($row = mysqli_fetch_array($res)) {
 		</thead>
 		<tbody>
 <?
-			$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId();
+			$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." ORDER BY date_avis DESC";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
+
+				$curr = uimx::getCurrencySign($quotes["stocks"][$row['symbol']]['currency']);
 
 				$datetime1 = new DateTime($row['date_avis']);
 				$datetime2 = new DateTime($row['status'] == 0 ? date("Y-m-d") : $row['date_status']);
@@ -77,10 +85,16 @@ while($row = mysqli_fetch_array($res)) {
 ?>
 				<tr>
 					<td class="center aligned"><?= $row['date_avis'] ?></td>
-					<td><?= $row['symbol'] ?></td>
-					<td class="center aligned"><?= $row['cours'] ?></td>
-					<td class="center aligned"><?= $row['objectif'] ?></td>
-					<td class="center aligned"><?= $row['stoploss'] ?></td>
+					<td class="center aligned"><button class="tiny ui primary button"><?= $row['symbol'] ?></button></td>
+					<td class="center aligned"><?= sprintf("%.2f", $row['cours']).$curr ?></td>
+					<td class="center aligned"><div>
+						<button class="tiny ui button" style="background: #62BD18"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
+						<label style="color: #62BD18"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['objectif'] / $row['cours']) - 1) * 100) ?>%</label>
+					</div></td>
+					<td class="center aligned"><div>
+						<button class="tiny ui button" style="background: #FC3D31;"><?= sprintf("%.2f", $row['stoploss']).$curr ?></button>
+						<label style="color: #FC3D31"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['stoploss'] / $row['cours']) - 1) * 100) ?>%</label>
+					</div></td>
 					<td><?= $row['conseiller'] ?></td>
 					<td class="center aligned"><?= $lib_diff ?></td>
 					<td class="center aligned" data-tootik="<?= $row['date_status'] ?>"><i class="inverted <?= $row['status'] == 1 ? "calendar check outline green" : ($row['status'] == -1 ? "calendar times outline red" : ($row['status'] == -2 ? "calendar minus outline red" : "clock outline")) ?> icon"></i></td>
@@ -96,10 +110,18 @@ while($row = mysqli_fetch_array($res)) {
 
 <script>
 
+// Listener sur edition bouton
 Dom.find('#lst_prediction tbody tr td:last-child i').forEach(function(item) {
 	let predict_id = Dom.attribute(item, 'data-value');
 	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
 		go({ action: 'prediction', id: 'main', url: 'prediction.php?action=upt&prediction_id='+predict_id, loading_area: 'main' });
+	});
+});
+
+// Listener sur bouton actif
+Dom.find('#lst_prediction tbody tr td:nth-child(2) button').forEach(function(element) {
+	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=' + element.innerHTML, loading_area: 'main' });
 	});
 });
 
