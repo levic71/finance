@@ -2417,7 +2417,7 @@ class uimx {
 
         $ret = array();
 
-        $tab_tags = array_flip(explode("|", utf8_decode($tags)));
+        $tab_tags = array_flip(explode("|", mb_convert_encoding($tags, 'ISO-8859-1', 'UTF-8')));
 
         // default values
         $tooltip  = "Entreprise";
@@ -2515,7 +2515,7 @@ class uimx {
             <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey icon button">Backtesting</button>
         </div>';
 
-        $title = utf8_decode($strategie['title']).($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
+        $title = mb_convert_encoding($strategie['title'], 'ISO-8859-1', 'UTF-8').($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
         uimx::genCard("home_card_".$strategie['id'], $title, $day, $desc, "perf_card");
     }
 
@@ -2531,7 +2531,7 @@ class uimx {
             <a class="ui basic '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).'%</a>
         </div>';
 
-        $title = utf8_decode($portfolio['name']).($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
+        $title = mb_convert_encoding($portfolio['name'], 'ISO-8859-1', 'UTF-8').($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
         uimx::genCard("portfolio_card_".$portfolio['id'], $title, date('Y-m-d'), $desc);
     }
 

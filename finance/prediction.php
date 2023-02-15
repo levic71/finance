@@ -19,9 +19,13 @@ if (!$sess_context->isUserConnected()) {
 	exit(0);
 }
 
+$libelle_action_bt = tools::getLibelleBtAction($action);
+
+// Récupération des devises
 $devises = calc::getGSDevisesWithNoUpdate();
 
-$libelle_action_bt = tools::getLibelleBtAction($action);
+// Recuperation de tous les actifs
+$quotes = calc::getIndicatorsLastQuote();
 
 if ($action == "upt") {
     $req = "SELECT * FROM prediction WHERE id=".$prediction_id." AND user_id=".$sess_context->getUserId();
@@ -36,9 +40,6 @@ if ($action == "upt") {
     $row['conseiller']   = "";
     $row['status']       = 0;
 }
-
-// Recuperation de tous les actifs
-$quotes = calc::getIndicatorsLastQuote();
 
 ?>
 
