@@ -60,7 +60,8 @@ while($row = mysqli_fetch_array($res)) {
 			<tr>
 				<th class="center aligned">Date</th>
                 <th class="center aligned">Actif</th>
-                <th class="center aligned">Cours J</th>
+                <th class="center aligned">Cours Avis</th>
+				<th class="center aligned">Cours J</th>
                 <th class="center aligned">Objectif</th>
                 <th class="center aligned">Stoploss</th>
                 <th>Conseiller</th>
@@ -75,6 +76,7 @@ while($row = mysqli_fetch_array($res)) {
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 
+				$cj   = $quotes["stocks"][$row['symbol']]['price'];
 				$curr = uimx::getCurrencySign($quotes["stocks"][$row['symbol']]['currency']);
 
 				$datetime1 = new DateTime($row['date_avis']);
@@ -87,6 +89,7 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned"><?= $row['date_avis'] ?></td>
 					<td class="center aligned"><button class="tiny ui primary button"><?= $row['symbol'] ?></button></td>
 					<td class="center aligned"><?= sprintf("%.2f", $row['cours']).$curr ?></td>
+					<td class="center aligned"><?= sprintf("%.2f", $cj).$curr ?></td>
 					<td class="center aligned"><div>
 						<button class="tiny ui button" style="background: #62BD18"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
 						<label style="color: #62BD18"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['objectif'] / $row['cours']) - 1) * 100) ?>%</label>
