@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.5.16";
+$ver = tools::isLocalHost() ? rand() : "1.5.17";
 
 foreach(['action', 'goto', 'debug'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -106,8 +106,8 @@ foreach(['action', 'goto', 'debug'] as $key)
 
 				}
 
-				Dom.addListener(Dom.id('m1_'+key+'_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: tab_menu[key], id: 'main', menu: 'm1_'+key+'_bt', url: tab_menu[key].url, loading_area: 'main' }); });
-				Dom.addListener(Dom.id('m2_'+key+'_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: tab_menu[key], id: 'main', menu: 'm2_'+key+'_bt', url: tab_menu[key].url, loading_area: 'main' }); });
+				Dom.addListener(Dom.id('m1_'+key+'_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: key, id: 'main', menu: 'm1_'+key+'_bt', url: tab_menu[key].url, loading_area: 'main' }); });
+				Dom.addListener(Dom.id('m2_'+key+'_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: key, id: 'main', menu: 'm2_'+key+'_bt', url: tab_menu[key].url, loading_area: 'main' }); });
 			});
 
 			Dom.addListener(Dom.id('m1_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });

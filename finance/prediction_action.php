@@ -4,101 +4,44 @@ require_once "sess_context.php";
 
 session_start();
 
-include_once "include.php";
+include "common.php";
+
+if (!$sess_context->isUserConnected()) tools::do_redirect("index.php");
+
+$prediction_id = 0;
+
+foreach(['action', 'prediction_id', 'f_date', 'f_actif', 'f_cours', 'f_objectif', 'f_stoploss', 'f_conseiller', 'f_status'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
 
-// GET car on n'est pas forcement connecter avec une session
-foreach(['action', 'token'] as $key)
-    $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
+if ($action == "del" && isset($prediction_id) && $prediction_id != 0) {
 
-if ($action == "confirm" && isset($token) && $token != "") {
-
-    $req = "SELECT * FROM users WHERE token='".$token."'";
+    $req = "DELETE FROM prediction WHERE id=".$prediction_id." AND user_id=".$sess_context->getUserId();
     $res = dbc::execSql($req);
 
-    if ($row = mysqli_fetch_array($res)) {
-        $req = "UPDATE users SET confirmation=1 WHERE token='".$token."'";
-        $res = dbc::execSql($req);
-        tools::do_redirect("index.php?action=confirm");
-    } else
-        tools::do_redirect("index.php");
 }
 
-if ($action == "status" && isset($token) && $token != "") {
-
-    $req = "SELECT * FROM users WHERE token='".$token."'";
-    $res = dbc::execSql($req);
-
-    if ($row = mysqli_fetch_array($res)) {
-        $req = "UPDATE users SET status=0 WHERE token='".$token."'";
-        $res = dbc::execSql($req);
-        tools::do_redirect("index.php?action=status");
-    } else
-        tools::do_redirect("index.php");
-}
-
-include_once "common.php";
-
-if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
-
-foreach(['item_id', 'f_email', 'f_status'] as $key)
-    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
-
-if ($action == "del" && isset($item_id) && $item_id != "") {
-
-    $req = "SELECT * FROM users WHERE id=".$item_id;
-    $res = dbc::execSql($req);
-
-    if ($row = mysqli_fetch_array($res)) {
-        $f_email = $row['email'];
-        $req = "DELETE FROM users WHERE id=".$item_id;
-        $res = dbc::execSql($req);
-    }
-}
-
-$doublon = false;
 if ($action == "new") {
 
-    $req = "SELECT * FROM users WHERE email='".strtolower($f_email)."'";
+    $req = "INSERT INTO prediction (date_avis, symbol, user_id, cours, objectif, stoploss, conseiller, date_status, status) VALUES ('".$f_date."', '".$f_actif."', ".$sess_context->getUserId().", '".$f_cours."', '".$f_objectif."', '".$f_stoploss."', '".$f_conseiller."', '".$f_date."', ".$f_status.")";
     $res = dbc::execSql($req);
-    if ($row = mysqli_fetch_array($res)) {
-        $doublon = true;
-        $f_email = $row['email'];
-    } else {
-        $req = "INSERT INTO users (email, status) VALUES ('".$f_email."', ".$f_status.")";
-        $res = dbc::execSql($req);
-    }
+
 }
 
-if ($action == "upt" && isset($item_id) && $item_id != "") {
+if ($action == "upt" && isset($prediction_id) && $prediction_id != 0) {
 
-    $req = "SELECT * FROM users WHERE email='".strtolower($f_email)."' AND id <> ".$item_id;
+    $req = "UPDATE prediction SET date_avis='".$f_date."', symbol='".$f_actif."', cours='".$f_cours."', objectif='".$f_objectif."', stoploss='".$f_stoploss."', conseiller='".$f_conseiller."', status=".$f_status." WHERE id=".$prediction_id." AND user_id=".$sess_context->getUserId();
     $res = dbc::execSql($req);
-    if ($row = mysqli_fetch_array($res)) {
-        $doublon = true;
-    } else {
-        $req = "SELECT * FROM users WHERE id=".$item_id;
-        $res = dbc::execSql($req);
 
-        if ($row = mysqli_fetch_array($res)) {
-            $req = "UPDATE users SET email='".$f_email."', status='".$f_status."' WHERE id=".$item_id;
-            $res = dbc::execSql($req);
-        }
-    }
 }
 
 ?>
 
 <script>
-<? if ($action == "del" || $action == "upt" || $action == "new") { ?>
-
-<? if ($doublon) { ?>
-	Swal.fire({ title: '', icon: 'error', html: "Utilisateur '<?= $f_email ?>' déjà existant" });
-<? } else { ?>
-	Swal.fire({ title: '', icon: 'success', html: "Utilisateur '<?= $f_email ?>' <?= $action == "new" ? "ajouté": ($action == "upt" ? "modifié" : "supprimé") ?>" });
+<? if ($action != "save") { ?>
+    go({ action: 'prediction', id: 'main', url: 'prediction_list.php' });
 <? } ?>
-    go({ action: 'home_content', id: 'main', url: 'user_list.php' });
-
-<? } ?>
+    var p = loadPrompt();
+    p.success('Prédiction <?= ($action == "new" ? " ajoutée": ($action == "upt" || $action == "save" ? " modifiée" : " supprimée")) ?>');
 </script>

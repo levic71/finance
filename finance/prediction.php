@@ -6,110 +6,154 @@ session_start();
 
 include "common.php";
 
-$action = "new";
+$prediction_id = -1;
 
-foreach(['item_id', 'action'] as $key)
+foreach(['prediction_id', 'action'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
-
-$libelle_action_bt = tools::getLibelleBtAction($action);
 
 $db = dbc::connect();
 
+if (!$sess_context->isUserConnected()) {
+	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
+	exit(0);
+}
+
+$devises = calc::getGSDevisesWithNoUpdate();
+
+$libelle_action_bt = tools::getLibelleBtAction($action);
+
 if ($action == "upt") {
-	$req = "SELECT count(*) total FROM users WHERE id=".$item_id;
-	$res = dbc::execSql($req);
-	$row = mysqli_fetch_array($res);
-
-	if ($row['total'] != 1) {
-		echo '<div class="ui container inverted segment"><h2>Utilisateur introuvable !!!</h2></div>"';
-		exit(0);
-	}
-
-	$req = "SELECT * FROM users WHERE id=".$item_id;
-	$res = dbc::execSql($req);
-	$row = mysqli_fetch_array($res);
+    $req = "SELECT * FROM prediction WHERE id=".$prediction_id." AND user_id=".$sess_context->getUserId();
+    $res = dbc::execSql($req);
+    if (!$row = mysqli_fetch_assoc($res)) exit(0);
+} else {
+    $row['date_avis']    = date('Y-m-d');
+    $row['symbol']       = "";
+    $row['cours']        = 0;
+    $row['objectif']     = 0;
+    $row['stoploss']     = 0;
+    $row['conseiller']   = "";
+    $row['status']       = 0;
 }
-else {
-	$row = [ "email" => "", "status" => 0];
-}
+
+// Recuperation de tous les actifs
+$quotes = calc::getIndicatorsLastQuote();
 
 ?>
 
-<style type="text/css">
-	.column { max-width: 90%; }
-	.label { width: 150px; text-align: left; background: #333 !important; }
-	.ui.selection.dropdown { height: 45px !important; border-bottom-left-radius: 0px !important; }
-</style>
+<div class="ui inverted form">
 
-<div class="ui inverted middle aligned center aligned grid segment container">
-    <div class="column">
+    <input type="hidden" id="prediction_id" value="<?= $prediction_id ?>" />
 
-		<div class="ui inverted clearing segment">
-			<h2 class="ui inverted left floated header">Prédiction</h2>
-		</div>
+    <div class="ui inverted clearing segment">
+		<h2 class="ui inverted left floated header"><i class="inverted magic icon"></i>Prédiction</h2>
 
-		<form class="ui inverted large form">
-
-			<input type="hidden" id="item_id" value="<?= $item_id ?>" />
-
-			<div class="ui inverted stackable two column grid container">
-
-				<div class="wide column">
-	                <div class="inverted field">
-	                    <div class="ui corner inverted labeled input">
-                        	<div class="ui inverted basic label">Email</div><input type="text" id="f_email" value="<?= $row['email'] ?>" placeholder="Email" />
-							<div id="f_email_error" class="ui inverted corner label"><i class="asterisk inverted icon"></i></div>
-                    	</div>
-					</div>
-                </div>
-
-				<div class="wide column">
-					<div class="inverted field">
-						<div class="ui inverted labeled input">
-							<div class="ui inverted basic label">Activé</div>
-							<select id="f_status" class="ui selection dropdown">
-								<option value="0" <?= $row['status'] == 0 ? "selected=\"selected\"" : "" ?>>Non</option>
-								<option value="1" <?= $row['status'] == 1 ? "selected=\"selected\"" : "" ?>>Oui</option>
-							</select>
-                    	</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="ui inverted stackable two column grid container">
-
-				<div class="wide column"></div>
-
-				<div class="wide right aligned column">
-					<div id="table_cancel_bt" class="ui grey submit button">Cancel</div>
-                    <div id="table_<?= $libelle_action_bt ?>_bt" class="ui floated right teal submit button"><?= $libelle_action_bt ?></div>
-				</div>
-
-			</div>
-
-		</form>
+        <? if ($action == "upt") { ?>
+            <h3 class="ui right floated header"><i id="delete_bt" class="ui inverted right floated black small trash icon"></i></h3>
+        <? } ?>
     </div>
+
+    <div class="seven fields">
+        <div class="field" style="width: 150px;">
+            <label>Date</label>
+            <div class="ui right icon inverted left labeled fluid input">
+                <input type="text" size="10" id="f_date" value="<?= $row['date_avis'] ?>" placeholder="0000-00-00">
+                <i class="inverted black calendar alternate outline icon"></i>
+            </div>
+        </div>
+        <div class="field">
+            <label>Actif</label>
+            <select id="f_actif" class="ui dropdown">
+				<option value=""></option>
+                <? foreach ($quotes["stocks"] as $key => $val) { ?>
+                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $row['symbol'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
+                <? } ?>
+            </select>
+        </div>
+        <div class="field">
+            <label>Cours</label>
+            <input type="text" size="10" id="f_cours" value="<?= $row['cours'] ?>" placeholder="0">
+        </div>
+        <div class="field">
+            <label>Objectif</label>
+            <input type="text" size="10" id="f_objectif" value="<?= $row['objectif'] ?>" placeholder="0">
+        </div>
+        <div class="field">
+            <label>Stoploss</label>
+            <input type="text" size="10" id="f_stoploss" value="<?= $row['stoploss'] ?>" placeholder="0">
+        </div>
+        <div class="field">
+            <label>Conseiller</label>
+            <select id="f_conseiller" class="ui dropdown">
+                <? foreach ([ 'MOI', 'BourseDirect', 'CHERON', 'GAVE', 'ILT', 'KPI', 'KOUBAR', 'PAVEL', 'TKL', 'ZoneBourse' ] as $key => $val) { ?>
+                    <option value="<?= $val ?>" <?= $row['conseiller'] == $val ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
+                <? } ?>
+            </select>
+        </div>
+        <div class="field">
+            <label>Status</label>
+            <select id="f_status" class="ui dropdown">
+				<option value="0"  <?= $row['status'] == 0  ? "selected=\"selected\"" : "" ?>>En cours</option>
+				<option value="1"  <?= $row['status'] == 1  ? "selected=\"selected\"" : "" ?>>Validée</option>
+				<option value="-1" <?= $row['status'] == -1 ? "selected=\"selected\"" : "" ?>>Invalidée</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="ui grid">
+        <div class="wide right aligned column">
+            <div id="cancel_bt" class="ui grey submit button">Cancel</div>
+            <div id="<?= $libelle_action_bt ?>_bt" class="ui floated right teal submit button"><?= $libelle_action_bt ?></div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-	Dom.addListener(Dom.id('table_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'home', id: 'main', url: 'user_list.php', loading_area: 'table_cancel_bt' }); });
-	Dom.addListener(Dom.id('table_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
 
-		if (valof('f_email') == "") {
-			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Saisir un email' });
-			addCN('f_email_error', 'red');
-			return;
-		}
-		rmCN('f_email_error', 'red');
+const datepicker1 = new TheDatepicker.Datepicker(el('f_date'));
+datepicker1.options.setInputFormat("Y-m-d")
+datepicker1.render();
 
-		if (!check_email(valof('f_email'))) {
-			Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Email non conforme' });
-			addCN('f_email_error', 'red');
-			return false;
-		}
-		rmCN('f_email_error', 'red');
+// Change sur selection produit
+Dom.addListener(Dom.id('f_actif'), Dom.Event.ON_CHANGE, function(event) {
 
-		params = '?action=<?= $action ?>&'+attrs(['item_id', 'f_email', 'f_status' ]);
-		go({ action: 'home', id: 'main', url: 'user_action.php'+params, loading_area: 'table_<?= $libelle_action_bt ?>_bt' });
-	});
+    item = Dom.id('f_actif');
+	v = Dom.attribute(item.options[item.selectedIndex], 'data-price');
+
+    // On positionne l'action a Achat si actif choisit
+    Dom.attribute(Dom.id('f_cours'), { 'value': v });
+});
+
+// Cancel button
+Dom.addListener(Dom.id('cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'prediction', id: 'main', url: 'prediction_list.php', loading_area: 'main' }); });
+
+// Add/Update button
+Dom.addListener(Dom.id('<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
+
+	// Controle si champ numerique
+	if (!check_num(valof('f_cours'), 'Cours', 0, 999999999999))
+		return false;
+
+	if (!check_num(valof('f_objectif'), 'Objectif', 0, 999999999999))
+		return false;
+
+    if (!check_num(valof('f_stoploss'), 'Stoploss', 0, 999999999999))
+		return false;
+
+    item = Dom.id('f_actif');
+    n = item.options[item.selectedIndex].value;
+
+    params = '?action=<?= $action ?>&'+attrs(['prediction_id', 'f_date', 'f_actif', 'f_cours', 'f_objectif', 'f_stoploss', 'f_conseiller', 'f_status' ]) + '&f_confirme='+(valof('f_confirme') == 0 ? 0 : 1);
+ 
+	go({ action: 'prediction', id: 'main', url: 'prediction_action.php'+params, loading_area: 'main' });
+
+});
+
+// Del button
+<? if ($action == "upt") { ?>
+	Dom.addListener(Dom.id('delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'prediction', id: 'main', url: 'prediction_action.php?action=del&prediction_id=<?= $prediction_id ?>', loading_area: 'main', confirmdel: 1 }); });
+<? } ?>
+
 </script>
+
