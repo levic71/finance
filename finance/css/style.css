@@ -854,8 +854,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(9) button {
     background: grey !important; color: white !important;
 }
-#lst_prediction tbody td:nth-child(4) div,
 #lst_prediction tbody td:nth-child(5) div,
+#lst_prediction tbody td:nth-child(6) div,
 #lst_position tbody td:nth-child(3) div,
 #lst_position tbody td:nth-child(4) div,
 #lst_position tbody td:nth-child(5) div,
@@ -867,8 +867,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
     flex-direction: column;
     align-items: center;
 }
-#lst_prediction tbody td:nth-child(4) button,
 #lst_prediction tbody td:nth-child(5) button,
+#lst_prediction tbody td:nth-child(6) button,
 #lst_position tbody td:nth-child(3) button,
 #lst_position tbody td:nth-child(4) button,
 #lst_position tbody td:nth-child(9) button,
