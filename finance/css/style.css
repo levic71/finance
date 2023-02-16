@@ -1,7 +1,7 @@
-td.aaf-positive, label.aaf-positive, span.aaf-positive { color: rgb(97, 194, 97) !important; }
-td.aaf-negative, label.aaf-negative, span.aaf-negative { color: rgb(247, 95, 90) !important; }
-button.aaf-positive { background: rgb(97, 194, 97) !important; color: white !important; }
-button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
+td.aaf-positive, label.aaf-positive, span.aaf-positive { color: rgb(87, 226, 87) !important; }
+td.aaf-negative, label.aaf-negative, span.aaf-negative { color: rgb(228, 69, 64) !important; }
+button.aaf-positive { background: rgb(87, 226, 87) !important; color: white !important; }
+button.aaf-negative { background: rgb(228, 69, 64) !important; color: white !important; }
 .mini_button { border-radius: 3px; float: right; margin-top: 3px; padding: 0px 5px; }
 .mini_button.aaf-positive { background: rgb(97, 194, 97) !important; color: white !important; }
 .mini_button.aaf-negative { background: rgb(247, 95, 90) !important; color: white !important; }
