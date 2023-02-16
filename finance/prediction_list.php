@@ -93,12 +93,12 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned"><?= sprintf("%.2f", $row['cours']).$curr ?></td>
 					<td class="center aligned"><?= sprintf("%.2f", $cj).$curr ?></td>
 					<td class="center aligned"><div>
-						<button class="tiny ui button" style="background: #62BD18"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
-						<label style="color: #62BD18"><?= sprintf("%.2f", $perf) ?>%</label>
+						<button class="tiny ui aaf-positive button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
+						<label class="aaf-positive"><?= sprintf("%.2f", $perf) ?>%</label>
 					</div></td>
 					<td class="center aligned"><div>
-						<button class="tiny ui button" style="background: #FC3D31;"><?= sprintf("%.2f", $row['stoploss']).$curr ?></button>
-						<label style="color: #FC3D31"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['stoploss'] / $row['cours']) - 1) * 100) ?>%</label>
+						<button class="tiny ui aaf-negative button"><?= sprintf("%.2f", $row['stoploss']).$curr ?></button>
+						<label class="aaf-negative"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['stoploss'] / $row['cours']) - 1) * 100) ?>%</label>
 					</div></td>
 					<td><?= $row['conseiller'] ?></td>
 					<td class="center aligned"><?= $lib_diff ?></td>
