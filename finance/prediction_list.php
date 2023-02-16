@@ -102,7 +102,7 @@ while($row = mysqli_fetch_array($res)) {
 					</div></td>
 					<td><?= $row['conseiller'] ?></td>
 					<td class="center aligned"><?= $lib_diff ?></td>
-					<td class="center aligned" data-tootik="<?= $row['date_status'] ?>"><i class="inverted <?= $row['status'] == 1 ? "calendar check outline green" : ($row['status'] == -1 ? "calendar times outline red" : ($row['status'] == -2 ? "calendar minus outline red" : "clock outline")) ?> icon"></i></td>
+					<td class="center aligned" data-value="<?= $row['status'] ?>" data-tootik="<?= $row['date_status'] ?>"><i class="inverted <?= $row['status'] == 1 ? "calendar check outline green" : ($row['status'] == -1 ? "calendar times outline red" : ($row['status'] == -2 ? "calendar minus outline red" : "clock outline")) ?> icon"></i></td>
 					<td class="center aligned collapsing"><i data-value="<?= $row['id'] ?>" class="edit inverted icon"></i></td>
 				<tr>
 <?
