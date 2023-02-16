@@ -78,6 +78,8 @@ while($row = mysqli_fetch_array($res)) {
 
 				$cj   = $quotes["stocks"][$row['symbol']]['price'];
 				$curr = uimx::getCurrencySign($quotes["stocks"][$row['symbol']]['currency']);
+				$ref_cours = $row['status'] == 0 ? $cj : $row['cours']; // Si status en cours alors perf par rapport au cours réel sinon par perf par rapport cours debut prediction
+				$perf = $ref_cours == 0 ? 0 : (($row['objectif'] / $ref_cours) - 1) * 100;
 
 				$datetime1 = new DateTime($row['date_avis']);
 				$datetime2 = new DateTime($row['status'] == 0 ? date("Y-m-d") : $row['date_status']);
@@ -92,7 +94,7 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned"><?= sprintf("%.2f", $cj).$curr ?></td>
 					<td class="center aligned"><div>
 						<button class="tiny ui button" style="background: #62BD18"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
-						<label style="color: #62BD18"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['objectif'] / $row['cours']) - 1) * 100) ?>%</label>
+						<label style="color: #62BD18"><?= sprintf("%.2f", $perf) ?>%</label>
 					</div></td>
 					<td class="center aligned"><div>
 						<button class="tiny ui button" style="background: #FC3D31;"><?= sprintf("%.2f", $row['stoploss']).$curr ?></button>
@@ -109,6 +111,69 @@ while($row = mysqli_fetch_array($res)) {
 		</tbody>
 	</table>
 	<div id="lst_prediction_box"></div>
+</div>
+
+
+<div class="ui container inverted segment">
+
+	<h2><i class="inverted picture icon"></i>Synthèse</h2>
+
+	<table class="ui selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_conseiller" data-sortable>
+		<thead>
+			<tr>
+				<th class="center aligned">Conseiller</th>
+                <th class="center aligned">En cours</th>
+                <th class="center aligned">Validées</th>
+				<th class="center aligned">Invalidées</th>
+				<th class="center aligned">Perf (All)</th>
+				<th class="center aligned">Perf (1Y)</th>
+			</tr>
+		</thead>
+		<tbody>
+<?
+			// Synthèse sur 6 mois
+			$t = [];
+			$req = "SELECT count(*) total, conseiller, status FROM prediction WHERE date_avis >= CURDATE() - INTERVAL 12 MONTH GROUP BY conseiller, status";
+			$res = dbc::execSql($req);
+        	while($row = mysqli_fetch_array($res))
+				$t[$row['conseiller']][$row['status']] = $row['total'];
+
+			foreach($t as $key => $val) {
+				$val[0]  = isset($val[0])  ? $val[0]  : 0;
+				$val[1]  = isset($val[1])  ? $val[1]  : 0;
+				$val[-1] = isset($val[-1]) ? $val[-1] : 0;
+				$nb_predictions = $val[1] + $val[-1];
+				$perf_mois[$key] = $val[1] == 0 ? "-" : ($val[1] / $nb_predictions) * 100;
+			}
+	
+			// Synthèse complète
+			$t = [];
+			$req = "SELECT count(*) total, conseiller, status FROM prediction GROUP BY conseiller, status";
+			$res = dbc::execSql($req);
+        	while($row = mysqli_fetch_array($res))
+				$t[$row['conseiller']][$row['status']] = $row['total'];
+
+			foreach($t as $key => $val) {
+				$val[0]  = isset($val[0])  ? $val[0]  : 0;
+				$val[1]  = isset($val[1])  ? $val[1]  : 0;
+				$val[-1] = isset($val[-1]) ? $val[-1] : 0;
+				$nb_predictions = $val[1] + $val[-1];
+				$perf  = $val[1] == 0 ? 0 : ($val[1] / $nb_predictions) * 100;
+				$perf2 = isset($perf_mois[$key]) ? $perf_mois[$key] : "-";
+				echo '<tr>
+					<td class="center aligned">'.$key.'</td>
+					<td class="center aligned">'.$val[0].'</td>
+					<td class="center aligned">'.$val[1].'</td>
+					<td class="center aligned">'.$val[-1].'</td>
+					<td class="center aligned">'.$perf.'%</td>
+					<td class="center aligned">'.($perf2 == "-" ? "-" : $perf2."%").'</td>
+				</tr>';
+			}
+?>
+
+		</tbody>
+	</table>
+	<div id="lst_conseiller_box"></div>
 </div>
 
 <script>

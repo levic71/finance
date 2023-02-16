@@ -48,7 +48,6 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 
 	<h2 class="ui left floated">
 		<i class="inverted bullseye icon"></i>Watchlist
-		<button id="ptf_pos_sync_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black sync icon"></i></button>
 		<div class="ui right floated buttons" id="strat_bts">
 			<button data-value="1" class="mini ui <?= $strat_ptf == 1 ? "primary" : "grey" ?> button">Défensive</button>
 			<button data-value="2" class="mini ui <?= $strat_ptf == 2 ? "primary" : "grey" ?> button">Passive</button>
@@ -99,12 +98,16 @@ updateDataPage = function(opt) {
 }('init');
 
 // Listener sur boutons tags
+let i = 0;
+let lib_buttons = [ 'Déf', 'Pass', 'Off', 'Agg'];
 Dom.find('#strat_bts button').forEach(function(item) {
 	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
 		let strat = Dom.attribute(item, 'data-value');
 		setCookie('strat_ptf', strat, 10000);
         go({ action: 'home', id: 'main', url: 'watchlist.php?strat_ptf=' + strat, loading_area: 'main' });
 	});
+
+	if (window.innerWidth < 600) item.innerText = lib_buttons[i++];
 });
 
 // Tri sur tableau
@@ -112,5 +115,6 @@ Sortable.initTable(el("lst_position"));
 
 // On cache les fitres de selection de la liste des ordres passes
 hide("filters");
+
 
 </script>
