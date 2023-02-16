@@ -165,8 +165,8 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned">'.$val[0].'</td>
 					<td class="center aligned">'.$val[1].'</td>
 					<td class="center aligned">'.$val[-1].'</td>
-					<td class="center aligned">'.$perf.'%</td>
-					<td class="center aligned">'.($perf2 == "-" ? "-" : $perf2."%").'</td>
+					<td class="center aligned">'.sprintf("%.0f", $perf).'%</td>
+					<td class="center aligned">'.($perf2 == "-" ? "-" : sprintf("%.0f", $perf2)."%").'</td>
 				</tr>';
 			}
 ?>
