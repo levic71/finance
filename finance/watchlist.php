@@ -104,7 +104,7 @@ Dom.find('#strat_bts button').forEach(function(item) {
 	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
 		let strat = Dom.attribute(item, 'data-value');
 		setCookie('strat_ptf', strat, 10000);
-        go({ action: 'home', id: 'main', url: 'watchlist.php?strat_ptf=' + strat, loading_area: 'main' });
+        go({ action: 'watchlist', id: 'main', url: 'watchlist.php?strat_ptf=' + strat, loading_area: 'main' });
 	});
 
 	if (window.innerWidth < 600) item.innerText = lib_buttons[i++];
