@@ -2314,8 +2314,7 @@ class uimx {
         9  => [ "tag" => "MENA",             "desc" => "Afrique du nord + Moyen Orient" ],
         10 => [ "tag" => "EMEA",             "desc" => "Europe Middle East & Africa" ],
         11 => [ "tag" => "Moyen Orient",     "desc" => "" ],
-        12 => [ "tag" => "Asie",             "desc" => "" ],
-        13 => [ "tag" => "Océanie",          "desc" => "" ]
+        12 => [ "tag" => "Asie",             "desc" => "" ]
     ];
     public static $invest_taille = [
         0  => [ "tag" => "Large Cap",  "desc" => "" ],
@@ -2326,7 +2325,7 @@ class uimx {
         0  => [ "tag" => "Action",            "desc" => "" ],
         1  => [ "tag" => "Obligation",        "desc" => "" ],
         2  => [ "tag" => "Monétaire",         "desc" => "" ],
-        3  => [ "tag" => "Matière première", "desc" => "" ],
+        3  => [ "tag" => "Matière première",  "desc" => "" ],
         4  => [ "tag" => "Immobilier",        "desc" => "" ],
         5  => [ "tag" => "Factorielle",       "desc" => "" ],
         6  => [ "tag" => "Indice",            "desc" => "" ]

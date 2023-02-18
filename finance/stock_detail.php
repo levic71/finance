@@ -20,6 +20,10 @@ foreach (['symbol', 'edit', 'ptf_id', 'debug'] as $key)
 // Affichage par defaut des MMX
 $mmx = 8;
 
+// Conseillers to tags
+$tags_conseillers = [];
+foreach(uimx::$conseillers as $key => $val) $tags_conseillers[] = [ "tag" => $val, "desc" => "" ]; 
+
 // Couleurs boutons
 $bt_interval_colr = "green"; // D/W/M
 $bt_period_colr   = "blue";  // ALL/3Y/1Y/1T
@@ -90,7 +94,7 @@ $lst_trend_following = $sc->getTrendFollowing();
             <i style="float: right; margin-top: 5px;" id="stock_delete_bt" class="ui inverted right float small trash icon"></i>
         <? } ?>
         <?
-            if ($ptf_nb_positions > 0) {
+            if ($readonly && $ptf_nb_positions > 0) {
                 echo '<select id="ptf_select_bt" style="float: right; top: -4px; right: 10px;" class="ui dropdown"><option />';
                 ksort($aggregate_ptf['positions']);
                 foreach($aggregate_ptf['positions'] as $key => $val)
@@ -346,6 +350,7 @@ $js_bubbles_data = "";
 <div id="canvas_area2" class="ui container inverted segment">
 <? if ($readonly) { ?>
     <h4 class="ui inverted dividing header">Tags</h4>
+    <div class="ui horizontal list">
 <? } ?>
 <? foreach( [
                 "Classe d'actif"      => uimx::$invest_classe,
@@ -354,14 +359,15 @@ $js_bubbles_data = "";
                 "Zone géographique"   => uimx::$invest_zone_geo,
                 "Critère factoriel"   => uimx::$invest_factorielle,
                 "Taille"              => uimx::$invest_taille,
-                "Thème"               => uimx::$invest_theme
+                "Thème"               => uimx::$invest_theme,
+                "Conseillée par"      => $tags_conseillers
             ] as $lib => $tab) { ?>
 
 <? if (!$readonly) { ?>
     <h4 class="ui inverted dividing header"><?= $lib ?></h4>
+    <div class="ui horizontal list">
 <? } ?>
 
-    <div class="ui horizontal list">
         <?
             foreach ($tab as $key => $val) {
                 if ($readonly) {
@@ -371,12 +377,15 @@ $js_bubbles_data = "";
                     <? } ?>
 
                 <? } else { ?>
-                    <div class="item"><button <?= isset($val['desc']) && $val['desc'] != "" ? "data-tootik-conf=\"multiline\" data-tootik=\"".$val['desc']."\"" : "" ?> id="bt_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item very small ui bt_tags <?= isset($tags[$val['tag']]) ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val['tag'] ?></button></div>
+                    <div class="item">
+                        <button <?= isset($val['desc']) && $val['desc'] != "" ? "data-tootik-conf=\"multiline\" data-tootik=\"".$val['desc']."\"" : "" ?> id="bt_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item very small ui bt_tags <?= isset($tags[$val['tag']]) ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val['tag'] ?></button>
+                    </div>
                 <? } ?>
 
             <? } ?>
-    </div>
+    <? if (!$readonly) { ?></div><? } // Pour la div ui horizontal list en mode edit (une pour chaque type de tags) ?>
 <? } ?>
+<? if ($readonly) { ?></div><? } // Pour la div ui horizontal list en mode reeadonly (une pour tous les tags) ?>
 </div>
 
 <? if ($readonly) { ?>
@@ -1174,7 +1183,7 @@ if ($debug == 1) {
 
 
     // Choix actif dans select actif ptf
-    <? if ($ptf_nb_positions > 0) { ?>
+    <? if ($readonly && $ptf_nb_positions > 0) { ?>
         Dom.addListener(Dom.id('ptf_select_bt'), Dom.Event.ON_CHANGE, function(event) {
             element = Dom.id('ptf_select_bt');
             var selection = "";
