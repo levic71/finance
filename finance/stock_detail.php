@@ -8,12 +8,13 @@ include "common.php";
 
 $symbol = "";
 $ptf_id = -1;
+$debug  = 0;
 
 $default_button_choice = [ 'rsi' => 0, 'volume' => 1, 'alarm' => 1, 'av' => 1, 'reg' => 0, 'scale' => 0 ];
 
 $strat_ptf    = isset($_COOKIE["strat_ptf"]) ? $_COOKIE["strat_ptf"] :  1;
 
-foreach (['symbol', 'edit', 'ptf_id'] as $key)
+foreach (['symbol', 'edit', 'ptf_id', 'debug'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 // Affichage par defaut des MMX
@@ -180,11 +181,6 @@ $data_daily = getTimeSeriesData("daily_time_series_adjusted", "DAILY", $symbol);
 $data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $symbol);
 $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $symbol);
 
-asort(uimx::$invest_secteur); // Permet de rajouter des items n'importe ou dans la liste
-asort(uimx::$invest_zone_geo);
-asort(uimx::$invest_classe);
-asort(uimx::$invest_factorielle);
-
 $js_bubbles_data = "";
 
 ?>
@@ -199,6 +195,8 @@ $js_bubbles_data = "";
     }
 </style>
 
+
+<? if ($readonly) { ?>
 
 <div id="canvas_area" class="ui container inverted segment" style="padding-top: 0px !important; margin-top: 0px !important;">
     <span class="graph_bts">
@@ -236,6 +234,8 @@ $js_bubbles_data = "";
     <canvas id="stock_canvas2" height="30"></canvas>
     <canvas id="stock_canvas3" height="30"></canvas>
 </div>
+
+<? } ?>
 
 <div class="ui container inverted segment">
     <form class="ui inverted form <?= $readonly ? "readonly" : "" ?>">
@@ -367,13 +367,11 @@ $js_bubbles_data = "";
                 if ($readonly) {
                     
                     if (isset($tags[$val['tag']])) { ?>
-
                         <div class="item"><button class="item very small ui bt_tags <?= $bt_interval_colr ?> button"><?= $val['tag'] ?></button></div>
+                    <? } ?>
 
-                <? } } else { ?>
-    
+                <? } else { ?>
                     <div class="item"><button <?= isset($val['desc']) && $val['desc'] != "" ? "data-tootik-conf=\"multiline\" data-tootik=\"".$val['desc']."\"" : "" ?> id="bt_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item very small ui bt_tags <?= isset($tags[$val['tag']]) ? $bt_interval_colr : $bt_grey_colr ?> button"><?= $val['tag'] ?></button></div>
-
                 <? } ?>
 
             <? } ?>
@@ -399,7 +397,7 @@ $js_bubbles_data = "";
 
 <?
 
-if (!$readonly) {
+if ($debug == 1) {
     $infos = calc::getDirectDM($data);
 ?>
 
@@ -458,7 +456,8 @@ if (!$readonly) {
 
 <? } ?>
 
-<? if ($sess_context->isUserConnected()) { ?>
+<? if ($sess_context->isUserConnected() && $readonly) { ?>
+
 <div id="canvas_area3" class="ui container inverted segment form">
     <h4 class="ui inverted dividing header">History</h4>
     <div class="field">
@@ -544,6 +543,8 @@ if (!$readonly) {
     const datepicker1 = new TheDatepicker.Datepicker(el('f_date_dividende'));
     datepicker1.options.setInputFormat("Y-m-d")
     datepicker1.render();
+
+<? if ($readonly) { ?>
 
     var myChart1 = null;
     var myChart2 = null;
@@ -1093,7 +1094,25 @@ if (!$readonly) {
 
     var p = loadPrompt();
 
-    <? if (!$readonly) { ?>
+
+    // Listener sur bt MMX + volume + alarm
+    Object.entries(mm_bts).forEach(([key, val]) => {
+        Dom.addListener(Dom.id(key), Dom.Event.ON_CLICK, function(event) {
+            toogleMMX(myChart1, val);
+        });
+    });
+
+    // Listener sur bt 1T, 1Y, 3Y, ALL, D, W, M
+    ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt', 'graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((item) => {
+        Dom.addListener(Dom.id(item), Dom.Event.ON_CLICK, function(event) {
+            update_all_charts(item);
+        });
+    });
+
+<? } ?>
+
+
+<? if (!$readonly) { ?>
 
     getFormValues = function() {
         params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
@@ -1120,13 +1139,13 @@ if (!$readonly) {
         toogleCN('nav_menu', 'on'); scroll(0,0);
     });
     
-    // Listenet sur indicators
+    // Listener sur indicators
     Dom.addListener(Dom.id('stock_indic_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=indic&symbol=<?= $symbol ?>', loading_area: 'main' });
         toogleCN('nav_menu', 'on'); scroll(0,0);
     });
 
-    // Listenet sur bt reload
+    // Listener sur bt reload
     Dom.addListener(Dom.id('stock_reload_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'update', id: 'main', url: 'stock_action.php?action=reload&symbol=<?= $symbol ?>', loading_area: 'main' });
         toogleCN('nav_menu', 'on'); scroll(0,0);
@@ -1149,36 +1168,10 @@ if (!$readonly) {
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'home', id: 'main', url: 'stock_detail.php?edit=1&symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
     });
-    <? } ?>
 
-    // Listener sur bt MMX + volume + alarm
-    Object.entries(mm_bts).forEach(([key, val]) => {
-        Dom.addListener(Dom.id(key), Dom.Event.ON_CLICK, function(event) {
-            toogleMMX(myChart1, val);
-        });
-    });
+<? } ?>
 
-    // Listener sur bt 1T, 1Y, 3Y, ALL, D, W, M
-    ['graphe_1T_bt', 'graphe_1Y_bt', 'graphe_3Y_bt', 'graphe_all_bt', 'graphe_D_bt', 'graphe_W_bt', 'graphe_M_bt'].forEach((item) => {
-        Dom.addListener(Dom.id(item), Dom.Event.ON_CLICK, function(event) {
-            update_all_charts(item);
-        });
-    });
 
-    /* Dom.addListener(Dom.id('graphe_L_bt'),  Dom.Event.ON_CLICK, function(event) {
-        if (isCN('graphe_L_bt', 'grey'))
-            p.error('Les graphes sont liés (pas encore implémenté)');
-        else
-            p.inform('Les graphes ne sont plus liés');
-
-        switchCN('graphe_L_bt', 'grey', 'blue');
-        switchCN('graphe_L_bt_icon', 'unlink', 'linkify');
-    }); */
-
-    // Refresh button
-//    Dom.addListener(Dom.id('symbol_refresh_bt'), Dom.Event.ON_CLICK, function(event) {
-//        go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>', loading_area: 'main' });
-//    });
 
     // Choix actif dans select actif ptf
     <? if ($ptf_nb_positions > 0) { ?>
@@ -1218,11 +1211,13 @@ if (!$readonly) {
 
     }('init');
     
+<? if ($readonly) { ?>
     // Pagination
     paginator({
         table: document.getElementById("lst_order"),
         box: document.getElementById("pagination_box")
     });
+<? } ?>
 
     scroll(0,0); // Top de page
 

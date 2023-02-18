@@ -100,7 +100,7 @@ while($row = mysqli_fetch_array($res)) {
 						<button class="tiny ui aaf-negative button"><?= sprintf("%.2f", $row['stoploss']).$curr ?></button>
 						<label class="aaf-negative"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['stoploss'] / $row['cours']) - 1) * 100) ?>%</label>
 					</div></td>
-					<td><?= $row['conseiller'] ?></td>
+					<td><?= uimx::$conseillers[$row['conseiller']] ?></td>
 					<td class="center aligned"><?= $lib_diff ?></td>
 					<td class="center aligned" data-value="<?= $row['status'] ?>" data-tootik="<?= $row['date_status'] ?>"><i class="inverted <?= $row['status'] == 1 ? "calendar check outline green" : ($row['status'] == -1 ? "calendar times outline red" : ($row['status'] == -2 ? "calendar minus outline red" : "clock outline")) ?> icon"></i></td>
 					<td class="center aligned collapsing"><i data-value="<?= $row['id'] ?>" class="edit inverted icon"></i></td>
@@ -161,7 +161,7 @@ while($row = mysqli_fetch_array($res)) {
 				$perf  = $val[1] == 0 ? 0 : ($val[1] / $nb_predictions) * 100;
 				$perf2 = isset($perf_mois[$key]) ? $perf_mois[$key] : "-";
 				echo '<tr>
-					<td class="center aligned">'.$key.'</td>
+					<td class="center aligned">'.uimx::$conseillers[$key].'</td>
 					<td class="center aligned">'.$val[0].'</td>
 					<td class="center aligned">'.$val[1].'</td>
 					<td class="center aligned">'.$val[-1].'</td>

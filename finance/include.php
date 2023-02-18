@@ -2289,7 +2289,7 @@ class uimx {
     ];
     public static $invest_secteur = [
         0  => [ "tag" => "Services financiers", "icon" => "university", "desc" => "Se compose essentiellement de banques, de caisses d'épargne et de crédit, de compagnies d'assurance ainsi que de sociétés de fonds communs de placement." ],
-        1  => [ "tag" => "Énergie",             "icon" => "fire", "desc" => "Constitué d'entreprises exerçant des activités d'exploration, de production, de commercialisation, de raffinage et de transport des produits du pétrole et du gaz. Ce secteur comprend aussi des sociétés qui prennent part au domaine des services liés à l'énergie." ],
+        1  => [ "tag" => "Energie",             "icon" => "fire", "desc" => "Constitué d'entreprises exerçant des activités d'exploration, de production, de commercialisation, de raffinage et de transport des produits du pétrole et du gaz. Ce secteur comprend aussi des sociétés qui prennent part au domaine des services liés à l'énergie." ],
         2  => [ "tag" => "Matériaux",           "icon" => "wrench", "desc" => "Se compose d'entreprises appartenant à une vaste gamme d'industries manufacturières et minières axées sur les produits de base, notamment les métaux, les minéraux, les produits chimiques, les matériaux de construction, le verre, le papier et les produits forestiers." ],
         3  => [ "tag" => "Industrie",           "icon" => "industry", "desc" => "Comprend des entreprises dont le domaine d'activité principal est l'aérospatiale et la défense, la construction, l'outillage de précision et les produits de bâtiment ou encore les services de transport, y compris les lignes aériennes, les chemins de fer et les infrastructures de transport." ],
         4  => [ "tag" => "Consommation discrétionnaire", "icon" => "shipping fast", "desc" => "Comprend des entreprises dans les domaines suivants : transport routier, objets ménagers et biens durables, textiles, habillement et équipements de loisirs. Les restaurants, les hôtels, les établissements de loisirs, les services médiatiques et la vente au détail relèvent du segment des services." ],
@@ -2374,6 +2374,10 @@ class uimx {
         8 => "Rebond technique",
         9 => "Baissier prix sous moyenne mobile 200"
     ];
+    public static $conseillers = [
+        0 => 'MOI', 1 => 'BourseDirect', 2 => 'CHERON', 3 => 'GAVE', 4 => 'ILT', 5 => 'KPI', 6 => 'KOUBAR', 7 => 'PAVEL', 8 => 'TKL', 9 => 'ZoneBourse'
+    ];
+
 
     public static function getCurrencySign($cur) {
         $ret = "&euro;";
@@ -2546,5 +2550,12 @@ class uimx {
     }
 
 }
+
+// Permet de rajouter des items n'importe ou dans la liste
+asort(uimx::$invest_secteur);
+asort(uimx::$invest_zone_geo);
+asort(uimx::$invest_classe);
+asort(uimx::$invest_factorielle);
+asort(uimx::$conseillers);
 
 ?>
