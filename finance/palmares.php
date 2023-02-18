@@ -67,10 +67,10 @@ arsort($tab_perfs["2"]);
 
 	<h2 class="ui left floated">
 		<i class="inverted diamond icon"></i>Dual Momemtum
-		<button id="paramares_3y_bt" class="mini ui right floated button <?= $range == 3 ? "pink" : "gray" ?>">3Y</button>
-		<button id="paramares_2y_bt" class="mini ui right floated button <?= $range == 2 ? "pink" : "gray" ?>">2Y</button>
-		<button id="paramares_1y_bt" class="mini ui right floated button <?= $range == 1 ? "pink" : "gray" ?>">1Y</button>
-		<button id="paramares_6M_bt" class="mini ui right floated button <?= $range == 4 ? "pink" : "gray" ?>">6M</button>
+		<button id="paramares_3y_bt" class="ui right floated button <?= $range == 3 ? "pink" : "gray" ?>">3Y</button>
+		<button id="paramares_2y_bt" class="ui right floated button <?= $range == 2 ? "pink" : "gray" ?>">2Y</button>
+		<button id="paramares_1y_bt" class="ui right floated button <?= $range == 1 ? "pink" : "gray" ?>">1Y</button>
+		<button id="paramares_6M_bt" class="ui right floated button <?= $range == 4 ? "pink" : "gray" ?>">6M</button>
 	</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">

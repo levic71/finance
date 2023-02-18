@@ -45,7 +45,7 @@ while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 	<? if ($sess_context->isUserConnected()) { ?>
 		<i class="inverted briefcase icon"></i>Mes Portefeuilles
 
-		<button id="nav_menu_bt" class="dropbtn circular ui right floated grey button icon_action"><i class="inverted white ellipsis vertical icon"></i></button>
+		<button id="nav_menu_bt" class="dropbtn ui right floated button icon_action"><i class="inverted black sliders horizontal icon"></i></button>
 
 		<div class="ui vertical menu nav" id="nav_menu" data-right="20">
 			<a class="item" id="portfolio_add1_bt"><span>Ajouter un portefeuille</span></a>
