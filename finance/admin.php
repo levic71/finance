@@ -50,7 +50,7 @@ if ($handle)
         <button id="lst_filter1_bt" class="mini ui green button"><?= count($matches_info) ?></button>
         <button id="lst_filter1_bt" class="mini ui orange button"><?= count($matches_warn) ?></button>
         <button id="lst_filter1_bt" class="mini ui red button"><?= count($matches_error) ?></button>
-        <button id="log_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button>
+        <button id="log_eye_bt" class="ui icon very small right floated labelled button"><i class="inverted black chevron down icon"></i></button>
     </h2>
     <pre id="log_view" style="width: 100%; overflow: scroll;">
 
@@ -71,7 +71,7 @@ if ($handle)
 </div>
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted users icon"></i>&nbsp;&nbsp;User Connexions <button id="users_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
+    <h2><i class="inverted users icon"></i>&nbsp;&nbsp;User Connexions <button id="users_eye_bt" class="ui icon very small right floated labelled button"><i class="inverted black chevron down icon"></i></button></h2>
     <pre id="users_view" style="width: 100%; overflow: scroll;">
 
 <? 
@@ -91,7 +91,7 @@ while($row = mysqli_fetch_array($res)) {
 
 
 <div class="ui container inverted segment">
-    <h2><i class="inverted dashboard icon"></i>&nbsp;&nbsp;Alphavantage <button id="alpha_eye_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white chevron down icon"></i></button></h2>
+    <h2><i class="inverted dashboard icon"></i>&nbsp;&nbsp;Alphavantage <button id="alpha_eye_bt" class="ui icon very small right floated labelled button"><i class="inverted black chevron down icon"></i></button></h2>
     <pre id="alpha_view" style="width: 100%; overflow: scroll;">
 
 <? 

@@ -92,7 +92,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 	<h2 class="ui left floated">
 		<i class="inverted eye icon"></i><span>Market</span>
 		<? if ($sess_context->isUserConnected() && count($notifs) == 0) { ?>
-			<button id="home_alertes_list" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
+			<button id="home_alertes_list" class="ui right floated button icon_action"><i class="inverted black history icon"></i></button>
 		<? } ?>
 	</h2>
 	<table class="ui striped inverted single line unstackable very compact table sortable-theme-minimal" id="lst_scan" data-sortable>
