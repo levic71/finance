@@ -48,7 +48,8 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 
 	<h2 class="ui left floated">
 		<i class="inverted bullseye icon"></i>Watchlist
-		<div class="ui right floated buttons" id="strat_bts">
+		<button class="mini ui icon very small right floated grey labelled button" style="margin-top: 5px;"><i class="inverted white sliders horizontal icon"></i></button>
+		<div class="ui right floated buttons" id="strat_bts" style="margin-top: 6px;">
 			<button data-value="1" class="mini ui <?= $strat_ptf == 1 ? "primary" : "grey" ?> button">Défensive</button>
 			<button data-value="2" class="mini ui <?= $strat_ptf == 2 ? "primary" : "grey" ?> button">Passive</button>
 			<button data-value="3" class="mini ui <?= $strat_ptf == 3 ? "primary" : "grey" ?> button">Offensive</button>

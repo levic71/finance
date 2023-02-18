@@ -18,6 +18,10 @@ $ret = dbc::addColTable("trend_following", "strategie_type", "ALTER TABLE `trend
 
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
+// Conseillers to tags
+$tags_conseillers = [];
+foreach(uimx::$conseillers as $key => $val) $tags_conseillers[] = [ "tag" => $val, "desc" => "" ]; 
+
 // Recuperation des DM en BD
 $data2 = calc::getIndicatorsLastQuote();
 
@@ -128,7 +132,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 			<button id="strategie_default_bt" class="mini ui grey button <?= $sess_context->isUserConnected() ? "" : "hidden" ?>"><i class="ui inverted thumbtack icon"></i></button>
 		</span>
 
-		<? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="ui circular right floated pink button icon_action" data-tootik-conf="left" data-tootik="Nouvelle stratégie"><i class="inverted white add icon"></i></button><? } ?>
+		<? if ($sess_context->isUserConnected()) { ?><button id="home_strategie_add" class="ui right floated button icon_action" data-tootik-conf="left" data-tootik="Nouvelle stratégie"><i class="inverted black add icon"></i></button><? } ?>
 	</h2>
 
 	<div class="ui stackable grid container" id="strategie_box">
@@ -189,7 +193,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 			<button id="lst_filter5_bt"  class="mini ui grey button">&gt; 150 M</button>
 			<button id="lst_filter6_bt"  class="mini ui grey button"><i class="inverted ellipsis horizontal icon"></i></button>
 		</div>
-		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="circular ui right floated pink button icon_action" data-tootik-conf="left" data-tootik="Nouveau actif"><i class="inverted white add icon"></i></button><? } ?>
+		<? if ($sess_context->isSuperAdmin()) { ?><button id="home_symbol_search" class="ui right floated button icon_action" data-tootik-conf="left" data-tootik="Nouveau actif"><i class="inverted black add icon"></i></button><? } ?>
 		
 	</h2>
 
@@ -200,7 +204,8 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
                 "Zone géographique"   => uimx::$invest_zone_geo,
                 "Critère factoriel"   => uimx::$invest_factorielle,
                 "Taille"              => uimx::$invest_taille,
-                "Thème"               => uimx::$invest_theme
+                "Thème"               => uimx::$invest_theme,
+				"Conseillée par"      => $tags_conseillers
             ] as $lib => $tab) { ?>
 				<div class="ui horizontal list">
                 <? foreach ($tab as $key => $val) { ?>
@@ -255,12 +260,12 @@ foreach($data2["stocks"] as $key => $val) {
 	$datediff = $now - $your_date;
 	$diff_days = round($datediff / (60 * 60 * 24));
 
-	echo "<tr class=\"".$class."\" data-alerte=\"".($isAlerteActive ? 1 : 0)."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".utf8_decode($val['tags'])."\">";
+	echo "<tr class=\"".$class."\" data-alerte=\"".($isAlerteActive ? 1 : 0)."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".mb_convert_encoding($val['tags'], 'ISO-8859-1', 'UTF-8')."\">";
 
 	echo "
 		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
 		<td data-value=\"".$tags_infos['icon_tag']."\" data-tootik=\"".$tags_infos['tooltip']."\" class=\"collapsing\"><i data-secteur=\"".$tags_infos['icon_tag']."\" class=\"inverted grey ".$tags_infos['icon']." icon\"></i></td>
-		<td>".utf8_decode($val['name'])."</td>
+		<td>".mb_convert_encoding($val['name'], 'ISO-8859-1', 'UTF-8')."</td>
 	";
 	
 	echo "
