@@ -72,6 +72,7 @@ while($row = mysqli_fetch_array($res)) {
 		</thead>
 		<tbody>
 <?
+			$tab_extend = [];
 			$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." ORDER BY date_avis DESC";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
@@ -84,6 +85,11 @@ while($row = mysqli_fetch_array($res)) {
 				$datetime1 = new DateTime($row['date_avis']);
 				$datetime2 = new DateTime($row['status'] == 0 ? date("Y-m-d") : $row['date_status']);
 				$difference = $datetime1->diff($datetime2);
+
+				if ($row['status'] == 1) {
+					$tab_extend[$row['conseiller']]['days'] = isset($tab_extend[$row['conseiller']]['days']) ? $tab_extend[$row['conseiller']]['days'] + $difference->days : $difference->days; 
+					$tab_extend[$row['conseiller']]['nb_p'] = isset($tab_extend[$row['conseiller']]['nb_p']) ? $tab_extend[$row['conseiller']]['nb_p'] + 1 : 1; 
+				}
 
 				$lib_diff = ($difference->y > 0 ? $difference->y.' ans, ' : '').($difference->m > 0 ? $difference->m.' mois, ' : '').$difference->d.' jours';
 ?>
@@ -125,8 +131,9 @@ while($row = mysqli_fetch_array($res)) {
                 <th class="center aligned">En cours</th>
                 <th class="center aligned">Validées</th>
 				<th class="center aligned">Invalidées</th>
-				<th class="center aligned">Perf (All)</th>
-				<th class="center aligned">Perf (1Y)</th>
+				<th class="center aligned">Délai moyen</th>
+				<th class="center aligned">Taux Réussite</th>
+				<th class="center aligned">1Y</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -160,12 +167,20 @@ while($row = mysqli_fetch_array($res)) {
 				$nb_predictions = $val[1] + $val[-1];
 				$perf  = $val[1] == 0 ? 0 : ($val[1] / $nb_predictions) * 100;
 				$perf2 = isset($perf_mois[$key]) ? $perf_mois[$key] : "-";
+
+				$date_ref = date("Y-m-d", strtotime("-".(isset($tab_extend[$key]['days']) ? Round($tab_extend[$key]['days'] / $tab_extend[$key]['nb_p']) : 0)." days"));
+				$datetime1 = new DateTime($date_ref);
+				$datetime2 = new DateTime(date("Y-m-d"));
+				$difference = $datetime1->diff($datetime2);
+				$lib_diff = ($difference->y > 0 ? $difference->y.' ans, ' : '').($difference->m > 0 ? $difference->m.' mois, ' : '').$difference->d.' jours';
+
 				echo '<tr>
 					<td class="center aligned">'.uimx::$conseillers[$key].'</td>
 					<td class="center aligned">'.$val[0].'</td>
 					<td class="center aligned">'.$val[1].'</td>
 					<td class="center aligned">'.$val[-1].'</td>
-					<td class="center aligned">'.sprintf("%.0f", $perf).'%</td>
+					<td class="center aligned">'.(isset($tab_extend[$key]['days']) ? $lib_diff : "-").'</td>
+					<td class="center aligned">'.($perf == "-" ? "-" : sprintf("%.0f", $perf)."%").'</td>
 					<td class="center aligned">'.($perf2 == "-" ? "-" : sprintf("%.0f", $perf2)."%").'</td>
 				</tr>';
 			}
