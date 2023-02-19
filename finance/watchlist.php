@@ -48,7 +48,7 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 
 	<h2 class="ui left floated">
 		<i class="inverted bullseye icon"></i>Watchlist
-		<button class="mini ui icon very small right floated grey labelled button" style="margin-top: 5px;"><i class="inverted white sliders horizontal icon"></i></button>
+		<button id="filter_bt" class="mini ui icon very small right floated grey labelled button" style="margin-top: 5px;"><i class="inverted white sliders horizontal icon"></i></button>
 		<div class="ui right floated buttons" id="strat_bts" style="margin-top: 6px;">
 			<button data-value="1" class="mini ui <?= $strat_ptf == 1 ? "primary" : "grey" ?> button">Défensive</button>
 			<button data-value="2" class="mini ui <?= $strat_ptf == 2 ? "primary" : "grey" ?> button">Passive</button>
@@ -56,6 +56,25 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 			<button data-value="4" class="mini ui <?= $strat_ptf == 4 ? "primary" : "grey" ?> button">Aggressive</button>
 		</div>
 	</h2>
+
+	<div id="other_tags">
+    <? foreach( [
+                "Secteur"             => uimx::$invest_secteur,
+                "Zone géographique"   => uimx::$invest_zone_geo,
+                "Critère factoriel"   => uimx::$invest_factorielle,
+                "Taille"              => uimx::$invest_taille,
+                "Thème"               => uimx::$invest_theme,
+				"Conseillée par"      => uimx::$tags_conseillers
+            ] as $lib => $tab) { ?>
+				<div class="ui horizontal list">
+                <? foreach ($tab as $key => $val) { ?>
+			        <div class="item"><button <?= $val['desc'] != "" ? "data-tootik-conf=\"multiline\" data-tootik=\"".$val['desc']."\"" : "" ?> id="bt_filter_<?= strtoupper(substr($lib, 0, 3))."_".$key ?>" class="item mini ui bt_tags grey button"><?= $val['tag'] ?></button></div>
+    			<? } ?>
+					<button id="bt_filter_<?= strtoupper(substr($lib, 0, 3))."_99999" ?>" class="item mini ui bt_tags grey button hidden">Entreprise</button>
+				</div>
+	<? } ?>
+    </div>
+
 	<div class="ui stackable column grid">
       	<div class="row">
 			<div class="column">
@@ -93,10 +112,36 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 
 <script>
 
+// On récupère toutes les lignes du tabeau
+var tab_stocks = Dom.find("#lst_position tbody tr");
+
+filterLstStocks = function() {
+
+	var filter_tags = [];
+	Dom.find('#other_tags button.bt_tags').forEach(function(item) {
+		if (isCN(item.id, tags_colr)) filter_tags.push(item.innerHTML);
+	});
+
+	// On affiche toutes les lignes du tableau
+	for (const element of tab_stocks) Dom.css(element, {'display' : 'table-row'});
+
+	// Seconde passe de filtrage sur les tags s'il y en a au moins allumé
+	if (filter_tags.length > 0) {
+		for (const element of tab_stocks) {
+			var stock_tags = Dom.attribute(element, 'data-tags');
+			if (stock_tags && match_tags(stock_tags, filter_tags)) continue;
+			Dom.css(element, {'display' : 'none'});
+		}
+	}
+}
+
 updateDataPage = function(opt) {
 	// On parcours les lignes du tableau positions pour calculer valo, perf, gain, atio et des tooltip du tableau des positions
 	trendfollowing_ui.computePositionsTable('lst_position', -1);
 }('init');
+
+// Listener sur le bouton filter
+Dom.addListener(Dom.id('filter_bt'),  Dom.Event.ON_CLICK, function(event) { toogle('other_tags'); });
 
 // Listener sur boutons tags
 let i = 0;
@@ -111,11 +156,19 @@ Dom.find('#strat_bts button').forEach(function(item) {
 	if (window.innerWidth < 600) item.innerText = lib_buttons[i++];
 });
 
+// Listener sur boutons tags other
+Dom.find('button.bt_tags').forEach(function(item) {
+	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
+		changeState(item);
+		filterLstStocks('');
+	});
+});
+
 // Tri sur tableau
 Sortable.initTable(el("lst_position"));
 
 // On cache les fitres de selection de la liste des ordres passes
-hide("filters");
+hide("other_tags");
 
 
 </script>

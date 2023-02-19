@@ -18,10 +18,6 @@ $ret = dbc::addColTable("trend_following", "strategie_type", "ALTER TABLE `trend
 
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
-// Conseillers to tags
-$tags_conseillers = [];
-foreach(uimx::$conseillers as $key => $val) $tags_conseillers[] = [ "tag" => $val, "desc" => "" ]; 
-
 // Recuperation des DM en BD
 $data2 = calc::getIndicatorsLastQuote();
 
@@ -199,13 +195,12 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 
 	<div id="other_tags">
     <? foreach( [
-                "Classe d'actif"      => uimx::$invest_classe,
                 "Secteur"             => uimx::$invest_secteur,
                 "Zone géographique"   => uimx::$invest_zone_geo,
                 "Critère factoriel"   => uimx::$invest_factorielle,
                 "Taille"              => uimx::$invest_taille,
                 "Thème"               => uimx::$invest_theme,
-				"Conseillée par"      => $tags_conseillers
+				"Conseillée par"      => uimx::$tags_conseillers
             ] as $lib => $tab) { ?>
 				<div class="ui horizontal list">
                 <? foreach ($tab as $key => $val) { ?>
