@@ -678,7 +678,7 @@ class QuoteComputing {
 
 //        echo $this->symbol; var_dump($avis);
 
-        $ret .= '<tr id="tr_item_'.$i.'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
+        $ret .= '<tr id="tr_item_'.$i.'" data-tags="'.mb_convert_encoding($tags, 'ISO-8859-1', 'UTF-8').'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>
@@ -2377,6 +2377,8 @@ class uimx {
         0 => 'MOI', 1 => 'BourseDirect', 2 => 'CHERON', 3 => 'GAVE', 4 => 'ILT', 5 => 'KPI', 6 => 'KOUBAR', 7 => 'PAVEL', 8 => 'TKL', 9 => 'ZoneBourse'
     ];
 
+    // Conseillers to tags
+    public static $tags_conseillers = [];
 
     public static function getCurrencySign($cur) {
         $ret = "&euro;";
@@ -2556,5 +2558,7 @@ asort(uimx::$invest_zone_geo);
 asort(uimx::$invest_classe);
 asort(uimx::$invest_factorielle);
 asort(uimx::$conseillers);
+
+foreach(uimx::$conseillers as $key => $val) uimx::$tags_conseillers[] = [ "tag" => $val, "desc" => "" ]; 
 
 ?>
