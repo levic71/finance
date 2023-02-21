@@ -139,7 +139,7 @@ while($row = mysqli_fetch_array($res)) {
 ?>
 				<tr>
 					<td class="center aligned"><?= $row['date_avis'] ?></td>
-					<td class="center aligned"><button class="tiny ui primary button"><?= $row['symbol'] ?></button></td>
+					<td class="center aligned"><button data-tootik="<?= mb_convert_encoding($quotes["stocks"][$row['symbol']]['name'], 'ISO-8859-1', 'UTF-8') ?>" data-tootik-conf="right" class="tiny ui primary button"><?= $row['symbol'] ?></button></td>
 					<td class="center aligned"><?= sprintf("%.2f", $row['cours']).$curr ?></td>
 					<td class="center aligned"><?= sprintf("%.2f", $cj).$curr ?></td>
 					<td class="center aligned price_perf"><div>
