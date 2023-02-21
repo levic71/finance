@@ -97,6 +97,8 @@ go = function(args) {
 
 change_wide_menu_state = function(menu, item_menu) {
 	items = Dom.children(Dom.id(menu), "a");
+	console.log(menu);
+	console.log(items);
 	for (var i = 0; i < items.length; i++) {
 		if (items[i].id == item_menu)
 			addCN(items[i].id, 'active');

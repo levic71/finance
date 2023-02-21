@@ -2553,6 +2553,11 @@ class uimx {
         echo "</tr></thead>";
     }
 
+    public static function redirectLoginPage($item) { ?>
+        <script>go({ action: 'login', id: 'main', url: 'login.php?redirect=1&goto=<?= $item ?>' });</script><?
+	    exit(0);
+    }  
+
 }
 
 // Permet de rajouter des items n'importe ou dans la liste
@@ -2561,7 +2566,6 @@ asort(uimx::$invest_zone_geo);
 asort(uimx::$invest_classe);
 asort(uimx::$invest_factorielle);
 asort(uimx::$conseillers);
-
 foreach(uimx::$conseillers as $key => $val) uimx::$tags_conseillers[] = [ "tag" => $val, "desc" => "" ]; 
 
 ?>
