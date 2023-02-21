@@ -854,6 +854,13 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(9) button {
     background: grey !important; color: white !important;
 }
+td.price_perf div .button.aaf-positive {
+    background: #80e32f !important;
+    color: rgba(0,0,0,.6) !important;
+}
+td.price_perf label.aaf-positive {
+    color: #80e32f !important;
+}
 td.price_perf div,
 #lst_position tbody td:nth-child(3) div,
 #lst_position tbody td:nth-child(4) div,
