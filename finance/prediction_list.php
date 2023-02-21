@@ -86,7 +86,8 @@ while($row = mysqli_fetch_array($res)) {
 	}
 
 	// Enregistrement max gain
-	echo $row['date_avis']." : ".$row['symbol']." : gain max : ".$gain_max." : ".$date_gain_max."<br />";
+	$update = "UPDATE prediction SET gain_max='".$gain_max."', gain_max_date='".$date_gain_max."' WHERE id=".$row['id'];
+	$res3 = dbc::execSql($update);
 
 }
 
@@ -104,6 +105,7 @@ while($row = mysqli_fetch_array($res)) {
                 <th class="center aligned">Cours Avis</th>
 				<th class="center aligned">Cours J</th>
                 <th class="center aligned">Objectif</th>
+                <th class="center aligned">Max</th>
                 <th class="center aligned">Stoploss</th>
                 <th>Conseiller</th>
                 <th class="center aligned">Délai</th>
@@ -120,8 +122,9 @@ while($row = mysqli_fetch_array($res)) {
 
 				$cj   = $quotes["stocks"][$row['symbol']]['price'];
 				$curr = uimx::getCurrencySign($quotes["stocks"][$row['symbol']]['currency']);
-				$ref_cours = $row['status'] == 0 ? $cj : $row['cours']; // Si status en cours alors perf par rapport au cours réel sinon par perf par rapport cours debut prediction
-				$perf = $ref_cours == 0 ? 0 : (($row['objectif'] / $ref_cours) - 1) * 100;
+				$ref_cotation = $row['status'] == 0 ? $cj : $row['cours']; // Si status en cours alors perf par rapport au cours réel sinon par perf par rapport cours debut prediction
+				$perf = $ref_cotation == 0 ? 0 : (($row['objectif'] / $ref_cotation) - 1) * 100;
+				$perf_gain_max = $row['gain_max'] == 0 ? 0 : (($row['gain_max'] / $ref_cotation) - 1) * 100;
 
 				$datetime1 = new DateTime($row['date_avis']);
 				$datetime2 = new DateTime($row['status'] == 0 ? date("Y-m-d") : $row['date_status']);
@@ -139,13 +142,17 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned"><button class="tiny ui primary button"><?= $row['symbol'] ?></button></td>
 					<td class="center aligned"><?= sprintf("%.2f", $row['cours']).$curr ?></td>
 					<td class="center aligned"><?= sprintf("%.2f", $cj).$curr ?></td>
-					<td class="center aligned"><div>
+					<td class="center aligned price_perf"><div>
 						<button <?= $row['status'] == 1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui aaf-positive button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
-						<label class="aaf-positive"><?= sprintf("%.2f", $perf) ?>%</label>
+						<label class="aaf-positive"><?= sprintf("%.2f%%", $perf) ?></label>
 					</div></td>
-					<td class="center aligned"><div>
+					<td class="center aligned price_perf"><div>
+						<button <?= $row['gain_max'] > 0 ? 'data-tootik="'.$row['gain_max_date'].'"' : "" ?> class="tiny ui <?= $row['gain_max'] == 0 ? "" : "aaf-positive" ?> button"><?= sprintf("%.2f", $row['gain_max']).$curr ?></button>
+						<label class="<?= $row['gain_max'] == 0 ? "" : "aaf-positive" ?>"><?= $row['gain_max'] == 0 ? "-" : sprintf("%.2f%%", $perf_gain_max) ?></label>
+					</div></td>
+					<td class="center aligned price_perf"><div>
 						<button <?= $row['status'] == -1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui aaf-negative button"><?= sprintf("%.2f", $row['stoploss']).$curr ?></button>
-						<label class="aaf-negative"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['stoploss'] / $row['cours']) - 1) * 100) ?>%</label>
+						<label class="aaf-negative"><?= sprintf("%.2f%%", $row['cours'] == 0 ? 0 : (($row['stoploss'] / $row['cours']) - 1) * 100) ?></label>
 					</div></td>
 					<td><?= uimx::$conseillers[$row['conseiller']] ?></td>
 					<td class="center aligned"><?= $lib_diff ?></td>

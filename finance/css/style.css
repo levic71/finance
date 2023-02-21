@@ -854,8 +854,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position tbody td:nth-child(9) button {
     background: grey !important; color: white !important;
 }
-#lst_prediction tbody td:nth-child(5) div,
-#lst_prediction tbody td:nth-child(6) div,
+td.price_perf div,
 #lst_position tbody td:nth-child(3) div,
 #lst_position tbody td:nth-child(4) div,
 #lst_position tbody td:nth-child(5) div,
@@ -867,8 +866,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
     flex-direction: column;
     align-items: center;
 }
-#lst_prediction tbody td:nth-child(5) button,
-#lst_prediction tbody td:nth-child(6) button,
+td.price_perf div button,
 #lst_position tbody td:nth-child(3) button,
 #lst_position tbody td:nth-child(4) button,
 #lst_position tbody td:nth-child(9) button,
@@ -876,7 +874,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_position td:nth-child(10) button,
 #lst_position td:nth-child(11) button,
 #lst_position tfoot td:nth-child(5) button {
-    padding: 5px 10px;
+    padding: 5px 10px !important;
 }
 #lst_position tbody td:nth-child(4) button, #lst_position tbody td:nth-child(9) button {   
     border: 1px solid grey;
