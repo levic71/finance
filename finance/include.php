@@ -683,7 +683,7 @@ class QuoteComputing {
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>
 
-            <td class="center aligned" id="f_actif_'.$i.'" data-pname="'.$this->symbol.'">'.$pname.'</td>
+            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.mb_convert_encoding($this->getName(), 'ISO-8859-1', 'UTF-8').'" data-pname="'.$this->symbol.'">'.$pname.'</td>
 
             <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'"><div>
                 <button class="tiny ui button">'.sprintf("%.2f%s", $position_pru, uimx::getCurrencySign($currency)).'</button>
@@ -822,7 +822,7 @@ class calc {
         $today = new DateTime(date("Y-m-d"));
 
         // Récupération et TRT des ordres passes
-        $req = "SELECT * FROM orders WHERE portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") ORDER BY date, datetime ASC";
+        $req = "SELECT * FROM orders WHERE date <= '".date('Y-m-d')."' AND portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") ORDER BY date, datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
 
@@ -876,9 +876,12 @@ class calc {
                 // Maj cash
                 $cash += $valo_ope * ($achat ? -1 : 1); // ajout si vente, retrait achat
 
-                // TTF si actif FR 
-                if (isset($quotes['stocks'][$pname]['type']) && $quotes['stocks'][$pname]['type'] == 'Equity' && strstr($pname, ".PAR")) $row['ttf'] = $valo_ope * 0.003;
-                $sum_ttf += $row['ttf'];
+                // TTF si actif FR
+                if ($row['action'] == 1) {
+                    if (isset($quotes['stocks'][$pname]['type']) && $quotes['stocks'][$pname]['type'] == 'Equity' && strstr($pname, ".PAR"))
+                        $row['ttf'] = $valo_ope * 0.003;
+                    $sum_ttf += $row['ttf'];
+                }
 
                 $positions[$pname]['sum_valo_in_euro'] = (isset($positions[$pname]['sum_valo_in_euro']) ? $positions[$pname]['sum_valo_in_euro'] : 0) + ($valo_ope * ($achat ? 1 : -1));
                 $positions[$pname]['nb']  = $nb;
