@@ -19,33 +19,74 @@ $devises = calc::getGSDevisesWithNoUpdate();
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
 
-$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." AND status = 0";
+// $req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." AND status = 0";
+$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
 	$date_objectif = date('Y-m-d');
 	$date_stoploss = date('Y-m-d');
+	$date_gain_max = date('Y-m-d');
 	$objectif = 0;
 	$stoploss = 0;
+	$gain_max = 0;
+	$stop_gain_max = 1;
+	$previous_price = 0;
 
 	$req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND day >= '".$row['date_avis']."'";
 	$res2 = dbc::execSql($req2);
 	while($row2 = mysqli_fetch_array($res2)) {
 
-		if ($objectif == 0 && $row['stoploss'] >= $row2['low'])  { $stoploss = 1; $date_stoploss = $row2['day']; }
-		if ($stoploss == 0 && $row2['high'] >= $row['objectif']) { $objectif = 1; $date_objectif = $row2['day']; }
+		if ($previous_price == 0) $previous_price = $row2['open'];
+
+		// Stoploss atteint
+		if ($objectif == 0 && $row['stoploss'] >= $row2['low']) {
+			$stoploss = 1;
+			$date_stoploss = $row2['day'];
+		}
+
+		// Objectif atteint
+		if ($stoploss == 0 && $row2['adjusted_close'] >= $row['objectif']) {
+			$objectif = 1;
+			$date_objectif = $row2['day'];
+			$stop_gain_max = 0;
+		}
+
+		// Recherche gain max en cas d'objectif atteint avec stoploss à max(objectif, -5% cloture veille)
+		if ($previous_price > 0 && $objectif == 1 && $stop_gain_max == 0) {
+
+			$stoploss_ref = $row['objectif'] * 0.97;
+			if ($row2['adjusted_close'] < $stoploss_ref) {
+				$stop_gain_max = 1;
+				$gain_max = $row['objectif'];
+				$date_gain_max = $row2['day'];
+			} else {
+				if ($row2['adjusted_close'] > max($stoploss_ref, $gain_max)) {
+					$date_gain_max = $row2['day'];
+					$gain_max = $row2['adjusted_close'];
+				}
+			}
+
+		}
+
+		$previous_price = $row2['adjusted_close'];
 
 	}
 
+	// Enregistrement stoploss atteint
 	if ($stoploss == 1) {
 		$update = "UPDATE prediction SET status=-1, date_status='".$date_stoploss."' WHERE id=".$row['id'];
 		$res3 = dbc::execSql($update);
 	}
 
+	// Enregistrement objectif atteint
 	if ($objectif == 1) {
 		$update = "UPDATE prediction SET status=1, date_status='".$date_objectif."' WHERE id=".$row['id'];
 		$res3 = dbc::execSql($update);
 	}
+
+	// Enregistrement max gain
+	echo $row['date_avis']." : ".$row['symbol']." : gain max : ".$gain_max." : ".$date_gain_max."<br />";
 
 }
 
@@ -99,11 +140,11 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned"><?= sprintf("%.2f", $row['cours']).$curr ?></td>
 					<td class="center aligned"><?= sprintf("%.2f", $cj).$curr ?></td>
 					<td class="center aligned"><div>
-						<button class="tiny ui aaf-positive button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
+						<button <?= $row['status'] == 1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui aaf-positive button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
 						<label class="aaf-positive"><?= sprintf("%.2f", $perf) ?>%</label>
 					</div></td>
 					<td class="center aligned"><div>
-						<button class="tiny ui aaf-negative button"><?= sprintf("%.2f", $row['stoploss']).$curr ?></button>
+						<button <?= $row['status'] == -1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui aaf-negative button"><?= sprintf("%.2f", $row['stoploss']).$curr ?></button>
 						<label class="aaf-negative"><?= sprintf("%.2f", $row['cours'] == 0 ? 0 : (($row['stoploss'] / $row['cours']) - 1) * 100) ?>%</label>
 					</div></td>
 					<td><?= uimx::$conseillers[$row['conseiller']] ?></td>
@@ -138,7 +179,7 @@ while($row = mysqli_fetch_array($res)) {
 		</thead>
 		<tbody>
 <?
-			// Synthèse sur 6 mois
+			// Synthèse sur 12 mois
 			$t = [];
 			$req = "SELECT count(*) total, conseiller, status FROM prediction WHERE date_avis >= CURDATE() - INTERVAL 12 MONTH GROUP BY conseiller, status";
 			$res = dbc::execSql($req);
