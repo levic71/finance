@@ -11,13 +11,7 @@ foreach([''] as $key)
 
 $db = dbc::connect();
 
-if (!$sess_context->isUserConnected()) { ?>
-<script>
-go({ action: 'login', id: 'main', url: 'login.php?redirect=1&goto=portfolio' });
-</script>
-<?
-	exit(0);
-}
+if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('portfolio');
 
 // Recuperation des DM en BD
 $data2 = calc::getIndicatorsLastQuote();

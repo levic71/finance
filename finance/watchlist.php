@@ -16,13 +16,8 @@ foreach([ 'strat_ptf' ] as $key)
 
 $db = dbc::connect();
 
-if (!$sess_context->isUserConnected()) { ?>
-	<script>
-	go({ action: 'login', id: 'main', url: 'login.php?redirect=1&goto=portfolio' });
-	</script>
-	<?
-	exit(0);
-}
+if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('watchlist');
+
 
 // Reuperation des devises
 $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");

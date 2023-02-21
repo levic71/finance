@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.5.25";
+$ver = tools::isLocalHost() ? rand() : "1.5.26";
 
 foreach(['action', 'goto', 'debug'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -64,8 +64,6 @@ foreach(['action', 'goto', 'debug'] as $key)
 		<script>
 		window.onload = function() {
 
-			go({ action: 'home', id: 'main', url: '<?= $goto == "" ? "home_content.php" : $goto.".php" ?>', loading_area: '' <?= $goto == "" ? "" : ", menu: '".($goto == "portfolio" ? "m1_portfolio_bt" : $goto)."'" ?> });
-
 			let user_connected = <?= $sess_context->isUserConnected() ? 'true' : 'false' ?>;
 			let user_admin     = <?= $sess_context->isSuperAdmin()    ? 'true' : 'false' ?>;
 
@@ -74,7 +72,7 @@ foreach(['action', 'goto', 'debug'] as $key)
 				palmares:   { url: "palmares.php", title: 'Palmarès', icon: 'trophy' },
 				portfolio:  { url: "portfolio.php", title: 'Portefeuilles', icon: 'briefcase' },
 				watchlist:  { url: "watchlist.php", title: 'Watchlist', icon: 'bullseye' },
-				predict:    { url: "prediction_list.php", title: 'Prédiction', icon: 'magic' },
+				prediction: { url: "prediction.php", title: 'Prédiction', icon: 'magic' },
 				tools:      { url: "tools_dca_calculator.php", title: 'Outils', icon: 'tools' },
 				users:      { url: user_connected ? "user_list.php" : "", title: 'Users', icon: 'users download alternate' },
 				admin:      { url: user_connected ? "admin.php" : "", title: 'Admin', icon: 'sort amount down' },
@@ -108,6 +106,9 @@ foreach(['action', 'goto', 'debug'] as $key)
 
 				Dom.addListener(Dom.id('m1_'+key+'_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: key, id: 'main', menu: 'm1_'+key+'_bt', url: tab_menu[key].url, loading_area: 'main' }); });
 				Dom.addListener(Dom.id('m2_'+key+'_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: key, id: 'main', menu: 'm2_'+key+'_bt', url: tab_menu[key].url, loading_area: 'main' }); });
+
+				go({ action: 'home', id: 'main', url: '<?= $goto == "" ? "home_content.php" : $goto.".php" ?>', loading_area: '' <?= $goto == "" ? "" : ", menu: 'm1_".$goto."_bt'" ?> });
+
 			});
 
 			Dom.addListener(Dom.id('m1_sidebar_bt'),  Dom.Event.ON_CLICK, function(event) { addCN('sidebar_menu', 'visible'); });
