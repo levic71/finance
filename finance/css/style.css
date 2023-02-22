@@ -855,11 +855,11 @@ table th { color: burlywood !important; cursor: pointer !important; }
     background: grey !important; color: white !important;
 }
 td.price_perf div .button.aaf-positive {
-    background: #80e32f !important;
-    color: rgba(0,0,0,.6) !important;
+    background: #21ba45 !important;
+    color: white !important;
 }
 td.price_perf label.aaf-positive {
-    color: #80e32f !important;
+    color: #21ba45 !important;
 }
 td.price_perf div,
 #lst_position tbody td:nth-child(3) div,
