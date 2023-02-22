@@ -2377,7 +2377,7 @@ class uimx {
         9 => "Baissier prix sous moyenne mobile 200"
     ];
     public static $conseillers = [
-        0 => 'MOI', 1 => 'BourseDirect', 2 => 'CHERON', 3 => 'GAVE', 4 => 'ILT', 5 => 'KPI', 6 => 'KOUBAR', 7 => 'PAVEL', 8 => 'TKL', 9 => 'ZoneBourse'
+        0 => 'MOI', 1 => 'BourseDirect', 2 => 'CHERON', 3 => 'GAVE', 4 => 'ILT', 5 => 'KPI', 6 => 'KOUBAR', 7 => 'PAVEL', 8 => 'TKL', 9 => 'ZoneBourse', 10 => 'Hiboo'
     ];
 
     // Conseillers to tags
