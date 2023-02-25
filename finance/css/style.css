@@ -1291,11 +1291,12 @@ td.price_perf div button,
     }
 
     #lst_prediction tbody td:nth-child(1), #lst_prediction thead th:nth-child(1),
-    #lst_prediction tbody td:nth-child(3), #lst_prediction thead th:nth-child(3),
     #lst_prediction tbody td:nth-child(4), #lst_prediction thead th:nth-child(4),
     #lst_prediction tbody td:nth-child(6), #lst_prediction thead th:nth-child(6),
+    #lst_prediction tbody td:nth-child(7), #lst_prediction thead th:nth-child(7),
     #lst_prediction tbody td:nth-child(8), #lst_prediction thead th:nth-child(8),
-    #lst_prediction tbody td:nth-child(10), #lst_prediction thead th:nth-child(10),
+    #lst_prediction tbody td:nth-child(9), #lst_prediction thead th:nth-child(9),
+    #lst_prediction tbody td:nth-child(11), #lst_prediction thead th:nth-child(11),
     #lst_conseiller tbody td:nth-child(2), #lst_conseiller thead th:nth-child(2),
     #lst_conseiller tbody td:nth-child(3), #lst_conseiller thead th:nth-child(3),
     #lst_conseiller tbody td:nth-child(4), #lst_conseiller thead th:nth-child(4) {

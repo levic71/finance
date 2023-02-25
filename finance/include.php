@@ -621,7 +621,7 @@ class QuoteComputing {
             <tr>
                 <th class="center aligned"></th>
                 <th class="center aligned">Actif</th>
-                <th class="center aligned" data-sortable="false">PRU<br />Qté</th>
+                <th class="center aligned">PRU<br />Qté</th>
                 <th class="center aligned">Cotation<br />%</th>
                 <th class="center aligned">MM200<br />%</th>
                 <th class="center aligned" data-sortable="false">Alertes</th>
@@ -685,7 +685,7 @@ class QuoteComputing {
 
             <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.mb_convert_encoding($this->getName(), 'ISO-8859-1', 'UTF-8').'" data-pname="'.$this->symbol.'">'.$pname.'</td>
 
-            <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'"><div>
+            <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'" data-value="'.sprintf("%.2f", $position_pru * $position_nb).'"><div>
                 <button class="tiny ui button">'.sprintf("%.2f%s", $position_pru, uimx::getCurrencySign($currency)).'</button>
                 <label>'.$position_nb.'</label>
             </div></td>
