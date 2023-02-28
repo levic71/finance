@@ -192,6 +192,7 @@ $lst_orders    = $sc->getOrders();
 					<thead><tr>
 						<th></th>
 						<th>Date</th>
+						<th>Portefeuille</th>
 						<th>Actif</th>
 						<th>Action</th>
 						<th>Qté</th>
@@ -210,6 +211,7 @@ $lst_orders    = $sc->getOrders();
 					echo '<tr>
 						<td><i class="inverted long arrow alternate '.$val['icon'].' icon"></i></td>
 						<td>'.$val['date'].'</td>
+						<td>'.$val['shortname'].'</td>
 						<td>'.$val['product_name'].'</td>
 						<td class="center aligned">'.$val['action_lib'].'</td>
 						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>

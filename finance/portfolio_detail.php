@@ -61,10 +61,14 @@ while($row = mysqli_fetch_assoc($res)) $tab_strategies[] = $row;
         <? } ?>
     </div>
 
-    <div class="two fields">
-        <div class="field">
+    <div class="three fields">
+    <div class="field">
             <label>Titre</label>
-            <input type="text" id="f_nom" value="<?= utf8_decode($strategie['name']) ?>" placeholder="Nom du portefeuille">
+            <input type="text" id="f_nom" value="<?= mb_convert_encoding($strategie['name'], 'ISO-8859-1', 'UTF-8'); ?>" placeholder="Nom du portefeuille">
+        </div>
+        <div class="field">
+            <label>Titre court</label>
+            <input type="text" id="f_nom_court" value="<?= mb_convert_encoding($strategie['shortname'], 'ISO-8859-1', 'UTF-8'); ?>" placeholder="Nom court">
         </div>
         <div class="field">
             <label>Choix d'une stratégie</label>
@@ -110,7 +114,10 @@ Dom.addListener(Dom.id('portfolio_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_C
     if (!check_alphanumext(valof('f_nom'), "Nom", 5))
         return false;
 
-    params = '?action=<?= $action ?>&'+attrs(['portfolio_id', 'f_nom', 'f_strategie_id' ]);
+    if (!check_alphanumext(valof('f_nom_court'), "Nom court", 2))
+    return false;
+
+    params = '?action=<?= $action ?>&'+attrs(['portfolio_id', 'f_nom', 'f_nom_court', 'f_strategie_id' ]);
 
     <? if (strstr($action, "synthese")) { ?>
 

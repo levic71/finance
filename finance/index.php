@@ -23,7 +23,8 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = tools::isLocalHost() ? rand() : "1.5.28";
+$ver = "1.5.28";
+$ver_core = tools::isLocalHost() ? rand() : $ver;
 
 foreach(['action', 'goto', 'debug'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
@@ -44,7 +45,7 @@ foreach(['action', 'goto', 'debug'] as $key)
 		<link rel="stylesheet" href="css/swiper-bundle.min.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/sortable-theme-minimal.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/prompt.css?ver=<?= $ver ?>" />
-		<link rel="stylesheet" href="css/style.css?ver=<?= $ver ?>" />
+		<link rel="stylesheet" href="css/style.css?ver=<?= $ver_core ?>" />
 
 		<script type="text/javascript" src="js/trendyways.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/regression.js?ver=<?= $ver ?>"></script>
@@ -59,7 +60,7 @@ foreach(['action', 'goto', 'debug'] as $key)
 		<script type="text/javascript" src="js/the-datepicker.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/sortable.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/swiper-bundle.min.js?ver=<?= $ver ?>"></script>
-		<script type="text/javascript" src="js/scripts.js?ver=<?= $ver ?>"></script>
+		<script type="text/javascript" src="js/scripts.js?ver=<?= $ver_core ?>"></script>
 
 		<script>
 		window.onload = function() {
