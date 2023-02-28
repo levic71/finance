@@ -822,7 +822,7 @@ class calc {
         $today = new DateTime(date("Y-m-d"));
 
         // Récupération et TRT des ordres passes
-        $req = "SELECT * FROM orders WHERE date <= '".date('Y-m-d')."' AND portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") ORDER BY date, datetime ASC";
+        $req = "SELECT  o.*, p.shortname FROM orders o, portfolios p WHERE date <= '".date('Y-m-d')."' AND portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") AND o.portfolio_id = p.id ORDER BY date, datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
 

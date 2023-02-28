@@ -10,7 +10,7 @@ if (!$sess_context->isUserConnected()) tools::do_redirect("index.php");
 
 $portfolio_id = 0;
 
-foreach(['action', 'f_nom', 'f_strategie_id', 'portfolio_id', 'all_ids'] as $key)
+foreach(['action', 'f_nom', 'f_nom_court', 'f_strategie_id', 'portfolio_id', 'all_ids'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -37,14 +37,14 @@ if (strstr($action, "new")) {
 
     $synthese = $action == "new_synthese" ? 1 : 0;
 
-    $req = "INSERT INTO portfolios (name, user_id, strategie_id, synthese, all_ids) VALUES ('".$f_nom."', ".$sess_context->getUserId().", ".$f_strategie_id.", ".$synthese.", '".$all_ids."')";
+    $req = "INSERT INTO portfolios (name, shortname, user_id, strategie_id, synthese, all_ids) VALUES ('".$f_nom."', '".$f_nom_court."', ".$sess_context->getUserId().", ".$f_strategie_id.", ".$synthese.", '".$all_ids."')";
     $res = dbc::execSql($req);
 
 }
 
 if (strstr($action, "upt") && isset($portfolio_id) && $portfolio_id != 0) {
 
-    $req = "UPDATE portfolios SET name='".$f_nom."', strategie_id='".$f_strategie_id."', all_ids='".$all_ids."' WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
+    $req = "UPDATE portfolios SET name='".$f_nom."', shortname='".$f_nom_court."', strategie_id='".$f_strategie_id."', all_ids='".$all_ids."' WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
     $res = dbc::execSql($req);
 
 }
