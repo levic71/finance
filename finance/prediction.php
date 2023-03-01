@@ -193,7 +193,7 @@ while($row = mysqli_fetch_array($res)) {
 <?
 			// Synthèse sur 12 mois
 			$t = [];
-			$req = "SELECT count(*) total, conseiller, status FROM prediction WHERE date_avis >= CURDATE() - INTERVAL 12 MONTH GROUP BY conseiller, status";
+			$req = "SELECT count(*) total, conseiller, status FROM prediction WHERE user_id=".$sess_context->getUserId()." AND date_avis >= CURDATE() - INTERVAL 12 MONTH GROUP BY conseiller, status";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res))
 				$t[$row['conseiller']][$row['status']] = $row['total'];
@@ -208,7 +208,7 @@ while($row = mysqli_fetch_array($res)) {
 	
 			// Synthèse complète
 			$t = [];
-			$req = "SELECT count(*) total, conseiller, status FROM prediction GROUP BY conseiller, status";
+			$req = "SELECT count(*) total, conseiller, status FROM prediction WHERE user_id=".$sess_context->getUserId()." GROUP BY conseiller, status";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res))
 				$t[$row['conseiller']][$row['status']] = $row['total'];

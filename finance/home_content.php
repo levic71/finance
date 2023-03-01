@@ -33,8 +33,8 @@ $trend_following = [];
 // Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
 if ($sess_context->isUserConnected()) {
 	$aggregate_ptf   = calc::getAggregatePortfoliosByUser($sess_context->getUserId());
-	$positions       = $aggregate_ptf['positions'];
-	$trend_following = $aggregate_ptf['trend_following'];
+	if (isset($aggregate_ptf['positions']))       $positions       = $aggregate_ptf['positions'];
+	if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf['trend_following'];
 }
 
 /* echo "Liste des actifs en surveillance : ";
