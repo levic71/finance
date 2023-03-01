@@ -28,6 +28,7 @@ if ($action == "upt" || $action == "upt_synthese") {
     $all_ids = explode(',', $strategie['all_ids']);
 } else {
     $strategie['name'] = "";
+    $strategie['shortname'] = "";
     $strategie['strategie_id'] = 0;
 }
 

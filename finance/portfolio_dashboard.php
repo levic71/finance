@@ -311,7 +311,7 @@ updateDataPage = function(opt) {
 	depots     = <?= sprintf("%.2f", $portfolio_data['depot']) ?>;
 	dividendes = <?= sprintf("%.2f", $portfolio_data['dividende']) ?>;
 	commissions = <?= sprintf("%.2f", $portfolio_data['commission']) ?>;
-	div2depot  = <?= sprintf("%.2f", ($portfolio_data['dividende'] * 100 ) / $portfolio_data['depot']) ?>;
+	div2depot  = <?= sprintf("%.2f", $portfolio_data['depot'] == 0 ? 0 : ($portfolio_data['dividende'] * 100 ) / $portfolio_data['depot']) ?>;
 	ttf = <?= sprintf("%.2f", $portfolio_data['ttf']) ?>;
 
 	if (opt == 'init') {
@@ -356,7 +356,7 @@ updateDataPage = function(opt) {
 	infos_area_bis.l[4] = 'Couverture Stop Loss';
 	infos_area_bis.v[4] = trendfollowing_ui.ptf.stoploss2.toFixed(2) + '\u20AC';
 	infos_area_bis.l[5] = 'Estimation dividende annuel (Div to Depot)';
-	infos_area_bis.v[5] = '<?= sprintf("%.2f", $div_per_year) ?>\u20AC' + ' ( <?= sprintf("%.2f", ($div_per_year * 100) / $portfolio_data['depot']) ?>%)';
+	infos_area_bis.v[5] = '<?= sprintf("%.2f", $div_per_year) ?>\u20AC' + ' ( <?= sprintf("%.2f", $portfolio_data['depot'] == 0 ? 0 : ($div_per_year * 100) / $portfolio_data['depot']) ?>%)';
 
 	const data_donut = {
 		labels: trendfollowing_ui.labels_repartition[0],
