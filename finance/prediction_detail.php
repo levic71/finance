@@ -98,6 +98,7 @@ if ($action == "upt") {
 				<option value="0"  <?= $row['status'] == 0  ? "selected=\"selected\"" : "" ?>>En cours</option>
 				<option value="1"  <?= $row['status'] == 1  ? "selected=\"selected\"" : "" ?>>Validée</option>
 				<option value="-1" <?= $row['status'] == -1 ? "selected=\"selected\"" : "" ?>>Invalidée</option>
+				<option value="-2" <?= $row['status'] == -2 ? "selected=\"selected\"" : "" ?>>Expirée</option>
             </select>
         </div>
     </div>
@@ -146,7 +147,7 @@ Dom.addListener(Dom.id('<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, func
     item = Dom.id('f_actif');
     n = item.options[item.selectedIndex].value;
 
-    params = '?action=<?= $action ?>&'+attrs(['prediction_id', 'f_date', 'f_actif', 'f_cours', 'f_objectif', 'f_stoploss', 'f_conseiller', 'f_status' ]) + '&f_confirme='+(valof('f_confirme') == 0 ? 0 : 1);
+    params = '?action=<?= $action ?>'+attrs(['prediction_id', 'f_date', 'f_actif', 'f_cours', 'f_objectif', 'f_stoploss', 'f_conseiller', 'f_status' ]) + '&f_confirme='+(valof('f_confirme') == 0 ? 0 : 1);
  
 	go({ action: 'prediction', id: 'main', url: 'prediction_action.php'+params, loading_area: 'main' });
 

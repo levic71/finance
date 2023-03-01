@@ -40,7 +40,7 @@ if ($action == "upt" && isset($prediction_id) && $prediction_id != 0) {
 
 <script>
 <? if ($action != "save") { ?>
-    go({ action: 'prediction', id: 'main', url: 'prediction_list.php' });
+    go({ action: 'prediction', id: 'main', url: 'prediction.php' });
 <? } ?>
     var p = loadPrompt();
     p.success('Prédiction <?= ($action == "new" ? " ajoutée": ($action == "upt" || $action == "save" ? " modifiée" : " supprimée")) ?>');

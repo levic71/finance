@@ -85,9 +85,21 @@ while($row = mysqli_fetch_array($res)) {
 		$res3 = dbc::execSql($update);
 	}
 
-	// Enregistrement max gain
+	// Enregistrement max gain (on enregistre meme si gaim_max=0)
 	$update = "UPDATE prediction SET gain_max='".$gain_max."', gain_max_date='".$date_gain_max."' WHERE id=".$row['id'];
 	$res3 = dbc::execSql($update);
+
+	// Prediction cloturée après 6 mois
+	$datetime1 = new DateTime($row['date_avis']);
+	$datetime2 = new DateTime(date("Y-m-d"));
+	$difference = $datetime1->diff($datetime2);
+	if ($row['status'] == 0 && $difference->m >= 6) {
+		$update = "UPDATE prediction SET status=-2, date_status='".date("Y-m-d")."' WHERE id=".$row['id'];
+		$res3 = dbc::execSql($update);
+	}
+
+
+
 
 }
 
@@ -202,7 +214,8 @@ while($row = mysqli_fetch_array($res)) {
 				$val[0]  = isset($val[0])  ? $val[0]  : 0;
 				$val[1]  = isset($val[1])  ? $val[1]  : 0;
 				$val[-1] = isset($val[-1]) ? $val[-1] : 0;
-				$nb_predictions = $val[1] + $val[-1];
+				$val[-2] = isset($val[-2]) ? $val[-2] : 0;
+				$nb_predictions = $val[1] + $val[-1] + $val[-2];
 				$perf_mois[$key] = $val[1] == 0 ? "-" : ($val[1] / $nb_predictions) * 100;
 			}
 	
@@ -217,7 +230,8 @@ while($row = mysqli_fetch_array($res)) {
 				$val[0]  = isset($val[0])  ? $val[0]  : 0;
 				$val[1]  = isset($val[1])  ? $val[1]  : 0;
 				$val[-1] = isset($val[-1]) ? $val[-1] : 0;
-				$nb_predictions = $val[1] + $val[-1];
+				$val[-2] = isset($val[-2]) ? $val[-2] : 0;
+				$nb_predictions = $val[1] + $val[-1] + $val[-2];
 				$perf  = $val[1] == 0 ? 0 : ($val[1] / $nb_predictions) * 100;
 				$perf2 = isset($perf_mois[$key]) ? $perf_mois[$key] : "-";
 
@@ -231,7 +245,7 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned">'.uimx::$conseillers[$key].'</td>
 					<td class="center aligned">'.$val[0].'</td>
 					<td class="center aligned">'.$val[1].'</td>
-					<td class="center aligned">'.$val[-1].'</td>
+					<td class="center aligned">'.($val[-1]+$val[-2]).'</td>
 					<td class="center aligned">'.(isset($tab_extend[$key]['days']) ? $lib_diff : "-").'</td>
 					<td class="center aligned">'.($perf == "-" ? "-" : sprintf("%.0f", $perf)."%").'</td>
 					<td class="center aligned">'.($perf2 == "-" ? "-" : sprintf("%.0f", $perf2)."%").'</td>
