@@ -19,3 +19,7 @@ finance/*.log
 toto/*
 node_modules
 finance/googlesheet/finance.log
+finance/.vscode/launch.json
+finance/.vscode/settings.json
+finance/.vscode/tasks.json
+.gitignore
