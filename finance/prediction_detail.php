@@ -134,13 +134,13 @@ Dom.addListener(Dom.id('cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ 
 Dom.addListener(Dom.id('<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
 
 	// Controle si champ numerique
-	if (!check_num(valof('f_cours'), 'Cours', 0, 999999999999))
+	if (!format_and_check_num('f_cours', 'Cours', 0, 999999999999))
 		return false;
 
-	if (!check_num(valof('f_objectif'), 'Objectif', 0, 999999999999))
+	if (!format_and_check_num('f_objectif', 'Objectif', 0, 999999999999))
 		return false;
 
-    if (!check_num(valof('f_stoploss'), 'Stoploss', 0, 999999999999))
+    if (!format_and_check_num('f_stoploss', 'Stoploss', 0, 999999999999))
 		return false;
 
     item = Dom.id('f_actif');

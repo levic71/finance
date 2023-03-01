@@ -97,8 +97,6 @@ go = function(args) {
 
 change_wide_menu_state = function(menu, item_menu) {
 	items = Dom.children(Dom.id(menu), "a");
-	console.log(menu);
-	console.log(items);
 	for (var i = 0; i < items.length; i++) {
 		if (items[i].id == item_menu)
 			addCN(items[i].id, 'active');
@@ -130,6 +128,11 @@ check_JJMMAAAA = function(str, label)
 	return true;
 }
 
+format_num = function(id)
+{
+	if (el(id) && el(id).type == 'text')
+		el(id).value = parseFloat(el(id).value.replace(/\,/g, '.').replace(/\s/g, ''));
+}
 check_num = function(num, label, min, max, display_err = true)
 {
 	if (num.length == 0) { if (display_err) Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" ne doit pas être vide'}); return false; }
@@ -140,6 +143,10 @@ check_num = function(num, label, min, max, display_err = true)
 	}
 	if (num > max || num < min) { if (display_err) Swal.fire({ title: 'Formulaire non valide !', icon: 'error', text: 'Le champ "'+label+'" doit être compris entre '+min+' et '+max }); return false; }
 	return true;
+}
+format_and_check_num = function(field, label, min, max, display_err = true) {
+	format_num(field);
+	return check_num(valof(field), label, min, max, display_err);
 }
 isacar = function(car) { if ((car >= "0" && car <= "9") || (car >= "A" && car <= "Z") || (car >= "a" && car <= "z")) return true; return false; }
 isacarext = function(car) {
@@ -326,10 +333,10 @@ var overlay = {
 	checkForm : () => {
 		var ret = true;
 	
-		if (!check_num(valof('f_stoploss'),   'Stop loss',   0, 999999, false)) ret = false;
-		if (!check_num(valof('f_stopprofit'), 'Stop profit', 0, 999999, false)) ret = false;
-		if (!check_num(valof('f_objectif'),   'Objectif',    0, 999999, false)) ret = false;
-		if (!check_num(valof('f_reg_period'), 'Période régression', 0, 999999, false)) ret = false;
+		if (!format_and_check_num('f_stoploss',   'Stop loss',   0, 999999, false)) ret = false;
+		if (!format_and_check_num('f_stopprofit', 'Stop profit', 0, 999999, false)) ret = false;
+		if (!format_and_check_num('f_objectif',   'Objectif',    0, 999999, false)) ret = false;
+		if (!format_and_check_num('f_reg_period', 'Période régression', 0, 999999, false)) ret = false;
 
 		return ret;
 	},
@@ -475,7 +482,7 @@ var overlay = {
 						allowOutsideClick: () => !Swal.isLoading()
 					}).then((result) => {
 						if (result.isConfirmed) {
-							if (!check_num(valof('f_quote'), 'Cotation', 0, 999999)) return false;
+							if (!format_and_check_num('f_quote', 'Cotation', 0, 999999)) return false;
 							let params = attrs([ 'f_quote' ]) + '&symbol=' + pname;
 							go({ action: 'main', id: 'main', url: 'trend_following_action.php?action=manual_price&' + params, no_data: 1, no_chg_cn: 1 });
 							element.innerHTML = valof('f_quote') + '&euro;';
