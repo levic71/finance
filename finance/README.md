@@ -23,9 +23,7 @@
 // ratio de sharpe
 // Reinjecte les données json en cache
 // Disclaimer + Acceptation cookies
-// Grille tarifaire (Notifications/Ajout x stratégie/Gestion x portefeuille/nb portefeuille/synthèse)
 // Creer une stack d'execution tache CRON en base de données pour dépiler les actions a réaliser pour n'en ratée aucune et éviter les doublons
-// Pause crontab avec lock en gestion admin
 // IMPORT/EXPORT ORDRES PORTEFEUILLE
 
 // Idées
