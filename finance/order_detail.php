@@ -179,17 +179,17 @@ Dom.addListener(Dom.id('order_cancel_bt'), Dom.Event.ON_CLICK, function(event) {
 // Add/Update button
 Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
 
-	// Controle si champ numerique
-	if (!check_num(valof('f_quantity'), 'Quantité', 1, 999999999999))
+    // Controle si champ numerique
+	if (!format_and_check_num('f_quantity', 'Quantité', 1, 999999999999))
 		return false;
 
-	if (!check_num(valof('f_price'), 'Prix', 0, 999999999999))
+	if (!format_and_check_num('f_price', 'Prix', 0, 999999999999))
 		return false;
 
-    if (!check_num(valof('f_commission'), 'Commission', 0, 999999999999))
+    if (!format_and_check_num('f_commission', 'Commission', 0, 999999999999))
 		return false;
 
-    if (!check_num(valof('f_taux_change'), 'Taux de change', 0, 999999999999))
+    if (!format_and_check_num('f_taux_change', 'Taux de change', 0, 999999999999))
 		return false;
 
     item = Dom.id('f_product_name');

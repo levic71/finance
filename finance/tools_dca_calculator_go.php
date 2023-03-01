@@ -321,7 +321,7 @@ La modification d'une des données par l'utilisateur déclenche le recalcul automa
         }
 
         // Controle si champ numerique
-        if (!check_num(valof('f_montant'), 'montant à investir', 0, 10000000))
+        if (!format_and_check_num('f_montant', 'montant à investir', 0, 10000000))
             return false;
 
         invest_init = parseInt(valof('f_montant'));

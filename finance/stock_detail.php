@@ -1139,8 +1139,7 @@ if ($debug == 1) {
     Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
 
         [   { key: 'f_dividende',  label: 'Dividende' } ].forEach(function(item) {
-            let val = valof(item.key);
-            if (val != '' && !check_num(val, item.label, 0, 999999999999)) return false;
+            if (valof(item.key) != '' && !format_and_check_num(item.key, item.label, 0, 999999999999)) return false;
         });
 
         p = getFormValues();

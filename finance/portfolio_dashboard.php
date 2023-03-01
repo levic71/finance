@@ -192,7 +192,7 @@ $lst_orders    = $sc->getOrders();
 					<thead><tr>
 						<th></th>
 						<th>Date</th>
-						<th>Portefeuille</th>
+						<th>Ptf</th>
 						<th>Actif</th>
 						<th>Action</th>
 						<th>Qté</th>

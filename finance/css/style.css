@@ -1226,8 +1226,8 @@ td.price_perf div button,
         display: table-cell;
     }
     
-    #lst_order th:nth-child(1), #lst_order th:nth-child(3), #lst_order th:nth-child(4), #lst_order th:nth-child(8), #lst_order th:nth-child(9),
-    #lst_order td:nth-child(1), #lst_order td:nth-child(3), #lst_order td:nth-child(4), #lst_order td:nth-child(8), #lst_order td:nth-child(9) {
+    #lst_order th:nth-child(1), #lst_order th:nth-child(5), #lst_order th:nth-child(8), #lst_order th:nth-child(9), #lst_order th:nth-child(10), #lst_order th:nth-child(11),
+    #lst_order td:nth-child(1), #lst_order td:nth-child(5), #lst_order td:nth-child(8), #lst_order td:nth-child(9), #lst_order td:nth-child(10), #lst_order td:nth-child(11) {
         display: none;
     }
     #lst_order tfoot td {
