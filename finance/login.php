@@ -29,7 +29,7 @@ foreach(['f_email', 'redirect', 'goto'] as $key)
 				<div class="inverted field">
 					<div class="ui inverted corner left icon input">
             			<i class="user inverted icon"></i>
-            			<input type="text" id="f_email" name="email" value="<?= $f_email ?>" placeholder="E-mail address">
+            			<input type="text" id="f_email" name="email" autocomplete="email" value="<?= $f_email ?>" placeholder="E-mail address">
 						<div id="f_email_error" class="ui inverted corner label"><i class="asterisk inverted icon"></i></div>
         			</div>
 				</div>
@@ -38,7 +38,7 @@ foreach(['f_email', 'redirect', 'goto'] as $key)
         			<div class="ui inverted left icon input">
 						<i class="lock inverted icon"></i>
 						<div id="f_pwd_error" class="ui inverted corner label"><i class="asterisk inverted icon"></i></div>
-						<input type="password" id="f_pwd" name="password" placeholder="Password">
+						<input type="password" id="f_pwd" name="password" autocomplete="current-password" placeholder="Password">
           			</div>
         		</div>
 
@@ -46,7 +46,7 @@ foreach(['f_email', 'redirect', 'goto'] as $key)
         			<div class="ui inverted left icon input">
 						<i class="lock inverted icon"></i>
 						<div id="f_pwd2_error" class="ui inverted corner label"><i class="asterisk inverted icon"></i></div>
-						<input type="password" id="f_pwd2" name="password" placeholder="Confirmation">
+						<input type="password" id="f_pwd2" name="password" autocomplete="current-password" placeholder="Confirmation">
           			</div>
         		</div>
 
