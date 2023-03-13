@@ -75,7 +75,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 		foreach($notifs as $key => $val)
 			if ($val['user_id'] == 0 || ($sess_context->isUserConnected() && $val['user_id'] == $sess_context->getUserId())) {
 				echo '
-					<div id="portfolio_alertes_'.$val['actif'].'_bt" class="ui labeled button portfolio_alerte" tabindex="0">
+					<div id="portfolio_alertes_'.$val['actif'].'_bt" data-tootik="'.mb_convert_encoding($data2['stocks'][$val['actif']]['name'], 'ISO-8859-1', 'UTF-8').'" class="ui labeled button portfolio_alerte" tabindex="0">
 						<div class="ui '.($val['sens'] == -1 && $val['couleur'] == "green" ? "positive " : "").($val['sens'] == 1 && $val['couleur'] == "red" ? "negative " : "").$val['couleur'].' button">
 							<i class="'.$val['icone'].' inverted icon"></i>'.$val['actif'].'
 						</div>

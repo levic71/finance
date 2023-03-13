@@ -448,13 +448,13 @@ get_orders_list = function() {
 				if (filter_date && children[i].getElementsByTagName("td")[1].innerHTML.toLowerCase() != filter_date.toLowerCase())
 					hide_line = true;
 
-				if (filter_product_name && children[i].getElementsByTagName("td")[2].innerHTML.toLowerCase() != filter_product_name.toLowerCase())
+				if (filter_product_name && children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != filter_product_name.toLowerCase())
 					hide_line = true;
 				
-				if (filter_action && filter_action.toLowerCase() != "achatvente" && children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != filter_action.toLowerCase())
+				if (filter_action && filter_action.toLowerCase() != "achatvente" && children[i].getElementsByTagName("td")[4].innerHTML.toLowerCase() != filter_action.toLowerCase())
 					hide_line = true;
 
-				if (filter_action && filter_action.toLowerCase() == "achatvente" && (children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != "achat" && children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != "vente"))
+				if (filter_action && filter_action.toLowerCase() == "achatvente" && (children[i].getElementsByTagName("td")[4].innerHTML.toLowerCase() != "achat" && children[i].getElementsByTagName("td")[4].innerHTML.toLowerCase() != "vente"))
 					hide_line = true;
 
 				if (hide_line)
