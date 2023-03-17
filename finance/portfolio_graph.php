@@ -246,6 +246,7 @@ update_all_charts = function(year) {
     ds.push(getDatasetVals2('Retrait',       'bar',  local_data, 'rt', 'rgba(238, 229, 44, 1)', 'rgba(238, 229, 44, 1)', 'Out'));
     ds.push(getDatasetVals2('Dividende',     'bar',  local_data, 'dd', 'rgba(0, 236, 193, 1)',  'rgba(0, 236, 193, 1)',  'In'));
 
+    options_Valo_Graphe.scales.y.type = 'logarithmic';
     myChart = update_graph_chart(myChart, ctx1, options_Valo_Graphe, null, ds, []);
 
 }
