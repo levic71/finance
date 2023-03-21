@@ -88,7 +88,7 @@ if ($action == "upt") {
             <label>Conseiller</label>
             <select id="f_conseiller" class="ui dropdown">
                 <? foreach (uimx::$conseillers as $key => $val) { ?>
-                    <option value="<?= $key ?>" <?= $row['conseiller'] == $val ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
+                    <option value="<?= $key ?>" <?= $row['conseiller'] == $key ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
                 <? } ?>
             </select>
         </div>
