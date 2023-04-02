@@ -410,7 +410,7 @@ Dom.addListener(Dom.id('ptf_pos_sync_bt'),     Dom.Event.ON_CLICK, function(even
 // Gestion des boutons du graphe donut
 changeButtonState = function(bt) {
 	['0', '1', '2'].forEach(function(item) { replaceCN('donut_' + item, 'primary', 'grey'); });
-	replaceCN(bt, 'grey', 'primary');
+	replaceCN('donut_' + bt, 'grey', 'primary');
 }
 // Maj data donut
 updateDonut = function(bt) {

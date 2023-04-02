@@ -474,6 +474,7 @@ if ($debug == 1) {
             <thead><tr>
                 <th></th>
                 <th>Date</th>
+                <th>Ptf</th>
                 <th>Actif</th>
                 <th>Action</th>
                 <th class="center aligned">Qté</th>
@@ -488,7 +489,7 @@ if ($debug == 1) {
                 $sum_orders = 0;
                 $nb_orders = 0;
                 $req_option = "AND o.product_name='".$symbol."'";
-                $req = "SELECT * FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
+                $req = "SELECT *, p.shortname FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
                 $res = dbc::execSql($req);
 
                 // Bye bye si inexistant
@@ -497,6 +498,7 @@ if ($debug == 1) {
                     echo '<tr>
                             <td><i class="inverted long arrow alternate '.$row['icon'].' icon"></td>
                             <td data-value="'.$row['datetime'].'">'.$row['date'].'</td>
+                            <td>'.$row['shortname'].'</td>
                             <td>'.$row['product_name'].'</td>
                             <td>'.$row['action_lib'].'</td>
                             <td>'.$row['quantity'].'</td>
