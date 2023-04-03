@@ -62,7 +62,7 @@ foreach(['f_email', 'redirect', 'goto'] as $key)
 	</div>
 </div>
 
-<? if ($redirect == 1) {
+<? if (false && $redirect == 1) {
 	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
 } ?>
 

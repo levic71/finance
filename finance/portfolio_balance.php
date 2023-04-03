@@ -14,10 +14,7 @@ foreach (['portfolio_id', 'year'] as $key)
 
 $db = dbc::connect();
 
-if (!$sess_context->isUserConnected()) {
-	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
-	exit(0);
-}
+if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('portfolio');
 
 // Recuperation des infos du portefeuille
 $req = "SELECT *, YEAR(creation) year FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();

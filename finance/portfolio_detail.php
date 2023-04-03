@@ -13,10 +13,7 @@ foreach(['portfolio_id', 'action'] as $key)
 
 $db = dbc::connect();
 
-if (!$sess_context->isUserConnected()) {
-	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
-	exit(0);
-}
+if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('portfolio');
 
 $libelle_action_bt = tools::getLibelleBtAction($action == "new_synthese" ? "new" : ($action == "upt_synthese" ? "upt" : $action));
 

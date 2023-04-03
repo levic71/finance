@@ -11,13 +11,9 @@ $prediction_id = -1;
 foreach(['prediction_id', 'action'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
-
 $db = dbc::connect();
 
-if (!$sess_context->isUserConnected()) {
-	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
-	exit(0);
-}
+if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('prediction');
 
 $libelle_action_bt = tools::getLibelleBtAction($action);
 

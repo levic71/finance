@@ -2554,7 +2554,7 @@ class uimx {
     }
 
     public static function redirectLoginPage($item) { ?>
-        <script>go({ action: 'login', id: 'main', url: 'login.php?redirect=1&goto=<?= $item ?>' });</script><?
+        <script>go({ action: 'login', id: 'main', url: 'login.php?redirect=1&goto=<?= $item ?>', menu: 'm1_<?= $item ?>_bt' });</script><?
 	    exit(0);
     }  
 
