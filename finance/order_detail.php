@@ -14,10 +14,7 @@ foreach(['portfolio_id', 'order_id', 'action'] as $key)
 
 $db = dbc::connect();
 
-if (!$sess_context->isUserConnected()) {
-	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
-	exit(0);
-}
+if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('portfolio');
 
 $devises = calc::getGSDevisesWithNoUpdate();
 

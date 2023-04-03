@@ -11,10 +11,7 @@ foreach (['alerte'] as $key)
 
 $db = dbc::connect();
 
-if (!$sess_context->isUserConnected()) {
-	uimx::staticInfoMsg("VOUS DEVEZ ETRE CONNECTE POUR UTILISER CETTE FONCTIONNALITE", "comment outline", "blue");
-	exit(0);
-}
+if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('portfolio');
 
 if ($alerte == -1)
 	$req = "UPDATE alertes SET lue=1 WHERE user_id=".$sess_context->getUserId();
