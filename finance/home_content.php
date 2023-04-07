@@ -71,12 +71,13 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 		<button id="home_alertes_list" class="circular ui right floated button icon_action"><i class="inverted black history icon"></i></button>
 		<button id="home_alertes_markall" class="circular ui right floated button icon_action"><i class="inverted black low vision icon"></i></button>
 	</h2>
+	<div id="lst_alertes">
 	<?
 		foreach($notifs as $key => $val)
 			if ($val['user_id'] == 0 || ($sess_context->isUserConnected() && $val['user_id'] == $sess_context->getUserId())) {
 				echo '
 					<div id="portfolio_alertes_'.$val['actif'].'_bt" data-tootik="'.mb_convert_encoding($data2['stocks'][$val['actif']]['name'], 'ISO-8859-1', 'UTF-8').'" class="ui labeled button portfolio_alerte" tabindex="0">
-						<div class="ui '.($val['sens'] == -1 && $val['couleur'] == "green" ? "positive " : "").($val['sens'] == 1 && $val['couleur'] == "red" ? "negative " : "").$val['couleur'].' button">
+						<div class="ui '.($val['sens'] == -1 && $val['couleur'] == "green" ? "positive " : "").($val['sens'] == 1 && $val['couleur'] == "red" ? "negative " : "").$val['couleur'].' button" data-symbol="'.$val['actif'].'">
 							<i class="'.$val['icone'].' inverted icon"></i>'.$val['actif'].'
 						</div>
 						<a class="ui basic '.$val['couleur'].' left pointing label">'.sprintf("%s <br/>%.2f", ucfirst($val['type']), $val['seuil']).'</a>
@@ -84,6 +85,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 			}
 	?>
 	<? } ?>
+	</div>
 
 	<h2 class="ui left floated">
 		<i class="inverted eye icon"></i><span>Market</span>
@@ -505,6 +507,13 @@ Dom.find('button.bt_tags').forEach(function(item) {
 
 // Listener sur button detail stock tableau market
 Dom.find("#lst_scan tbody tr td:nth-child(1) button").forEach(function(element) {
+	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
+		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+Dom.attribute(element, 'data-symbol'), loading_area: 'main' });
+	});
+});
+
+// Listener sur button detail stock tableau market
+Dom.find("#lst_alertes div div.button").forEach(function(element) {
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+Dom.attribute(element, 'data-symbol'), loading_area: 'main' });
 	});
