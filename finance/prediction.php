@@ -160,8 +160,8 @@ while($row = mysqli_fetch_array($res)) {
 						<label class="<?= $perc >= 0 ? "aaf-positive" : "aaf-negative" ?>"><?= sprintf("%.2f%%", $perc) ?></label>
 					</div></td>
 					<td class="center aligned price_perf"><div>
-						<button <?= $row['status'] == 1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui <?= $row['cours'] <= $cj ? "aaf-positive" : "orange" ?> button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
-						<label class="<?= $row['cours'] <= $cj ? "aaf-positive" : "orange" ?>"><?= sprintf("%.2f%%", $perf) ?></label>
+						<button <?= $row['status'] == 1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui <?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj ? "aaf-positive" : "orange") ?> button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
+						<label class="<?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj ? "aaf-positive" : "orange") ?>"><?= sprintf("%.2f%%", $perf) ?></label>
 					</div></td>
 					<td class="center aligned price_perf"><div>
 						<button <?= $row['gain_max'] == 0 ? '' : 'style="background: #c959ff;"' ?>  <?= $row['gain_max'] > 0 ? 'data-tootik="'.$row['gain_max_date'].'"' : "" ?> class="tiny ui button"><?= sprintf("%.2f", $row['gain_max']).$curr ?></button>
