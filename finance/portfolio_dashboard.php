@@ -202,7 +202,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 					</tr></thead>
 					<tbody>
 <?
-				foreach(array_merge($lst_orders_futur, array_reverse($lst_orders)) as $key => $val) {
+				foreach(array_merge(array_reverse($lst_orders_futur), array_reverse($lst_orders)) as $key => $val) {
 
 					$val = calc::formatDataOrder($val);
 
