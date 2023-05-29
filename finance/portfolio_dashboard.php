@@ -37,6 +37,7 @@ $sc->setStratPtf($strat_ptf);
 // On récupère les infos du portefeuille + les positions et les ordres
 $lst_positions = $sc->getPositions();
 $lst_orders    = $sc->getOrders();
+$lst_orders_futur = $sc->getOrdersFutur();
 
 ?>
 
@@ -201,7 +202,7 @@ $lst_orders    = $sc->getOrders();
 					</tr></thead>
 					<tbody>
 <?
-				foreach(array_reverse($lst_orders) as $key => $val) {
+				foreach(array_merge($lst_orders_futur, array_reverse($lst_orders)) as $key => $val) {
 
 					$val = calc::formatDataOrder($val);
 
@@ -254,7 +255,7 @@ el("pft_donut").height = document.body.offsetWidth > 700 ? 130 : 300;
 
 <?
 	if (!$sc->isPtfSynthese()) {
-		foreach($lst_orders as $key => $val) { ?>
+		foreach(array_merge($lst_orders_futur, $lst_orders) as $key => $val) { ?>
 			Dom.addListener(Dom.id('order_edit_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=upt&portfolio_id=<?= $portfolio_id ?>&order_id=<?= $val['id'] ?>', loading_area: 'main' }); });
 <?	
 		}

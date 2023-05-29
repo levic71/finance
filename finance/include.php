@@ -192,6 +192,7 @@ class StockComputing {
     protected $infos   = [];
     protected $positions = [];
     protected $orders    = [];
+    protected $orders_futur    = [];
     protected $trend_following = [];
     protected $save_quotes = [];
     protected $strat_ptf   = 1;
@@ -206,6 +207,7 @@ class StockComputing {
         if (isset($this->ptf['infos']))           $this->infos     = $this->ptf['infos'];
         if (isset($this->ptf['positions']))       $this->positions = $this->ptf['positions'];
         if (isset($this->ptf['orders']))          $this->orders    = $this->ptf['orders'];
+        if (isset($this->ptf['orders_futur']))    $this->orders_futur    = $this->ptf['orders_futur'];
         if (isset($this->ptf['trend_following'])) $this->trend_following = $this->ptf['trend_following'];
 
         $this->saveQuotes();
@@ -218,6 +220,7 @@ class StockComputing {
     public function getTrendFollowing() { return $this->trend_following; }
     public function getPositions()      { return $this->positions; }
     public function getOrders()         { return $this->orders; }
+    public function getOrdersFutur()    { return $this->orders_futur; }
     public function getInfos()          { return $this->infos; }
 
     public function saveQuotes() {
@@ -779,8 +782,9 @@ class calc {
         $cash           = 0;
         $ampplt         = 0; // Apports moyen ponderes par le temps
 
-        $portfolio['orders']    = array();
-        $portfolio['positions'] = array();
+        $portfolio['orders']        = array();
+        $portfolio['orders_futur']  = array();
+        $portfolio['positions']     = array();
 
         $portfolio['infos'] = $infos;
         $user_id = $infos['user_id'];
@@ -924,6 +928,13 @@ class calc {
 
         }
 
+
+        // Récupération et TRT des ordres futur
+        $req = "SELECT  o.*, p.shortname, 0 AS ttf FROM orders o, portfolios p WHERE date > '".date('Y-m-d')."' AND portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") AND o.portfolio_id = p.id ORDER BY date, datetime ASC";
+        $res = dbc::execSql($req);
+        while($row = mysqli_fetch_assoc($res))
+            $portfolio['orders_futur'][] = $row;
+        
         // On retire des positions les actifs dont le nb = 0 (plus dans le portefeuille)
         foreach($positions as $key => $val) {
             if ($val['nb'] == 0)
