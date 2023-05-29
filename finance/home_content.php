@@ -1,6 +1,6 @@
 <?
 
-require_once "sess_context.php";
+require_once "sess_context.php"; // background-image: linear-gradient(to right, rgba(0, 255,0,1) 25%, rgba(0,255,0,0.1) 25%, rgba(255,0,0,0)) !important;
 
 session_start();
 
