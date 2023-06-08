@@ -744,6 +744,8 @@ if ($debug == 1) {
 
             // mmxxx
             [ 7, 20, 50, 200 ].forEach(function(mm_item) {
+
+                alert(item);
                 
                 // Calcul mm
                 if (tab_item.length >= mm_item) {
