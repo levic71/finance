@@ -729,12 +729,12 @@ if ($debug == 1) {
         let reg_type   = Dom.attribute(elt, 'data-reg-type');
         let reg_period = Dom.attribute(elt, 'data-reg-period');
 
-        if (tab_item.length == 0) continue;
-
          // //////////////////////////////////////////////
         // Calcul mmxxx/rsixxx en D/W/M
         // //////////////////////////////////////////////
         [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
+
+            if (tab_item.length == 0) continue;
 
             var tmp_mm  = [];
             var tmp_rsi = [];
