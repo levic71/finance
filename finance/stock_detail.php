@@ -876,8 +876,8 @@ if ($debug == 1) {
         el("stock_canvas3").height = document.body.offsetWidth > 700 ? 30 : 120;
 
     } catch(e) {
-        alert('stock_detail.php: Graphe data error' + e);
-        ref_d_days  = []; ref_w_days  = []; ref_m_days  = [];
+        alert('stock_detail.php: Graphe data error : ' + tab_item + 'e :' + e);
+        ref_d_days = []; ref_w_days = []; ref_m_days = [];
     }
 
     getAlarmLines = function() {
