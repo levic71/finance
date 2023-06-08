@@ -741,7 +741,7 @@ if ($debug == 1) {
 
             alert(tab_item.length);
 
-            if (tab_item.length == 0) alert('coucou');
+            if (tab_item.length == 0) return;
 
             // Recup des data dans tmp
             tab_item.forEach(function(item) { tmp_mm.push(item.y); tmp_rsi.push({c:item.y}); });
