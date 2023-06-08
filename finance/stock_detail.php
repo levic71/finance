@@ -729,6 +729,8 @@ if ($debug == 1) {
         let reg_type   = Dom.attribute(elt, 'data-reg-type');
         let reg_period = Dom.attribute(elt, 'data-reg-period');
 
+        alert('1');
+
          // //////////////////////////////////////////////
         // Calcul mmxxx/rsixxx en D/W/M
         // //////////////////////////////////////////////
@@ -736,6 +738,8 @@ if ($debug == 1) {
 
             var tmp_mm  = [];
             var tmp_rsi = [];
+
+            alert(tab_item);
 
             // Recup des data dans tmp
             tab_item.forEach(function(item) { tmp_mm.push(item.y); tmp_rsi.push({c:item.y}); });
@@ -819,6 +823,9 @@ if ($debug == 1) {
 
         });
 
+        alert('2');
+
+
         // Ref achat/vente data
         var bubbles_data  = [];
         <?= $js_bubbles_data ?>
@@ -877,8 +884,8 @@ if ($debug == 1) {
         el("stock_canvas3").height = document.body.offsetWidth > 700 ? 30 : 120;
 
     } catch(e) {
-        alert('stock_detail.php: Graphe data error : ' + tab_item + 'e :' + e);
-        ref_d_days = []; ref_w_days = []; ref_m_days = [];
+        alert('stock_detail.php: Graphe data error : ' + e);
+        ref_d_days  = []; ref_w_days  = []; ref_m_days  = [];
     }
 
     getAlarmLines = function() {
