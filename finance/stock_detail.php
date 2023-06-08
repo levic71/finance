@@ -729,8 +729,6 @@ if ($debug == 1) {
         let reg_type   = Dom.attribute(elt, 'data-reg-type');
         let reg_period = Dom.attribute(elt, 'data-reg-period');
 
-        alert('1');
-
          // //////////////////////////////////////////////
         // Calcul mmxxx/rsixxx en D/W/M
         // //////////////////////////////////////////////
@@ -739,17 +737,13 @@ if ($debug == 1) {
             var tmp_mm  = [];
             var tmp_rsi = [];
 
-            alert(tab_item.length);
-
-            if (tab_item.length == 0) alert('coucou');
+            if (tab_item.length == 0) return;
 
             // Recup des data dans tmp
             tab_item.forEach(function(item) { tmp_mm.push(item.y); tmp_rsi.push({c:item.y}); });
 
             // mmxxx
             [ 7, 20, 50, 200 ].forEach(function(mm_item) {
-
-                alert(mm_item);
                 
                 // Calcul mm
                 if (tab_item.length >= mm_item) {
@@ -826,9 +820,6 @@ if ($debug == 1) {
             });
 
         });
-
-        alert('2');
-
 
         // Ref achat/vente data
         var bubbles_data  = [];
@@ -1016,7 +1007,7 @@ if ($debug == 1) {
             c.update();
 
         } catch(e) {
-            alert('update_graphe_chart error !' + e);
+            alert('update_graphe_chart error ! : ' + e);
         }
 
         return c;
