@@ -718,8 +718,6 @@ if ($debug == 1) {
     var ref_w_days  = [];
     var ref_m_days  = [];
 
-    alert('1');
-
     try {
 
         // Ref Day Data
@@ -731,16 +729,17 @@ if ($debug == 1) {
         let reg_type   = Dom.attribute(elt, 'data-reg-type');
         let reg_period = Dom.attribute(elt, 'data-reg-period');
 
+        alert('1');
+
          // //////////////////////////////////////////////
         // Calcul mmxxx/rsixxx en D/W/M
         // //////////////////////////////////////////////
         [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
 
-            alert(tab_item.length);
-            if (tab_item.length == 0) continue;
-
             var tmp_mm  = [];
             var tmp_rsi = [];
+
+            alert(tab_item.length);
 
             // Recup des data dans tmp
             tab_item.forEach(function(item) { tmp_mm.push(item.y); tmp_rsi.push({c:item.y}); });
@@ -748,7 +747,7 @@ if ($debug == 1) {
             // mmxxx
             [ 7, 20, 50, 200 ].forEach(function(mm_item) {
 
-                alert(item);
+                alert(mm_item);
                 
                 // Calcul mm
                 if (tab_item.length >= mm_item) {
