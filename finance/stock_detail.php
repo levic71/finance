@@ -718,6 +718,8 @@ if ($debug == 1) {
     var ref_w_days  = [];
     var ref_m_days  = [];
 
+    alert('1');
+
     try {
 
         // Ref Day Data
@@ -734,6 +736,7 @@ if ($debug == 1) {
         // //////////////////////////////////////////////
         [ new_data_daily, new_data_weekly, new_data_monthly ].forEach(function(tab_item) {
 
+            alert(tab_item.length);
             if (tab_item.length == 0) continue;
 
             var tmp_mm  = [];
