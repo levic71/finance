@@ -84,7 +84,7 @@ $lst_trendfollowing = $sc->getTrendFollowing();
 
 						foreach($lst_trendfollowing as $key => $val) {
 							$qc = new QuoteComputing($sc, $key);
-							if ($sc->isInQuotes($key) && !$qc->isTypeIndice() && $qc->isAlerteActive()) $watchlist_selection[$key] = $key;
+							if ($sc->isInQuotes($key) && !$qc->isTypeIndice() && $qc->isWatchlist()) $watchlist_selection[$key] = $key;
 						}
 
 						$i = 1;

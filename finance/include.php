@@ -362,6 +362,7 @@ class QuoteComputing {
 
     public function isPriceFromPru()   { return $this->is_price_from_pru; }
     public function isAlerteActive()   { return $this->sc->getTrendFollowingAttr($this->symbol, 'active') && $this->sc->getTrendFollowingAttr($this->symbol, 'active') == 1 ? true : false; }
+    public function isWatchlist()      { return $this->sc->getTrendFollowingAttr($this->symbol, 'watchlist') && $this->sc->getTrendFollowingAttr($this->symbol, 'watchlist') == 1 ? true : false; }
     public function isTypeIndice()     { return $this->getType() == "INDICE"; }
     public function isInPtf()          { return $this->sc->isInPtf($this->symbol); }
 
@@ -2310,7 +2311,7 @@ class uimx {
         5  => [ "tag" => "Telecommunication",   "icon" => "tty", "desc" => "Se compose d'entreprises qui offrent des services de communication principalement au moyen de lignes téléphoniques fixes ou de réseaux cellulaires, sans fil, à large bande passante et de câble à fibres optiques." ],
         6  => [ "tag" => "Technologies",        "icon" => "microchip", "desc" => "Constitué d'entreprises appartenant aux trois domaines généraux suivants : technologie, logiciels et services." ],
         7  => [ "tag" => "Biens de consommation de base", "icon" => "shopping cart", "desc" => "Se compose de fabricants et de distributeurs de denrées alimentaires, de boissons et de tabac, de même que de producteurs d'objets ménagers non durables et de produits personnels. Il comprend également les détaillants d'aliments et de médicaments ainsi que les centres commerciaux." ],
-        8  => [ "tag" => "Services publics",    "icon" => "people", "desc" => "Se compose de sociétés gazières, d'électricité et de services d'eau, ainsi que d'entreprises qui agissent à titre de producteurs ou de distributeurs d'énergie." ],
+        8  => [ "tag" => "Services publics",    "icon" => "universal access", "desc" => "Se compose de sociétés gazières, d'électricité et de services d'eau, ainsi que d'entreprises qui agissent à titre de producteurs ou de distributeurs d'énergie." ],
         9  => [ "tag" => "Santé",               "icon" => "first aid", "desc" => "Comprend des entreprises qui fabriquent du matériel et des fournitures de soins de santé ou offrent des services de soins de santé. Il inclut aussi des sociétés qui se consacrent principalement à la recherche, au développement, à la production ainsi qu'à la commercialisation de produits pharmaceutiques et biotechnologiques." ],
         10 => [ "tag" => "Immobilier",          "icon" => "building outline", "desc" => "" ],
         11 => [ "tag" => "Global",              "icon" => "world", "desc" => "" ]
