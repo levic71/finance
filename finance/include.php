@@ -655,6 +655,7 @@ class QuoteComputing {
         $pct       = $this->getPct();
         $pname     = '<button class="tiny ui primary button">'.$this->getPName().'</button>';
         $isAlerteActive = $this->isAlerteActive();
+        $isWatchlist = $this->isWatchlist();
         $stop_loss   = $this->getStopLoss();
         $stop_profit = $this->getStopProfit();
         $objectif    = $this->getObjectif();
@@ -704,7 +705,7 @@ class QuoteComputing {
                 <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).'%</label>
             </div></td>
 
-            <td class="center aligned" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'" data-strat-type="'.$strat_type.'" data-reg-type="'.$reg_type.'" data-reg-period="'.$reg_period.'"><div class="small ui right group input" data-pname="'.$this->symbol.'">
+            <td class="center aligned" data-watchlist="'.($isWatchlist ? 1 : 0).'" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'" data-strat-type="'.$strat_type.'" data-reg-type="'.$reg_type.'" data-reg-period="'.$reg_period.'"><div class="small ui right group input" data-pname="'.$this->symbol.'">
                 <div class="'.(!$isAlerteActive || intval($stop_loss)   == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_loss).'</div>
                 <div class="'.(!$isAlerteActive || intval($objectif)    == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $objectif).'</div>
                 <div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
