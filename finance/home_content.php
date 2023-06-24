@@ -550,6 +550,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 		var reg_type   = parseInt(Dom.attribute(element, 'data-reg-type'));
 		var reg_period = parseInt(Dom.attribute(element, 'data-reg-period'));
 
+		console.log(pname+':'+price+':'+watchlist+':'+active+':'+stoploss+':'+objectif+':'+stopprofit+':'+seuils+':'+options+':'+strat_type+':'+reg_type+':'+reg_period);
 		tf_ui_html = trendfollowing_ui.getHtml(pname, price, watchlist, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period);
 
 		Swal.fire({
@@ -583,7 +584,9 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 					Swal.fire('Données modifiées');
 				}
 			});
-<? } ?>
+	<? } else { ?>
+		alert('Vous devez être connecté')
+	<? } ?>
 
 	});
 });
@@ -612,10 +615,10 @@ memRowPerPage = function() {
 }
 
 paginator({
-  table: document.getElementById("lst_stock"),
-  box: document.getElementById("lst_stock_box"),
-  rows_per_page: row_per_page,
-  tail_call: memRowPerPage
+	table: document.getElementById("lst_stock"),
+	box: document.getElementById("lst_stock_box"),
+	rows_per_page: row_per_page,
+	tail_call: memRowPerPage
 });
 
 
