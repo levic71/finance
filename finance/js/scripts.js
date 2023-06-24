@@ -513,6 +513,7 @@ var overlay = {
 
 				var pname      = Dom.attribute(element, 'data-pname');
 				var price      = Dom.attribute(element.parentNode, 'data-value');
+				var watchlist  = Dom.attribute(element.parentNode, 'data-watchlist');
 				var active     = Dom.attribute(element.parentNode, 'data-active');
 				var stoploss   = divs[0].innerHTML;
 				var objectif   = divs[1].innerHTML;
@@ -523,7 +524,7 @@ var overlay = {
 				var reg_type   = parseInt(Dom.attribute(element.parentNode, 'data-reg-type'));
 				var reg_period = parseInt(Dom.attribute(element.parentNode, 'data-reg-period'));
 		
-				tf_ui_html = trendfollowing_ui.getHtml(pname, price, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period);
+				tf_ui_html = trendfollowing_ui.getHtml(pname, price, watchlist, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period);
 
 				Swal.fire({
 						title: '',
@@ -557,6 +558,7 @@ var overlay = {
 							Dom.attribute(element.parentNode, { 'data-reg-type'   : valof('f_reg_type') });
 							Dom.attribute(element.parentNode, { 'data-reg-period' : valof('f_reg_period') });
 							Dom.attribute(element.parentNode, { 'data-options' : trendfollowing_ui.getOptionsValue() });
+							Dom.attribute(element.parentNode, { 'data-watchlist'  : valof('f_watchlist') == 0 ? 0 : 1 });
 							Dom.attribute(element.parentNode, { 'data-active'  : valof('f_active') == 0 ? 0 : 1 });
 
 							Swal.fire('Données modifiées');
