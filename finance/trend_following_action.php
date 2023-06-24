@@ -19,7 +19,7 @@ if ($action == "stops") {
         INSERT INTO trend_following (user_id, symbol, stop_loss, stop_profit, objectif, seuils, options, strategie_type, regression_type, regression_period, watchlist, active)
         VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_stoploss)."', '".sprintf("%2.f", $f_stopprofit)."', '".sprintf("%2.f", $f_objectif)."', '".sprintf("%s", $f_seuils)."', '".$options."', ".$f_strat_type.", ".$f_reg_type.", '".$f_reg_period."', '".$f_watchlist."', '".$f_active."')
         ON DUPLICATE KEY UPDATE
-        stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."', seuils='".sprintf("%s", $f_seuils)."', options='".$options."', active='".$f_watchlist."', active='".$f_watchlist."', strategie_type=".$f_strat_type.", regression_type=".$f_reg_type.", regression_period='".$f_reg_period."'
+        stop_loss='".sprintf("%2.f", $f_stoploss)."', stop_profit='".sprintf("%2.f", $f_stopprofit)."', objectif='".sprintf("%2.f", $f_objectif)."', seuils='".sprintf("%s", $f_seuils)."', options='".$options."', active='".$f_active."', watchlist='".$f_watchlist."', strategie_type=".$f_strat_type.", regression_type=".$f_reg_type.", regression_period='".$f_reg_period."'
     ";
 
 }
