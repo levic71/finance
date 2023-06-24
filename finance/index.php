@@ -46,6 +46,7 @@ foreach(['action', 'goto', 'debug'] as $key)
 		<link rel="stylesheet" href="css/sortable-theme-minimal.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/prompt.css?ver=<?= $ver ?>" />
 		<link rel="stylesheet" href="css/style.css?ver=<?= $ver_core ?>" />
+		<!-- link rel="stylesheet" href="css/fontawesome.min.css?ver=<?= $ver_core ?>" / -->
 
 		<script type="text/javascript" src="js/trendyways.min.js?ver=<?= $ver ?>"></script>
 		<script type="text/javascript" src="js/regression.js?ver=<?= $ver ?>"></script>

@@ -14,7 +14,7 @@ $db = dbc::connect();
 
 // SQL SCHEMA UPDATE
 // $ret = dbc::addColTable("stocks", "dividende_annualise", "ALTER TABLE `stocks` ADD `dividende_annualise` FLOAT NOT NULL AFTER `rating`, ADD `date_dividende` DATE NOT NULL AFTER `dividende_annualise`;");
-$ret = dbc::addColTable("portfolios", "shortname", "ALTER TABLE `portfolios` ADD `shortname` VARCHAR(16) NOT NULL AFTER `name`;");
+$ret = dbc::addColTable("trend_following", "watchlist", "ALTER TABLE `trend_following` ADD `watchlist` INT NOT NULL DEFAULT '0' AFTER `regression_period`;");
 
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
@@ -231,6 +231,7 @@ foreach($data2["stocks"] as $key => $val) {
 	$symbol = $key;
 
 	$isAlerteActive = isset($trend_following[$key]['active']) && $trend_following[$key]['active'] == 1 ? true : false;
+	$isWatchlist    = isset($trend_following[$key]['watchlist']) && $trend_following[$key]['watchlist'] == 1 ? true : false;
 	$stopprofit = isset($trend_following[$key]['stop_profit']) ? $trend_following[$key]['stop_profit'] : 0;
 	$stoploss   = isset($trend_following[$key]['stop_loss'])   ? $trend_following[$key]['stop_loss']   : 0;
 	$objectif   = isset($trend_following[$key]['objectif'])    ? $trend_following[$key]['objectif']    : 0;
@@ -271,7 +272,7 @@ foreach($data2["stocks"] as $key => $val) {
 		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
 		<td>
 			<span data-tootik-conf=\"left  multiline\" data-tootik=\"Dernière cotation le ".($val['day'] == NULL ? "N/A" : $val['day'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['day'] == date("Y-m-d") ? "grey" : ($diff_days > 3 ? "red" : "orange"))." alternate icon\"></i></a></span>
-			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i data-pname=\"".$symbol."\" data-value=\"".$val['price']."\" data-active=\"".($isAlerteActive ? 1 : 0)."\" data-stoploss=\"".$stoploss."\" data-objectif=\"".$objectif."\" data-stopprofit=\"".$stopprofit."\" data-seuils=\"".$seuils."\" data-options=\"".$options."\" data-strat-type=\"".$strat_type."\" data-reg-type=\"".$reg_type."\" data-reg-period=\"".$reg_period."\" class=\"inverted alarm ".($isAlerteActive ? "blue" : "black")." icon\"></i></a></span>
+			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i data-pname=\"".$symbol."\" data-value=\"".$val['price']."\" data-active=\"".($isAlerteActive ? 1 : 0)."\" data-watchlist=\"".($isWatchlist ? 1 : 0)."\" data-stoploss=\"".$stoploss."\" data-objectif=\"".$objectif."\" data-stopprofit=\"".$stopprofit."\" data-seuils=\"".$seuils."\" data-options=\"".$options."\" data-strat-type=\"".$strat_type."\" data-reg-type=\"".$reg_type."\" data-reg-period=\"".$reg_period."\" class=\"inverted alarm ".($isAlerteActive ? "blue" : "black")." icon\"></i></a></span>
 		</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td data-value=\"".$val['percent']."\" class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
@@ -505,21 +506,14 @@ Dom.find('button.bt_tags').forEach(function(item) {
 	});
 });
 
-// Listener sur button detail stock tableau market
+// Listener sur button detail stock tableau Market
 Dom.find("#lst_scan tbody tr td:nth-child(1) button").forEach(function(element) {
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+Dom.attribute(element, 'data-symbol'), loading_area: 'main' });
 	});
 });
 
-// Listener sur button detail stock tableau market
-Dom.find("#lst_alertes div div.button").forEach(function(element) {
-	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
-		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+Dom.attribute(element, 'data-symbol'), loading_area: 'main' });
-	});
-});
-
-// Listener sur button detail stock tableau screener
+// Listener sur button detail stock tableau Screener
 Dom.find("#lst_stock tbody tr td:nth-child(1) button").forEach(function(element) {
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+element.innerHTML, loading_area: 'main' });
@@ -546,6 +540,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 		var pname      = Dom.attribute(element, 'data-pname');
 		var price      = Dom.attribute(element, 'data-value');
 		var active     = Dom.attribute(element, 'data-active');
+		var watchlist  = Dom.attribute(element, 'data-watchlist');
 		var stoploss   = Dom.attribute(element, 'data-stoploss');
 		var objectif   = Dom.attribute(element, 'data-objectif');
 		var stopprofit = Dom.attribute(element, 'data-stopprofit');
@@ -555,7 +550,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 		var reg_type   = parseInt(Dom.attribute(element, 'data-reg-type'));
 		var reg_period = parseInt(Dom.attribute(element, 'data-reg-period'));
 
-		tf_ui_html = trendfollowing_ui.getHtml(pname, price, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period);
+		tf_ui_html = trendfollowing_ui.getHtml(pname, price, watchlist, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period);
 
 		Swal.fire({
 				title: '',
@@ -580,6 +575,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 					Dom.attribute(element, { 'data-seuils'     : valof('f_seuils') });
 					Dom.attribute(element, { 'data-options'    : trendfollowing_ui.getOptionsValue() });
 					Dom.attribute(element, { 'data-active'     : valof('f_active') == 0 ? 0 : 1 });
+					Dom.attribute(element, { 'data-watchlist'  : valof('f_watchlist') == 0 ? 0 : 1 });
 					Dom.attribute(element, { 'class': 'inverted alarm '+(valof('f_active') == 0 ? 'black' : 'blue')+' icon' });
 
 					go({ action: 'main', id: 'main', url: trendfollowing_ui.getUrlRedirect(pname), no_data: 1, no_scroll: 1 });

@@ -294,7 +294,7 @@ var overlay = {
 	bg_repartition: [[], [], []],
 	ptf: { valo: 0, achats: 0, stoploss1: 0, stoploss2: 0, stopprofit: 0, objectif: 0 },
 
-	getHtml : (pname, price, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period) => {
+	getHtml : (pname, price, watchlist, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period) => {
 		var mm200_opt = (options & 16) == 16 ? true : false;
 		var mm100_opt = (options & 8)  == 8  ? true : false;
 		var mm50_opt  = (options & 4)  == 4  ? true : false;
@@ -313,9 +313,9 @@ var overlay = {
 			'<label>Seuils</label><input id="f_seuils" class="swal2-input" type="text" placeholder="0.00;0.00;..." value="' + seuils + '" />' +
 			'<label>Type stratégie</label><select id="f_strat_type"><option value="1" ' + (strat_type == 1 ? 'selected="selected"' : '') + '">Spéculatif</option><option value="2" ' + (strat_type == 2 ? 'selected="selected"' : '') + '">Dividende</option><option value="3" ' + (strat_type == 3 ? 'selected="selected"' : '') + '">Croissance</option><option value="4" ' + (strat_type == 4 ? 'selected="selected"' : '') + '">Dividende & croissance</option></select>' +
 			'<label>Type régression</label><select id="f_reg_type"><option value="1" ' + (reg_type == 1 ? 'selected="selected"' : '') + '">Linéaire</option><option value="2" ' + (reg_type == 2 ? 'selected="selected"' : '') + '">Exponentiel</option><option value="3" ' + (reg_type == 3 ? 'selected="selected"' : '') + '">logarithmique</option><option value="4" ' + (reg_type == 4 ? 'selected="selected"' : '') + '">Polynomiale</option><option value="5" ' + (reg_type == 5 ? 'selected="selected"' : '') + '">Power</option></select>' +
-			'<label>Période régression</label><input id="f_reg_period" class="swal2-input" type="text" placeholder="0" value="' + reg_period   + '" />' +
+			'<label>Offset régression</label><input id="f_reg_period" class="swal2-input" type="text" placeholder="0" value="' + reg_period   + '" />' +
 			'<label class="checkbox"><input id="f_mm200" type="checkbox" ' + (mm200_opt ? 'checked="checked"' : '') + '/> MM200 <input id="f_mm100" type="checkbox" ' + (mm100_opt ? 'checked="checked"' : '') + '/> MM100 <input id="f_mm50" type="checkbox" ' + (mm50_opt ? 'checked="checked"' : '') + '/> MM50 <input id="f_mm20" type="checkbox" ' + (mm20_opt ? 'checked="checked"' : '') + '/> MM20 <input id="f_mm7" type="checkbox" ' + (mm7_opt ? 'checked="checked"' : '') + '/> MM7</label>' +
-			'<label class="checkbox"><input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/> Active</label>' +
+			'<label class="checkbox"><input id="f_watchlist" type="checkbox" ' + (watchlist == 1 ? 'checked="checked"' : '') + '/> WatchList <input id="f_active" type="checkbox" ' + (active == 1 ? 'checked="checked"' : '') + '/> Active</label>' +
 			'</div></div>' +
 			'';
 
@@ -345,7 +345,7 @@ var overlay = {
 	},
 	getUrlRedirect : (pname) => {
 		var options = trendfollowing_ui.getOptionsValue();
-		var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils', 'f_strat_type', 'f_reg_type', 'f_reg_period' ]) + '&symbol=' + pname + '&f_active=' + (valof('f_active') == 0 ? 0 : 1) + '&options=' + options;
+		var params = attrs([ 'f_stoploss', 'f_stopprofit', 'f_objectif', 'f_seuils', 'f_strat_type', 'f_reg_type', 'f_reg_period' ]) + '&symbol=' + pname + '&f_active=' + (valof('f_active') == 0 ? 0 : 1)+ '&f_watchlist=' + (valof('f_watchlist') == 0 ? 0 : 1) + '&options=' + options;
 		return ('trend_following_action.php?action=stops' + params);
 	},
 	cal1PositionsTable : (table_id) => {
