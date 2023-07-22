@@ -184,7 +184,8 @@ getDatasetVals = function(label, type, vals, yaxekey, colr, bgcolr) {
 getDatasetVals2 = function(label, type, vals, yaxekey, colr, bgcolr, ptstyle = 'rectRot', rotation = 0) {
     local_vals = [];
     vals.forEach(function(item) {
-        if (item[yaxekey] > 0) local_vals.push(item);
+        if (item[yaxekey] == 0) item[yaxekey] = null;
+        local_vals.push(item);
     });
 
     point_size = 6;
