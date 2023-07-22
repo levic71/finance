@@ -124,7 +124,7 @@ var mydata = [<?
     ksort($data_ptf);
 
     foreach($data_ptf as $key => $val) {
-        echo sprintf("{ d: '%s', da: %.2f, vl: %.2f, ha: %.2f, vt: %.2f, dj: %.2f, rt: %.2f, dd: %.2f, r: 5 }%s",
+        echo sprintf("{ d: '%s', da: %.2f, vl: %.2f, ha: %.2f, vt: %.2f, dj: %.2f, rt: %.2f, dd: %.2f }%s",
             $key,
             isset($val["depot_acc"]) ? $val["depot_acc"] : 0,
             isset($val["valo"])      ? $val["valo"]      : 0,
@@ -168,6 +168,7 @@ newDataset = function(mydata, mytype, yaxeid, yaxekey, mylabel, mycolor, bg, myf
         tension: mytension,
         backgroundColor: bg,
         fill: myfill,
+        pointStyle: 'rectRot',
         pointRadius: myradius,
         normalized: true
     };
@@ -180,8 +181,12 @@ getDatasetVals = function(label, type, vals, yaxekey, colr, bgcolr) {
 }
 
 getDatasetVals2 = function(label, type, vals, yaxekey, colr, bgcolr, stack) {
-    var ds = newDataset(vals, type, 'y2', yaxekey, label, colr, bgcolr, true);
-    ds.stack = stack;
+    local_vals = [];
+    vals.forEach(function(item) {
+        if (item[yaxekey] > 0) local_vals.push(item);
+    });
+
+    var ds = newDataset(local_vals, type, 'y2', yaxekey, label, colr, bgcolr, true, 0.5, 0.4, 5);
     return ds;
 }
 
