@@ -141,7 +141,7 @@ button.etf { background: #21ba45 !important; color: white !important; }
 }
 #portfolio_canvas + #tooltip_stock_graphe_div {
     display: block;
-    left: 120px;
+    left: 170px;
     top: 0px;
 }
 #portfolio_canvas + #tooltip_stock_graphe_div div {
