@@ -151,7 +151,7 @@ var mydays = [<?
     }
 ?>];
 
-newDataset = function(mydata, mytype, yaxeid, yaxekey, mylabel, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0) {
+newDataset = function(mydata, mytype, yaxeid, yaxekey, mylabel, ptstyle, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0, ptrotation = 0) {
 
     var ret = {
         type: mytype,
@@ -168,7 +168,8 @@ newDataset = function(mydata, mytype, yaxeid, yaxekey, mylabel, mycolor, bg, myf
         tension: mytension,
         backgroundColor: bg,
         fill: myfill,
-        pointStyle: 'rectRot',
+        pointStyle: ptstyle,
+        rotation: ptrotation,
         pointRadius: myradius,
         normalized: true
     };
@@ -177,16 +178,21 @@ newDataset = function(mydata, mytype, yaxeid, yaxekey, mylabel, mycolor, bg, myf
 }
 
 getDatasetVals = function(label, type, vals, yaxekey, colr, bgcolr) {
-    return newDataset(vals, type, 'y', yaxekey, label, colr, bgcolr, true);
+    return newDataset(vals, type, 'y', yaxekey, label, 'circle', colr, bgcolr, true);
 }
 
-getDatasetVals2 = function(label, type, vals, yaxekey, colr, bgcolr, stack) {
+getDatasetVals2 = function(label, type, vals, yaxekey, colr, bgcolr, ptstyle = 'rectRot', rotation = 0) {
     local_vals = [];
     vals.forEach(function(item) {
         if (item[yaxekey] > 0) local_vals.push(item);
     });
 
-    var ds = newDataset(local_vals, type, 'y2', yaxekey, label, colr, bgcolr, true, 0.5, 0.4, 5);
+    point_size = 6;
+
+    if (vals.length > 50) point_size = 4;
+    if (vals.length > 100) point_size = 2;
+
+    var ds = newDataset(local_vals, type, 'y2', yaxekey, label, ptstyle, colr, bgcolr, true, 0.5, 0.4, point_size, rotation);
     return ds;
 }
 
@@ -242,11 +248,11 @@ update_all_charts = function(year) {
     var ds= [];
     ds.push(getDatasetVals('D\u00e9pot', 'line', local_data, 'da', '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.3) ?>'));
     ds.push(getDatasetVals('Valo',       'line', local_data, 'vl', '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.15) ?>'));
-    ds.push(getDatasetVals2('Achat',     'bubble', local_data, 'ha', 'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'In'));
-    ds.push(getDatasetVals2('Vente',     'bubble', local_data, 'vt', 'rgba(236, 3, 59, 1)',   'rgba(236, 3, 59, 1)',   'Out'));
-    ds.push(getDatasetVals2('D\u00e9pot J',  'bubble', local_data, 'dt', 'rgba(3, 130, 236, 1)',  'rgba(3, 130, 236, 1)',  'In'));
-    ds.push(getDatasetVals2('Retrait',       'bubble', local_data, 'rt', 'rgba(238, 229, 44, 1)', 'rgba(238, 229, 44, 1)', 'Out'));
-    ds.push(getDatasetVals2('Dividende',     'bubble', local_data, 'dd', 'rgba(0, 236, 193, 1)',  'rgba(0, 236, 193, 1)',  'In'));
+    ds.push(getDatasetVals2('Achat',     'bubble', local_data, 'ha', 'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'triangle'));
+    ds.push(getDatasetVals2('Vente',     'bubble', local_data, 'vt', 'rgba(236, 3, 59, 1)',   'rgba(236, 3, 59, 1)', 'triangle', 180));
+    ds.push(getDatasetVals2('D\u00e9pot J',  'bubble', local_data, 'dt', 'rgba(3, 130, 236, 1)',  'rgba(3, 130, 236, 1)'));
+    ds.push(getDatasetVals2('Retrait',       'bubble', local_data, 'rt', 'rgba(238, 229, 44, 1)', 'rgba(238, 229, 44, 1)'));
+    ds.push(getDatasetVals2('Dividende',     'bubble', local_data, 'dd', 'rgba(0, 236, 193, 1)',  'rgba(0, 236, 193, 1)'));
 
     options_Valo_Graphe.scales.y.type = 'logarithmic';
     myChart = update_graph_chart(myChart, ctx1, options_Valo_Graphe, null, ds, []);
