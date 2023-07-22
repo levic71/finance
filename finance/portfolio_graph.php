@@ -124,7 +124,7 @@ var mydata = [<?
     ksort($data_ptf);
 
     foreach($data_ptf as $key => $val) {
-        echo sprintf("{ d: '%s', da: %.2f, vl: %.2f, ha: %.2f, vt: %.2f, dj: %.2f, rt: %.2f, dd: %.2f }%s",
+        echo sprintf("{ d: '%s', da: %.2f, vl: %.2f, ha: %.2f, vt: %.2f, dj: %.2f, rt: %.2f, dd: %.2f, r: 5 }%s",
             $key,
             isset($val["depot_acc"]) ? $val["depot_acc"] : 0,
             isset($val["valo"])      ? $val["valo"]      : 0,
@@ -237,11 +237,11 @@ update_all_charts = function(year) {
     var ds= [];
     ds.push(getDatasetVals('D\u00e9pot', 'line', local_data, 'da', '<?= $sess_context->getSpectreColor(3) ?>', '<?= $sess_context->getSpectreColor(3, 0.3) ?>'));
     ds.push(getDatasetVals('Valo',       'line', local_data, 'vl', '<?= $sess_context->getSpectreColor(2) ?>', '<?= $sess_context->getSpectreColor(2, 0.15) ?>'));
-//    ds.push(getDatasetVals2('Achat',         'bar',  local_data, 'ha', 'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'In'));
-//    ds.push(getDatasetVals2('Vente',         'bar',  local_data, 'vt', 'rgba(236, 3, 59, 1)',   'rgba(236, 3, 59, 1)',   'Out'));
-//    ds.push(getDatasetVals2('D\u00e9pot J',  'bar',  local_data, 'dt', 'rgba(3, 130, 236, 1)',  'rgba(3, 130, 236, 1)',  'In'));
-//    ds.push(getDatasetVals2('Retrait',       'bar',  local_data, 'rt', 'rgba(238, 229, 44, 1)', 'rgba(238, 229, 44, 1)', 'Out'));
-//    ds.push(getDatasetVals2('Dividende',     'bar',  local_data, 'dd', 'rgba(0, 236, 193, 1)',  'rgba(0, 236, 193, 1)',  'In'));
+    ds.push(getDatasetVals2('Achat',     'bubble', local_data, 'ha', 'rgba(150, 238, 44, 1)', 'rgba(150, 238, 44, 1)', 'In'));
+    ds.push(getDatasetVals2('Vente',     'bubble', local_data, 'vt', 'rgba(236, 3, 59, 1)',   'rgba(236, 3, 59, 1)',   'Out'));
+    ds.push(getDatasetVals2('D\u00e9pot J',  'bubble', local_data, 'dt', 'rgba(3, 130, 236, 1)',  'rgba(3, 130, 236, 1)',  'In'));
+    ds.push(getDatasetVals2('Retrait',       'bubble', local_data, 'rt', 'rgba(238, 229, 44, 1)', 'rgba(238, 229, 44, 1)', 'Out'));
+    ds.push(getDatasetVals2('Dividende',     'bubble', local_data, 'dd', 'rgba(0, 236, 193, 1)',  'rgba(0, 236, 193, 1)',  'In'));
 
     options_Valo_Graphe.scales.y.type = 'logarithmic';
     myChart = update_graph_chart(myChart, ctx1, options_Valo_Graphe, null, ds, []);
