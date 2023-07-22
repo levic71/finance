@@ -189,8 +189,8 @@ getDatasetVals2 = function(label, type, vals, yaxekey, colr, bgcolr, ptstyle = '
 
     point_size = 6;
 
-    if (vals.length > 100) point_size = 4;
-    if (vals.length > 200) point_size = 2;
+    if (local_vals.length > 100) point_size = 4;
+    if (local_vals.length > 200) point_size = 2;
 
     var ds = newDataset(local_vals, type, 'y2', yaxekey, label, ptstyle, colr, bgcolr, true, 0.5, 0.4, point_size, rotation);
     return ds;
