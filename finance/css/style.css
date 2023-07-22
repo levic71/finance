@@ -411,13 +411,15 @@ table th { color: burlywood !important; cursor: pointer !important; }
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: space-between;
-	align-items: stretch;
-	align-content: space-around;
 }
 #portfolio_box .card {
-    max-width: 260px;
-    margin: 10px 0px !important;
+    width: 31.5%;
+    margin: 10px !important;
+}
+#portfolio_box .card .description {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
 }
 .portfolio_alerte {
     margin-bottom: 5px !important;
