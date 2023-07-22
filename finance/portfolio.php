@@ -65,18 +65,29 @@ while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 
 <script>
 
-<?
-	foreach($lst_portfolios as $key => $val) { ?>
-		Dom.addListener(Dom.id('portfolio_edit_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_detail.php?action=upt<?= $val['synthese'] == 1 ? "_synthese" : "" ?>&portfolio_id=<?= $val['id'] ?>', loading_area: 'main' }); });
-		Dom.addListener(Dom.id('portfolio_dashboard_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $val['id'] ?>', loading_area: 'main' }); });
-<?	
-	}
-?>
+<? foreach($lst_portfolios as $key => $val) { ?>
+
+	Dom.addListener(Dom.id('portfolio_edit_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_detail.php?action=upt<?= $val['synthese'] == 1 ? "_synthese" : "" ?>&portfolio_id=<?= $val['id'] ?>', loading_area: 'main' }); });
+	Dom.addListener(Dom.id('portfolio_dashboard_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $val['id'] ?>', loading_area: 'main' }); });
+
+<? } ?>
 
 <? if ($sess_context->isUserConnected()) { ?>
+
 	Dom.addListener(Dom.id('portfolio_add1_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_detail.php?action=new', loading_area: 'main' }); });
 	Dom.addListener(Dom.id('portfolio_add2_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_detail.php?action=new_synthese', loading_area: 'main' }); });
 	Dom.addListener(Dom.id('nav_menu_bt'), Dom.Event.ON_CLICK, function(event) { toogleCN('nav_menu', 'on'); });
+
+	Dom.find('.zone_bts button:nth-child(2)').forEach(function(item) {
+		let id = item.id.split('_')[2];
+		Dom.addListener(item, Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_balance.php', { 'portfolio_id' : id }); });
+	});
+
+	Dom.find('.zone_bts button:nth-child(1)').forEach(function(item) {
+		let id = item.id.split('_')[2];
+		Dom.addListener(item, Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_graph.php', { 'portfolio_id' : id }); });
+	});
+
 <? } ?>
 
 

@@ -2550,7 +2550,12 @@ class uimx {
                 <i class="chart pie inverted icon"></i>'.sprintf("%.2f &euro;", $portfolio_data['valo_ptf']).'
             </div>
             <a class="ui basic '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).'%</a>
-        </div>';
+        </div>
+        <div class="zone_bts">
+            <button id="portfolio_graph_'.$portfolio['id'].'_bt" class="circular ui icon very small right floated button"><i class="inverted black chart bar outline icon"></i></button>
+            <button id="ptf_balance_'.$portfolio['id'].'_bt" class="circular ui icon very small right floated button"><i class="inverted black balance icon"></i></button>
+        </div>
+        ';
 
         $title = mb_convert_encoding($portfolio['name'], 'ISO-8859-1', 'UTF-8').($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
         uimx::genCard("portfolio_card_".$portfolio['id'], $title, date('Y-m-d'), $desc);
