@@ -262,9 +262,13 @@ const externalTooltipHandler = (context) => {
         // On parcours les data y du graphique de la date en cours de focus
         bodyLines.forEach((body, i) => {
 
+            console.log(body);
+
             const colors = tooltip.labelColors[i];
 
+            var tmp = body[0].split(', ');
             var t = body[0].split(': ');
+            if (t[0] == 'Achat' || t[0] == 'Vente' || t[0] == 'Dividende' || t[0] == 'Dépot J' || t[0] == 'Retrait') t[1] = tmp[1]; // on gere les valeurs du type 'Achat: { 2023-04-01, 1999.99 }'
 
             if (chart.canvas.id == 'stock_canvas1' && t[0] != 'REG' && t[0].substr(0, 3) == 'REG') return;
 
@@ -594,8 +598,12 @@ var options_Valo_Graphe = {
 		y2: {
 			type: 'linear',
 			position: 'left',
-			display: false,
+			display: true,
 			ticks : {
+				callback: function(value, index, ticks) {
+					var c = (value / 1000) + 'K' + euro;
+					return c;
+				},
 				max: 1000000,
 				min: 0,
 				stepSize: 10000

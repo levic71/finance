@@ -23,7 +23,7 @@ if (isset($_SESSION['sess_context'])) {
 
 include_once "include.php";
 
-$ver = "1.5.32";
+$ver = "1.5.34";
 $ver_core = tools::isLocalHost() ? rand() : $ver;
 
 foreach(['action', 'goto', 'debug'] as $key)
