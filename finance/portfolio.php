@@ -57,14 +57,11 @@ while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 				// Calcul synthese portefeuille
 				$portfolio_data = calc::aggregatePortfolioById($val['id']);
 
-				$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() order by date desc LIMIT 1";
-				tools::pretty($req);
+				$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) > 1 AND DAYOFWEEK(date) < 7 order by date desc LIMIT 1";
 				$res = dbc::execSql($req);
 				$row = mysqli_fetch_array($res);
-				tools::pretty($row);
 
 				$data = json_decode($row['data']);
-				tools::pretty($data);
 				$daily_perf = $data->valo_ptf == 0 ? 0 : Round((($portfolio_data['valo_ptf'] - $data->valo_ptf) / $data->valo_ptf) * 100, 2);
 
 				uimx::portfolioCard($val, $portfolio_data, $daily_perf);
