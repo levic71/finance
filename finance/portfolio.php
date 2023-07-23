@@ -58,13 +58,13 @@ while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 				$portfolio_data = calc::aggregatePortfolioById($val['id']);
 
 				$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() order by date desc LIMIT 1";
-				var_dump($req);
+				tools::pretty($req);
 				$res = dbc::execSql($req);
 				$row = mysqli_fetch_array($res);
-				var_dump($row);
+				tools::pretty($row);
 
 				$data = json_decode($row['data']);
-				var_dump($data);
+				tools::pretty($data);
 				$daily_perf = $data->valo_ptf == 0 ? 0 : Round((($portfolio_data['valo_ptf'] - $data->valo_ptf) / $data->valo_ptf) * 100, 2);
 
 				uimx::portfolioCard($val, $portfolio_data, $daily_perf);
