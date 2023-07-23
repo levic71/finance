@@ -53,9 +53,20 @@ while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 	<div class="ui stackable grid container" id="portfolio_box">
 <?
 			foreach($lst_portfolios as $key => $val) {
+
 				// Calcul synthese portefeuille
 				$portfolio_data = calc::aggregatePortfolioById($val['id']);
-				uimx::portfolioCard($val, $portfolio_data);
+
+				$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() order by date desc LIMIT 1";
+				$res = dbc::execSql($req);
+				$row = mysqli_fetch_array($res);
+
+				$data = json_decode($row['data']);
+				$daily_perf = $data->valo_ptf == 0 ? 0 : Round((($portfolio_data['valo_ptf'] - $data->valo_ptf) / $data->valo_ptf) * 100, 2);
+
+				uimx::portfolioCard($val, $portfolio_data, $daily_perf);
+
+			
 			}
 ?>
     </div>
