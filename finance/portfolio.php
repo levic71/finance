@@ -57,11 +57,18 @@ while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 				// Calcul synthese portefeuille
 				$portfolio_data = calc::aggregatePortfolioById($val['id']);
 
+				// Si on est du mardi au vendredi
 				$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) > 1 AND DAYOFWEEK(date) < 7 order by date desc LIMIT 1";
+				// Si on est le weekend
+				if (date('N') == 1 || date('N') == 7)
+					$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) = 5 order by date desc LIMIT 1";
+				// Si on est lundi
+				if (date('N') == 1)
+					$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) = 6 order by date desc LIMIT 1";
 				$res = dbc::execSql($req);
 				$row = mysqli_fetch_array($res);
 
-				$data = json_decode($row['data']);
+				$data = json_decode($row['data']); // Si on est vendredi, samedi ou dimanche il faut prendre la valeur de jeudi
 				$daily_perf = $data->valo_ptf == 0 ? 0 : Round((($portfolio_data['valo_ptf'] - $data->valo_ptf) / $data->valo_ptf) * 100, 2);
 
 				uimx::portfolioCard($val, $portfolio_data, $daily_perf);
