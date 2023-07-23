@@ -411,10 +411,22 @@ table th { color: burlywood !important; cursor: pointer !important; }
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
+    margin-top: 10px;
 }
 #portfolio_box .card {
     width: 31.5%;
     margin: 10px !important;
+}
+#portfolio_box .header {
+    display: flex;
+    justify-content: space-between;
+}
+#portfolio_box .meta {
+    display: none;
+}
+#portfolio_box .header .label {
+    -webkit-transform: translateX(-30px) !important;
+    transform: translateX(-30px) !important;
 }
 #portfolio_box .card .description {
     display: flex;
