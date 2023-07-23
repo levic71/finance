@@ -5,6 +5,7 @@ require_once "sess_context.php";
 session_start();
 
 include "common.php";
+include "googlesheet/sheet.php";
 
 foreach([''] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -31,6 +32,11 @@ $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 
+// Calcul synthese de tous les porteuilles de l'utilisateur (on recupere les PRU globaux)
+$trend_following = [];
+$aggregate_ptf   = calc::getAggregatePortfoliosByUser($sess_context->getUserId());
+if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf['trend_following'];
+
 ?>
 
 <div class="ui container inverted">
@@ -49,6 +55,19 @@ while($row = mysqli_fetch_array($res)) $lst_portfolios[] = $row;
 	<? } ?>
 
 	</h2>
+
+	<div class="ui stackable grid container" id="portfolio_market" style="margin: 20px 0px; display: flex; justify-content: center; background: grey; padding: 5px 0px;">
+<?
+				foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXCBOE:VIX' ] as $key => $val) {
+					$x = str_replace(':', '.', $val);
+					if (isset($data2['stocks'][$x])) {
+						$stock = $data2['stocks'][$x];
+						$seuils = isset($trend_following[$x]['seuils']) ? $trend_following[$x]['seuils'] : "";
+						echo '<div class="ui buttons"><button class="mini ui grey button">'.$stock['name'].'</button><button class="mini ui button '.($stock['percent'] >= 0 ? "green" : "red").'">'.sprintf("%.2f", $stock['percent']).'%</button></div>';
+					}
+				}
+?>
+	</div>
 
 	<div class="ui stackable grid container" id="portfolio_box">
 <?

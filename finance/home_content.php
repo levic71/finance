@@ -37,20 +37,7 @@ if ($sess_context->isUserConnected()) {
 	if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf['trend_following'];
 }
 
-/* echo "Liste des actifs en surveillance : ";
-foreach($gsa as $key => $val) echo $val[0].", ";
-
-echo "<br />Liste des actifs en portefeuille : ";
-foreach($positions as $key => $val) echo $key.", ";
-*/
-
 $indicateurs_a_suivre = [ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXRUSSELL:RUT', 'INDEXCBOE:VIX' ];
-
-// Init à 0 des valeurs des indicateurs dont les donnees pas recupérées
-foreach($indicateurs_a_suivre as $key => $val) {
-	if (!isset($gsa[$val]))
-		$gsa[$val] = array($val,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-");
-}
 
 // Tableau des notifs
 $notifs = [];

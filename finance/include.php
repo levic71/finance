@@ -2552,8 +2552,8 @@ class uimx {
             <a class="ui basic '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).'%</a>
         </div>
         <div class="zone_bts ui buttons">
-            <button id="portfolio_graph_'.$portfolio['id'].'_bt" class="circular ui icon very small right floated grey button"><i class="inverted white chart bar outline icon"></i></button>
-            <button id="ptf_balance_'.$portfolio['id'].'_bt" class="circular ui icon very small right floated lightgrey button"><i class="inverted black balance icon"></i></button>
+            <button id="portfolio_graph_'.$portfolio['id'].'_bt" class="ui icon very small right floated grey button"><i class="inverted white chart bar outline icon"></i></button>
+            <button id="ptf_balance_'.$portfolio['id'].'_bt" class="ui icon very small right floated lightgrey button"><i class="inverted black balance icon"></i></button>
         </div>
         ';
 
