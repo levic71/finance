@@ -15,6 +15,11 @@ $db = dbc::connect();
 
 if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('portfolio');
 
+// Couleurs boutons
+$bt_av_colr       = "olive";
+$bt_filter_colr   = "teal";
+$bt_grey_colr     = "grey";
+
 // Recuperation des infos du portefeuille
 $req = "SELECT pv.*, p.name FROM portfolios p, portfolio_valo pv WHERE pv.portfolio_id=".$portfolio_id." AND p.id=pv.portfolio_id AND p.user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
@@ -109,6 +114,23 @@ if (!isset($data_ptf[$first_key]['depot_acc'])) $data_ptf[$first_key]['depot_acc
     </select>
     <?= "<small style=\"float: right; margin-right: 20px; font-size: 12px; color: black;\">Nb ordres=<span id=\"nb_orders\">".$nb_orders[0]."</span>/Frais=<span id=\"comm\">".$sum_commissions[0]."</span>&euro;</small>" ?>
 </h2>
+
+<div id="canvas_area" class="ui container inverted segment">
+    <span class="graph_bts" style="display: flex; justify-content: center;">
+        <span class="ui buttons">
+            <button id="graphe_depot_bt" class="mini ui <?= $bt_av_colr ?> button">D&#233;pot</button>
+            <button id="graphe_valo_bt"  class="mini ui <?= $bt_av_colr ?> button">Valo</button>
+        </span>
+        <div>&nbsp;</div>
+        <span class="ui buttons">
+            <button id="graphe_achat_bt"   class="mini ui <?= $bt_filter_colr ?> button">Achat</button>
+            <button id="graphe_vente_bt"   class="mini ui <?= $bt_filter_colr ?> button">Vente</button>
+            <button id="graphe_divid_bt"   class="mini ui <?= $bt_filter_colr ?> button">Dividende</button>
+            <button id="graphe_retrait_bt" class="mini ui <?= $bt_filter_colr ?> button">Retrait</button>
+            <button id="graphe_depj_bt"    class="mini ui <?= $bt_filter_colr ?> button">D&#233;pot J</button>
+        </span>
+    </span>
+</div>
 
 <div id="canvas_area" class="ui container inverted segment">
     <canvas id="portfolio_canvas" height="100"></canvas>

@@ -428,6 +428,14 @@ table th { color: burlywood !important; cursor: pointer !important; }
     -webkit-transform: translateX(-30px) !important;
     transform: translateX(-30px) !important;
 }
+#portfolio_box .header button.red {
+    background: #ffe3e8;
+    color: red;
+}
+#portfolio_box .header button.green {
+    background: #bfffbf;
+    color: green;
+}
 #portfolio_box .card .description {
     display: flex;
     flex-wrap: nowrap;
