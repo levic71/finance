@@ -22,6 +22,7 @@ $bt_grey_colr     = "grey";
 
 // Recuperation des infos du portefeuille
 $req = "SELECT pv.*, p.name FROM portfolios p, portfolio_valo pv WHERE pv.portfolio_id=".$portfolio_id." AND p.id=pv.portfolio_id AND p.user_id=".$sess_context->getUserId();
+$req = "SELECT pv.*, p.name FROM portfolios p, portfolio_valo pv WHERE DAYOFWEEK(pv.date) > 1 AND DAYOFWEEK(pv.date) < 7 AND pv.portfolio_id=".$portfolio_id." AND p.id=pv.portfolio_id AND p.user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 $name = "";
 
