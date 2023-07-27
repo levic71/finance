@@ -69,6 +69,7 @@ if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf[
 
 	</h2>
 
+
 	<div class="ui stackable grid container" id="portfolio_box">
 <?
 			foreach($lst_portfolios as $key => $val) {
