@@ -17,16 +17,16 @@ if (!$sess_context->isUserConnected()) uimx::redirectLoginPage('portfolio');
 // Recuperation des DM en BD
 $data2 = calc::getIndicatorsLastQuote();
 
-// Tri décroissant des perf DM des stocks
+// Tri d?croissant des perf DM des stocks
 arsort($data2["perfs"]);
 
-// On recupère le nb de portefeuille de l'utilisateur
+// On recup?re le nb de portefeuille de l'utilisateur
 $req = "SELECT count(*) total FROM portfolios WHERE user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
 $row = mysqli_fetch_array($res);
 $nb_portfolios = $row['total'];
 
-// On récupère les portefeuilles de l'utilisateur
+// On r?cup?re les portefeuilles de l'utilisateur
 $lst_portfolios = array();
 $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId();
 $res = dbc::execSql($req);
@@ -41,6 +41,19 @@ if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf[
 
 <div class="ui container inverted">
 
+	<div class="ui stackable grid container" id="portfolio_market" style="display: flex; justify-content: center; padding: 5px 0px;">
+	<?
+					foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXCBOE:VIX' ] as $key => $val) {
+						$x = str_replace(':', '.', $val);
+						if (isset($data2['stocks'][$x])) {
+							$stock = $data2['stocks'][$x];
+							$seuils = isset($trend_following[$x]['seuils']) ? $trend_following[$x]['seuils'] : "";
+							echo '<div class="ui buttons"><button class="mini ui grey button">'.$stock['name'].'</button><button class="mini ui button '.($stock['percent'] >= 0 ? "green" : "red").'">'.sprintf("%.2f", $stock['percent']).'%</button></div>';
+						}
+					}
+	?>
+	</div>
+
 	<h2 class="ui left floated">
 	<? if ($sess_context->isUserConnected()) { ?>
 		<i class="inverted briefcase icon"></i>Mes Portefeuilles
@@ -49,7 +62,7 @@ if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf[
 
 		<div class="ui vertical menu nav" id="nav_menu" data-right="20">
 			<a class="item" id="portfolio_add1_bt"><span>Ajouter un portefeuille</span></a>
-			<a class="item" id="portfolio_add2_bt"><span>Ajouter une Synthèse</span></a>
+			<a class="item" id="portfolio_add2_bt"><span>Ajouter une Synth?se</span></a>
 		</div>
 
 	<? } ?>
