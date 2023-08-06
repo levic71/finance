@@ -99,7 +99,7 @@ while($row = mysqli_fetch_assoc($res)) {
 ?>
 
 <h2 class="ui left floated">
-    <i class="inverted balance icon"></i><?= $name ?> <label id="balance_sum">0&euro;</label>
+    <i class="inverted balance icon"></i><?= $name ?> <button id="balance_sum">0&euro;</button>
     <select id="year_select_bt" style="float: right">
         <option value="1900" <?= $year == "1900" ? 'selected="selected"' : '' ?>>All</option>';
         <?
@@ -133,7 +133,7 @@ foreach($plusoumoinsvalue as $key => $val) {
 
 // Maj Balance dans header
 Dom.id('balance_sum').innerHTML = '<?= ($balance_sum >=0 ? '+' : '').sprintf("%.2f", $balance_sum) ?>' + '&euro;';
-Dom.attribute(Dom.id('balance_sum'), { 'class': '<?= $balance_sum >=0 ? "aaf-positive" : "aaf-negative" ?>' } );
+Dom.attribute(Dom.id('balance_sum'), { 'class': 'ui button <?= $balance_sum >=0 ? "aaf-positive" : "aaf-negative" ?>' } );
 
 // Selection scope (ALL/2023/2022/...)
 Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
@@ -146,6 +146,7 @@ Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
 // Pagination
 paginator({
 	table: document.getElementById("tab_balance"),
+    rows_per_page: 20,
 	box: document.getElementById("pagination_box")
 });
 
