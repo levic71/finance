@@ -99,7 +99,7 @@ while($row = mysqli_fetch_assoc($res)) {
 ?>
 
 <h2 class="ui left floated">
-    <i class="inverted balance icon"></i><?= $name ?>
+    <i class="inverted balance icon"></i><?= $name ?> <label id="balance_sum">0&euro;</label>
     <select id="year_select_bt" style="float: right">
         <option value="1900" <?= $year == "1900" ? 'selected="selected"' : '' ?>>All</option>';
         <?
@@ -114,13 +114,11 @@ while($row = mysqli_fetch_assoc($res)) {
 	        <table id="tab_balance" class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal">
 <?
 
-$total = 0;
+$balance_sum = 0;
 foreach($plusoumoinsvalue as $key => $val) {
     echo "<tr><td>".$key."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain'])."&euro;</td></tr>";
-    $total += $val['gain'] * $val['taux_change'];
+    $balance_sum += $val['gain'] * $val['taux_change'];
 }
-
-echo "<tr><td></td><td class=\"right aligned ".($total >=0 ? "aaf-positive" : "aaf-negative")."\">".($total >=0 ? "+" : "").sprintf("%.2f", $total)."&euro;</td></tr>";
 
 ?>
             </table>
@@ -132,6 +130,12 @@ echo "<tr><td></td><td class=\"right aligned ".($total >=0 ? "aaf-positive" : "a
 
 <script>
 
+
+// Maj Balance dans header
+Dom.id('balance_sum').innerHTML = '<?= ($balance_sum >=0 ? '+' : '').sprintf("%.2f", $balance_sum) ?>' + '&euro;';
+Dom.attribute(Dom.id('balance_sum'), { 'class': '<?= $balance_sum >=0 ? "aaf-positive" : "aaf-negative" ?>' } );
+
+// Selection scope (ALL/2023/2022/...)
 Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
     element = Dom.id('year_select_bt');
     var selection = "";
