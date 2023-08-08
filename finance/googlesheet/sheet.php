@@ -274,8 +274,11 @@ $force = 0;
 foreach(['force'] as $key)
     $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
 
+foreach(['force'] as $key)
+    $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if ($force == 1) {
+
 	require_once "../include.php";
 	require_once "../indicators.php";
 
@@ -285,6 +288,8 @@ if ($force == 1) {
 	$db = dbc::connect();
 
 	if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
+
+	if ($force == 1) var_dump($values);
 
 	$ret = updateAllQuotesWithGSData($values);
 
