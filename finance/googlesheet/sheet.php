@@ -4,7 +4,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 // if (!is_dir("cache/")) mkdir("cache/");
 
-function updateGoogleSheet() {
+function updateGoogleSheet($force = 0) {
 
 	$ret = array();
 
@@ -167,6 +167,8 @@ function updateGoogleSheetAlertesHeader() {
 
 function updateQuotesWithGSData($val) {
 
+	global $force;
+
 	$symbol = $val[0];
 
 	$ret = "[No Symbol found] [updateQuotesWithGSData]";
@@ -185,8 +187,10 @@ function updateQuotesWithGSData($val) {
 
 		// Mise à jour de la cotation dans quote et dans daily
 		$req = "UPDATE quotes SET price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."', day='".$day."' WHERE symbol='".$symbol."'";
+		if ($force == 1) echo $req."<br />";
 		$res = dbc::execSql($req);
 		$req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."','".$day."', '".$val[3]."', '".$val[4]."', '".$val[5]."', '".$val[2]."', '".$val[2]."', '".$val[6]."', '0', '0') ON DUPLICATE KEY UPDATE open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', close='".$val[2]."', adjusted_close='".$val[2]."', volume='".$val[6]."', dividend='0', split_coef='0'";
+		if ($force == 1) echo $req."<br />";
 		$res = dbc::execSql($req);
 		$ret = "[QUOTES+DAILY_TIME_SERIES_ADJUSTED] [price='".$val[2]."', open='".$val[3]."', volume='".$val[6]."', percent='".$val[10]."', ... ]";
 
@@ -203,7 +207,7 @@ function updateAllQuotesWithGSData($values) {
 
 		$ret[] = updateQuotesWithGSData($val);
 
-		computeQuoteIndicatorsSymbol($val[0]);
+		// computeQuoteIndicatorsSymbol($val[0]);
 	}
 	return $ret;
 }
@@ -288,8 +292,6 @@ if ($force == 1) {
 	$db = dbc::connect();
 
 	if (tools::useGoogleFinanceService()) $values = updateGoogleSheet();
-
-	if ($force == 1) var_dump($values);
 
 	$ret = updateAllQuotesWithGSData($values);
 
