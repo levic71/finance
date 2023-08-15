@@ -98,9 +98,6 @@ while($row = mysqli_fetch_array($res)) {
 		$res3 = dbc::execSql($update);
 	}
 
-
-
-
 }
 
 ?>
@@ -144,9 +141,22 @@ while($row = mysqli_fetch_array($res)) {
 				$datetime2 = new DateTime($row['status'] == 0 ? date("Y-m-d") : $row['date_status']);
 				$difference = $datetime1->diff($datetime2);
 
+				// Initialisation calcul rendement prediction
+				if (!isset($tab_extend[$row['conseiller']]['rendement'])) {
+					$tab_extend[$row['conseiller']]['rendement'] = 0;
+					$tab_extend[$row['conseiller']]['nb_predictions'] = 0;
+				} 
+
+				// Calcul rendement si prédiction validée ou invalidée
+				if ($row['status'] == 1 || $row['status'] == -1) {
+					$ref_cours_rendement = $row['status'] == 1 ?$row['objectif'] : $row['stoploss'];
+					$tab_extend[$row['conseiller']]['rendement'] += (($ref_cours_rendement - $row['cours']) / $row['cours'])*100;
+					$tab_extend[$row['conseiller']]['nb_predictions']++;
+				}
+
 				if ($row['status'] == 1) {
 					$tab_extend[$row['conseiller']]['days'] = isset($tab_extend[$row['conseiller']]['days']) ? $tab_extend[$row['conseiller']]['days'] + $difference->days : $difference->days; 
-					$tab_extend[$row['conseiller']]['nb_p'] = isset($tab_extend[$row['conseiller']]['nb_p']) ? $tab_extend[$row['conseiller']]['nb_p'] + 1 : 1; 
+					$tab_extend[$row['conseiller']]['nb_p'] = isset($tab_extend[$row['conseiller']]['nb_p']) ? $tab_extend[$row['conseiller']]['nb_p'] + 1 : 1;
 				}
 
 				$lib_diff = ($difference->y > 0 ? $difference->y.' ans, ' : '').($difference->m > 0 ? $difference->m.' mois, ' : '').$difference->d.' jours';
@@ -160,8 +170,8 @@ while($row = mysqli_fetch_array($res)) {
 						<label class="<?= $perc >= 0 ? "aaf-positive" : "aaf-negative" ?>"><?= sprintf("%.2f%%", $perc) ?></label>
 					</div></td>
 					<td class="center aligned price_perf"><div>
-						<button <?= $row['status'] == 1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui <?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj || $row['statut'] > 0  ? "aaf-positive" : "orange") ?> button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
-						<label class="<?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj || $row['statut'] > 0 ? "aaf-positive" : "orange") ?>"><?= sprintf("%.2f%%", $perf) ?></label>
+						<button <?= $row['status'] == 1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui <?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj || $row['status'] > 0  ? "aaf-positive" : "orange") ?> button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
+						<label class="<?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj || $row['status'] > 0 ? "aaf-positive" : "orange") ?>"><?= sprintf("%.2f%%", $perf) ?></label>
 					</div></td>
 					<td class="center aligned price_perf"><div>
 						<button <?= $row['gain_max'] == 0 ? '' : 'style="background: #c959ff;"' ?>  <?= $row['gain_max'] > 0 ? 'data-tootik="'.$row['gain_max_date'].'"' : "" ?> class="tiny ui button"><?= sprintf("%.2f", $row['gain_max']).$curr ?></button>
@@ -196,9 +206,11 @@ while($row = mysqli_fetch_array($res)) {
                 <th class="center aligned">En cours</th>
                 <th class="center aligned">Validées</th>
 				<th class="center aligned">Invalidées</th>
-				<th class="center aligned">Délai moyen</th>
+				<th class="center aligned">Expirées</th>
+				<th class="center aligned">Délai moyen validation</th>
 				<th class="center aligned">Taux Réussite</th>
 				<th class="center aligned">1Y</th>
+				<th class="center aligned">Rendement</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -245,10 +257,12 @@ while($row = mysqli_fetch_array($res)) {
 					<td class="center aligned">'.uimx::$conseillers[$key].'</td>
 					<td class="center aligned">'.$val[0].'</td>
 					<td class="center aligned">'.$val[1].'</td>
-					<td class="center aligned">'.($val[-1]+$val[-2]).'</td>
+					<td class="center aligned">'.$val[-1].'</td>
+					<td class="center aligned">'.$val[-2].'</td>
 					<td class="center aligned">'.(isset($tab_extend[$key]['days']) ? $lib_diff : "-").'</td>
-					<td class="center aligned">'.($perf == "-" ? "-" : sprintf("%.0f", $perf)."%").'</td>
-					<td class="center aligned">'.($perf2 == "-" ? "-" : sprintf("%.0f", $perf2)."%").'</td>
+					<td class="center aligned">'.($perf == "-" ? "0%" : sprintf("%.0f", $perf)."%").'</td>
+					<td class="center aligned">'.($perf2 == "-" ? "0%" : sprintf("%.0f", $perf2)."%").'</td>
+					<td class="center aligned">'.(sprintf("%.2f", $tab_extend[$key]['rendement']))."%".'</td>
 				</tr>';
 			}
 ?>
