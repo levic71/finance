@@ -488,6 +488,7 @@ if ($debug == 1) {
                 $sum_comm = 0;
                 $sum_orders = 0;
                 $nb_orders = 0;
+                $qte = 0;
                 $req_option = "AND o.product_name='".$symbol."'";
                 $req = "SELECT *, p.shortname FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
                 $res = dbc::execSql($req);
@@ -509,8 +510,10 @@ if ($debug == 1) {
                     $sum_comm += $row['commission'];
                     $sum_orders += ($row['valo'] * ($row['action'] >= 0 ? 1 : -1));
                     $nb_orders++;
-                    if ($row['action'] == 1 || $row['action'] == -1)
+                    if ($row['action'] == 1 || $row['action'] == -1) {
                         $js_bubbles_data .= "bubbles_data.push({ valueX: '".$row['date']."', valueY: ".floatval($row['price']).", rayon: ".(max(3, 5 * ($row['valo'] / 2000) )).", rgb: '".($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0")."' });";
+                        $qte += $row['quantity'] * $row['action'];
+                    }
                 }
 
 ?>
@@ -518,7 +521,8 @@ if ($debug == 1) {
             <tfoot>
                 <tr>
                     <td colspan="5"></td>
-                    <td style="text-align: right"><?= $nb_orders ?></td>
+                    <td style="text-align: right"><?= $qte ?></td>
+                    <td style="text-align: right"><?= sprintf("%.2f&euro;", $qte == 0 ? 0 : $sum_orders/$qte) ?></td>
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_orders) ?></td>
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_comm) ?></td>
                 </tr>
