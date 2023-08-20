@@ -470,8 +470,8 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #lst_order tbody td, #lst_order th {
     text-align: center !important;
 }
-#lst_order th:nth-child(5), #lst_order th:nth-child(6), #lst_order th:nth-child(7), #lst_order th:nth-child(8),
-#lst_order td:nth-child(5), #lst_order td:nth-child(6), #lst_order td:nth-child(7), #lst_order td:nth-child(8) {
+#lst_order th:nth-child(5), #lst_order th:nth-child(6), #lst_order th:nth-child(7), #lst_order th:nth-child(8), #lst_order th:nth-child(9)
+#lst_order td:nth-child(5), #lst_order td:nth-child(6), #lst_order td:nth-child(7), #lst_order td:nth-child(8), #lst_order td:nth-child(9) {
     text-align: right !important;
 }
 #lst_stock td, #lst_stock th {

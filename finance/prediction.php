@@ -19,86 +19,8 @@ $devises = calc::getGSDevisesWithNoUpdate();
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
 
-// $req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." AND status = 0";
-$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId();
-$res = dbc::execSql($req);
-while($row = mysqli_fetch_array($res)) {
-
-	$date_objectif = date('Y-m-d');
-	$date_stoploss = date('Y-m-d');
-	$date_gain_max = date('Y-m-d');
-	$objectif = 0;
-	$stoploss = 0;
-	$gain_max = 0;
-	$stop_gain_max = 1;
-	$previous_price = 0;
-
-	$req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND day >= '".$row['date_avis']."'";
-	$res2 = dbc::execSql($req2);
-	while($row2 = mysqli_fetch_array($res2)) {
-
-		if ($previous_price == 0) $previous_price = $row2['open'];
-
-		// Stoploss atteint
-		if ($objectif == 0 && $row['stoploss'] >= $row2['low']) {
-			$stoploss = 1;
-			$date_stoploss = $row2['day'];
-		}
-
-		// Objectif atteint
-		if ($stoploss == 0 && $row2['adjusted_close'] >= $row['objectif']) {
-			$objectif = 1;
-			$date_objectif = $row2['day'];
-			$stop_gain_max = 0;
-		}
-
-		// Recherche gain max en cas d'objectif atteint avec stoploss à max(objectif, -5% cloture veille)
-		if ($previous_price > 0 && $objectif == 1 && $stop_gain_max == 0) {
-
-			$stoploss_ref = $row['objectif'] * 0.97;
-			if ($row2['adjusted_close'] < $stoploss_ref) {
-				$stop_gain_max = 1;
-				$gain_max = $row['objectif'];
-				$date_gain_max = $row2['day'];
-			} else {
-				if ($row2['adjusted_close'] > max($stoploss_ref, $gain_max)) {
-					$date_gain_max = $row2['day'];
-					$gain_max = $row2['adjusted_close'];
-				}
-			}
-
-		}
-
-		$previous_price = $row2['adjusted_close'];
-
-	}
-
-	// Enregistrement stoploss atteint
-	if ($stoploss == 1) {
-		$update = "UPDATE prediction SET status=-1, date_status='".$date_stoploss."' WHERE id=".$row['id'];
-		$res3 = dbc::execSql($update);
-	}
-
-	// Enregistrement objectif atteint
-	if ($objectif == 1) {
-		$update = "UPDATE prediction SET status=1, date_status='".$date_objectif."' WHERE id=".$row['id'];
-		$res3 = dbc::execSql($update);
-	}
-
-	// Enregistrement max gain (on enregistre meme si gaim_max=0)
-	$update = "UPDATE prediction SET gain_max='".$gain_max."', gain_max_date='".$date_gain_max."' WHERE id=".$row['id'];
-	$res3 = dbc::execSql($update);
-
-	// Prediction cloturée après 6 mois
-	$datetime1 = new DateTime($row['date_avis']);
-	$datetime2 = new DateTime(date("Y-m-d"));
-	$difference = $datetime1->diff($datetime2);
-	if ($row['status'] == 0 && $difference->m >= 6) {
-		$update = "UPDATE prediction SET status=-2, date_status='".date("Y-m-d")."' WHERE id=".$row['id'];
-		$res3 = dbc::execSql($update);
-	}
-
-}
+// User predictions refresh
+calc::prediction_update($sess_context->getUserId());
 
 ?>
 

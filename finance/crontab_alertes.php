@@ -57,6 +57,12 @@ $trend_following = $sc->getTrendFollowing();
 // 4 - Si cours dépasse objectif et pas de stoploss ou stoploss trop bas (5% ?)
 // 4 - Si cours dépasse stop profit et pas de stoploss ou stoploss trop bas (5% ?)
 // 5 - Si croissement H/B cours/MM200
+// 6 - Prediction atteinte
+// 7 - Prediction invalidee
+// 8 - Prediction expiree
+
+// Maj des predictions du user
+calc::prediction_update($user_id);
 
 // Parcours de tous les actifs
 foreach($quotes['stocks'] as $key => $val) {
