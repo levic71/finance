@@ -427,6 +427,7 @@ table th { color: burlywood !important; cursor: pointer !important; }
 #portfolio_box .header .label {
     -webkit-transform: translateX(-30px) !important;
     transform: translateX(-30px) !important;
+    z-index: 0 !important;
 }
 #portfolio_box .header button.red {
     background: #ffe3e8;
@@ -879,6 +880,15 @@ table th { color: burlywood !important; cursor: pointer !important; }
 td.price_perf div .button.aaf-positive {
     background: #21ba45 !important;
     color: white !important;
+}
+td.price_perf div .button.aaf-positive.avancement_1 {
+    background: linear-gradient(to right, #21ba45 25%, grey 40%) !important;
+}
+td.price_perf div .button.aaf-positive.avancement_2 {
+    background: linear-gradient(to right, #21ba45 50%, grey 65%) !important;
+}
+td.price_perf div .button.aaf-positive.avancement_3 {
+    background: linear-gradient(to right, #21ba45 75%, grey 90%) !important;
 }
 td.price_perf label.aaf-positive {
     color: #21ba45 !important;

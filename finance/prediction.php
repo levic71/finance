@@ -159,6 +159,14 @@ while($row = mysqli_fetch_array($res)) {
 					$tab_extend[$row['conseiller']]['nb_p'] = isset($tab_extend[$row['conseiller']]['nb_p']) ? $tab_extend[$row['conseiller']]['nb_p'] + 1 : 1;
 				}
 
+				// Pour déternimer l'avancement dans l'atteinte de l'objectif qd on est au dessus du cours de l'avis
+				$avancement = 0;
+				if ($row['status'] == 0) {
+					$pourc_avancement = (($cj - $row['cours']) / ($row['objectif'] - $row['cours']) * 100);
+					if ($cj >= $row['cours'])
+						$avancement = $pourc_avancement > 75 ? 3 : ($pourc_avancement > 50 ? 2 : 1);
+				}
+
 				$lib_diff = ($difference->y > 0 ? $difference->y.' ans, ' : '').($difference->m > 0 ? $difference->m.' mois, ' : '').$difference->d.' jours';
 ?>
 				<tr>
@@ -170,7 +178,7 @@ while($row = mysqli_fetch_array($res)) {
 						<label class="<?= $perc >= 0 ? "aaf-positive" : "aaf-negative" ?>"><?= sprintf("%.2f%%", $perc) ?></label>
 					</div></td>
 					<td class="center aligned price_perf"><div>
-						<button <?= $row['status'] == 1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui <?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj || $row['status'] > 0  ? "aaf-positive" : "orange") ?> button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
+						<button <?= $row['status'] == 1 ? 'data-tootik="'.$row['date_status'].'"' : "" ?> class="tiny ui <?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj || $row['status'] > 0  ? "aaf-positive"." avancement_".$avancement : "orange") ?> button"><?= sprintf("%.2f", $row['objectif']).$curr ?></button>
 						<label class="<?= $row['status'] < 0 ? "aaf-negative" : ($row['cours'] <= $cj || $row['status'] > 0 ? "aaf-positive" : "orange") ?>"><?= sprintf("%.2f%%", $perf) ?></label>
 					</div></td>
 					<td class="center aligned price_perf"><div>
