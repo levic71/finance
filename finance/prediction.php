@@ -84,11 +84,14 @@ calc::prediction_update($sess_context->getUserId());
 				// Pour déternimer l'avancement dans l'atteinte de l'objectif qd on est au dessus du cours de l'avis
 				$avancement = 0;
 				if ($row['status'] == 0) {
-					$pourc_avancement = (($cj - $row['cours']) / ($row['objectif'] - $row['cours']) * 100);
-					if ($cj >= $row['cours'])
+					if ($cj >= $row['cours']) {
+						$pourc_avancement = (($cj - $row['cours']) / ($row['objectif'] - $row['cours']) * 100);
 						$avancement = $pourc_avancement > 75 ? 3 : ($pourc_avancement > 50 ? 2 : 1);
-					else
+					}
+					else {
+						$pourc_avancement = (($cj - $row['cours']) / ($row['stoploss'] - $row['cours']) * 100);
 						$avancement = $pourc_avancement > -75 ? 3 : ($pourc_avancement > -50 ? 2 : 1);
+					}
 				}
 
 				$lib_diff = ($difference->y > 0 ? $difference->y.' ans, ' : '').($difference->m > 0 ? $difference->m.' mois, ' : '').$difference->d.' jours';
