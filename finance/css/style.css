@@ -881,8 +881,14 @@ td.price_perf div .button.aaf-positive {
     background: #21ba45 !important;
     color: white !important;
 }
-td.price_perf div .button.orange.avancement_0 {
+td.price_perf div .button.orange.avancement_1 {
     background: linear-gradient(to left, orange 25%, #4c4b4b 40%) !important;
+}
+td.price_perf div .button.orange.avancement_2 {
+    background: linear-gradient(to left, orange 50%, #4c4b4b 65%) !important;
+}
+td.price_perf div .button.orange.avancement_3 {
+    background: linear-gradient(to left, orange 75%, #4c4b4b 90%) !important;
 }
 td.price_perf div .button.aaf-positive.avancement_1 {
     background: linear-gradient(to right, #21ba45 25%, #4c4b4b 40%) !important;

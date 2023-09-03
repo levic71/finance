@@ -87,6 +87,8 @@ calc::prediction_update($sess_context->getUserId());
 					$pourc_avancement = (($cj - $row['cours']) / ($row['objectif'] - $row['cours']) * 100);
 					if ($cj >= $row['cours'])
 						$avancement = $pourc_avancement > 75 ? 3 : ($pourc_avancement > 50 ? 2 : 1);
+					else
+						$avancement = $pourc_avancement > -75 ? 3 : ($pourc_avancement > -50 ? 2 : 1);
 				}
 
 				$lib_diff = ($difference->y > 0 ? $difference->y.' ans, ' : '').($difference->m > 0 ? $difference->m.' mois, ' : '').$difference->d.' jours';
