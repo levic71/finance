@@ -35,6 +35,9 @@ if (!($row = mysqli_fetch_array($res))) exit(0);
 
 $user_id = $row['id'];
 
+// Calcul prediction
+calc::prediction_update($user_id);
+
 // Récupération des devises
 $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
 
