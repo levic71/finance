@@ -759,18 +759,23 @@ class calc {
             $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND day >= '".$row['date_avis']."'";
             $res2 = dbc::execSql($req2);
             while($row2 = mysqli_fetch_array($res2)) {
+
+                if (!is_numeric($row2['adjusted_close'])) break;
+
+                if (!is_numeric($row2['open'])) $row2['open'] = $row2['adjusted_close'];
+                if (!is_numeric($row2['low']))  $row2['low']  = $row2['adjusted_close'];
+                if (!is_numeric($row2['high'])) $row2['high'] = $row2['adjusted_close'];
         
                 if ($previous_price == 0) $previous_price = $row2['open'];
         
                 // Stoploss atteint
                 if ($objectif == 0 && $row['stoploss'] >= $row2['low']) {
-                    var_dump($row2);
                     $stoploss = 1;
                     $date_stoploss = $row2['day'];
                 }
         
                 // Objectif atteint
-                if ($stoploss == 0 && $row2['adjusted_close'] >= $row['objectif']) {
+                if ($stoploss == 0 && $row2['high'] >= $row['objectif']) {
                     $objectif = 1;
                     $date_objectif = $row2['day'];
                     $stop_gain_max = 0;
