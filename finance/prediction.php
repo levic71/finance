@@ -20,7 +20,7 @@ $devises = calc::getGSDevisesWithNoUpdate();
 $quotes = calc::getIndicatorsLastQuote();
 
 // $req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." AND status = 0";
-$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId();
+$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." AND status = 0 ORDER BY date_avis DESC LIMIT 1";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
@@ -41,6 +41,7 @@ while($row = mysqli_fetch_array($res)) {
 
 		// Stoploss atteint
 		if ($objectif == 0 && $row['stoploss'] >= $row2['low']) {
+			var_dump($row);
 			$stoploss = 1;
 			$date_stoploss = $row2['day'];
 		}
@@ -125,7 +126,7 @@ while($row = mysqli_fetch_array($res)) {
 		<tbody>
 <?
 			$tab_extend = [];
-			$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." ORDER BY date_avis DESC";
+			$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." ORDER BY date_avis DESC LIMIT 1";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 
