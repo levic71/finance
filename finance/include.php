@@ -738,6 +738,101 @@ class QuoteComputing {
 // ///////////////////////////////////////////////////////////////////////////////////////
 class calc {
 
+    public static function prediction_update($user_id) {
+
+        $where_statement = $user_id == "" ? "" : "AND user_id=".$user_id;
+
+        $req9 = "SELECT * FROM prediction WHERE status=0 ".$where_statement;
+        $res9 = dbc::execSql($req9);
+        
+        while($row = mysqli_fetch_array($res9)) {
+        
+            $date_objectif = date('Y-m-d');
+            $date_stoploss = date('Y-m-d');
+            $date_gain_max = date('Y-m-d');
+            $objectif = 0;
+            $stoploss = 0;
+            $gain_max = 0;
+            $stop_gain_max = 1;
+            $previous_price = 0;
+        
+            $req2 = "SELECT * FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND day >= '".$row['date_avis']."'";
+            $res2 = dbc::execSql($req2);
+            while($row2 = mysqli_fetch_array($res2)) {
+        
+                if ($previous_price == 0) $previous_price = $row2['open'];
+        
+                // Stoploss atteint
+                if ($objectif == 0 && $row['stoploss'] >= $row2['low']) {
+                    $stoploss = 1;
+                    $date_stoploss = $row2['day'];
+                }
+        
+                // Objectif atteint
+                if ($stoploss == 0 && $row2['adjusted_close'] >= $row['objectif']) {
+                    $objectif = 1;
+                    $date_objectif = $row2['day'];
+                    $stop_gain_max = 0;
+                }
+        
+                // Recherche gain max en cas d'objectif atteint avec stoploss à max(objectif, -5% cloture veille)
+                if ($previous_price > 0 && $objectif == 1 && $stop_gain_max == 0) {
+        
+                    $stoploss_ref = $row['objectif'] * 0.97;
+                    if ($row2['adjusted_close'] < $stoploss_ref) {
+                        $stop_gain_max = 1;
+                        $gain_max = $row['objectif'];
+                        $date_gain_max = $row2['day'];
+                    } else {
+                        if ($row2['adjusted_close'] > max($stoploss_ref, $gain_max)) {
+                            $date_gain_max = $row2['day'];
+                            $gain_max = $row2['adjusted_close'];
+                        }
+                    }
+        
+                }
+        
+                $previous_price = $row2['adjusted_close'];
+        
+            }
+        
+            // Enregistrement stoploss atteint
+            if ($stoploss == 1) {
+                $update = "UPDATE prediction SET status=-1, date_status='".$date_stoploss."' WHERE id=".$row['id'];
+                $res3 = dbc::execSql($update);
+
+                $req = "INSERT INTO alertes (user_id, date, actif, mail, lue, type, sens, couleur, icone, seuil) VALUES (".$user_id.", '".$date_stoploss."', '".$row['symbol']."', 0, 0, 'PREDICT_NOK', -1, 'red', 'watch', '".$date_stoploss."') ON DUPLICATE KEY UPDATE sens=-1, couleur='red', icone='watch', seuil='".$row['stoploss']."'";
+                $res = dbc::execSql($req);
+        }
+        
+            // Enregistrement objectif atteint
+            if ($objectif == 1) {
+                $update = "UPDATE prediction SET status=1, date_status='".$date_objectif."' WHERE id=".$row['id'];
+                $res3 = dbc::execSql($update);
+
+                $req = "INSERT INTO alertes (user_id, date, actif, mail, lue, type, sens, couleur, icone, seuil) VALUES (".$user_id.", '".$date_objectif."', '".$row['symbol']."', 0, 0, 'PREDICT_OK', 1, 'green', 'watch', '".$date_objectif."') ON DUPLICATE KEY UPDATE sens=1, couleur='green', icone='watch', seuil='".$row['objectif']."'";
+                $res = dbc::execSql($req);
+            }
+        
+            // Enregistrement max gain (on enregistre meme si gaim_max=0)
+            $update = "UPDATE prediction SET gain_max='".$gain_max."', gain_max_date='".$date_gain_max."' WHERE id=".$row['id'];
+            $res3 = dbc::execSql($update);
+        
+            // Prediction cloturée après 6 mois
+            $datetime1 = new DateTime($row['date_avis']);
+            $datetime2 = new DateTime(date("Y-m-d"));
+            $difference = $datetime1->diff($datetime2);
+            if ($row['status'] == 0 && $difference->m >= 6) {
+                $update = "UPDATE prediction SET status=-2, date_status='".date("Y-m-d")."' WHERE id=".$row['id'];
+                $res3 = dbc::execSql($update);
+
+                $req = "INSERT INTO alertes (user_id, date, actif, mail, lue, type, sens, couleur, icone, seuil) VALUES (".$user_id.", '".date("Y-m-d")."', '".$row['symbol']."', 0, 0, 'PREDICT_NOK', -1, 'red', 'watch', '".date("Y-m-d")."') ON DUPLICATE KEY UPDATE sens=-1, couleur='red', icone='watch', seuil=''";
+                $res = dbc::execSql($req);
+            }
+        
+        }
+    }
+    
     public static function formatDataOrder($val) {
 
         $val['valo'] = $val['quantity'] * $val['price'] * $val['taux_change'];
@@ -2552,8 +2647,8 @@ class uimx {
             <a class="ui basic '.($portfolio_data['perf_ptf'] >= 0 ? 'green' : 'red' ).' left pointing label">'.sprintf("%.2f ", $portfolio_data['perf_ptf']).'%</a>
         </div>
         <div class="zone_bts ui buttons">
-            <button id="portfolio_graph_'.$portfolio['id'].'_bt" class="circular ui icon very small right floated grey button"><i class="inverted white chart bar outline icon"></i></button>
-            <button id="ptf_balance_'.$portfolio['id'].'_bt" class="circular ui icon very small right floated lightgrey button"><i class="inverted black balance icon"></i></button>
+            <button id="portfolio_graph_'.$portfolio['id'].'_bt" class="ui icon very small right floated grey button"><i class="inverted white chart bar outline icon"></i></button>
+            <button id="ptf_balance_'.$portfolio['id'].'_bt" class="ui icon very small right floated lightgrey button"><i class="inverted black balance icon"></i></button>
         </div>
         ';
 
