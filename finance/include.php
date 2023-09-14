@@ -742,7 +742,7 @@ class calc {
 
         $where_statement = $user_id == "" ? "" : "AND user_id=".$user_id;
 
-        $req9 = "SELECT * FROM prediction WHERE status=0 ".$where_statement;
+        $req9 = "SELECT * FROM prediction WHERE status=0 ".$where_statement." LIMIT 1";
         $res9 = dbc::execSql($req9);
         
         while($row = mysqli_fetch_array($res9)) {
@@ -764,6 +764,7 @@ class calc {
         
                 // Stoploss atteint
                 if ($objectif == 0 && $row['stoploss'] >= $row2['low']) {
+                    var_dump($row2);
                     $stoploss = 1;
                     $date_stoploss = $row2['day'];
                 }
