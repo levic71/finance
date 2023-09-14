@@ -47,7 +47,7 @@ calc::prediction_update($sess_context->getUserId());
 		<tbody>
 <?
 			$tab_extend = [];
-			$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." ORDER BY date_avis DESC LIMIT 1";
+			$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." ORDER BY date_avis DESC";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 
