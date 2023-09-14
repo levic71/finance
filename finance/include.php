@@ -742,7 +742,7 @@ class calc {
 
         $where_statement = $user_id == "" ? "" : "AND user_id=".$user_id;
 
-        $req9 = "SELECT * FROM prediction WHERE status=0 ".$where_statement." LIMIT 1";
+        $req9 = "SELECT * FROM prediction WHERE status=0 ".$where_statement;
         $res9 = dbc::execSql($req9);
         
         while($row = mysqli_fetch_array($res9)) {
