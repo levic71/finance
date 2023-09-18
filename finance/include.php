@@ -2659,7 +2659,7 @@ class uimx {
         ';
 
         $title = mb_convert_encoding($portfolio['name'], 'ISO-8859-1', 'UTF-8').($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
-        uimx::genCard("portfolio_card_".$portfolio['id'], "<button class=\"right floating tiny ui ".($daily_perf >=0 ? "green" : "red")." label\">".(($daily_perf >= 0 ? "+" : "").$daily_perf)."%</button>".$title, date('Y-m-d'), $desc);
+        uimx::genCard("portfolio_card_".$portfolio['id'], "<button class=\"right floating tiny ui ".($daily_perf >=0 ? "green" : "red")." label\">".(($daily_perf >= 0 ? "+" : "").sprintf("%.2f", $daily_perf))."%</button>".$title, date('Y-m-d'), $desc);
     }
 
     public static function displayHeadTable($head) {
