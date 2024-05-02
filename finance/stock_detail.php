@@ -12,7 +12,7 @@ $debug  = 0;
 
 $default_button_choice = [ 'rsi' => 0, 'volume' => 1, 'alarm' => 1, 'av' => 1, 'reg' => 0, 'scale' => 0 ];
 
-$strat_ptf    = isset($_COOKIE["strat_ptf"]) ? $_COOKIE["strat_ptf"] :  1;
+$strat_ptf = isset($_COOKIE["strat_ptf"]) ? $_COOKIE["strat_ptf"] :  1;
 
 foreach (['symbol', 'edit', 'ptf_id', 'debug'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
@@ -481,6 +481,7 @@ if ($debug == 1) {
                 <th class="center aligned">Prix</th>
                 <th class="center aligned">Total(&euro;)</th>
                 <th class="center aligned">Comm</th>
+                <th></th>
             </tr></thead>
             <tbody>
 <?
@@ -490,10 +491,10 @@ if ($debug == 1) {
                 $nb_orders = 0;
                 $qte = 0;
                 $req_option = "AND o.product_name='".$symbol."'";
-                $req = "SELECT *, p.shortname FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
+                $req = "SELECT *, p.shortname, o.id id_order FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=".$sess_context->getUserId()." ".$req_option." ORDER BY date DESC";
                 $res = dbc::execSql($req);
 
-                // Bye bye si inexistant
+                // Bye bye si inexistant 
                 while($row = mysqli_fetch_assoc($res)) {
                     $row = calc::formatDataOrder($row);
                     echo '<tr>
@@ -506,6 +507,7 @@ if ($debug == 1) {
                             <td>'.$row['price_signed'].'</td>
                             <td class="'.$row['action_colr'].'">'.$row['valo_signed'].'</td>
                             <td>'.sprintf("%.2f", $row['commission']).'&euro;</td>
+                            <td><i id="order_edit_'.$row['id_order'].'_'.$row['portfolio_id'].'_bt" class="edit inverted icon"></i></td>
                         </tr>';
                     $sum_comm += $row['commission'];
                     $sum_orders += ($row['valo'] * ($row['action'] >= 0 ? 1 : -1));
@@ -525,6 +527,7 @@ if ($debug == 1) {
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $qte == 0 ? 0 : $sum_orders/$qte) ?></td>
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_orders) ?></td>
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_comm) ?></td>
+                    <td></td>
                 </tr>
             </tfoot>
         </table>
@@ -1212,6 +1215,15 @@ if ($debug == 1) {
             changeState(item);
         });
     });
+
+    // Listener sur boutons edit orders
+    Dom.find('#lst_order i.edit').forEach(function(item) {
+        Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
+            let order_attributes = Dom.attribute(item, 'id').split("_");
+            if (order_attributes.length > 4)
+                go({ action: 'order', id: 'main', url: 'order_detail.php?action=upt&from_stock_detail=1&portfolio_id='+order_attributes[3]+'&order_id='+order_attributes[2], loading_area: 'main' });
+        });
+    });    
 
     <? if ($sess_context->isSuperAdmin()) { ?>
     // Listener sur bt delete

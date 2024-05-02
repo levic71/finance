@@ -262,7 +262,8 @@ const externalTooltipHandler = (context) => {
         // On parcours les data y du graphique de la date en cours de focus
         bodyLines.forEach((body, i) => {
 
-            console.log(body);
+            // Pour debugger les data
+//            console.log(body);
 
             const colors = tooltip.labelColors[i];
 

@@ -10,8 +10,10 @@ if (!$sess_context->isUserConnected()) tools::do_redirect("index.php");
 
 $order_id = 0;
 $portfolio_id = 0;
+$id_synthese = -1;
+$from_stock_detail = 0;
 
-foreach(['action', 'order_id', 'portfolio_id', 'f_date', 'f_product_name', 'f_action', 'f_quantity', 'f_price', 'f_commission', 'f_confirme', 'quotes', 'f_devise', 'f_taux_change'] as $key)
+foreach(['action', 'from_stock_detail', 'order_id', 'portfolio_id', 'id_synthese', 'f_date', 'f_product_name', 'f_action', 'f_quantity', 'f_price', 'f_commission', 'f_confirme', 'quotes', 'f_devise', 'f_taux_change'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -25,7 +27,25 @@ if ($action == "del" && isset($order_id) && $order_id != 0) {
 
 if ($action == "new") {
 
-    $req = "INSERT INTO orders (portfolio_id, date, product_name, action, quantity, price, commission, confirme, devise, taux_change) VALUES (".$portfolio_id.", '".$f_date."', '".$f_product_name."', ".$f_action.", ".$f_quantity.", ".$f_price.", ".$f_commission.", ".$f_confirme.", '".$f_devise."', ".$f_taux_change.")";
+    $pru = 0;
+    if ($f_action == 1 || $f_action == -1) {
+
+        $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
+
+        // Recuperation de tous les actifs
+        $quotes = calc::getIndicatorsLastQuote();
+
+        // Calcul synthese portefeuille
+        $portfolio_data = calc::aggregatePortfolioById($portfolio_id);
+
+        $sc = new StockComputing($quotes, $portfolio_data, $devises);
+
+        $lst_positions = $sc->getPositions();
+
+        if (isset(($lst_positions[$f_product_name]['pru']))) $pru = $lst_positions[$f_product_name]['pru'];
+    }
+
+    $req = "INSERT INTO orders (portfolio_id, date, product_name, action, quantity, price, pru, commission, confirme, devise, taux_change) VALUES (".$portfolio_id.", '".$f_date."', '".$f_product_name."', ".$f_action.", ".$f_quantity.", ".$f_price.", ".$pru.", ".$f_commission.", ".$f_confirme.", '".$f_devise."', ".$f_taux_change.")";
     $res = dbc::execSql($req);
 
 }
@@ -51,7 +71,11 @@ calc::resetCacheUserPortfolio($sess_context->getUserId());
 
 <script>
 <? if ($action != "save") { ?>
-    go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $portfolio_id ?>' });
+    <? if ($from_stock_detail == 1) { ?>    
+        go({ action: 'portfolio', id: 'main', url: 'stock_detail.php?symbol=<?= $f_product_name ?>&ptf_id=<?= $id_synthese != - 1 ? $id_synthese : $portfolio_id ?>' });
+    <? } else {?>
+        go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $id_synthese != - 1 ? $id_synthese : $portfolio_id ?>' });
+    <? } ?>
 <? } ?>
     var p = loadPrompt();
     p.success('Ordre <?= ($action == "new" ? " ajouté": ($action == "upt" || $action == "save" ? " modifié" : " supprimé")) ?>');
