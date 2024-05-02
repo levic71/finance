@@ -205,7 +205,6 @@ $lst_orders_futur = $sc->getOrdersFutur();
 				foreach(array_merge(array_reverse($lst_orders_futur), array_reverse($lst_orders)) as $key => $val) {
 
 					$val = calc::formatDataOrder($val);
-
 					echo '<tr>
 						<td><i class="inverted long arrow alternate '.$val['icon'].' icon"></i></td>
 						<td>'.$val['date'].'</td>
@@ -217,9 +216,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 						<td data-value="'.sprintf("%.2f", $val['valo']).'" class="'.$val['action_colr'].'">'.$val['valo_signed'].'</td>
 						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).'&euro;/'.sprintf("%.2f", $val['ttf']).'&euro;</td>
 						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
-						<td class="collapsing">
-							'.($sc->isPtfSynthese() ? '' : '<i id="order_edit_'.$val['id'].'_bt" class="edit inverted icon"></i>').'
-						</td>
+						<td class="collapsing"><i id="order_edit_'.$val['id'].'_'.$val['portfolio_id'].'_bt" class="edit inverted icon"></i></td>
 					</tr>';
 				}
 ?>
@@ -253,14 +250,14 @@ var ctx = document.getElementById('pft_donut').getContext('2d');
 
 el("pft_donut").height = document.body.offsetWidth > 700 ? 130 : 300;
 
-<?
-	if (!$sc->isPtfSynthese()) {
-		foreach(array_merge($lst_orders_futur, $lst_orders) as $key => $val) { ?>
-			Dom.addListener(Dom.id('order_edit_<?= $val['id'] ?>_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=upt&portfolio_id=<?= $portfolio_id ?>&order_id=<?= $val['id'] ?>', loading_area: 'main' }); });
-<?	
-		}
-	}
-?>
+// Listener sur boutons edit orders
+Dom.find('#lst_order i.edit').forEach(function(item) {
+	Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
+		let order_attributes = Dom.attribute(item, 'id').split("_");
+		if (order_attributes.length > 4)
+			go({ action: 'order', id: 'main', url: 'order_detail.php?action=upt&portfolio_id='+order_attributes[3]+'&order_id='+order_attributes[2], loading_area: 'main' });
+	});
+});    
 
 // Pour donut repartition par actif, secteur, geo 
 var infos_area = { n: 1, l:[], v: [] };

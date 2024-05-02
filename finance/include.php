@@ -124,6 +124,13 @@ class tools {
 
 
 // ///////////////////////////////////////////////////////////////////////////////////////
+// Importer un export en local :
+// /Applications/MAMP/Library/bin/mysql -u root -p finance2 < /Users/ferreira/Downloads/jorkersfinance.sql
+// mpd root/root 
+// ///////////////////////////////////////////////////////////////////////////////////////
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////
 class dbc {
 
     public static $link;
@@ -131,7 +138,7 @@ class dbc {
     public static function connect()
     {
         if (tools::isLocalHost())
-            self::$link = mysqli_connect("localhost", "root", "root", "finance") or die("Error connexion db" . mysqli_connect_errno() . ' ; ' . mysqli_connect_error());
+            self::$link = mysqli_connect("localhost", "root", "root", "finance2") or die("Error connexion db" . mysqli_connect_errno() . ' ; ' . mysqli_connect_error());
         else
             self::$link = mysqli_connect("jorkersfinance.mysql.db", "jorkersfinance", "Rnvubwi2021", "jorkersfinance") or die("Error connexion db" . mysqli_connect_errno() . ' ; ' . mysqli_connect_error());
 

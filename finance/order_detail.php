@@ -8,8 +8,11 @@ include "common.php";
 
 $order_id = -1;
 $portfolio_id = -1;
+$is_synthese = false;
+$id_synthese = -1;
+$from_stock_detail = 0;
 
-foreach(['portfolio_id', 'order_id', 'action'] as $key)
+foreach(['portfolio_id', 'order_id', 'action', 'id_synthese', 'from_stock_detail'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -21,9 +24,29 @@ $devises = calc::getGSDevisesWithNoUpdate();
 $libelle_action_bt = tools::getLibelleBtAction($action);
 
 if ($action == "upt") {
+
+    // Recuperation des infos du ptf
+    $req = "SELECT * FROM portfolios WHERE id=".$portfolio_id;
+    $res = dbc::execSql($req);
+    if (!$row = mysqli_fetch_assoc($res)) exit(0);
+
+    // Si ptf de synthese alors on vérifie que tout est coherant et on switche sur le portfolio_id porté par l'ordre tout en concervant une trace du ptf appelant
+    if ($row['synthese'] == 1) {
+    echo "toto";
+        $tab_sub_ptf = explode(',', $row['all_ids']);
+        if (!in_array($portfolio_id, $tab_sub_ptf)) exit(0);
+        $is_synthese = true;
+        $id_synthese = $portfolio_id;
+    }
+
+    // Recherche des infos de l'ordre à modifier
     $req = "SELECT * FROM orders WHERE id=".$order_id." AND portfolio_id=".$portfolio_id;
     $res = dbc::execSql($req);
     if (!$row = mysqli_fetch_assoc($res)) exit(0);
+
+    // Switche sur le portfolio_id de l'ordre si syntheses
+    if ($is_synthese) $portfolio_id = $row['portfolio_id'];
+
 } else {
     $row['date']         = date('Y-m-d');
     $row['id']           = 0;
@@ -171,7 +194,7 @@ Dom.addListener(Dom.id('f_devise'), Dom.Event.ON_CHANGE, function(event) {
 });
 
 // Cancel button
-Dom.addListener(Dom.id('order_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('order_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $is_synthese ? $id_synthese : $portfolio_id ?>', loading_area: 'main' }); });
 
 // Add/Update button
 Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {
@@ -193,7 +216,7 @@ Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK
     n = item.options[item.selectedIndex].value;
 
     params = '?action=<?= $action ?>&'+attrs(['order_id', 'portfolio_id', 'f_date', 'f_action', 'f_quantity', 'f_price', 'f_commission', 'f_devise', 'f_taux_change' ]) + '&f_confirme='+(valof('f_confirme') == 0 ? 0 : 1);
-    params += '&f_product_name=' + (n == 'AUTRE' ? 'AUTRE:' + encodeURIComponent(valof('f_other_name')) : encodeURIComponent(valof('f_product_name')));
+    params += '&from_stock_detail=' + <?= $from_stock_detail ?> + '&id_synthese=' + <?= $id_synthese ?> + '&f_product_name=' + (n == 'AUTRE' ? 'AUTRE:' + encodeURIComponent(valof('f_other_name')) : encodeURIComponent(valof('f_product_name')));
 
 	go({ action: 'order', id: 'main', url: 'order_action.php'+params, loading_area: 'main' });
 
@@ -201,7 +224,7 @@ Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK
 
 // Del button
 <? if ($action == "upt") { ?>
-	Dom.addListener(Dom.id('order_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_action.php?action=del&order_id=<?= $order_id ?>&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main', confirmdel: 1 }); });
+	Dom.addListener(Dom.id('order_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_action.php?action=del&order_id=<?= $order_id ?>&portfolio_id=<?= $portfolio_id ?>&id_synthese='+<?= $id_synthese ?>, loading_area: 'main', confirmdel: 1 }); });
 <? } ?>
 
 </script>
