@@ -29,6 +29,9 @@ $name = "";
 // Bye bye si inexistant
 while ($row = mysqli_fetch_assoc($res)) {
 
+    // Ne pas prendre en compte les samedi/dimanche
+    if (date("N", strtotime($row['date'])) >= 6) continue;
+
     $data = json_decode($row['data']);
     // var_dump($data);
     $data_ptf[$row['date']]['day']  = $row['date'];
@@ -99,7 +102,7 @@ $first_key = array_key_first($data_ptf); // First element's key
 $year_creation = substr($first_key, 0, 4);
 if (!isset($data_ptf[$first_key]['valo'])) $data_ptf[$first_key]['valo'] = 0;
 if (!isset($data_ptf[$first_key]['depot_acc'])) $data_ptf[$first_key]['depot_acc'] = 0;
-// var_dump(current($data_ptf)); exit(0);
+//var_dump(current($data_ptf)); exit(0);
 
 ?>
 
@@ -243,6 +246,72 @@ update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
 
     return c;
 }
+
+
+
+
+
+
+
+
+// Ramer-Douglas-Peucker algorithm
+var ramerDouglasPeuckerRecursive = function (pts, first, last, eps) {
+    if (first >= last - 1) {
+        return [pts[first]];
+    }
+
+    var slope = (pts[last].y - pts[first].y) / (pts[last].x - pts[first].x);
+
+    var x0 = pts[first].x;
+    var y0 = pts[first].y;
+
+    var iMax = first;
+    var max = -1;
+    var p, dy;
+
+    // Calculate vertical distance
+    for (var i = first + 1; i < last; i++) {
+        p = pts[i];
+        y = y0 + slope * (p.x - x0);
+        dy = Math.abs(p.y - y);
+
+        if (dy > max) {
+            max = dy;
+            iMax = i;
+        }
+    }
+
+    if (max < eps) {
+        return [pts[first]];
+    }
+
+    var p1 = ramerDouglasPeuckerRecursive(pts, first, iMax, eps);
+    var p2 = ramerDouglasPeuckerRecursive(pts, iMax, last, eps);
+
+    return p1.concat(p2);
+}
+
+var internalRamerDouglasPeucker = function (pts, eps) {
+    var p = ramerDouglasPeuckerRecursive(data, 0, pts.length - 1, eps);
+    return p.concat([pts[pts.length - 1]]);
+}
+
+var createRamerDouglasPeuckerData = function (data, period) {
+    var finalPointCount = Math.round(data.length / period);
+    var epsilon = period;
+    var pts = internalRamerDouglasPeucker(data, epsilon);
+    var iteration = 0;
+    // Iterate until the correct number of points is obtained
+    while (pts.length != finalPointCount && iteration++ < 20) {
+        epsilon *= Math.sqrt(pts.length / finalPointCount);
+        pts = internalRamerDouglasPeucker(data, epsilon);
+    }
+    return pts;
+};
+
+
+
+
 
 update_all_charts = function(year) {
 
