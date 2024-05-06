@@ -468,7 +468,9 @@ if ($debug == 1) {
 <? if ($sess_context->isUserConnected() && $readonly) { ?>
 
 <div id="canvas_area3" class="ui container inverted segment form">
-    <h4 class="ui inverted dividing header">History</h4>
+    <h4 class="ui inverted dividing header">History        
+        <button id="order_add_bt" class="circular ui icon very small right floated pink button label"><i class="inverted white add icon"></i></button>
+    </h4>
     <div class="field">
         <table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_order" data-sortable>
             <thead><tr>
@@ -1191,7 +1193,8 @@ if ($debug == 1) {
 
 <? } ?>
 
-
+    // Listener sur bt add order
+    Dom.addListener(Dom.id('order_add_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&symbol=<?= $symbol ?>&from_stock_detail=1&portfolio_id=<?= $ptf_id ?>', loading_area: 'main' }); });
 
     // Choix actif dans select actif ptf
     <? if ($readonly && $ptf_nb_positions > 0) { ?>

@@ -11,8 +11,9 @@ $portfolio_id = -1;
 $is_synthese = false;
 $id_synthese = -1;
 $from_stock_detail = 0;
+$symbol = "";
 
-foreach(['portfolio_id', 'order_id', 'action', 'id_synthese', 'from_stock_detail'] as $key)
+foreach(['symbol', 'portfolio_id', 'order_id', 'action', 'id_synthese', 'from_stock_detail'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 $db = dbc::connect();
@@ -26,13 +27,12 @@ $libelle_action_bt = tools::getLibelleBtAction($action);
 if ($action == "upt") {
 
     // Recuperation des infos du ptf
-    $req = "SELECT * FROM portfolios WHERE id=".$portfolio_id;
+    $req = "SELECT * FROM portfolios WHERE id=".$portfolio_id." AND user_id=".$sess_context->getUserId();
     $res = dbc::execSql($req);
     if (!$row = mysqli_fetch_assoc($res)) exit(0);
 
     // Si ptf de synthese alors on vérifie que tout est coherant et on switche sur le portfolio_id porté par l'ordre tout en concervant une trace du ptf appelant
     if ($row['synthese'] == 1) {
-    echo "toto";
         $tab_sub_ptf = explode(',', $row['all_ids']);
         if (!in_array($portfolio_id, $tab_sub_ptf)) exit(0);
         $is_synthese = true;
@@ -50,7 +50,7 @@ if ($action == "upt") {
 } else {
     $row['date']         = date('Y-m-d');
     $row['id']           = 0;
-    $row['product_name'] = "Cash";
+    $row['product_name'] = $symbol != "" ? $symbol : "Cash";
     $row['action']       = 0;
     $row['quantity']     = 0;
     $row['price']        = 0;
@@ -60,6 +60,12 @@ if ($action == "upt") {
     $row['taux_change']  = 1;
 }
 
+// Recuperation liste de mes ptf
+$lst_ptfs = array();
+$req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND synthese = 0";
+$res = dbc::execSql($req);
+while ($myptf = mysqli_fetch_assoc($res)) $lst_ptfs[$myptf['id']] = $myptf;
+
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
 
@@ -68,7 +74,6 @@ $quotes = calc::getIndicatorsLastQuote();
 <div class="ui inverted form">
 
     <input type="hidden" id="order_id" value="<?= $order_id ?>" />
-    <input type="hidden" id="portfolio_id" value="<?= $portfolio_id ?>" />
 
     <div class="ui inverted clearing segment">
 		<h2 class="ui inverted left floated header"><i class="inverted briefcase icon"></i>Mon Ordre</h2>
@@ -78,7 +83,7 @@ $quotes = calc::getIndicatorsLastQuote();
         <? } ?>
     </div>
 
-    <div class="nine fields">
+    <div class="six fields">
         <div class="field" style="width: 150px;">
             <label>Date</label>
             <div class="ui right icon inverted left labeled fluid input">
@@ -87,10 +92,19 @@ $quotes = calc::getIndicatorsLastQuote();
             </div>
         </div>
         <div class="field">
+            <label>Portefeuille</label>
+            <select id="portfolio_id" class="ui dropdown">
+                <? foreach ($lst_ptfs as $key => $val) { ?>
+                    <option value="<?= $key ?>" <?= $portfolio_id == $key ? "selected=\"selected\"" : "" ?>><?= $val['name'] ?></option>
+                <? } ?>
+            </select>
+        </div>
+        <div class="field">
             <label>Actif</label>
             <select id="f_product_name" class="ui dropdown">
                 <option value="Cash" data-price="0" <?= $row['product_name'] == "Cash" ? "selected=\"selected\"" : "" ?>>Cash</option>
                 <? foreach ($quotes["stocks"] as $key => $val) { ?>
+                    <? if ($row['product_name'] == $val['symbol']) { $row['price'] = $val['price']; $row['devise'] = $val['currency']; $row['action'] = 1; $row['taux_change'] = calc::getCurrencyRate($val['currency']."EUR", $devises); } ?>
                     <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $row['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
                 <? } ?>
                 <option value="AUTRE" data-price="0" <?= substr($row['product_name'], 0, 5) == "AUTRE" ? "selected=\"selected\"" : "" ?>>Autre</option>
@@ -105,6 +119,9 @@ $quotes = calc::getIndicatorsLastQuote();
                 <? } ?>
             </select>
         </div>
+    </div>
+
+    <div class="six fields">
         <div class="field">
             <label>Quantité</label>
             <input type="text" size="10" id="f_quantity" value="<?= $row['quantity'] ?>" placeholder="0">
@@ -187,14 +204,20 @@ Dom.addListener(Dom.id('f_product_name'), Dom.Event.ON_CHANGE, function(event) {
     if (n == 'AUTRE') show('f_other_name'); else hide('f_other_name');
 });
 
-// Change sur selection produit
+// Change sur selection devise
 Dom.addListener(Dom.id('f_devise'), Dom.Event.ON_CHANGE, function(event) {
     item = Dom.id('f_devise');
     Dom.id('f_taux_change').value = Dom.attribute(item.options[item.selectedIndex], 'data-taux');
 });
 
 // Cancel button
-Dom.addListener(Dom.id('order_cancel_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $is_synthese ? $id_synthese : $portfolio_id ?>', loading_area: 'main' }); });
+Dom.addListener(Dom.id('order_cancel_bt'), Dom.Event.ON_CLICK, function(event) {
+    <? if ($from_stock_detail == 1) { ?>    
+    go({ action: 'portfolio', id: 'main', url: 'stock_detail.php?symbol=<?= $row['product_name'] ?>&ptf_id=<?= $id_synthese != - 1 ? $id_synthese : $portfolio_id ?>', loading_area: 'main' });
+    <? } else { ?>
+    go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=<?= $is_synthese ? $id_synthese : $portfolio_id ?>', loading_area: 'main' });
+    <? } ?>
+});
 
 // Add/Update button
 Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK, function(event) {

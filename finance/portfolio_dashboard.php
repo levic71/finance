@@ -143,9 +143,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 	<div class="ui hidden divider"></div>
 	
 	<h2 class="ui left floated"><i class="inverted history icon"></i>Historique ordres
-<? if (!$sc->isPtfSynthese()) { ?>
 		<button id="order_add_bt" class="circular ui icon very small right floated pink labelled button"><i class="inverted white add icon"></i></button>
-<? } ?>
 		<button id="order_filter_bt" class="circular ui icon very small right floated darkgray labelled button"><i class="inverted black filter icon"></i></button>
 	</h2>
 	<div id="filters" class="ui inverted form six fields filters" style="display: inline-flex;">
@@ -197,6 +195,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 						<th>Prix</th>
 						<th>Total</th>
 						<th>Comm/TTF</th>
+						<th>+/-</th>
 						<th></th>
 						<th></th>
 					</tr></thead>
@@ -205,8 +204,14 @@ $lst_orders_futur = $sc->getOrdersFutur();
 				foreach(array_merge(array_reverse($lst_orders_futur), array_reverse($lst_orders)) as $key => $val) {
 
 					$val = calc::formatDataOrder($val);
+					$td_gain = '<td>-</td>';
+					if ($val['action'] == -1 && $val['pru']) {
+						$order_gain = ($val['price']-$val['pru'])*$val['quantity'];
+						$td_gain = '<td data-value="'.$order_gain.'" class="'.($val['price'] > $val['pru'] ? "aaf-positive" : "aaf-negative").'">'.($val['price'] > $val['pru'] ? "+" : "").sprintf("%.2f", $order_gain).uimx::getCurrencySign($val['devise']).'</td>';
+					}
+
 					echo '<tr>
-						<td><i class="inverted long arrow alternate '.$val['icon'].' icon"></i></td>
+						<td><i class="inverted long arrow alternate '.str_replace(["left", "right"], ["down", "up"], $val['icon']).' icon"></i></td>
 						<td>'.$val['date'].'</td>
 						<td>'.$val['shortname'].'</td>
 						<td>'.$val['product_name'].'</td>
@@ -214,7 +219,8 @@ $lst_orders_futur = $sc->getOrdersFutur();
 						<td data-value="'.$val['quantity'].'">'.$val['quantity'].'</td>
 						<td data-value="'.$val['price'].'">'.$val['price_signed'].'</td>
 						<td data-value="'.sprintf("%.2f", $val['valo']).'" class="'.$val['action_colr'].'">'.$val['valo_signed'].'</td>
-						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).'&euro;/'.sprintf("%.2f", $val['ttf']).'&euro;</td>
+						<td data-value="'.$val['commission'].'">'.sprintf("%.2f", $val['commission']).'&euro;/'.sprintf("%.2f", $val['ttf']).'</td>
+						'.$td_gain.'
 						<td data-value="'.$val['confirme'].'"><i class="ui '.($val['confirme'] == 1 ? "check green" : "clock outline orange").' icon"></i></td>
 						<td class="collapsing"><i id="order_edit_'.$val['id'].'_'.$val['portfolio_id'].'_bt" class="edit inverted icon"></i></td>
 					</tr>';
@@ -388,9 +394,7 @@ filter = function() {
 }
 
 // Listener sur les boutons ADD et BACK
-<? if (!$sc->isPtfSynthese()) { ?>
 Dom.addListener(Dom.id('order_add_bt'),   Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&portfolio_id=<?= $portfolio_id ?>', loading_area: 'main' }); });
-<? } ?>
 Dom.addListener(Dom.id('ptf_balance_bt'), Dom.Event.ON_CLICK, function(event) { overlay.load('portfolio_balance.php', { 'portfolio_id' : <?= $portfolio_id ?> }); });
 Dom.addListener(Dom.id('order_back_bt'),      Dom.Event.ON_CLICK, function(event) { go({ action: 'portfolio', id: 'main', url: 'portfolio.php', loading_area: 'main' }); });
 Dom.addListener(Dom.id('portfolio_graph_bt'), Dom.Event.ON_CLICK, function(event) {
