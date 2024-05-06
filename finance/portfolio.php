@@ -77,14 +77,12 @@ if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf[
 				// Calcul synthese portefeuille
 				$portfolio_data = calc::aggregatePortfolioById($val['id']);
 
-				// Si on est du mardi au vendredi
+				// Du mardi au vendredi (PHP different de MySQL pour les n° de jour de semaine)
 				$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) > 1 AND DAYOFWEEK(date) < 7 order by date desc LIMIT 1";
-				// Si on est le weekend
-				if (date('N') == 6 || date('N') == 7)
-					$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) = 4 order by date desc LIMIT 1";
-				// Si on est lundi
-				if (date('N') == 1)
-					$req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) = 5 order by date desc LIMIT 1";
+				// Le weekend
+				if (date('N') >= 6) $req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) = 5 order by date desc LIMIT 1";
+				// Le lundi
+				if (date('N') == 1) $req = "SELECT * FROM portfolio_valo WHERE portfolio_id = ".$val['id']." AND DATE(date) <> CURDATE() AND DAYOFWEEK(date) = 6 order by date desc LIMIT 1";
 				$res = dbc::execSql($req);
 				$row = mysqli_fetch_array($res);
 
