@@ -124,9 +124,11 @@ function getTimeSeriesData($table_name, $period, $sym)
 
     $file_cache = 'cache/TMP_TIMESERIES_' . $sym . '_' . $period . '.json';
 
-    if (cacheData::refreshCache($file_cache, 600)) { // Cache de 5 min
+    //if (cacheData::refreshCache($file_cache, 600)) { // Cache de 5 min
+    if (cacheData::refreshCache($file_cache, 0)) { // Cache de 5 min
 
         $req = "SELECT * FROM " . $table_name . " dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='" . $period . "' AND dtsa.symbol='" . $sym . "' ORDER BY dtsa.day ASC";
+        $req = "SELECT * FROM " . $table_name . " dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='" . $period . "' AND dtsa.symbol='" . $sym . "' ORDER BY dtsa.day DESC LIMIT 145 ";
         $res = dbc::execSql($req);
         while ($row = mysqli_fetch_assoc($res)) {
             $row['adjusted_close'] = sprintf("%.2f", $row['adjusted_close']);
@@ -140,6 +142,8 @@ function getTimeSeriesData($table_name, $period, $sym)
             // Pour le choix de la couleur on ne prend pas le adjusted_close car le adjusted_open n'existe pas
             $ret['colrs'][] = $row['close'] >= $row['open'] ? 1 : 0;
         }
+
+        $ret['rows'] = array_reverse($ret['rows']);
 
         cacheData::writeCacheData($file_cache, $ret);
     } else {
@@ -186,6 +190,14 @@ $data_weekly  = getTimeSeriesData("weekly_time_series_adjusted",  "WEEKLY",  $sy
 $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $symbol);
 
 $js_bubbles_data = "";
+
+$first_date_quote_daily = date('Y-m-d');
+$last_date_quote_daily  = date('Y-m-d');
+
+if (count($data_daily['rows']) > 0) {
+    $first_date_quote_daily = $data_daily['rows'][0]['day'];
+    $last_date_quote_daily  = $data_daily['rows'][array_key_last($data_daily['rows'])]['day'];
+}
 
 ?>
 
@@ -515,7 +527,9 @@ if ($debug == 1) {
                     $sum_orders += ($row['valo'] * ($row['action'] >= 0 ? 1 : -1));
                     $nb_orders++;
                     if ($row['action'] == 1 || $row['action'] == -1) {
-                        $js_bubbles_data .= "bubbles_data.push({ valueX: '".$row['date']."', valueY: ".floatval($row['price']).", rayon: ".(max(3, 5 * ($row['valo'] / 2000) )).", rgb: '".($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0")."' });";
+                        // On n'affiche pas les ordres qui ne sont pas dans le range affiché du graphe
+                        if ($row['date'] >= $first_date_quote_daily && $row['date'] <= $last_date_quote_daily)
+                            $js_bubbles_data .= "bubbles_data.push({ valueX: '".$row['date']."', valueY: ".floatval($row['price']).", rayon: ".(max(3, 5 * ($row['valo'] / 2000) )).", rgb: '".($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0")."' }); ";
                         $qte += $row['quantity'] * $row['action'];
                     }
                 }
@@ -716,23 +730,22 @@ if ($debug == 1) {
     // Var pour affichage devise dans graphe
     stock_currency = '<?= $curr_graphe ?>';
 
-    // Data stock prices
+    // Data stock prices : Initialisation des tableau new_data_daily, new_data_weekly, new_data_monthly
 <?
     format_data($data_daily,   "daily");
     format_data($data_weekly,  "weekly");
     format_data($data_monthly, "monthly");
 ?>
 
-    var ref_d_days  = [];
-    var ref_w_days  = [];
-    var ref_m_days  = [];
+    // Initialisation des tableaux ref_x_days
+    var ref_d_days  = [], ref_w_days  = [], ref_m_days  = [];
 
     try {
 
         // Ref Day Data
-        ref_d_days  = [<?= '"' . implode('","', array_column($data_daily["rows"],   "day")) . '"' ?>];
-        ref_w_days  = [<?= '"' . implode('","', array_column($data_weekly["rows"],  "day")) . '"' ?>];
-        ref_m_days  = [<?= '"' . implode('","', array_column($data_monthly["rows"], "day")) . '"' ?>];
+        new_data_daily.forEach(function(elt){ ref_d_days.push(elt.x); });
+        new_data_weekly.forEach(function(elt){ ref_w_days.push(elt.x); });
+        new_data_monthly.forEach(function(elt){ ref_m_days.push(elt.x); });
 
         let elt = Dom.find('#lst_position tbody tr td:nth-child(6)')[0];
         let reg_type   = Dom.attribute(elt, 'data-reg-type');
@@ -833,6 +846,19 @@ if ($debug == 1) {
         // Ref achat/vente data
         var bubbles_data  = [];
         <?= $js_bubbles_data ?>
+
+        // Check s'il y une date de cotation pour la date de l'ordre (pour le bug si saisie mauvaise date en dehors range cotation par exmple)
+        bubbles_data.forEach(function(elt) {
+            checked = false;
+            new_date = "";
+            ref_d_days.forEach(function(d_d) {
+                d1 = new Date(d_d);
+                d2 = new Date(elt.valueX);
+                if (d1 < d2) new_date = d_d;
+                if (d_d == elt.valueX) { checked = true; return; }
+            });
+            if (!checked) elt.valueX = new_date;
+        });
 
         // Filtre des labels de l'axes des x (date) (on ne garde que les premieres dates de marche cote du mois)
         var array_years = extractFirstDateYear(ref_d_days);
@@ -977,6 +1003,10 @@ if ($debug == 1) {
 
         g_new_data  = getSlicedData2(interval, new_data_daily, new_data_weekly, new_data_monthly, size);
         g_days      = getSlicedData2(interval, ref_d_days, ref_w_days, ref_m_days, size);
+
+        // Bug que je n'arrive pas à corriger autrement !
+        if (g_days.length > g_new_data.length) g_days.pop();
+        
         array_years = extractFirstDateYear(g_days);
 
         return g_days.length;
@@ -1032,7 +1062,7 @@ if ($debug == 1) {
 
         options_Stock_Graphe.scales.y1.type = isCN('graphe_scale_bt', '<?= $bt_mmx_colr ?>') ? 'logarithmic' : 'linear';
 
-        // Changement dynamique option graphe
+        // Animation dynamique retiree dans option graphe pour plus de fluidite
         if (g_new_data.length > 2000) {
             options_Stock_Graphe.animation = false;
             options_RSI_Graphe.animation   = false;
@@ -1041,7 +1071,7 @@ if ($debug == 1) {
 
         // En attendant d'avoir un plugin ou de corriger le pb de volumetrie on limite le daily a max 3000 inputs
         max_data = 100000;
-        if (g_new_data.length > max_data) {
+        if (false && g_new_data.length > max_data) {
             g_days     =  g_days.slice(min_slice(g_days, max_data), max_slice(g_days));
             g_new_data =  g_new_data.slice(min_slice(g_new_data, max_data), max_slice(g_new_data));
         }
@@ -1086,9 +1116,9 @@ if ($debug == 1) {
         });
 
         // Options des alertes
-        options_Stock_Graphe.plugins.horizontal   = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : []; <? } ?> [];
+        options_Stock_Graphe.plugins.horizontal   = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : []; <? } else { ?> []; <? } ?>
         options_Stock_Graphe.plugins.rightAxeText = axe_infos;
-        options_Stock_Graphe.plugins.bubbles      = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : <? } ?> [];
+        options_Stock_Graphe.plugins.bubbles      = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : []; <? } else { ?> []; <? } ?>
         options_Stock_Graphe.scales['y1'].max     = l_max;
         options_Stock_Graphe.scales['y1'].min     = l_min;
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ insiderText, rightAxeText, horizontal, vertical, bubbles ]);
@@ -1116,7 +1146,6 @@ if ($debug == 1) {
     update_all_charts('graphe_all_bt');
 
     var p = loadPrompt();
-
 
     // Listener sur bt MMX + volume + alarm
     Object.entries(mm_bts).forEach(([key, val]) => {

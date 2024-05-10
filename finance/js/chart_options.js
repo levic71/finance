@@ -136,10 +136,11 @@ const bubbles = {
 
         const date_ref = new Date(x.getLabelForValue(0));
 
-//        alert(x.getLabelForValue(0));
+        // console.log(x.getLabelForValue(0));
 
         ctx.save();
 
+        // console.log(options);
         options.forEach(function(item) {
             let valX  = item.valueX || 0;
             let valY  = item.valueY || 0;
