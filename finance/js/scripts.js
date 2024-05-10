@@ -1,4 +1,4 @@
-var js_debug = true;
+var js_debug = false;
 
 error = function(e) { alert('error=' + e); }
 

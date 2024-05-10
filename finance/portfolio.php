@@ -91,7 +91,6 @@ if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf[
 
 				uimx::portfolioCard($val, $portfolio_data, $daily_perf);
 
-			
 			}
 ?>
     </div>
