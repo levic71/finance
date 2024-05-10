@@ -128,7 +128,6 @@ function getTimeSeriesData($table_name, $period, $sym)
     if (cacheData::refreshCache($file_cache, 0)) { // Cache de 5 min
 
         $req = "SELECT * FROM " . $table_name . " dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='" . $period . "' AND dtsa.symbol='" . $sym . "' ORDER BY dtsa.day ASC";
-//        $req = "SELECT * FROM " . $table_name . " dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='" . $period . "' AND dtsa.symbol='" . $sym . "' ORDER BY dtsa.day DESC LIMIT 145 ";
         $res = dbc::execSql($req);
         while ($row = mysqli_fetch_assoc($res)) {
             $row['adjusted_close'] = sprintf("%.2f", $row['adjusted_close']);
@@ -142,8 +141,6 @@ function getTimeSeriesData($table_name, $period, $sym)
             // Pour le choix de la couleur on ne prend pas le adjusted_close car le adjusted_open n'existe pas
             $ret['colrs'][] = $row['close'] >= $row['open'] ? 1 : 0;
         }
-
-        $ret['rows'] = array_reverse($ret['rows']);
 
         cacheData::writeCacheData($file_cache, $ret);
     } else {
