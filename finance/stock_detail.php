@@ -103,7 +103,6 @@ $lst_trend_following = $sc->getTrendFollowing();
             }
         ?>
     </h2>
-
     <table class="ui selectable inverted single line unstackable very compact sortable-theme-minimal table" id="lst_position" data-sortable>
         <thead><? echo QuoteComputing::getHtmlTableHeader(); ?></thead>
         <tbody><? echo $qc->getHtmlTableLine(1); ?></tbody>
@@ -120,7 +119,8 @@ $lst_trend_following = $sc->getTrendFollowing();
 function getTimeSeriesData($table_name, $period, $sym)
 {
 
-    $ret = array('rows' => array(), 'colrs' => array());
+    $i = 0;
+    $ret = array();
 
     $file_cache = 'cache/TMP_TIMESERIES_' . $sym . '_' . $period . '.json';
 
@@ -130,6 +130,7 @@ function getTimeSeriesData($table_name, $period, $sym)
         $req = "SELECT * FROM " . $table_name . " dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='" . $period . "' AND dtsa.symbol='" . $sym . "' ORDER BY dtsa.day ASC";
         $res = dbc::execSql($req);
         while ($row = mysqli_fetch_assoc($res)) {
+            $row['i'] = $i++;
             $row['adjusted_close'] = sprintf("%.2f", $row['adjusted_close']);
             $row['MM7']   = sprintf("%.2f", $row['MM7']);
             $row['MM20']  = sprintf("%.2f", $row['MM20']);
@@ -137,9 +138,8 @@ function getTimeSeriesData($table_name, $period, $sym)
             $row['MM200'] = sprintf("%.2f", $row['MM200']);
             $row['RSI14'] = sprintf("%.1f", $row['RSI14']);
             $row['DM']    = sprintf("%.2f", $row['DM']);
-            $ret['rows'][] = $row;
-            // Pour le choix de la couleur on ne prend pas le adjusted_close car le adjusted_open n'existe pas
-            $ret['colrs'][] = $row['close'] >= $row['open'] ? 1 : 0;
+            $row['colr']  = $row['close'] >= $row['open'] ? 1 : 0; // Pour le choix de la couleur on ne prend pas le adjusted_close car le adjusted_open n'existe pas
+            $ret[] = $row;
         }
 
         cacheData::writeCacheData($file_cache, $ret);
@@ -148,7 +148,7 @@ function getTimeSeriesData($table_name, $period, $sym)
     }
 
 // VFE
-//    foreach($ret['rows'] as $key => $value)
+//    foreach($ret as $key => $value)
 //        echo '['.($key+1).','.$value['adjusted_close'].'],';
 
     return $ret;
@@ -160,24 +160,80 @@ function format_data($data, $period) {
         new_data_<?= $period ?> = [
 <?
         $i = 1;
-        $count = count($data["rows"]);
+        $count = count($data);
 
-        reset($data["colrs"]);
-        foreach($data["rows"] as $key => $val) {
+        foreach($data as $key => $val) {
             echo sprintf("{ x: '%s', y: %.2f, v: %d, mom: %.2f, c: '%s' }%s",
                 $val["day"],
                 (float)$val["adjusted_close"],
                 $val["volume"] == "" ? 0 : round($val["volume"]/1000),
                 $val["DM"],
-                current($data["colrs"]),
+                $val["colr"],
                 $i++ == $count ? '' : ','
             );
-            next($data["colrs"]);
         }
 ?>
     ];
 <?
 }
+
+function perpendicular_distance(array $pt, array $line)
+{
+    // Calculate the normalized delta x and y of the line.
+    $dx = $line[1]['i'] - $line[0]['i'];
+    $dy = $line[1]['adjusted_close'] - $line[0]['adjusted_close'];
+    $mag = sqrt($dx * $dx + $dy * $dy);
+    if ($mag > 0) {
+        $dx /= $mag;
+        $dy /= $mag;
+    }
+
+    // Calculate dot product, projecting onto normalized direction.
+    $pvx = $pt['i'] - $line[0]['i'];
+    $pvy = $pt['adjusted_close'] - $line[0]['adjusted_close'];
+    $pvdot = $dx * $pvx + $dy * $pvy;
+
+    // Scale line direction vector and subtract from pv.
+    $dsx = $pvdot * $dx;
+    $dsy = $pvdot * $dy;
+    $ax = $pvx - $dsx;
+    $ay = $pvy - $dsy;
+
+    return sqrt($ax * $ax + $ay * $ay);
+}
+
+function ramer_douglas_peucker(array $points, $epsilon)
+{
+    if (count($points) < 2) {
+        throw new InvalidArgumentException('Not enough points to simplify');
+    }
+
+    // Find the point with the maximum distance from the line between start/end.
+    $dmax = 0;
+    $index = 0;
+    $end = count($points) - 1;
+    $start_end_line = [$points[0], $points[$end]];
+    for ($i = 1; $i < $end; $i++) {
+        $dist = perpendicular_distance($points[$i], $start_end_line);
+        if ($dist > $dmax) {
+            $index = $i;
+            $dmax = $dist;
+        }
+    }
+
+    // If max distance is larger than epsilon, recursively simplify.
+    if ($dmax > $epsilon) {
+        $new_start = ramer_douglas_peucker(array_slice($points, 0, $index + 1), $epsilon);
+        $new_end = ramer_douglas_peucker(array_slice($points, $index), $epsilon);
+        array_pop($new_start);
+        return array_merge($new_start, $new_end);
+    }
+
+    // Max distance is below epsilon, so return a line from with just the
+    // start and end points.
+    return [$points[0], $points[$end]];
+}
+
 
 // Recuperation de tous les indicateurs DAILY de l'actif
 $data_daily = getTimeSeriesData("daily_time_series_adjusted", "DAILY", $symbol);
@@ -188,13 +244,18 @@ $data_monthly = getTimeSeriesData("monthly_time_series_adjusted", "MONTHLY", $sy
 
 $js_bubbles_data = "";
 
+// Détermination du range des dates de cotation (date de début et de fin de cotation)
 $first_date_quote_daily = date('Y-m-d');
 $last_date_quote_daily  = date('Y-m-d');
 
-if (count($data_daily['rows']) > 0) {
-    $first_date_quote_daily = $data_daily['rows'][0]['day'];
-    $last_date_quote_daily  = $data_daily['rows'][array_key_last($data_daily['rows'])]['day'];
+if (count($data_daily) > 0) {
+    $first_date_quote_daily = $data_daily[0]['day'];
+    $last_date_quote_daily  = $data_daily[array_key_last($data_daily)]['day'];
 }
+
+// Détermination de la valeur max de volume pour fixer le range des volumes dans le graphe
+$top_value_volume = 0;
+foreach($data_daily as $key => $val) if ($val['volume'] > $top_value_volume) $top_value_volume = $val['volume'];
 
 ?>
 
@@ -372,13 +433,12 @@ if (count($data_daily['rows']) > 0) {
                 "Conseillée par"      => $tags_conseillers
             ] as $lib => $tab) { ?>
 
-<? if (!$readonly) { ?>
-    <h4 class="ui inverted dividing header"><?= $lib ?></h4>
-    <div class="ui horizontal list">
-<? } ?>
+        <? if (!$readonly) { ?>
+            <h4 class="ui inverted dividing header"><?= $lib ?></h4>
+            <div class="ui horizontal list">
+        <? } ?>
 
-        <?
-            foreach ($tab as $key => $val) {
+        <? foreach ($tab as $key => $val) {
                 if ($readonly) {
                     
                     if (isset($tags[$val['tag']])) { ?>
@@ -391,10 +451,12 @@ if (count($data_daily['rows']) > 0) {
                     </div>
                 <? } ?>
 
-            <? } ?>
-    <? if (!$readonly) { ?></div><? } // Pour la div ui horizontal list en mode edit (une pour chaque type de tags) ?>
+        <? } ?>
+        
+        <? if (!$readonly) { ?></div><? } // Pour la div ui horizontal list en mode edit (une pour chaque type de tags) ?>
 <? } ?>
-<? if ($readonly) { ?></div><? } // Pour la div ui horizontal list en mode reeadonly (une pour tous les tags) ?>
+
+<? if ($readonly) { ?></div><? } // Pour la div ui horizontal list en mode readonly (une pour tous les tags) ?>
 </div>
 
 <? if ($readonly) { ?>
@@ -575,7 +637,7 @@ if ($debug == 1) {
     datepicker1.options.setInputFormat("Y-m-d")
     datepicker1.render();
 
-<? if ($readonly) { ?>
+    <? if ($readonly) { ?>
 
     var myChart1 = null;
     var myChart2 = null;
@@ -1118,6 +1180,9 @@ if ($debug == 1) {
         options_Stock_Graphe.plugins.bubbles      = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : []; <? } else { ?> []; <? } ?>
         options_Stock_Graphe.scales['y1'].max     = l_max;
         options_Stock_Graphe.scales['y1'].min     = l_min;
+        options_Stock_Graphe.scales['y2'].max     = <?= round($top_value_volume/(1.5*1000), 0) ?>;
+        options_Stock_Graphe.scales['y2'].min     = 0;
+        options_Stock_Graphe.scales['y2'].stepSize = <?= round($top_value_volume/(1.5*1000*5), 0) ?>;
         myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [ insiderText, rightAxeText, horizontal, vertical, bubbles ]);
 
         // Update Chart RSI
@@ -1158,10 +1223,14 @@ if ($debug == 1) {
         });
     });
 
-<? } ?>
+    <? } ?>
 
 
-<? if (!$readonly) { ?>
+
+
+
+
+    <? if (!$readonly) { ?>
 
     getFormValues = function() {
         params = attrs([ 'f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende' ]) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
@@ -1206,21 +1275,6 @@ if ($debug == 1) {
 
     <? } ?>
 
-    // Listener sur bt back
-    Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'home', id: 'main', url: '<?= $ptf_id == "" ?  "home_content.php" : ($ptf_id == -1 ? "watchlist.php" : "portfolio_dashboard.php?portfolio_id=".$ptf_id) ?>', loading_area: 'main' });
-    });
-
-    <? if ($edit == 0 && $sess_context->isSuperAdmin()) { ?>
-    // Listener sur bt edit
-    Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
-        go({ action: 'home', id: 'main', url: 'stock_detail.php?edit=1&symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
-    });
-
-<? } ?>
-
-    // Listener sur bt add order
-    Dom.addListener(Dom.id('order_add_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&symbol=<?= $symbol ?>&from_stock_detail=1&portfolio_id=<?= $ptf_id ?>', loading_area: 'main' }); });
 
     // Choix actif dans select actif ptf
     <? if ($readonly && $ptf_nb_positions > 0) { ?>
@@ -1231,7 +1285,6 @@ if ($debug == 1) {
             if (selection != "") go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=' + selection, loading_area: 'main' });
         });
     <? } ?>
-
 
     // Changement etat bouttons tags
     changeState = function(item) {
@@ -1254,12 +1307,28 @@ if ($debug == 1) {
         });
     });    
 
+    // Listener sur bt back
+    Dom.addListener(Dom.id('stock_back_bt'), Dom.Event.ON_CLICK, function(event) {
+        go({ action: 'home', id: 'main', url: '<?= $ptf_id == "" ?  "home_content.php" : ($ptf_id == -1 ? "watchlist.php" : "portfolio_dashboard.php?portfolio_id=".$ptf_id) ?>', loading_area: 'main' });
+    });
+
+    <? if ($readonly && $sess_context->isSuperAdmin()) { ?>
+    // Listener sur bt edit
+    Dom.addListener(Dom.id('stock_edit_bt'), Dom.Event.ON_CLICK, function(event) {
+        go({ action: 'home', id: 'main', url: 'stock_detail.php?edit=1&symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
+    });
+
+    // Listener sur bt add order
+    Dom.addListener(Dom.id('order_add_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_detail.php?action=new&symbol=<?= $symbol ?>&from_stock_detail=1&portfolio_id=<?= $ptf_id ?>', loading_area: 'main' }); });
+    <? } ?>
+
     <? if ($sess_context->isSuperAdmin()) { ?>
     // Listener sur bt delete
     Dom.addListener(Dom.id('stock_delete_bt'), Dom.Event.ON_CLICK, function(event) {
         go({ action: 'delete', id: 'main', url: 'stock_action.php?action=del&symbol=<?= $symbol ?>', loading_area: 'main', confirmdel: 1 });
     });
     <? } ?>
+
 
     // On parcours les lignes du tableau positions pour calculer valo, perf, gain, atio et des tooltip du tableau des positions
     updateDataPage = function(opt) {
@@ -1268,14 +1337,14 @@ if ($debug == 1) {
         trendfollowing_ui.computePositionsTable('lst_position', <?= $ptf_id ?>);
 
     }('init');
-    
-<? if ($readonly) { ?>
+
     // Pagination
-    paginator({
-        table: document.getElementById("lst_order"),
-        box: document.getElementById("pagination_box")
-    });
-<? } ?>
+    if (Dom.id('lst_order')) {
+        paginator({
+            table: document.getElementById("lst_order"),
+            box: document.getElementById("pagination_box")
+        });
+    }
 
     scroll(0,0); // Top de page
 

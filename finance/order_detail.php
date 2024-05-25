@@ -104,7 +104,12 @@ $quotes = calc::getIndicatorsLastQuote();
             <select id="f_product_name" class="ui dropdown">
                 <option value="Cash" data-price="0" <?= $row['product_name'] == "Cash" ? "selected=\"selected\"" : "" ?>>Cash</option>
                 <? foreach ($quotes["stocks"] as $key => $val) { ?>
-                    <? if ($row['product_name'] == $val['symbol']) { $row['price'] = $val['price']; $row['devise'] = $val['currency']; $row['action'] = 1; $row['taux_change'] = calc::getCurrencyRate($val['currency']."EUR", $devises); } ?>
+                    <? if ($row['product_name'] == $val['symbol']) {
+                            if (!isset($row['price'])) $row['price'] = $val['price'];
+                            if (!isset($row['action'])) $row['action'] = 1;
+                            $row['devise'] = $val['currency'];
+                            $row['taux_change'] = calc::getCurrencyRate($val['currency']."EUR", $devises);
+                    } ?>
                     <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $row['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
                 <? } ?>
                 <option value="AUTRE" data-price="0" <?= substr($row['product_name'], 0, 5) == "AUTRE" ? "selected=\"selected\"" : "" ?>>Autre</option>
