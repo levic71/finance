@@ -554,6 +554,7 @@ if ($debug == 1) {
                 <th class="center aligned">Prix</th>
                 <th class="center aligned">Total(&euro;)</th>
                 <th class="center aligned">Comm</th>
+                <th>+/-</th>
                 <th></th>
             </tr></thead>
             <tbody>
@@ -570,8 +571,13 @@ if ($debug == 1) {
                 // Bye bye si inexistant 
                 while($row = mysqli_fetch_assoc($res)) {
                     $row = calc::formatDataOrder($row);
+                    $td_gain = '<td>-</td>';
+					if ($row['action'] == -1 && $row['pru']) {
+						$order_gain = ($row['price']-$row['pru'])*$row['quantity'];
+						$td_gain = '<td data-value="'.$order_gain.'" class="'.($row['price'] > $row['pru'] ? "aaf-positive" : "aaf-negative").'">'.($row['price'] > $row['pru'] ? "+" : "").sprintf("%.2f", $order_gain).uimx::getCurrencySign($row['devise']).'</td>';
+					}
                     echo '<tr>
-                            <td><i class="inverted long arrow alternate '.$row['icon'].' icon"></td>
+                            <td><i class="inverted long arrow alternate '.str_replace(["left", "right"], ["down", "up"], $row['icon']).' icon"></td>
                             <td data-value="'.$row['datetime'].'">'.$row['date'].'</td>
                             <td>'.$row['shortname'].'</td>
                             <td>'.$row['product_name'].'</td>
@@ -580,6 +586,7 @@ if ($debug == 1) {
                             <td>'.$row['price_signed'].'</td>
                             <td class="'.$row['action_colr'].'">'.$row['valo_signed'].'</td>
                             <td>'.sprintf("%.2f", $row['commission']).'&euro;</td>
+                            '.$td_gain.'
                             <td><i id="order_edit_'.$row['id_order'].'_'.$row['portfolio_id'].'_bt" class="edit inverted icon"></i></td>
                         </tr>';
                     $sum_comm += $row['commission'];
@@ -602,6 +609,7 @@ if ($debug == 1) {
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $qte == 0 ? 0 : $sum_orders/$qte) ?></td>
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_orders) ?></td>
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_comm) ?></td>
+                    <td></td>
                     <td></td>
                 </tr>
             </tfoot>
