@@ -545,7 +545,6 @@ if ($debug == 1) {
     <div class="field">
         <table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_order" data-sortable>
             <thead><tr>
-                <th></th>
                 <th>Date</th>
                 <th>Ptf</th>
                 <th>Actif</th>
@@ -577,8 +576,7 @@ if ($debug == 1) {
 						$td_gain = '<td data-value="'.$order_gain.'" class="'.($row['price'] > $row['pru'] ? "aaf-positive" : "aaf-negative").'">'.($row['price'] > $row['pru'] ? "+" : "").sprintf("%.2f", $order_gain).uimx::getCurrencySign($row['devise']).'</td>';
 					}
                     echo '<tr>
-                            <td><i class="inverted long arrow alternate '.str_replace(["left", "right"], ["down", "up"], $row['icon']).' icon"></td>
-                            <td data-value="'.$row['datetime'].'">'.$row['date'].'</td>
+                            <td><i class="inverted '.str_replace(["left", "right"], ["sign out", "sign in"], $row['icon']).' icon"></i> '.$row['date'].'</td>
                             <td>'.$row['shortname'].'</td>
                             <td>'.$row['product_name'].'</td>
                             <td>'.$row['action_lib'].'</td>
@@ -604,7 +602,7 @@ if ($debug == 1) {
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="5"></td>
+                    <td colspan="4"></td>
                     <td style="text-align: right"><?= $qte ?></td>
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $qte == 0 ? 0 : $sum_orders/$qte) ?></td>
                     <td style="text-align: right"><?= sprintf("%.2f&euro;", $sum_orders) ?></td>

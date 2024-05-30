@@ -186,7 +186,6 @@ $lst_orders_futur = $sc->getOrdersFutur();
 			<div class="column">
 				<table class="ui striped selectable inverted single line unstackable very compact table sortable-theme-minimal" id="lst_order" data-sortable>
 					<thead><tr>
-						<th></th>
 						<th>Date</th>
 						<th>Ptf</th>
 						<th>Actif</th>
@@ -211,8 +210,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 					}
 
 					echo '<tr>
-						<td><i class="inverted long arrow alternate '.str_replace(["left", "right"], ["down", "up"], $val['icon']).' icon"></i></td>
-						<td>'.$val['date'].'</td>
+						<td data-value="'.$val['date'].'"><i class="inverted '.str_replace(["left", "right"], ["sign out", "sign in"], $val['icon']).' icon"></i> '.$val['date'].'</td>
 						<td>'.$val['shortname'].'</td>
 						<td>'.$val['product_name'].'</td>
 						<td class="center aligned">'.$val['action_lib'].'</td>
@@ -229,7 +227,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="7"></td>
+							<td colspan="6"></td>
 							<td class="right aligned"><span id="sum_comm"></span>/<span id="sum_ttf"></span></td>
 							<td></td>
 					</tfoot>
@@ -440,20 +438,23 @@ get_orders_list = function() {
 	var trs = [];
 	for (var i=0; i < children.length; i++) {
 		if (children[i].nodeType = "tr") {
-			if (children[i].getElementsByTagName("td").length > 0) {
+
+			var mytds = children[i].getElementsByTagName("td");
+
+			if (mytds.length > 0) {
 
 				let hide_line = false;
 
-				if (filter_date && children[i].getElementsByTagName("td")[1].innerHTML.toLowerCase() != filter_date.toLowerCase())
+				if (filter_date && mytds[0].childNodes[1].nodeValue.trim().toLowerCase() != filter_date.toLowerCase())
 					hide_line = true;
 
-				if (filter_product_name && children[i].getElementsByTagName("td")[3].innerHTML.toLowerCase() != filter_product_name.toLowerCase())
+				if (filter_product_name && mytds[2].innerHTML.toLowerCase() != filter_product_name.toLowerCase())
 					hide_line = true;
 				
-				if (filter_action && filter_action.toLowerCase() != "achatvente" && children[i].getElementsByTagName("td")[4].innerHTML.toLowerCase() != filter_action.toLowerCase())
+				if (filter_action && filter_action.toLowerCase() != "achatvente" && mytds[3].innerHTML.toLowerCase() != filter_action.toLowerCase())
 					hide_line = true;
 
-				if (filter_action && filter_action.toLowerCase() == "achatvente" && (children[i].getElementsByTagName("td")[4].innerHTML.toLowerCase() != "achat" && children[i].getElementsByTagName("td")[4].innerHTML.toLowerCase() != "vente"))
+				if (filter_action && filter_action.toLowerCase() == "achatvente" && (mytds[3].innerHTML.toLowerCase() != "achat" && mytds[3].innerHTML.toLowerCase() != "vente"))
 					hide_line = true;
 
 				if (hide_line)

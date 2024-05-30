@@ -115,6 +115,7 @@ while($row = mysqli_fetch_assoc($res)) {
 <?
 
 $balance_sum = 0;
+ksort($plusoumoinsvalue);
 foreach($plusoumoinsvalue as $key => $val) {
     echo "<tr><td>".$key."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain'])."&euro;</td></tr>";
     $balance_sum += $val['gain'] * $val['taux_change'];
