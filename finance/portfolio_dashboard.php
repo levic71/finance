@@ -54,7 +54,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		<div class="compact circular black outline inverted ui icon top left pointing dropdown button" id="ptf_select">
 			<i class="inverted caret down icon"></i>
 			<div class="menu" id="ptf_menu">
-				<? foreach($lst_ptf as $ $key => $val) { ?>
+				<? foreach($lst_ptf as $key => $val) { ?>
 				<div class="item ptf_item" data-value="<?= $val['id'] ?>"><?= mb_convert_encoding($val['name'], 'ISO-8859-1', 'UTF-8') ?></div>
 				<? } ?>
 			</div>
@@ -432,7 +432,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		hide('filters');
 	}
 
-	// Listener sur les boutons ADD et BACK
+	// Listener sur les boutons ADD, BALANCE, BACK, etc ...
 	Dom.addListener(Dom.id('order_add_bt'), Dom.Event.ON_CLICK, function(event) {
 		go({
 			action: 'order',
