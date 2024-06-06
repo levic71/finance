@@ -52,7 +52,7 @@ if ($action == "new") {
 
 if ($action == "upt" && isset($order_id) && $order_id != 0) {
 
-    $req = "UPDATE orders SET date='".$f_date."', product_name='".$f_product_name."', action=".$f_action.", quantity=".$f_quantity.", price=".$f_price.", commission=".$f_commission.", confirme=".$f_confirme.", devise='".$f_devise."', taux_change=".$f_taux_change." WHERE id=".$order_id." AND portfolio_id=".$portfolio_id;
+    $req = "UPDATE orders SET date='".$f_date."', product_name='".$f_product_name."', action=".$f_action.", quantity=".$f_quantity.", price=".$f_price.", commission=".$f_commission.", confirme=".$f_confirme.", devise='".$f_devise."', taux_change=".$f_taux_change.", portfolio_id=".$portfolio_id." WHERE id=".$order_id;
     $res = dbc::execSql($req);
 
 }
