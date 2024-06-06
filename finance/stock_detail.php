@@ -124,8 +124,7 @@ function getTimeSeriesData($table_name, $period, $sym)
 
     $file_cache = 'cache/TMP_TIMESERIES_' . $sym . '_' . $period . '.json';
 
-    //if (cacheData::refreshCache($file_cache, 600)) { // Cache de 5 min
-    if (cacheData::refreshCache($file_cache, 0)) { // Cache de 5 min
+    if (cacheData::refreshOnceADayCache($file_cache)) {
 
         $req = "SELECT * FROM " . $table_name . " dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='" . $period . "' AND dtsa.symbol='" . $sym . "' ORDER BY dtsa.day ASC";
         $res = dbc::execSql($req);
@@ -146,10 +145,6 @@ function getTimeSeriesData($table_name, $period, $sym)
     } else {
         $ret = cacheData::readCacheData($file_cache);
     }
-
-// VFE
-//    foreach($ret as $key => $value)
-//        echo '['.($key+1).','.$value['adjusted_close'].'],';
 
     return $ret;
 }
