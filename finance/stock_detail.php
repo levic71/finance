@@ -124,7 +124,7 @@ function getTimeSeriesData($table_name, $period, $sym)
 
     $file_cache = 'cache/TMP_TIMESERIES_' . $sym . '_' . $period . '.json';
 
-    if (cacheData::refreshOnceADayCache($file_cache)) {
+    if (cacheData::refreshCache($file_cache, 6000)) { // 1h de cache
 
         $req = "SELECT * FROM " . $table_name . " dtsa, indicators indic WHERE dtsa.symbol=indic.symbol AND dtsa.day=indic.day AND indic.period='" . $period . "' AND dtsa.symbol='" . $sym . "' ORDER BY dtsa.day ASC";
         $res = dbc::execSql($req);
