@@ -845,6 +845,12 @@ class calc {
         
         }
     }
+
+    public static function getPName($name) {
+        // Prise en compte des actifs suivis manuellement
+        return substr($name, 0, 5) == "AUTRE" ? substr($name, 6) : $name;
+
+    }
     
     public static function formatDataOrder($val) {
 
@@ -957,7 +963,7 @@ class calc {
             $row['other_name'] = substr($row['product_name'], 0, 5) == "AUTRE" ? true : false;
 
             // Ajustement nom produit
-            $pname = $row['other_name'] ? substr($row['product_name'], 6) : $row['product_name'];
+            $pname = calc::getPName($row['other_name']);
             $row['product_name'] = $pname;
 
             // Init compteur ttf

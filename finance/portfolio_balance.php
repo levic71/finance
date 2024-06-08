@@ -117,7 +117,8 @@ while($row = mysqli_fetch_assoc($res)) {
 $balance_sum = 0;
 ksort($plusoumoinsvalue);
 foreach($plusoumoinsvalue as $key => $val) {
-    echo "<tr><td>".$key."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain'])."&euro;</td></tr>";
+
+    echo "<tr><td>".calc::getPName($key)."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain'])."&euro;</td></tr>";
     $balance_sum += $val['gain'] * $val['taux_change'];
 }
 
@@ -147,7 +148,7 @@ Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
 // Pagination
 paginator({
 	table: document.getElementById("tab_balance"),
-    rows_per_page: 20,
+    rows_per_page: 10,
 	box: document.getElementById("pagination_box")
 });
 
