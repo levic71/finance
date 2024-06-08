@@ -54,7 +54,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		<div class="compact circular black outline inverted ui icon top left pointing dropdown button" id="ptf_select">
 			<i class="inverted caret down icon"></i>
 			<div class="menu" id="ptf_menu">
-				<? foreach($lst_ptf as $key => $val) { ?>
+				<? foreach($lst_ptf as $key => $val) if ($val['id'] != $portfolio_id) { ?>
 				<div class="item ptf_item" data-value="<?= $val['id'] ?>"><?= mb_convert_encoding($val['name'], 'ISO-8859-1', 'UTF-8') ?></div>
 				<? } ?>
 			</div>
