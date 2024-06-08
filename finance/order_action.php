@@ -43,7 +43,7 @@ if ($action == "new") {
         $lst_positions = $sc->getPositions();
 
         // Prise en compte des actifs suivis manuellement
-        $pname = substr($f_product_name, 0, 5) == "AUTRE" ? substr($f_product_name, 6) : $f_product_name;
+        $pname = calc::getPName($f_product_name);
 
         // Prise en compte du PRU au moment de l'insertion, pas de maj si update post insertion
         if (isset(($lst_positions[$pname]['pru']))) $pru = $lst_positions[$pname]['pru'];
