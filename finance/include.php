@@ -955,26 +955,27 @@ class calc {
 
             // Traitement des ordres de type "Autre"
             $row['other_name'] = substr($row['product_name'], 0, 5) == "AUTRE" ? true : false;
+
+            // Ajustement nom produit
             $pname = $row['other_name'] ? substr($row['product_name'], 6) : $row['product_name'];
             $row['product_name'] = $pname;
-            $row['ttf'] = 0;
 
+            // Init compteur ttf
+            $row['ttf'] = 0;
+            
             // Si ordre non confirme
             if ($row['confirme'] == 0) { $portfolio['orders'][] = $row; continue; }
             
-            // Achat/Vente/Dividende Action
+            // Achat/Vente/Dividende en action
             if ($row['action'] == 1 || $row['action'] == -1 || $row['action'] == 6) {
 
-                $nb    = 0;
-                $pru   = 0;
-                $taux_change_moyen = 0;
                 $achat = $row['action'] >= 0 ? true : false;
                 
                 if (isset($positions[$pname]['nb'])) {
 
                     $nb = $positions[$pname]['nb'] + ($row['quantity'] * ($achat ? 1 : -1));
                     
-                    // Si achat on recalcule mais pas si vente
+                    // Recalcul si achat mais pas si vente
                     $pru = $achat ? ($positions[$pname]['pru'] * $positions[$pname]['nb'] + $row['quantity'] * $row['price']) / $nb : $positions[$pname]['pru'];
                     $taux_change_moyen = $achat ? ($positions[$pname]['taux_change_moyen'] * $positions[$pname]['nb'] + $row['taux_change'] * $row['quantity']) / $nb : $positions[$pname]['taux_change_moyen'];
 

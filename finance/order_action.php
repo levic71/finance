@@ -42,7 +42,11 @@ if ($action == "new") {
 
         $lst_positions = $sc->getPositions();
 
-        if (isset(($lst_positions[$f_product_name]['pru']))) $pru = $lst_positions[$f_product_name]['pru'];
+        // Prise en compte des actifs suivis manuellement
+        $pname = substr($f_product_name, 0, 5) == "AUTRE" ? substr($f_product_name, 6) : $f_product_name;
+
+        // Prise en compte du PRU au moment de l'insertion, pas de maj si update post insertion
+        if (isset(($lst_positions[$pname]['pru']))) $pru = $lst_positions[$pname]['pru'];
     }
 
     $req = "INSERT INTO orders (portfolio_id, date, product_name, action, quantity, price, pru, commission, confirme, devise, taux_change) VALUES (".$portfolio_id.", '".$f_date."', '".$f_product_name."', ".$f_action.", ".$f_quantity.", ".$f_price.", ".$pru.", ".$f_commission.", ".$f_confirme.", '".$f_devise."', ".$f_taux_change.")";
