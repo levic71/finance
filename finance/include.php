@@ -963,7 +963,7 @@ class calc {
             $row['other_name'] = substr($row['product_name'], 0, 5) == "AUTRE" ? true : false;
 
             // Ajustement nom produit
-            $pname = calc::getPName($row['other_name']);
+            $pname = calc::getPName($row['product_name']);
             $row['product_name'] = $pname;
 
             // Init compteur ttf
