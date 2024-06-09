@@ -47,7 +47,7 @@ calc::prediction_update($sess_context->getUserId());
 		<tbody>
 <?
 			$tab_extend = [];
-			$req = "SELECT * FROM prediction WHERE user_id=".$sess_context->getUserId()." ORDER BY date_avis DESC";
+			$req = "SELECT * FROM prediction p, stocks s WHERE user_id=".$sess_context->getUserId()." AND p.symbol = s.symbol ORDER BY date_avis DESC";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 
