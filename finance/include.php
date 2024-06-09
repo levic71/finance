@@ -913,7 +913,7 @@ class calc {
 
         // Récupération des données de trend_following de l'utilisateur
         $portfolio['trend_following'] = array();
-        $req = "SELECT * FROM trend_following WHERE user_id=".$user_id;
+        $req = "SELECT * FROM trend_following t, stocks s WHERE t.user_id=".$user_id." AND t.symbol = s.symbol";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) $portfolio['trend_following'][$row['symbol']] = $row;
 

@@ -58,7 +58,9 @@ $quotes = calc::getIndicatorsLastQuote();
 $tags = array_flip(explode("|", mb_convert_encoding($row_stock['tags'], 'ISO-8859-1', 'UTF-8')));
 
 // Recuperation des min/max des cotations
-$minmax = calc::getMinMaxQuotations();
+// $minmax = calc::getMinMaxQuotations();
+$minmax = array();
+
 
 // Computing portfolio/quotes
 $sc = new StockComputing($quotes, $aggregate_ptf, $devises);
@@ -1024,7 +1026,7 @@ if ($debug == 1) {
                 });
             <? } ?>
 
-            <? if ($minmax[$symbol]['all_min_price'] > 0) { ?>
+            <? if (isset($minmax[$symbol]['all_min_price']) && $minmax[$symbol]['all_min_price'] > 0) { ?>
                 h_lines_1Y.push({
                     lineColor: 'red',
                     yPosition: <?= $minmax[$symbol]['1Y_min_price'] ?>,
@@ -1045,7 +1047,7 @@ if ($debug == 1) {
                 });
             <? } ?>
 
-            <? if ($minmax[$symbol]['all_max_price'] > 0) { ?>
+            <? if (isset($minmax[$symbol]['all_max_price']) && $minmax[$symbol]['all_max_price'] > 0) { ?>
                 h_lines_1Y.push({
                     lineColor: 'green',
                     yPosition: <?= $minmax[$symbol]['1Y_max_price'] ?>,
