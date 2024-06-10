@@ -1000,6 +1000,7 @@ if ($debug == 1) {
 
             // Data pour les infos sur l'axe Y (stop loss/objectif/stop profit)
             var axe_infos = [];
+            var h_lines = [];
 
             <?
             $pki_colr = ['stop_loss' => 'rgba(247,143,3, 0.6)', 'stop_profit' => 'rgba(181, 87, 87, 0.6)', 'objectif' => 'rgba(58, 48, 190, 0.6)'];
@@ -1036,16 +1037,16 @@ if ($debug == 1) {
             chart.options.plugins.rightAxeText = [];
             options_Stock_Graphe.plugins.bubbles = [];
 
-            <? if ($sess_context->isUserConnected()) { ?>
+            if (is_user_connected) {
                 if (isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>')) {
-                    chart.options.plugins.horizontal = getAlarmLines();
+                    chart.options.plugins.horizontal = h_lines;
                     chart.options.plugins.rightAxeText = axe_infos;
                 }
 
                 if (isCN('graphe_av_bt', '<?= $bt_av_colr ?>')) {
                     options_Stock_Graphe.plugins.bubbles = bubbles_data;
                 }
-            <? } ?>
+            }
         }
 
         toogleMMX = function(chart, label) {
@@ -1226,7 +1227,7 @@ if ($debug == 1) {
 
 
             // Data pour les lignes horizontales
-            var h_lines = [];
+            h_lines = [];
 
             if (position_pru > 0) {
                 h_lines.push({
