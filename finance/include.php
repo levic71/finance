@@ -1520,56 +1520,6 @@ class calc {
         return $ret;
     }
 
-    public static function getMinMaxQuotations() {
-
-        $file_cache = 'cache/TMP_MIN_MAX_QUOTATIONS.json';
-
-        $ret = array();
-
-        if (tools::isLocalHost() || cacheData::refreshOnceADayCache($file_cache)) {
-
-            foreach([ "all" => "", "3Y" => "WHERE day >= DATE_SUB(NOW(), INTERVAL 3 YEAR)", "1Y" => "WHERE day >= DATE_SUB(NOW(), INTERVAL 1 YEAR)" ] as $key => $where) {
-
-                $req = "SELECT symbol, max(cast(adjusted_close as DECIMAL(20, 5))) max, min(cast(adjusted_close AS DECIMAL(20, 5))) min FROM `daily_time_series_adjusted` ".$where." group by symbol";
-                $res = dbc::execSql($req);
-
-                while($row = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
-
-                    // On recupere les infos du min
-                    $req2 = "SELECT symbol, day, adjusted_close FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND CAST(adjusted_close AS DECIMAL(20, 5))=".$row['min']." ".str_replace('WHERE', "AND", $where);
-                    $res2 = dbc::execSql($req2);
-                    $row2 = mysqli_fetch_array($res2, MYSQLI_ASSOC);
-
-                    $ret[$row2['symbol']][$key.'_min_price'] = $row2['adjusted_close'];
-                    $ret[$row2['symbol']][$key.'_min_day']   = $row2['day'];
-
-                    // On recupere les infos du max
-                    $req4 = "SELECT symbol, day, adjusted_close FROM daily_time_series_adjusted WHERE symbol='".$row['symbol']."' AND CAST(adjusted_close AS DECIMAL(20, 5))=".$row['max']." ".str_replace("WHERE", "AND", $where);
-                    $res4 = dbc::execSql($req4);
-                    $row4 = mysqli_fetch_array($res4, MYSQLI_ASSOC);
-
-                    $ret[$row4['symbol']][$key.'_max_price'] = $row4['adjusted_close'];
-                    $ret[$row4['symbol']][$key.'_max_day']   = $row4['day'];
-
-                    // Prise en compte de la dernière cotation
-                    $req3 = "SELECT * FROM quotes WHERE symbol='".$row['symbol']."'";
-                    $res3 = dbc::execSql($req3);
-                    if ($row3 = mysqli_fetch_array($res3, MYSQLI_ASSOC)) {
-                        if ($row3['price'] > $ret[$row2['symbol']][$key.'_max_price']) $ret[$row2['symbol']][$key.'_max_price'] = $row3['price'];
-                        if ($row3['price'] < $ret[$row2['symbol']][$key.'_min_price']) $ret[$row2['symbol']][$key.'_min_price'] = $row3['price'];
-                    }
-               }
-            }
-
-            cacheData::writeCacheData($file_cache, $ret);
-
-        } else {
-            $ret = cacheData::readCacheData($file_cache);
-        }
-
-        return $ret;
-    }
-
     public static function resetCacheUserPortfolio($user_id) {
 
         $file_cache = 'cache/TMP_AGGREGATE_USER_PTF_'.$user_id.'_.json';
