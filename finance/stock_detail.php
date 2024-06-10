@@ -57,11 +57,6 @@ $quotes = calc::getIndicatorsLastQuote();
 // Gestion des tags
 $tags = array_flip(explode("|", mb_convert_encoding($row_stock['tags'], 'ISO-8859-1', 'UTF-8')));
 
-// Recuperation des min/max des cotations
-// $minmax = calc::getMinMaxQuotations();
-$minmax = array();
-
-
 // Computing portfolio/quotes
 $sc = new StockComputing($quotes, $aggregate_ptf, $devises);
 $sc->setStratPtf($strat_ptf);
@@ -601,7 +596,7 @@ if ($debug == 1) {
                         if ($row['action'] == 1 || $row['action'] == -1) {
                             // On n'affiche pas les ordres qui ne sont pas dans le range affiché du graphe
                             if ($row['date'] >= $first_date_quote_daily && $row['date'] <= $last_date_quote_daily)
-                                $js_bubbles_data .= "bubbles_data.push({ valueX: '" . $row['date'] . "', valueY: " . floatval($row['price']) . ", rayon: " . (max(3, 5 * ($row['valo'] / 2000))) . ", rgb: '" . ($row['action'] >= 0 ? "97, 194, 97" : "255, 0, 0") . "' }); ";
+                                $js_bubbles_data .= "bubbles_data.push({ valueX: '" . $row['date'] . "', valueY: " . floatval($row['price']) . ", rayon: " . (max(3, 5 * ($row['valo'] / 2000))) . ", rgb: " . $row['action'] . " }); ";
                             $qte += $row['quantity'] * $row['action'];
                         }
                     }
@@ -647,8 +642,15 @@ if ($debug == 1) {
 
 <script>
     const datepicker1 = new TheDatepicker.Datepicker(el('f_date_dividende'));
-    datepicker1.options.setInputFormat("Y-m-d")
+    datepicker1.options.setInputFormat("Y-m-d");
     datepicker1.render();
+
+    // init variables utiles pour le graphe
+    var position_pru      = <?= $position_pru ?>;
+    var is_user_connected = <?= $sess_context->isUserConnected() ? 'true' : 'false' ?>;
+    var stock_currency    = '<?= $curr_graphe ?>';
+    var bubbles_data = [];
+    <?= $js_bubbles_data ?>
 
     <? if ($readonly) { ?>
 
@@ -688,11 +690,10 @@ if ($debug == 1) {
             'graphe_scale_bt': 'SCALE'
         };
 
-        <? if ($sess_context->isUserConnected()) { ?>
+        if (is_user_connected) {
             mm_bts.graphe_alarm_bt = 'ALARM';
             mm_bts.graphe_av_bt = 'AV';
-        <? } ?>
-
+        }
 
         // Couleurs des MMX
         var mmx_colors = {
@@ -832,9 +833,6 @@ if ($debug == 1) {
         var new_data_weekly = [];
         var new_data_monthly = [];
 
-        // Var pour affichage devise dans graphe
-        stock_currency = '<?= $curr_graphe ?>';
-
         // Data stock prices : Initialisation des tableau new_data_daily, new_data_weekly, new_data_monthly
         <?
         format_data($data_daily,   "daily");
@@ -843,14 +841,16 @@ if ($debug == 1) {
         ?>
 
         // Initialisation des tableaux ref_x_days
-        var ref_d_days = [],
-            ref_w_days = [],
-            ref_m_days = [];
+        var ref_d_days = [], ref_w_days = [], ref_m_days = [];
+        var min_day = 99999999;
+        var max_day = 0;
 
         try {
 
             // Ref Day Data
             new_data_daily.forEach(function(elt) {
+                if (elt.y < min_day) min_day = elt.y;
+                if (elt.y > max_day) max_day = elt.y;
                 ref_d_days.push(elt.x);
             });
             new_data_weekly.forEach(function(elt) {
@@ -974,12 +974,10 @@ if ($debug == 1) {
 
             });
 
-            // Ref achat/vente data
-            var bubbles_data = [];
-            <?= $js_bubbles_data ?>
-
             // Check s'il y une date de cotation pour la date de l'ordre (pour le bug si saisie mauvaise date en dehors range cotation par exmple)
             bubbles_data.forEach(function(elt) {
+                // rectification de la couleur rgb
+                elt.rgb = elt.rgb >= 0 ? "97, 194, 97" : "255, 0, 0";
                 checked = false;
                 new_date = "";
                 ref_d_days.forEach(function(d_d) {
@@ -999,74 +997,6 @@ if ($debug == 1) {
 
             // On retire le premier label (premier mois cote) pour qu'il n'empiete pas sur la gauche du graphe
             if (array_years.length > 2) array_years.shift();
-
-            // Data pour les lignes horizontales
-            var h_lines_1Y = [];
-            var h_lines_3Y = [];
-            var h_lines_all = [];
-
-            <? if ($position_pru > 0) { ?>
-                h_lines_1Y.push({
-                    lineColor: 'orange',
-                    yPosition: <?= $position_pru ?>,
-                    text: 'PRU',
-                    lineDash: [2, 2]
-                });
-                h_lines_3Y.push({
-                    lineColor: 'orange',
-                    yPosition: <?= $position_pru ?>,
-                    text: 'PRU',
-                    lineDash: [2, 2]
-                });
-                h_lines_all.push({
-                    lineColor: 'orange',
-                    yPosition: <?= $position_pru ?>,
-                    text: 'PRU',
-                    lineDash: [2, 2]
-                });
-            <? } ?>
-
-            <? if (isset($minmax[$symbol]['all_min_price']) && $minmax[$symbol]['all_min_price'] > 0) { ?>
-                h_lines_1Y.push({
-                    lineColor: 'red',
-                    yPosition: <?= $minmax[$symbol]['1Y_min_price'] ?>,
-                    text: 'MIN',
-                    lineDash: [2, 2]
-                });
-                h_lines_3Y.push({
-                    lineColor: 'red',
-                    yPosition: <?= $minmax[$symbol]['3Y_min_price'] ?>,
-                    text: 'MIN',
-                    lineDash: [2, 2]
-                });
-                h_lines_all.push({
-                    lineColor: 'red',
-                    yPosition: <?= $minmax[$symbol]['all_min_price'] ?>,
-                    text: 'MIN',
-                    lineDash: [2, 2]
-                });
-            <? } ?>
-
-            <? if (isset($minmax[$symbol]['all_max_price']) && $minmax[$symbol]['all_max_price'] > 0) { ?>
-                h_lines_1Y.push({
-                    lineColor: 'green',
-                    yPosition: <?= $minmax[$symbol]['1Y_max_price'] ?>,
-                    text: 'MAX',
-                    lineDash: [2, 2]
-                });
-                h_lines_3Y.push({
-                    lineColor: 'green',
-                    yPosition: <?= $minmax[$symbol]['3Y_max_price'] ?>,
-                    text: 'MAX',
-                    lineDash: [2, 2]
-                });
-                h_lines_all.push({
-                    lineColor: 'green',
-                    yPosition: <?= $minmax[$symbol]['all_max_price'] ?>,
-                    text: 'MAX',
-                    lineDash: [2, 2]
-                });
-            <? } ?>
 
             // Data pour les infos sur l'axe Y (stop loss/objectif/stop profit)
             var axe_infos = [];
@@ -1097,10 +1027,6 @@ if ($debug == 1) {
             ref_d_days = [];
             ref_w_days = [];
             ref_m_days = [];
-        }
-
-        getAlarmLines = function() {
-            return isCN('graphe_1Y_bt', '<?= $bt_period_colr ?>') || isCN('graphe_1T_bt', '<?= $bt_period_colr ?>') ? h_lines_1Y : (isCN('graphe_3Y_bt', '<?= $bt_period_colr ?>') ? h_lines_3Y : h_lines_all);
         }
 
         updateAlarmAVDisplay = function(chart) {
@@ -1285,58 +1211,87 @@ if ($debug == 1) {
             ?>;
 
             // MIN/MAX values cotations
-            l_min = 999999999;
-            l_max = 0;
+            min_val = 999999999;
+            max_val = 0;
             g_new_data.forEach(function(item) {
-                if (item.y > l_max) l_max = item.y;
-                if (item.y < l_min) l_min = item.y;
+                if (item.y > max_val) max_val = item.y;
+                if (item.y < min_val) min_val = item.y;
             });
+            l_min = min_val;
+            l_max = max_val;
             limits_ctrl.forEach(function(item) {
                 if (l_min > item) l_min = item;
                 if (l_max < item) l_max = item;
             });
 
+
+            // Data pour les lignes horizontales
+            var h_lines = [];
+
+            if (position_pru > 0) {
+                h_lines.push({
+                    lineColor: 'orange',
+                    yPosition: position_pru,
+                    text: 'PRU',
+                    lineDash: [2, 2]
+                });
+            }
+
+            if (min_val > 0) {
+                h_lines.push({
+                    lineColor: 'red',
+                    yPosition: min_val,
+                    text: 'MIN',
+                    lineDash: [2, 2]
+                });
+            }
+
+            if (max_val < 999999999) {
+                h_lines.push({
+                    lineColor: 'green',
+                    yPosition: max_val,
+                    text: 'MAX',
+                    lineDash: [2, 2]
+                });
+            }
+
             // Options des alertes
-            options_Stock_Graphe.plugins.horizontal = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? getAlarmLines() : [];
-        <? } else { ?>[];
-        <? } ?>
-        options_Stock_Graphe.plugins.rightAxeText = axe_infos;
-        options_Stock_Graphe.plugins.bubbles = <? if ($sess_context->isUserConnected()) { ?> isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : [];
-        <? } else { ?>[];
-        <? } ?>
-        options_Stock_Graphe.scales['y1'].max = l_max;
-        options_Stock_Graphe.scales['y1'].min = l_min;
-        options_Stock_Graphe.scales['y2'].max = <?= round($top_value_volume / (1.5 * 1000), 0) ?>;
-        options_Stock_Graphe.scales['y2'].min = 0;
-        options_Stock_Graphe.scales['y2'].stepSize = <?= round($top_value_volume / (1.5 * 1000 * 5), 0) ?>;
-        myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [insiderText, rightAxeText, horizontal, vertical, bubbles]);
+            options_Stock_Graphe.plugins.horizontal = is_user_connected && isCN('graphe_alarm_bt', '<?= $bt_alarm_colr ?>') ? h_lines : [];
+            options_Stock_Graphe.plugins.rightAxeText = axe_infos;
+            options_Stock_Graphe.plugins.bubbles = is_user_connected && isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : [];
+            options_Stock_Graphe.scales['y1'].max = l_max * 1.1;
+            options_Stock_Graphe.scales['y1'].min = l_min * 0.7;
+            options_Stock_Graphe.scales['y2'].max = <?= round($top_value_volume / (1.5 * 1000), 0) ?>;
+            options_Stock_Graphe.scales['y2'].min = 0;
+            options_Stock_Graphe.scales['y2'].stepSize = <?= round($top_value_volume / (1.5 * 1000 * 5), 0) ?>;
+            myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [insiderText, rightAxeText, horizontal, vertical, bubbles]);
 
-        // Update Chart RSI
-        var datasets2 = [];
-        datasets2.push(getDatasetRSI14(g_new_data));
-        options_RSI_Graphe.plugins.insiderText = [{
-            title: 'RSI14',
-            colr: '#e77fe8',
-            bgcolr: '#1b1c1d',
-            alignX: 'left',
-            alignY: 'top'
-        }];
-        myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [insiderText, horizontalLines_RSI_Graphe]);
+            // Update Chart RSI
+            var datasets2 = [];
+            datasets2.push(getDatasetRSI14(g_new_data));
+            options_RSI_Graphe.plugins.insiderText = [{
+                title: 'RSI14',
+                colr: '#e77fe8',
+                bgcolr: '#1b1c1d',
+                alignX: 'left',
+                alignY: 'top'
+            }];
+            myChart2 = update_graph_chart(myChart2, ctx2, options_RSI_Graphe, g_days, datasets2, [insiderText, horizontalLines_RSI_Graphe]);
 
-        // Update Chart DM
-        var datasets3 = [];
-        datasets3.push(getDatasetDM(g_new_data));
-        options_DM_Graphe.scales.y.position = 'right';
-        options_DM_Graphe.plugins.insiderText = [{
-            title: 'Evolution DM',
-            colr: 'yellow',
-            bgcolr: '#1b1c1d',
-            alignX: 'left',
-            alignY: 'top'
-        }];
-        myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [insiderText, horizontalLines_DM_Graphe]);
+            // Update Chart DM
+            var datasets3 = [];
+            datasets3.push(getDatasetDM(g_new_data));
+            options_DM_Graphe.scales.y.position = 'right';
+            options_DM_Graphe.plugins.insiderText = [{
+                title: 'Evolution DM',
+                colr: 'yellow',
+                bgcolr: '#1b1c1d',
+                alignX: 'left',
+                alignY: 'top'
+            }];
+            myChart3 = update_graph_chart(myChart3, ctx3, options_DM_Graphe, g_days, datasets3, [insiderText, horizontalLines_DM_Graphe]);
 
-        rmCN(bt, 'loading');
+            rmCN(bt, 'loading');
         }
 
         if (getCookie('status_stock_bt_reg', 0) == 1) switchCN('graphe_reg_bt', '<?= $bt_grey_colr ?>', '<?= $bt_mmx_colr ?>');
