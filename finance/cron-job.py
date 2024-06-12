@@ -4,12 +4,12 @@ import requests
 ENDPOINT = 'https://api.cron-job.org'
 
 headers = {
-    'Authorization': 'Bearer 5Wm1mRRadgEz4kBH+kitqXcjoPqCzodIpJL0ZyGX170=',
+    'Authorization': 'Bearer RtWJSAE3zWRkwYzX70uo4lfPzfJSjLr5r7udu8Poh2c=',
     'Content-Type': 'application/json'
 }
 payload = {
     'job': {
-        'enabled': False
+        'enabled': True
     }
 }
 
