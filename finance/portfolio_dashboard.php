@@ -233,7 +233,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 							echo '<tr>
 						<td data-value="' . $val['date'] . '"><i class="inverted ' . str_replace(["left", "right"], ["sign out", "sign in"], $val['icon']) . ' icon"></i> ' . $val['date'] . '</td>
 						<td>' . $val['shortname'] . '</td>
-						<td>' . $val['product_name'] . '</td>
+						<td>' . QuoteComputing::getQuoteNameWithoutExtension($val['product_name']) . '</td>
 						<td class="center aligned">' . $val['action_lib'] . '</td>
 						<td data-value="' . $val['quantity'] . '">' . $val['quantity'] . '</td>
 						<td data-value="' . $val['price'] . '">' . $val['price_signed'] . '</td>
