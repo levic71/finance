@@ -96,7 +96,7 @@ $lst_trend_following = $sc->getTrendFollowing();
             echo '<select id="ptf_select_bt" style="float: right; top: -4px; right: 10px;" class="ui dropdown"><option />';
             ksort($aggregate_ptf['positions']);
             foreach ($aggregate_ptf['positions'] as $key => $val)
-                if (!$val['other_name']) echo "<option " . ($key == $symbol ? "selected=\"selected\"" : "") . ">$key</option>";
+                if (!$val['other_name']) echo "<option " . ($key == $symbol ? "selected=\"selected\"" : "") . ">".QuoteComputing::getQuoteNameWithoutExtension($key)."</option>";
             echo "</select>";
         }
         ?>
@@ -581,7 +581,7 @@ if ($debug == 1) {
                         echo '<tr>
                             <td><i class="inverted ' . str_replace(["left", "right"], ["sign out", "sign in"], $row['icon']) . ' icon"></i> ' . $row['date'] . '</td>
                             <td>' . $row['shortname'] . '</td>
-                            <td>' . $row['product_name'] . '</td>
+                            <td>' . QuoteComputing::getQuoteNameWithoutExtension($row['product_name']) . '</td>
                             <td>' . $row['action_lib'] . '</td>
                             <td>' . $row['quantity'] . '</td>
                             <td>' . $row['price_signed'] . '</td>

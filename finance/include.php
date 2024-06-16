@@ -315,6 +315,12 @@ class QuoteComputing {
         $this->currency = $this->getOtherName() ? $sc->getPositionAttr($symbol, 'devise') : $this->quote['currency'];
     }
 
+    public static function getQuoteNameWithoutExtension($name) {
+        $s_search = array('.PAR', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE.', 'INDEXDJX..', 'INDEXEURO.', 'INDEXNASDAQ..', 'INDEXRUSSELL.', 'INDEXSP..');
+        $s_replace = array('');
+        return str_replace($s_search, $s_replace, $name);
+    }
+
     public function getQuote()    { return $this->quote; }
     public function getCurrency() { return $this->currency; }
     public function getPrice()    { return $this->price; }
@@ -695,7 +701,7 @@ class QuoteComputing {
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>
 
-            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.mb_convert_encoding($this->getName(), 'ISO-8859-1', 'UTF-8').'" data-pname="'.$this->symbol.'">'.$pname.'</td>
+            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.mb_convert_encoding($this->getName(), 'ISO-8859-1', 'UTF-8').'" data-pname="'.$this->symbol.'">'.QuoteComputing::getQuoteNameWithoutExtension($pname).'</td>
 
             <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'" data-value="'.sprintf("%.2f", $position_pru * $position_nb).'"><div>
                 <button class="tiny ui button">'.sprintf("%.2f%s", $position_pru, uimx::getCurrencySign($currency)).'</button>
@@ -2579,7 +2585,7 @@ class uimx {
         if ($strategie['methode'] != 3) {
             foreach($perfs as $key => $val) {
                 if (isset($t["quotes"][$key])) {
-                    $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.$key.'</td><td>'.sprintf("%.2f", $val).'%</td></tr>';
+                    $desc .= '<tr '.($x == 0 ? 'style="background: green"' : '').'><td>'.QuoteComputing::getQuoteNameWithoutExtension($key).'</td><td>'.sprintf("%.2f", $val).'%</td></tr>';
                     $x++;
                 }
             }
