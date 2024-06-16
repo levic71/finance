@@ -257,11 +257,12 @@ foreach($data2["stocks"] as $key => $val) {
 	$your_date = strtotime($val['day']);
 	$datediff = $now - $your_date;
 	$diff_days = round($datediff / (60 * 60 * 24));
+	$symbol_new_name = 1;
 
 	echo "<tr class=\"".$class."\" data-alerte=\"".($isAlerteActive ? 1 : 0)."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".mb_convert_encoding($val['tags'], 'ISO-8859-1', 'UTF-8')."\">";
 
 	echo "
-		<td><button class=\"mini ui primary button\">".$val['symbol']."</button></td>
+		<td><button class=\"mini ui primary button\">".QuoteComputing::getQuoteNameWithoutExtension($val['symbol'])."</button></td>
 		<td data-value=\"".$tags_infos['icon_tag']."\" data-tootik=\"".$tags_infos['tooltip']."\" class=\"collapsing\"><i data-secteur=\"".$tags_infos['icon_tag']."\" class=\"inverted grey ".$tags_infos['icon']." icon\"></i></td>
 		<td>".mb_convert_encoding($val['name'], 'ISO-8859-1', 'UTF-8')."</td>
 	";
