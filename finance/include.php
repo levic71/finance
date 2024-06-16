@@ -1558,9 +1558,9 @@ class calc {
 
         $ret = array('stocks' => array(), 'perfs' => array(), 'day' => date("Y-m-d"), 'compute_time' => date("Y-d-m H:i:s"));
 
-        if (cacheData::refreshCache($file_cache, 600)) { // Cache de 10 min
+        if (cacheData::refreshCache($file_cache, 300)) { // Cache de 5 min
 
-            $req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol=q.symbol LEFT JOIN indicators i1 ON s.symbol=i1.symbol WHERE (i1.symbol, i1.day, i1.period) IN (SELECT i2.symbol, max(i2.day), i2.period FROM indicators i2 WHERE i2.period='DAILY' GROUP BY i2.symbol) GROUP BY s.symbol";
+            $req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol=q.symbol LEFT JOIN indicators i1 ON s.symbol=i1.symbol WHERE (i1.symbol, i1.day, i1.period) IN (SELECT i2.symbol, max(i2.day), i2.period FROM indicators i2 WHERE i2.period='DAILY' GROUP BY i2.symbol) GROUP BY REPLACE(s.symbol, 'EPA.', '')";
 // $req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol=q.symbol LEFT JOIN last_day_indicators i ON s.symbol=i.i_symbol ORDER BY s.symbol ASC ";
 // A CREUSER CAR PB sur valeur des dates de DM qui ne sont pas bonnes
             $res = dbc::execSql($req);
