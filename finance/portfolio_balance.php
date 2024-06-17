@@ -118,7 +118,7 @@ $balance_sum = 0;
 ksort($plusoumoinsvalue);
 foreach($plusoumoinsvalue as $key => $val) {
 
-    echo "<tr><td>".calc::getPName($key)."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain'])."&euro;</td></tr>";
+    echo "<tr><td>".QuoteComputing::getQuoteNameWithoutExtension(calc::getPName($key))."</td><td class=\"right aligned ".($val['gain'] >=0 ? "aaf-positive" : "aaf-negative")."\">".($val['gain'] >=0 ? "+" : "").sprintf("%.2f", $val['gain'])."&euro;</td></tr>";
     $balance_sum += $val['gain'] * $val['taux_change'];
 }
 

@@ -854,7 +854,7 @@ class calc {
 
     public static function getPName($name) {
         // Prise en compte des actifs suivis manuellement
-        return substr($name, 0, 5) == "AUTRE" ? substr($name, 6) : $name;
+        return QuoteComputing::getQuoteNameWithoutExtension(substr($name, 0, 5) == "AUTRE" ? substr($name, 6) : $name);
 
     }
     

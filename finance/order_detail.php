@@ -110,7 +110,7 @@ $quotes = calc::getIndicatorsLastQuote();
                             $row['devise'] = $val['currency'];
                             $row['taux_change'] = calc::getCurrencyRate($val['currency']."EUR", $devises);
                     } ?>
-                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $row['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
+                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $row['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= QuoteComputing::getQuoteNameWithoutExtension($val['symbol']) ?></option>
                 <? } ?>
                 <option value="AUTRE" data-price="0" <?= substr($row['product_name'], 0, 5) == "AUTRE" ? "selected=\"selected\"" : "" ?>>Autre</option>
             </select>
