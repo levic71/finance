@@ -10,7 +10,8 @@ ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
 
 // Creation d'une nouvelle session
-session_cache_expire(12 * 60);
+session_cache_expire(60); // En minute
+session_cache_expire(1);
 session_start();
 
 // Initialisation session

@@ -262,7 +262,7 @@ foreach($data2["stocks"] as $key => $val) {
 	echo "<tr class=\"".$class."\" data-alerte=\"".($isAlerteActive ? 1 : 0)."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".mb_convert_encoding($val['tags'], 'ISO-8859-1', 'UTF-8')."\">";
 
 	echo "
-		<td><button class=\"mini ui primary button\">".QuoteComputing::getQuoteNameWithoutExtension($val['symbol'])."</button></td>
+		<td><button class=\"mini ui primary button\" data-symbol=\"".$val['symbol']."\">".QuoteComputing::getQuoteNameWithoutExtension($val['symbol'])."</button></td>
 		<td data-value=\"".$tags_infos['icon_tag']."\" data-tootik=\"".$tags_infos['tooltip']."\" class=\"collapsing\"><i data-secteur=\"".$tags_infos['icon_tag']."\" class=\"inverted grey ".$tags_infos['icon']." icon\"></i></td>
 		<td>".mb_convert_encoding($val['name'], 'ISO-8859-1', 'UTF-8')."</td>
 	";
@@ -517,7 +517,7 @@ Dom.find("#lst_scan tbody tr td:nth-child(1) button").forEach(function(element) 
 // Listener sur button detail stock tableau Screener
 Dom.find("#lst_stock tbody tr td:nth-child(1) button").forEach(function(element) {
 	Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
-		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+element.innerHTML, loading_area: 'main' });
+		go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol='+Dom.attribute(element, 'data-symbol'), loading_area: 'main' });
 	});
 });
 
