@@ -447,10 +447,11 @@ var overlay = {
 			// pru = Dom.attribute(Dom.id('f_pru_' + element.parentNode.id.split('_')[2]), 'data-pru');
 			Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 				other = Dom.attribute(element.parentNode.parentNode, 'data-other');
+				pname = Dom.attribute(element.parentNode.parentNode, 'data-pname');
 				if (other == 1)
 					Swal.fire('Actif non suivi');
 				else
-					go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?ptf_id=' + ptf_id + '&symbol=' + element.innerHTML, loading_area: 'main' });
+					go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?ptf_id=' + ptf_id + '&symbol=' + pname, loading_area: 'main' });
 			});
 		});
 
