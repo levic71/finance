@@ -96,7 +96,7 @@ $lst_trend_following = $sc->getTrendFollowing();
             echo '<select id="ptf_select_bt" style="float: right; top: -4px; right: 10px;" class="ui dropdown"><option />';
             ksort($aggregate_ptf['positions']);
             foreach ($aggregate_ptf['positions'] as $key => $val)
-                if (!$val['other_name']) echo "<option " . ($key == $symbol ? "selected=\"selected\"" : "") . ">".QuoteComputing::getQuoteNameWithoutExtension($key)."</option>";
+                if (!$val['other_name']) echo "<option " . ($key == $symbol ? "selected=\"selected\"" : "") . " value=\"".$key."\">".QuoteComputing::getQuoteNameWithoutExtension($key)."</option>";
             echo "</select>";
         }
         ?>
