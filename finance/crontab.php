@@ -39,8 +39,9 @@ if (tools::useGoogleFinanceService()) {
     // Recuperation des devises Google Sheet et mise en cache
     $devises = calc::getGSDevises();
 
+    // Plus nécessaire
     // Recuperatoin des alertes Google Sheet et mise en cache
-    $alertes = calc::getGSAlertes();
+    // $alertes = calc::getGSAlertes();
 }
 
 // Updates all quotes whith GS
