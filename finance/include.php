@@ -903,6 +903,7 @@ class calc {
         $valo_ptf       = 0;
         $cash           = 0;
         $ampplt         = 0; // Apports moyen ponderes par le temps
+        $sum_mv         = 0; // Somme des positions en MV
 
         $portfolio['orders']        = array();
         $portfolio['orders_futur']  = array();
@@ -1051,7 +1052,6 @@ class calc {
 
         }
 
-
         // Récupération et TRT des ordres futur
         $req = "SELECT  o.*, p.shortname, 0 AS ttf FROM orders o, portfolios p WHERE date > '".date('Y-m-d')."' AND portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") AND o.portfolio_id = p.id ORDER BY date, datetime ASC";
         $res = dbc::execSql($req);
@@ -1066,7 +1066,11 @@ class calc {
                 $taux_du_jour = calc::getCurrencyRate($val['devise']."EUR", $devises);
                 $last_price = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru'];
                 // On applique le dernier taux connu
-                $valo_ptf += $val['nb'] * $last_price * $taux_du_jour;
+                $current_valo = $val['nb'] * $last_price * $taux_du_jour;
+                // Cumul des positions totales
+                $valo_ptf += $current_valo;
+                // Cumul des positions en MV
+                $sum_mv += $last_price < $val['pru'] ? $current_valo : 0;
             }
         }
 
@@ -1082,9 +1086,10 @@ class calc {
         $portfolio['commission'] = $sum_commission;
         $portfolio['ttf']        = $sum_ttf;
         $portfolio['positions']  = $positions;
+        $portfolio['mvvr']       = ($sum_mv / $portfolio['valo_ptf']) * 100; // Risque exposition (poids des lignes en MV vs valo ptf)
         $portfolio['interval_year']  = $interval_year;
         $portfolio['interval_month'] = $interval_month;
-
+ 
         return $portfolio;
     } 
 
