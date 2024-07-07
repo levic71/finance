@@ -117,6 +117,8 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		</div>
 	</div>
 
+	<? echo "MVVR: ".sprintf("%.2f%%", $portfolio_data['mvvr']); ?>
+
 	<div class="ui hidden divider"></div>
 
 	<h2 class="ui left floated">
@@ -551,7 +553,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 	// Listener sur click lien menu ptf
 	Dom.find('#ptf_menu .ptf_item').forEach(function(item) {
 		Dom.addListener(item, Dom.Event.ON_CLICK, function(event) {
-			go({ action: 'order', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=' + Dom.attribute(item, 'data-value'), loading_area: 'main' });
+			go({ action: 'portfolio', id: 'main', url: 'portfolio_dashboard.php?portfolio_id=' + Dom.attribute(item, 'data-value'), loading_area: 'main' });
 		});
 	});
 

@@ -1,14 +1,47 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
 use DBI;
-$myConnection = DBI->connect("DBI:mysql:jorkersfinance:jorkersfinance.mysql.db", "jorkersfinance", "Rnvubwi2021");
 
-$query = $myConnection->prepare("SELECT * FROM stocks");
-$res = $query->execute();
+#my $dbh = DBI->connect("DBI:mysql:jorkersfinance:jorkersfinance.mysql.db",'jorkersfinance','Rnvubwi2021');
+my $dbh = DBI->connect("DBI:mysql:finance2:localhost",'root','root');
 
-foreach my $row (@$res) {
-   print join(',', @$row), "\n";
+die "failed to connect to MySQL database:DBI->errstr()" unless($dbh);
+
+# prepare SQL statement
+my $sth = $dbh->prepare("SELECT symbol FROM stocks")
+                   or die "prepare statement failed: $dbh->errstr()";
+
+$sth->execute() or die "execution failed: $dbh->errstr()";
+
+my($symbol);
+
+# loop through each row of the result set, and print it
+while(($symbol) = $sth->fetchrow()){
+   print("$symbol\n");
 }
 
+$sth->finish();
+$dbh->disconnect();
 
-#    cnx = mysql.connector.connect(user='jorkersfinance', password='Rnvubwi2021', host='jorkersfinance.mysql.db', database='jorkersfinance')
+
+#use DBI;
+#$myConnection = DBI->connect("DBI:mysql:jorkersfinance:jorkersfinance.mysql.db", "jorkersfinance", "Rnvubwi2021");
+
+#if(!$myConnection){
+# die "failed to connect to MySQL database DBI->errstr()";
+#}else{
+# print("Connected to MySQL server successfully.\n");
+#}
+
+#$query = $myConnection->prepare("SELECT * FROM stocks");
+#$res = $query->execute();
+
+#print "hello \n";
+
+
+#foreach my $row (@$res) {
+#   print join(',', @$row), "\n";
+#   print "toto\n";
+#}
