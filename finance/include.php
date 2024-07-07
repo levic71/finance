@@ -1069,8 +1069,8 @@ class calc {
                 $current_valo = $val['nb'] * $last_price * $taux_du_jour;
                 // Cumul des positions totales
                 $valo_ptf += $current_valo;
-                // Cumul des positions en MV
-                $sum_mv += $last_price < $val['pru'] ? $current_valo : 0;
+                // Cumul des positions en MV de plus de 20%
+                $sum_mv += $last_price < ($val['pru'] * 0.8) ? $current_valo : 0;
             }
         }
 
@@ -1086,7 +1086,7 @@ class calc {
         $portfolio['commission'] = $sum_commission;
         $portfolio['ttf']        = $sum_ttf;
         $portfolio['positions']  = $positions;
-        $portfolio['mvvr']       = ($sum_mv / $portfolio['valo_ptf']) * 100; // Risque exposition (poids des lignes en MV vs valo ptf)
+        $portfolio['mvvr']       = ($sum_mv / $portfolio['valo_ptf']) * 100; // Risque exposition (poids des lignes en MV vs valo ptf - <10 expo faible, entre 10 et 30 modéré, >30 fort)
         $portfolio['interval_year']  = $interval_year;
         $portfolio['interval_month'] = $interval_month;
  
