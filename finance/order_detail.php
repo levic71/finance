@@ -69,6 +69,13 @@ while ($myptf = mysqli_fetch_assoc($res)) $lst_ptfs[$myptf['id']] = $myptf;
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
 
+// Si on souhaite ajouter un nouvel ordre en vienant de la page détail de ce l'action, on positionne par défaut à acheter + prix
+if ($action == "new" && $from_stock_detail == 1) {
+    $row['action'] = 1;
+    $row['product_name'] = $symbol;
+    $row['price'] = $quotes["stocks"][$symbol]['price'];
+} 
+
 ?>
 
 <div class="ui inverted form">
