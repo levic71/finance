@@ -2260,8 +2260,8 @@ class cacheData {
         return $ret;
     }
 
-    public static function buildCachesSymbol($symbol, $full = false, $options) {
-
+    public static function buildCachesSymbol($symbol, $full, $options) {
+        
         $ret = array();
 
         foreach($options as $key => $val) $ret[$val] = false;

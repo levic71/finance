@@ -108,7 +108,7 @@ if ($strategie_defined && $f_strategie_id != 0) {
 
 <div id="dca_calc_form" class="ui container inverted segment form">
     
-    <h2 class="ui inverted dividing header"><i class="inverted balance scale icon"></i>Rebalancing <?= $portfolio_defined ? "portefeuille ".utf8_decode($portfolio_name) : ( $strategie_defined ? " stratégie ".utf8_decode($strategie_name) : "libre") ?></h2>
+    <h2 class="ui inverted dividing header"><i class="inverted balance scale icon"></i>Rebalancing <?= $portfolio_defined ? "portefeuille ".mb_convert_encoding($portfolio_name, 'ISO-8859-1', 'UTF-8') : ( $strategie_defined ? " stratégie ".mb_convert_encoding($strategie_name, 'ISO-8859-1', 'UTF-8') : "libre") ?></h2>
     <div class="ui centered grid">
         <div class="sixteen wide column">
     
