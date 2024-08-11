@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once "sess_context.php";
 
