@@ -150,6 +150,9 @@ var mydata = [<?
     ksort($data_ptf);
 
     foreach($data_ptf as $key => $val) {
+        $timestamp = strtotime($key);
+        $j = date("d", $timestamp);
+        //if ($j == 1)
         echo sprintf("{ d: '%s', da: %.2f, vl: %.2f, ha: %.2f, vt: %.2f, dj: %.2f, rt: %.2f, dd: %.2f }%s",
             $key,
             isset($val["depot_acc"]) ? $val["depot_acc"] : 0,
@@ -246,9 +249,6 @@ update_graph_chart = function(c, ctx, opts, lbls, dtsts, plg) {
 
     return c;
 }
-
-
-
 
 
 
