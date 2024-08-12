@@ -110,7 +110,13 @@ function insertIntoTimeSeries($symbol, $data, $table) {
 }
 
 function insertIntoIndicators($symbol, $day, $period, $item) {
+    $item["DMD1"] = $item["DMD1"] == 0 ? $day : $item["DMD1"];
+    $item["DMD2"] = $item["DMD2"] == 0 ? $day : $item["DMD2"];
+    $item["DMD3"] = $item["DMD3"] == 0 ? $day : $item["DMD3"];
     $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM100, MM200, RSI14, ytd, 1w, 1m, 1y, 3y) VALUES('".$symbol."', '".$day."', '".strtoupper($period)."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM100"]."', '".$item["MM200"]."', '".$item["RSI14"]."', '".$item["YTD"]."', '".$item["1W"]."', '".$item["1M"]."', '".$item["1Y"]."', '".$item["3Y"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM100='".$item["MM100"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."', ytd='".$item["YTD"]."', 1w='".$item["1W"]."', 1m='".$item["1M"]."', 1y='".$item["1Y"]."', 3y='".$item["3Y"]."'";
+
+    echo $req;
+
     $res = dbc::execSql($req);
 }
 
@@ -156,21 +162,21 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
 
     $item = array();
     foreach($tab_days as $key => $val) {
-        $item["MM7"]   = currentnext($tab_MM7);
-        $item["MM20"]  = currentnext($tab_MM20);
-        $item["MM50"]  = currentnext($tab_MM50);
-        $item["MM100"] = currentnext($tab_MM100);
-        $item["MM200"] = currentnext($tab_MM200);
-        $item["RSI14"] = currentnext($tab_RSI14);
-        $item["DM"]    = currentnext($tab_DM132['DM']);
+        $item["MM7"]   = Round(currentnext($tab_MM7), 9);
+        $item["MM20"]  = Round(currentnext($tab_MM20), 9);
+        $item["MM50"]  = Round(currentnext($tab_MM50), 9);
+        $item["MM100"] = Round(currentnext($tab_MM100), 9);
+        $item["MM200"] = Round(currentnext($tab_MM200), 9);
+        $item["RSI14"] = Round(currentnext($tab_RSI14), 9);
+        $item["DM"]    = Round(currentnext($tab_DM132['DM']), 9);
         $item["DMD1"]  = currentnext($tab_DM132['DMD1']);
         $item["DMD2"]  = currentnext($tab_DM132['DMD2']);
         $item["DMD3"]  = currentnext($tab_DM132['DMD3']);
-        $item["YTD"]   = currentnext($tab_DM132['YTD']);
-        $item["1W"]    = currentnext($tab_DM132['1W']);
-        $item["1M"]    = currentnext($tab_DM132['1M']);
-        $item["1Y"]    = currentnext($tab_DM132['1Y']);
-        $item["3Y"]    = currentnext($tab_DM132['3Y']);
+        $item["YTD"]   = Round(currentnext($tab_DM132['YTD']), 9);
+        $item["1W"]    = Round(currentnext($tab_DM132['1W']), 9);
+        $item["1M"]    = Round(currentnext($tab_DM132['1M']), 9);
+        $item["1Y"]    = Round(currentnext($tab_DM132['1Y']), 9);
+        $item["3Y"]    = Round(currentnext($tab_DM132['3Y']), 9);
 
         insertIntoIndicators($symbol, $val, $period, $item);
 

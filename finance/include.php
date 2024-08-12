@@ -1340,7 +1340,7 @@ class calc {
             // Valeurs de reference J0
             $ref_TJ0 = calc::getClosedValue($c['day'], $data);
             $ref_DAY = $c['day'];
-            $ref_PCT = $c['open'] == 0 ? 0 : ($c['close'] - $c['open']) * 100 / $c['open'];
+            $ref_PCT = intval($c['open']) == 0 ? 0 : (intval($c['close']) - intval($c['open'])) * 100 / intval($c['open']);
             $ref_MJ0 = intval(explode("-", $ref_DAY)[1]);
             $ref_YJ0 = intval(explode("-", $ref_DAY)[0]);
 
