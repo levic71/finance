@@ -567,7 +567,7 @@ if ($debug == 1) {
                     $nb_orders = 0;
                     $qte = 0;
                     $req_option = "AND o.product_name='" . $symbol . "'";
-                    $req = "SELECT *, p.shortname, o.id id_order FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=" . $sess_context->getUserId() . " " . $req_option . " ORDER BY datetime  DESC";
+                    $req = "SELECT *, p.shortname, o.id id_order FROM orders o, portfolios p WHERE o.portfolio_id=p.id AND p.user_id=" . $sess_context->getUserId() . " " . $req_option . " ORDER BY date, datetime  DESC";
                     $res = dbc::execSql($req);
 
                     // Bye bye si inexistant 
