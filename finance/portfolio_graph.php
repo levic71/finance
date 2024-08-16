@@ -186,6 +186,34 @@ var mydays = [<?
     }
 ?>];
 
+// Filtrage pour garder la dernère valorisation d'un mois
+month_data = [];
+mydata.forEach(function(item) {
+    let i = item.d.substring(0, 7);
+    let ld = { ...item };
+    ld.d = i;
+    // On garde la dernière valorisation du mois mais on cumule les achats, ventes, dividendes ...
+    if (!month_data[i])
+        month_data[i] = ld;
+    else {
+        month_data[i].da = ld.da;  // On garde le dernier depot du mois
+        month_data[i].vl = ld.vl;  // On garde la derniere valo du mois
+        month_data[i].ha += ld.ha; // On cumul le reste des items
+        month_data[i].vt += ld.vt;
+        month_data[i].dj += ld.dj;
+        month_data[i].rt += ld.rt;
+        month_data[i].dd += ld.dd;
+    }
+});
+
+var tmp_tab = [];
+var tmp_tab_days = [];
+Object.entries(month_data).forEach(([key, value]) => { tmp_tab.push(value); tmp_tab_days.push(key); });
+
+mydata = tmp_tab;
+mydays = tmp_tab_days;
+
+
 newDataset = function(mydata, mytype, yaxeid, yaxekey, mylabel, ptstyle, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0, ptrotation = 0) {
 
     var ret = {
