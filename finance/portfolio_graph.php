@@ -210,6 +210,7 @@ var tmp_tab = [];
 var tmp_tab_days = [];
 Object.entries(month_data).forEach(([key, value]) => { tmp_tab.push(value); tmp_tab_days.push(key); });
 
+// Bascule sur les data mensuelles
 mydata = tmp_tab;
 mydays = tmp_tab_days;
 
