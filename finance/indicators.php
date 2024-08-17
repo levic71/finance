@@ -94,6 +94,8 @@ function ComputeDMX($data, $size) {
 
 function insertIntoTimeSeries($symbol, $data, $table) {
 
+    $res = true;
+
     foreach($data['lastday'] as $key => $val) {
         $open   = $data["open"][$key];
         $high   = $data["high"][$key];

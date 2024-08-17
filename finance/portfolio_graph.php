@@ -115,6 +115,12 @@ foreach($data_ptf as $key => $val) {
 <h2 class="ui left floated">
     <i class="inverted briefcase icon"></i>
     <?= $name ?>
+    <div class="ui inverted labeled checkbox" style="float: right;">
+        <div class="ui fitted toggle checkbox">
+            <input id="graph_detail_data" type="checkbox" checked="checked">
+            <label></label>
+        </div>
+	</div>
     <select id="year_select_bt" style="float: right;">
         <option value="0" data-nb-orders="<?= $nb_orders[0] ?>" data-comm="<?= $sum_commissions[0] ?>">All</option>
         <option value="1" data-nb-orders="<?= $nb_orders[1] ?>" data-comm="<?= $sum_commissions[1] ?>">1 Year</option>
@@ -187,32 +193,36 @@ var mydays = [<?
 ?>];
 
 // Filtrage pour garder la dernère valorisation d'un mois
-month_data = [];
+tmp_month_data = [];
 mydata.forEach(function(item) {
     let i = item.d.substring(0, 7);
     let ld = { ...item };
     ld.d = i;
     // On garde la dernière valorisation du mois mais on cumule les achats, ventes, dividendes ...
-    if (!month_data[i])
-        month_data[i] = ld;
+    if (!tmp_month_data[i])
+        tmp_month_data[i] = ld;
     else {
-        month_data[i].da = ld.da;  // On garde le dernier depot du mois
-        month_data[i].vl = ld.vl;  // On garde la derniere valo du mois
-        month_data[i].ha += ld.ha; // On cumul le reste des items
-        month_data[i].vt += ld.vt;
-        month_data[i].dj += ld.dj;
-        month_data[i].rt += ld.rt;
-        month_data[i].dd += ld.dd;
+        tmp_month_data[i].da = ld.da;  // On garde le dernier depot du mois
+        tmp_month_data[i].vl = ld.vl;  // On garde la derniere valo du mois
+        tmp_month_data[i].ha += ld.ha; // On cumul le reste des items
+        tmp_month_data[i].vt += ld.vt;
+        tmp_month_data[i].dj += ld.dj;
+        tmp_month_data[i].rt += ld.rt;
+        tmp_month_data[i].dd += ld.dd;
     }
 });
 
-var tmp_tab = [];
-var tmp_tab_days = [];
-Object.entries(month_data).forEach(([key, value]) => { tmp_tab.push(value); tmp_tab_days.push(key); });
+var month_data = [];
+var month_data_days = [];
+Object.entries(tmp_month_data).forEach(([key, value]) => { month_data.push(value); month_data_days.push(key); });
+
+// Sauvegarde des data détails
+detail_data = mydata;
+detail_data_days = mydays;
 
 // Bascule sur les data mensuelles
-mydata = tmp_tab;
-mydays = tmp_tab_days;
+mydata = month_data;
+mydays = month_data_days;
 
 
 newDataset = function(mydata, mytype, yaxeid, yaxekey, mylabel, ptstyle, mycolor, bg, myfill, myborderwith = 0.5, mytension = 0.4, myradius = 0, ptrotation = 0) {
@@ -392,6 +402,19 @@ update_all_charts(0);
 
 Dom.addListener(Dom.id('year_select_bt'), Dom.Event.ON_CHANGE, function(event) {
     update_all_charts(valof('year_select_bt'));
+});
+
+// Declencheur affichage detail data vs month data
+Dom.addListener(Dom.id('graph_detail_data'), Dom.Event.ON_CHANGE, function(event) {
+    if (valof('graph_detail_data')) {
+        mydata = month_data;
+        mydays = month_data_days;
+    }
+    else {
+        mydata = detail_data;
+        mydays = detail_data_days;
+    }
+    update_all_charts(0);
 });
 
 

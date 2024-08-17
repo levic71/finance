@@ -55,12 +55,11 @@ logger::info("CRON", "BEGIN", "#################################################
 $full_data = true;      // false => COMPACT, true => FULL
 $limited_computing = 0; // 0 => pas de limite, 1 => on calcule que sur les 300 dernières valeurs
 
-$counter = 0;
-
 // ////////////////////////////////////////////////////////
 // Parcours des actifs suivis
 // ////////////////////////////////////////////////////////
-$req = "SELECT * FROM stocks ORDER BY symbol";
+$counter = 0; // Permet de compter le nombre d'actifs traités à chaque appel de cron
+$req = "SELECT * FROM stocks ORDER BY symbol ORDER BY last_indicators_update DESC, symbol";
 $res = dbc::execSql($req);
 while($row = mysqli_fetch_array($res)) {
 
