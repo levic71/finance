@@ -179,19 +179,23 @@ function updateQuotesWithGSData($val) {
 
 	if ($row['total'] == 1 && is_numeric($val[2])) {
 
-		// Si maj forcée le weekend
-		if (date("N") > 5)
-			$day = date("Y-m-d", strtotime(date("Y-m-d"). ' - '.(date('N') - 5).' days'));
-		else
-			$day = date("Y-m-d");
+		// Si on force une maj le weekend, on prend la date du vendredi comme date de maj
+		$day = date("N") > 5 ? date("Y-m-d", strtotime(date("Y-m-d").' - '.(date('N') - 5).' days')) : date("Y-m-d");
 
-		// Mise à jour de la cotation dans quote et dans daily
+		// Mise à jour de la cotation dans quote
 		$req = "UPDATE quotes SET price='".$val[2]."', open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', volume='".$val[6]."', previous='".$val[8]."', day_change='".$val[9]."', percent='".$val[10]."', day='".$day."' WHERE symbol='".$symbol."'";
 		if ($force == 1) echo substr($req, 0, 150)."<br />";
 		$res = dbc::execSql($req);
+
+		// Mise à jour de la cotation dans daily_time_serie
 		$req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."','".$day."', '".$val[3]."', '".$val[4]."', '".$val[5]."', '".$val[2]."', '".$val[2]."', '".$val[6]."', '0', '0') ON DUPLICATE KEY UPDATE open='".$val[3]."', high='".$val[4]."', low='".$val[5]."', close='".$val[2]."', adjusted_close='".$val[2]."', volume='".$val[6]."', dividend='0', split_coef='0'";
 		if ($force == 1) echo substr($req, 0, 150)."<br />";
 		$res = dbc::execSql($req);
+
+		// Mise à jour de la date de rafraichissement de la cotation
+		$req = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$symbol."'";
+		$res = dbc::execSql($req);
+
 		$ret = "[QUOTES+DAILY_TIME_SERIES_ADJUSTED] [price='".$val[2]."', open='".$val[3]."', volume='".$val[6]."', percent='".$val[10]."', ... ]";
 
 		logger::info("GSHEET", $symbol, $ret);
@@ -206,12 +210,9 @@ function updateAllQuotesWithGSData($values) {
 
 	cacheData::deleteTMPFiles();
 
-	foreach($values as $key => $val) {
-
+	foreach($values as $key => $val)
 		$ret[] = updateQuotesWithGSData($val);
 
-		// computeQuoteIndicatorsSymbol($val[0]);
-	}
 	return $ret;
 }
 

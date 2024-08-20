@@ -112,14 +112,18 @@ function insertIntoTimeSeries($symbol, $data, $table) {
 }
 
 function insertIntoIndicators($symbol, $day, $period, $item) {
+
     $item["DMD1"] = $item["DMD1"] == 0 ? $day : $item["DMD1"];
     $item["DMD2"] = $item["DMD2"] == 0 ? $day : $item["DMD2"];
     $item["DMD3"] = $item["DMD3"] == 0 ? $day : $item["DMD3"];
+
     $req = "INSERT INTO indicators (symbol, day, period, DM, DMD1, DMD2, DMD3, MM7, MM20, MM50, MM100, MM200, RSI14, ytd, 1w, 1m, 1y, 3y) VALUES('".$symbol."', '".$day."', '".strtoupper($period)."', '".$item["DM"]."', '".$item["DMD1"]."', '".$item["DMD2"]."', '".$item["DMD3"]."', '".$item["MM7"]."', '".$item["MM20"]."', '".$item["MM50"]."', '".$item["MM100"]."', '".$item["MM200"]."', '".$item["RSI14"]."', '".$item["YTD"]."', '".$item["1W"]."', '".$item["1M"]."', '".$item["1Y"]."', '".$item["3Y"]."') ON DUPLICATE KEY UPDATE DM='".$item["DM"]."', DMD1='".$item["DMD1"]."', DMD2='".$item["DMD2"]."', DMD3='".$item["DMD3"]."', MM7='".$item["MM7"]."', MM20='".$item["MM20"]."', MM50='".$item["MM50"]."', MM100='".$item["MM100"]."', MM200='".$item["MM200"]."', RSI14='".$item["RSI14"]."', ytd='".$item["YTD"]."', 1w='".$item["1W"]."', 1m='".$item["1M"]."', 1y='".$item["1Y"]."', 3y='".$item["3Y"]."'";
-
-    echo $req;
-
     $res = dbc::execSql($req);
+
+    // Mise à jour de la date de rafraichissement des indicators
+    $req = "UPDATE stocks SET last_indicators_update='".date('Y-m-d')."' WHERE symbol='".$symbol."'";
+    $res = dbc::execSql($req);
+
 }
 
 // Si all = 0, on insert tout, sinon on insert le nb indiqué

@@ -26,7 +26,7 @@ $db = dbc::connect();
 // Purge log file
 logger::purgeLogFile("./finance.log", 5*1048576);
 
-$values = array();
+$GSValues = array();
 
 // ////////////////////////////////////////////////////////
 // Mise à jour des valeurs de cotations dans Google Sheet
@@ -34,19 +34,17 @@ $values = array();
 if (tools::useGoogleFinanceService()) {
 
     // Recuperation des cotations Google Sheet
-    $values = updateGoogleSheet();
+    $GSValues = updateGoogleSheet();
 
     // Recuperation des devises Google Sheet et mise en cache
-    $devises = calc::getGSDevises();
+    $GSDevises = calc::getGSDevises();
 
     // Plus nécessaire
     // Recuperatoin des alertes Google Sheet et mise en cache
-    // $alertes = calc::getGSAlertes();
+    // $GSAlertes = calc::getGSAlertes();
 }
 
-// Updates all quotes whith GS
-// updateAllQuotesWithGSData($values);
-// exit(0);
+
 
 ?> <div class="ui container inverted segment"><?
 
@@ -59,64 +57,64 @@ $limited_computing = 0; // 0 => pas de limite, 1 => on calcule que sur les 300 d
 // Parcours des actifs suivis
 // ////////////////////////////////////////////////////////
 $counter = 0; // Permet de compter le nombre d'actifs traités à chaque appel de cron
-$req = "SELECT * FROM stocks ORDER BY symbol ORDER BY last_indicators_update DESC, symbol";
+$stocks2update = array();
+
+$req = "SELECT * FROM stocks ORDER BY last_indicators_update DESC, symbol";
 $res = dbc::execSql($req);
-while($row = mysqli_fetch_array($res)) {
+while($row = mysqli_fetch_array($res)) $stocks2update[] = $row;
 
-    $market_status = cacheData::getMarketStatus($row['timezone'], $row['marketopen'], $row['marketclose']);
+// Mise à jour des cotations quotidiennes provenant de GSheet
+foreach($stocks2update as $key => $val) {
 
-    // Mise à jour journaliere des cotations
+    $market_status = cacheData::getMarketStatus($val['timezone'], $val['marketopen'], $val['marketclose']);
+
+    // Mise à jour des cotations les jours ouvrés et pendant les heures de cotation de chaque action uniquement
     if (cacheData::isMarketOpen($market_status)) {
+    
+        // Mise à jour de la cote de l'actif
+        if (isset($GSValues[$val['symbol']])) {
 
+            // Mise à jour de la cote avec GSheet
+            updateQuotesWithGSData($GSValues[$val['symbol']]);
+    
+            logger::info("CRON", $val['symbol'], "[updateQuotesWithGSData] OK");
+        }
+
+    }
+}
+
+// Mise a jour réguliere des indicateurs de chaque cotation
+foreach($stocks2update as $key => $val) {
+
+    $market_status = cacheData::getMarketStatus($val['timezone'], $val['marketopen'], $val['marketclose']);
+
+    // Mise à jour des cotations les jours ouvrés et pendant les heures de cotation de chaque action
+    if (cacheData::isMarketOpen($market_status)) {
 
 /*
         if (aafinance::$cache_load) {
             foreach(['daily_time_series_adjusted'] as $key) {
-                $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
+                $req2 = "DELETE FROM ".$key." WHERE symbol='".$val['symbol']."'";
                 $res2 = dbc::execSql($req2);
             }    
-            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='DAILY'";
+            $req2 = "DELETE FROM indicators WHERE symbol='".$val['symbol']."' AND period='DAILY'";
             $res2 = dbc::execSql($req2);    
         }
 
-        // Mise a jour des caches : Si full = false => compact (aucun impact sur le calcul des indicateurs) 
-        $ret = cacheData::buildDailyCachesSymbol($row['symbol'], $full_data);
-
-        // Mise à jour des data daily
-        if ($ret['daily'])
-            computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "DAILY");
-        else
-            logger::info("INDIC", $row['symbol'], "[computeDailyIndicators] [Cache] [No computing]");
 */
-
-
-        // Mise à jour de la cote de l'actif
-        if (isset($values[$row['symbol']])) {
-
-            // Mise à jour de la cote avec GSheet
-            $ret['gsheet'] = updateQuotesWithGSData($values[$row['symbol']]);
-
-            // Mise a jour des indicateurs du jour (avec quotes)
-            computeDailyIndicatorsSymbol($row['symbol']);
-    
-            logger::info("CRON", $row['symbol'], "[updateQuotesWithGSData+computeDailyIndicatorsSymbol] OK");
-        }
 
     }
     
     // Mise à jour journaliere des indicateurs daily apres closing
     if (cacheData::isMarketAfterClosing($market_status)) {
 
-        if ($counter <= 10 && $row['date_update'] != date('Y-m-d')) {
+        if ($counter <= 10 && $val['last_indicators_update'] != date('Y-m-d')) {
 
-            computePeriodIndicatorsSymbol($row['symbol'], 0, "DAILY");
-            
-            $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
-            $res2 = dbc::execSql($req2);
+            computePeriodIndicatorsSymbol($val['symbol'], 0, "DAILY");
 
             $counter++;
 
-            logger::info("CRON", $row['symbol'], "[computePeriodIndicatorsSymbol DAILY] OK");
+            logger::info("CRON", $val['symbol'], "[computePeriodIndicatorsSymbol DAILY] OK");
         }
 
     }
@@ -127,41 +125,28 @@ while($row = mysqli_fetch_array($res)) {
         // Si l'option cache load est positionnee
         if (aafinance::$cache_load) {
             foreach(['weekly_time_series_adjusted', 'monthly_time_series_adjusted'] as $key) {
-                $req2 = "DELETE FROM ".$key." WHERE symbol='".$row['symbol']."'";
+                $req2 = "DELETE FROM ".$key." WHERE symbol='".$val['symbol']."'";
                 $res2 = dbc::execSql($req2);    
             }    
-            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='WEEKLY'";
+            $req2 = "DELETE FROM indicators WHERE symbol='".$val['symbol']."' AND period='WEEKLY'";
             $res2 = dbc::execSql($req2);    
-            $req2 = "DELETE FROM indicators WHERE symbol='".$row['symbol']."' AND period='MONTHLY'";
+            $req2 = "DELETE FROM indicators WHERE symbol='".$val['symbol']."' AND period='MONTHLY'";
             $res2 = dbc::execSql($req2);    
         }
-
-        // Mise a jour des caches : full = false => compact (aucun impact sur le calcul des indicateurs) 
-        $ret = cacheData::buildWeekendCachesSymbol($row['symbol'], $full_data);
-
-        if ($ret['weekly'])
-            computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "WEEKLY");
-        else
-            logger::info("INDIC", $row['symbol'], "[computeWeeklyIndicators] [Cache] [No computing]");
-
-        if ($ret['monthly'])
-            computePeriodIndicatorsSymbol($row['symbol'], $limited_computing, "MONTHLY");
-        else
-            logger::info("INDIC", $row['symbol'], "[computeMonthlyIndicators] [Cache] [No computing]");
 */
 
 
         // Mise à jour 1 fois par jour en dehors des heures d'ouverture de bourse des indicateurs
-        if ($counter <= 10 && $row['date_update'] != date('Y-m-d')) {
+        if ($counter <= 10 && $val['last_indicators_update'] != date('Y-m-d')) {
 
-            computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['WEEKLY', 'MONTHLY']));
+            computeIndicatorsForSymbolWithOptions($val['symbol'], array("aggregate" => true, "limited" => 0, "periods" => ['WEEKLY', 'MONTHLY']));
 
-            $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$row['symbol']."'";
+            $req2 = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$val['symbol']."'";
             $res2 = dbc::execSql($req2);
 
             $counter++;
 
-            logger::info("CRON", $row['symbol'], "[computeIndicatorsForSymbolWithOptions WEEKLY+MONTHLY] OK");
+            logger::info("CRON", $val['symbol'], "[computeIndicatorsForSymbolWithOptions WEEKLY+MONTHLY] OK");
         }
 
     }
