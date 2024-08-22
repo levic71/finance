@@ -82,7 +82,7 @@ class tools {
     }
 
     public static function isLocalHost() {
-        return (strtolower(getenv('SERVER_NAME')) == "localhost" || strtolower(getenv('REMOTE_ADDR')) == "127.0.0.1" || strtolower(getenv('REMOTE_ADDR')) == "localhost") ? true : false;
+        return (strtolower(getenv('LOGNAME')) == "ferreira" || strtolower(getenv('SERVER_NAME')) == "localhost" || strtolower(getenv('REMOTE_ADDR')) == "127.0.0.1" || strtolower(getenv('REMOTE_ADDR')) == "localhost") ? true : false;
     }
 
     public static function do_redirect($url) {
