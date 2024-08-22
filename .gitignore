@@ -23,3 +23,5 @@ finance/.vscode/launch.json
 finance/.vscode/settings.json
 finance/.vscode/tasks.json
 .gitignore
+finance.log
+.gitignore
