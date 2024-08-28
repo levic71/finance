@@ -2512,7 +2512,9 @@ class uimx {
 
     public static function getIconTooltipTag(&$tags) {
 
-        $ret = array();
+        $ret = array("icon" => "", "icon_tag" => "N/A", "tooltip" => "", "geo" => "");
+
+        if (!$tags) return $ret;
 
         $tab_tags = array_flip(explode("|", mb_convert_encoding($tags, 'ISO-8859-1', 'UTF-8')));
 

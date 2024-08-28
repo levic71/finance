@@ -25,3 +25,4 @@ finance/.vscode/tasks.json
 .gitignore
 finance.log
 .gitignore
+finance/phpinfo.php
