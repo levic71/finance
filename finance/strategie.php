@@ -114,7 +114,7 @@ while($row3 = mysqli_fetch_array($res3)) $lst_all_symbol[] = $row3;
 		<div class="eight wide column">
 			<div class="inverted field">
 				<div class="ui corner inverted labeled input">
-					<div class="ui inverted basic label">Nom</div><input type="text" id="f_name" value="<?= mb_convert_encoding($row['title'], 'ISO-8859-1', 'UTF-8') ?>" placeholder="Nom stratégie" />
+					<div class="ui inverted basic label">Nom</div><input type="text" id="f_name" value="<?= tools::UTF8_encoding($row['title']) ?>" placeholder="Nom stratégie" />
 					<div id="f_name_error" class="ui inverted corner label"><i class="asterisk inverted icon"></i></div>
 				</div>
 			</div>

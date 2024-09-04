@@ -19,6 +19,10 @@ date_default_timezone_set("UTC");
 // ///////////////////////////////////////////////////////////////////////////////////////
 class tools {
 
+    public static function UTF8_encoding($val) {
+        return $val == NULL ? "" : mb_convert_encoding($val, 'ISO-8859-1', 'UTF-8');
+    }
+
     public static function pretty($data) {
 
         $json = json_encode($data, JSON_PRETTY_PRINT);
@@ -316,7 +320,7 @@ class QuoteComputing {
     }
 
     public static function getQuoteNameWithoutExtension($name) {
-        $s_search = array('.PAR', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE.', 'INDEXDJX..', 'INDEXEURO.', 'INDEXNASDAQ..', 'INDEXRUSSELL.', 'INDEXSP..');
+        $s_search = array('.PAR', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE.', 'INDEXDJX..', 'INDEXEURO.', 'INDEXNASDAQ..', 'INDEXRUSSELL.', 'INDEXSP..', 'NASDAQ:');
         $s_replace = array('');
         return str_replace($s_search, $s_replace, $name);
     }
@@ -696,12 +700,12 @@ class QuoteComputing {
 
 //        echo $this->symbol; var_dump($avis);
 
-        $ret .= '<tr id="tr_item_'.$i.'" data-tags="'.mb_convert_encoding($tags, 'ISO-8859-1', 'UTF-8').'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
+        $ret .= '<tr id="tr_item_'.$i.'" data-tags="'.tools::UTF8_encoding($tags).'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
             </td>
 
-            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.mb_convert_encoding($this->getName(), 'ISO-8859-1', 'UTF-8').'" data-pname="'.$this->symbol.'">'.QuoteComputing::getQuoteNameWithoutExtension($pname).'</td>
+            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.tools::UTF8_encoding($this->getName()).'" data-pname="'.$this->symbol.'">'.QuoteComputing::getQuoteNameWithoutExtension($pname).'</td>
 
             <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'" data-value="'.sprintf("%.2f", $position_pru * $position_nb).'"><div>
                 <button class="tiny ui button">'.sprintf("%.2f%s", $position_pru, uimx::getCurrencySign($currency)).'</button>
@@ -1571,7 +1575,7 @@ class calc {
 
         if (cacheData::refreshCache($file_cache, 300)) { // Cache de 5 min
 
-            $req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol=q.symbol LEFT JOIN indicators i1 ON s.symbol=i1.symbol WHERE (i1.symbol, i1.day, i1.period) IN (SELECT i2.symbol, max(i2.day), i2.period FROM indicators i2 WHERE i2.period='DAILY' GROUP BY i2.symbol) GROUP BY REPLACE(s.symbol, 'EPA.', '')";
+            $req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol=q.symbol LEFT JOIN indicators i1 ON s.symbol=i1.symbol WHERE (i1.symbol, i1.day, i1.period) IN (SELECT i2.symbol, max(i2.day), i2.period FROM indicators i2 WHERE i2.period='DAILY' GROUP BY i2.symbol) GROUP BY s.name ORDER BY s.name ASC";
 // $req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol=q.symbol LEFT JOIN last_day_indicators i ON s.symbol=i.i_symbol ORDER BY s.symbol ASC ";
 // A CREUSER CAR PB sur valeur des dates de DM qui ne sont pas bonnes
             $res = dbc::execSql($req);
@@ -1696,14 +1700,25 @@ c8=(MM200<MM50)and(MM200<close)and(MM100<close)and((close<MM50)or(close<MM20))
         return $ret;
     }
 
-    public static function removeSymbol($symbol) {
+    public static function removeDataSymbol($symbol, $tables) {
 
-        foreach(['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted', 'stocks', 'quotes', 'indicators'] as $key) {
+        foreach($tables as $key) {
             $req = "DELETE FROM ".$key." WHERE symbol='".$symbol."'";
             $res = dbc::execSql($req); 
         }
 
         cacheData::deleteCacheSymbol($symbol);
+
+    }
+
+    public static function removeTimeSeriesAndIndicatorsSymbol($symbol) {
+        calc::removeDataSymbol($symbol, ['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted', 'indicators']);
+    }
+
+    public static function removeSymbol($symbol) {
+
+        calc::removeDataSymbol($symbol, ['stocks', 'quotes']);
+        calc::removeTimeSeriesAndIndicatorsSymbol($symbol);
 
     }
 
@@ -1915,9 +1930,70 @@ class cacheData {
         return $update_cache;
     }
 
-    public static function insertAllDataQuoteFromGS($symbol, $gf_symbol, $type) {
+    public static function aggregateDailyInWeeklyAndMonthly($data) {
 
-        $retour = false;
+        $ret = array();
+    
+        foreach($data as $key => $val) {
+    
+            $day = $val['Date'];
+    
+            $week  = date("w", strtotime($day));
+            $week_start = date('Y-m-d', strtotime('-'.($week-1).' days', strtotime($day)));
+            $week_end = date('Y-m-d', strtotime('+'.(5-$week).' days', strtotime($day)));	
+            $month = date("Y-m-t", strtotime($day));
+    
+            // Les cotations sont dans l'ordre chronologique
+            
+            if (!isset($ret['weekly'][$week_end])) {
+                $ret['weekly'][$week_end]['Date']   = $week_end;
+                $ret['weekly'][$week_end]['Open']   = $val['Open'];
+                $ret['weekly'][$week_end]['Close']  = $val['Close'];
+                $ret['weekly'][$week_end]['High']   = $val['High'];
+                $ret['weekly'][$week_end]['Low']    = $val['Low'];
+                $ret['weekly'][$week_end]['Volume'] = $val['Volume'];
+                $ret['weekly'][$week_end]['day']    = $week_end;     // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['open']   = $val['Open']; // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['adjusted_close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+            } else {
+                $ret['weekly'][$week_end]['Close']  = $val['Close'];
+                $ret['weekly'][$week_end]['High']   = max($ret['weekly'][$week_end]['High'], $val['High']);
+                $ret['weekly'][$week_end]['Low']    = min($ret['weekly'][$week_end]['Low'], $val['Low']);
+                $ret['weekly'][$week_end]['Volume'] += $val['Volume'];
+                $ret['weekly'][$week_end]['open']  = $val['Open']; // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['adjusted_close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+            }
+    
+            if (!isset($ret['monthly'][$month])) {
+                $ret['monthly'][$month]['Date']   = $month;
+                $ret['monthly'][$month]['Open']   = $val['Open'];
+                $ret['monthly'][$month]['Close']  = $val['Close'];
+                $ret['monthly'][$month]['High']   = $val['High'];
+                $ret['monthly'][$month]['Low']    = $val['Low'];
+                $ret['monthly'][$month]['Volume'] = $val['Volume'];
+                $ret['monthly'][$month]['day']    = $month;        // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['open']  = $val['Open']; // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['adjusted_close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+            } else {
+                $ret['monthly'][$month]['Close']  = $val['Close'];
+                $ret['monthly'][$month]['High']   = max($ret['monthly'][$month]['High'], $val['High']);
+                $ret['monthly'][$month]['Low']    = min($ret['monthly'][$month]['Low'], $val['Low']);
+                $ret['monthly'][$month]['Volume'] += $val['Volume'];
+                $ret['monthly'][$month]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['adjusted_close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+            }
+    
+        }
+    
+        return array($ret['weekly'], $ret['monthly']);
+    
+    }
+
+    public static function getAllDataStockFromGS($symbol, $gf_symbol, $type) {
 
         // Init de l'object Stock recherché
         $stock = [];
@@ -1929,7 +2005,8 @@ class cacheData {
         $stock['marketopen']  = "09:00";
         $stock['marketclose'] = "17:30";
         $stock['timezone']    = "UTC+01";
-        $stock_histo = [];
+        $stock['daily']       = [];
+        $stock['status']      = false;
 
         // Affectation du symbol recherche dans la feuille de calcul
         setGoogleSheetStockSymbol($stock['gf_symbol'], "daily");
@@ -1947,23 +2024,19 @@ class cacheData {
             $ret = getGoogleSheetStockData("C1:W2", "daily");
 
             // Si tradetime non existant bye bye
-            if ($ret[1][0] == "#N/A") return $retour;
-
-            // RAZ data
-            calc::removeSymbol($stock['symbol']);
+            if ($ret[1][0] == "#N/A") return $stock;
 
             // Creation de l'objet stock avec les valeurs recuperees
-            foreach(range(0, 20) as $i) $stock[$ret[0][$i]] = $ret[1][$i];
+            foreach(range(0, 20) as $i) $stock[$ret[0][$i]] = $ret[0][$i] != "name" ? str_replace(',', '.', $ret[1][$i]) : $ret[1][$i];
             
-            $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine) VALUES ('".$stock['symbol']."', '".$stock['gf_symbol']."', '".addslashes($stock['name'])."', '".$stock['type']."', '".$stock['region']."', '".$stock['marketopen']."', '".$stock['marketclose']."', '".$stock['timezone']."', '".$stock['currency']."', '".$stock['engine']."')";
-            $res = dbc::execSql($req);
-
-            $req = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$stock['symbol']."','".str_replace(',', '.', $stock['priceopen'])."', '".str_replace(',', '.', $stock['high'])."', '".str_replace(',', '.', $stock['low'])."', '".str_replace(',', '.', $stock['price'])."', '".str_replace(',', '.', $stock['volume'])."', '".substr($stock['tradetime'], 6, 4)."-".substr($stock['tradetime'], 3, 2)."-".substr($stock['tradetime'], 0, 2)."', '".str_replace(',', '.', $stock['closeyest'])."', '".str_replace(',', '.', $stock['change'])."', '".str_replace(',', '.', $stock['changepct'])."')";
-            $res = dbc::execSql($req);
-
-            $req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$stock['symbol']."','".substr($stock['tradetime'], 6, 4)."-".substr($stock['tradetime'], 3, 2)."-".substr($stock['tradetime'], 0, 2)."', '".str_replace(',', '.', $stock['priceopen'])."', '".str_replace(',', '.', $stock['high'])."', '".str_replace(',', '.', $stock['low'])."', '".str_replace(',', '.', $stock['price'])."', '".str_replace(',', '.', $stock['price'])."', '".str_replace(',', '.', $stock['volume'])."', '0', '0') ON DUPLICATE KEY UPDATE open='".str_replace(',', '.', $stock['priceopen'])."', high='".str_replace(',', '.', $stock['high'])."', low='".str_replace(',', '.', $stock['low'])."', close='".str_replace(',', '.', $stock['price'])."', adjusted_close='".str_replace(',', '.', $stock['price'])."', volume='".str_replace(',', '.', $stock['volume'])."', dividend='0', split_coef='0'";
-            $res = dbc::execSql($req);
-
+            // Ajustement de certaines data par rapport à la devise
+            if ($stock['currency'] == "USD") {
+                $stock['region']      = "US";
+                $stock['marketopen']  = "9:30";
+                $stock['marketclose'] = "16:00";
+                $stock['timezone']    = "UTC-04";
+            }
+    
             // Recuperation historique cotation actif en daily
             $ret = getGoogleSheetStockData("C3:H".($nb+2), "daily");
 
@@ -1977,28 +2050,58 @@ class cacheData {
 
                 } else {
 
-                    $stock_histo['symbol'] = $symbol;
+                    $daily_data = [];
 
-                    foreach(range(0, 5) as $i) $stock_histo[$col_names[$i]] = $ret[$key][$i];
+                    // Récupération des données journalières + transformation des ',' en '.' pour les chiffres
+                    foreach(range(0, 5) as $i) $daily_data[$col_names[$i]] = str_replace(',', '.', $ret[$key][$i]);
 
-                    $date  = substr($stock_histo['Date'], 6, 4)."-".substr($stock_histo['Date'], 3, 2)."-".substr($stock_histo['Date'], 0, 2);
-                    $close = str_replace(',', '.', $stock_histo['Close']);
-                    $open  = str_replace(',', '.', $stock_histo['Open']);
-                    $high  = str_replace(',', '.', $stock_histo['High']);
-                    $low   = str_replace(',', '.', $stock_histo['Low']);
-                    $vol   = str_replace(',', '.', $stock_histo['Volume']);
+                    // Reformatage de la date
+                    $daily_data['Date']  = substr($daily_data['Date'], 6, 4)."-".substr($daily_data['Date'], 3, 2)."-".substr($daily_data['Date'], 0, 2);
+                    $daily_data['day']   = $daily_data['Date'];  // Pour le calcul des indicateurs plus tard
+                    $daily_data['open'] = $daily_data['Open']; // Pour le calcul des indicateurs plus tard
+                    $daily_data['adjusted_close'] = $daily_data['Close']; // Pour le calcul des indicateurs plus tard
+                    $daily_data['close'] = $daily_data['Close']; // Pour le calcul des indicateurs plus tard
                     
-                    $req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$stock_histo['symbol']."','".$date."', '".$open."', '".$high."', '".$low."', '".$close."', '".$close."', '".$vol."', '0', '0') ON DUPLICATE KEY UPDATE open='".$open."', high='".$high."', low='".$low."', close='".$close."', adjusted_close='".$close."', volume='".$vol."', dividend='0', split_coef='0'";
-                    $res = dbc::execSql($req);
+                    // Mise en tableau des données journalières
+                    $stock['daily'][] = $daily_data;
                         
                 }
 
             }
 
-            $retour = true;
+            $stock['status'] = true;
         }
 
-        return $retour;
+        return $stock;
+
+    }
+    
+    public static function insertOrUpdateDataQuoteFromGS($data) {
+
+        // RAS data daily/weekly/monthly/indicators
+        calc::removeTimeSeriesAndIndicatorsSymbol($data['symbol']);
+
+        // Maj data stock
+        $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$data['symbol']."', '".$data['gf_symbol']."', '".addslashes($data['name'])."', '".$data['type']."', '".$data['region']."', '".$data['marketopen']."', '".$data['marketclose']."', '".$data['timezone']."', '".$data['currency']."', '".$data['engine']."', ".$data['pe'].", ".$data['eps'].", ".$data['beta'].", ".$data['shares'].", ".$data['marketcap'].") AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
+        $res = dbc::execSql($req);
+
+        // Maj quote quotes
+        $req = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$data['symbol']."','".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['volume']."', '".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['closeyest']."', '".$data['change']."', '".$data['changepct']."') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, price=new.price, volume=new.volume, day=new.day, previous=new.previous, day_change=new.day_change, percent=new.percent";
+        $res = dbc::execSql($req);
+
+        // Insert today quotation in daily
+        $req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$data['symbol']."','".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['price']."', '".$data['volume']."', '0', '0') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
+        $res = dbc::execSql($req);
+
+        // Insert quotations and build indicators
+        $time_series_tables = [ "daily" => "daily_time_series_adjusted", "weekly" => "weekly_time_series_adjusted", "monthly" => "monthly_time_series_adjusted" ];
+        foreach($time_series_tables as $serie => $table) {
+            foreach($data[$serie] as $key => $val) {
+                $req = "INSERT INTO ".$table." (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$data['symbol']."','".$val['Date']."', '".$val['Open']."', '".$val['High']."', '".$val['Low']."', '".$val['Close']."', '".$val['Close']."', '".$val['Volume']."', '0', '0') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
+                $res = dbc::execSql($req);
+            }
+            computeIndicatorsAndInsertIntoBD($data['symbol'], $data[$serie], $serie, 0);
+        }
 
     }
 
@@ -2516,7 +2619,7 @@ class uimx {
 
         if (!$tags) return $ret;
 
-        $tab_tags = array_flip(explode("|", mb_convert_encoding($tags, 'ISO-8859-1', 'UTF-8')));
+        $tab_tags = array_flip(explode("|", tools::UTF8_encoding($tags)));
 
         // default values
         $tooltip  = "Entreprise";
@@ -2614,7 +2717,7 @@ class uimx {
             <button id="home_sim_bt_'.$strategie['id'].'" class="ui right floated small grey icon button">Backtesting</button>
         </div>';
 
-        $title = mb_convert_encoding($strategie['title'], 'ISO-8859-1', 'UTF-8').($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
+        $title = tools::UTF8_encoding($strategie['title']).($sess_context->isUserConnected() ? "<i id=\"home_strategie_".$strategie['id']."_bt\" class=\"ui inverted right floated black small ".($user_id == $strategie['user_id'] ? "settings" : "copy")." icon\"></i>" : "");
         uimx::genCard("home_card_".$strategie['id'], $title, $day, $desc, "perf_card");
     }
 
@@ -2635,7 +2738,7 @@ class uimx {
         </div>
         ';
 
-        $title = mb_convert_encoding($portfolio['name'], 'ISO-8859-1', 'UTF-8').($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
+        $title = tools::UTF8_encoding($portfolio['name']).($sess_context->isUserConnected() ? "<i id=\"portfolio_edit_".$portfolio['id']."_bt\" class=\"ui inverted right floated black small settings icon\"></i>" : "");
         uimx::genCard("portfolio_card_".$portfolio['id'], "<button class=\"right floating tiny ui ".($daily_perf >=0 ? "green" : "red")." label\">".(($daily_perf >= 0 ? "+" : "").sprintf("%.2f", $daily_perf))."%</button>".$title, date('Y-m-d'), $desc);
     }
 

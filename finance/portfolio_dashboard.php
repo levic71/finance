@@ -48,14 +48,14 @@ $lst_orders_futur = $sc->getOrdersFutur();
 
 	<h2 class="ui left floated">
 		<i class="inverted briefcase icon"></i>
-		<?= mb_convert_encoding($sc->getPtfName(), 'ISO-8859-1', 'UTF-8') ?><small id="subtitle"></small>
+		<?= tools::UTF8_encoding($sc->getPtfName()) ?><small id="subtitle"></small>
 
 		<? if (count($lst_ptf) > 0) { ?>
 		<div class="compact circular black outline inverted ui icon top left pointing dropdown button" id="ptf_select">
 			<i class="inverted caret down icon"></i>
 			<div class="menu" id="ptf_menu">
 				<? foreach($lst_ptf as $key => $val) if ($val['id'] != $portfolio_id) { ?>
-				<div class="item ptf_item" data-value="<?= $val['id'] ?>"><?= mb_convert_encoding($val['name'], 'ISO-8859-1', 'UTF-8') ?></div>
+				<div class="item ptf_item" data-value="<?= $val['id'] ?>"><?= tools::UTF8_encoding($val['name']) ?></div>
 				<? } ?>
 			</div>
 		</div>

@@ -62,11 +62,11 @@ while($row = mysqli_fetch_assoc($res)) $tab_strategies[] = $row;
     <div class="three fields">
     <div class="field">
             <label>Titre</label>
-            <input type="text" id="f_nom" value="<?= mb_convert_encoding($strategie['name'], 'ISO-8859-1', 'UTF-8'); ?>" placeholder="Nom du portefeuille">
+            <input type="text" id="f_nom" value="<?= tools::UTF8_encoding($strategie['name']); ?>" placeholder="Nom du portefeuille">
         </div>
         <div class="field">
             <label>Titre court</label>
-            <input type="text" id="f_nom_court" value="<?= mb_convert_encoding($strategie['shortname'], 'ISO-8859-1', 'UTF-8'); ?>" placeholder="Nom court">
+            <input type="text" id="f_nom_court" value="<?= tools::UTF8_encoding($strategie['shortname']); ?>" placeholder="Nom court">
         </div>
         <div class="field">
             <label>Choix d'une stratégie</label>

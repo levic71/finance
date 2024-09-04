@@ -37,7 +37,7 @@ while ($row = mysqli_fetch_assoc($res)) {
                     <select class="ui fluid search dropdown" id="f_portfolio_id">
                         <?
                             foreach($lst_portfolios as $key => $val)
-                                echo '<option value="'.$val['id'].'">'.mb_convert_encoding($val['name'], 'ISO-8859-1', 'UTF-8').'</option>';
+                                echo '<option value="'.$val['id'].'">'.tools::UTF8_encoding($val['name']).'</option>';
                         ?>
                     </select>
                     <button id="dca_go_bt0" class="ui icon pink float right small button"><i class="inverted play icon"></i></button>
@@ -50,7 +50,7 @@ while ($row = mysqli_fetch_assoc($res)) {
                     <select class="ui fluid search dropdown" id="f_strategie_id">
                         <?
                             foreach($tab_strategies as $key => $val)
-                                echo '<option value="'.$val['id'].'">'.mb_convert_encoding($val['title'], 'ISO-8859-1', 'UTF-8').'</option>';
+                                echo '<option value="'.$val['id'].'">'.tools::UTF8_encoding($val['title']).'</option>';
                         ?>
                     </select>
                     <button id="dca_go_bt1" class="ui icon pink float right small button"><i class="inverted play icon"></i></button>

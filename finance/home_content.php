@@ -14,7 +14,7 @@ $db = dbc::connect();
 
 // SQL SCHEMA UPDATE
 // $ret = dbc::addColTable("stocks", "dividende_annualise", "ALTER TABLE `stocks` ADD `dividende_annualise` FLOAT NOT NULL AFTER `rating`, ADD `date_dividende` DATE NOT NULL AFTER `dividende_annualise`;");
-$ret = dbc::addColTable("indicators", "last_upt", "ALTER TABLE `indicators` ADD `last_upt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `3y`;");
+$ret = dbc::addColTable("stocks", "pe", "ALTER TABLE `stocks` ADD `pe` FLOAT NULL DEFAULT '0' COMMENT 'PER' AFTER `date_dividende`, ADD `eps` FLOAT NULL DEFAULT '0' COMMENT 'Earning per share' AFTER `pe`, ADD `beta` FLOAT NULL DEFAULT '0' AFTER `eps`, ADD `shares` FLOAT NULL DEFAULT '0' AFTER `beta`, ADD `marketcap` FLOAT NULL DEFAULT '0' AFTER `shares`;");
 
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
@@ -76,7 +76,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 		foreach($notifs as $key => $val)
 			if ($val['user_id'] == 0 || ($sess_context->isUserConnected() && $val['user_id'] == $sess_context->getUserId())) {
 				echo '
-					<div id="portfolio_alertes_'.$val['actif'].'_bt" data-tootik="'.mb_convert_encoding($data2['stocks'][$val['actif']]['name'], 'ISO-8859-1', 'UTF-8').'" class="ui labeled button portfolio_alerte" tabindex="0">
+					<div id="portfolio_alertes_'.$val['actif'].'_bt" data-tootik="'.tools::UTF8_encoding($data2['stocks'][$val['actif']]['name']).'" class="ui labeled button portfolio_alerte" tabindex="0">
 						<div class="ui '.($val['sens'] == -1 && $val['couleur'] == "green" ? "positive " : "").($val['sens'] == 1 && $val['couleur'] == "red" ? "negative " : "").$val['couleur'].' button" data-symbol="'.$val['actif'].'">
 							<i class="'.$val['icone'].' inverted icon"></i>'.$val['actif'].'
 						</div>
@@ -259,12 +259,12 @@ foreach($data2["stocks"] as $key => $val) {
 	$diff_days = round($datediff / (60 * 60 * 24));
 	$symbol_new_name = 1;
 
-	echo "<tr class=\"".$class."\" data-alerte=\"".($isAlerteActive ? 1 : 0)."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".mb_convert_encoding($val['tags'], 'ISO-8859-1', 'UTF-8')."\">";
+	echo "<tr class=\"".$class."\" data-alerte=\"".($isAlerteActive ? 1 : 0)."\" data-ptf=\"".(isset($positions[$val['symbol']]) ? 1 : 0)."\" data-tags=\"".tools::UTF8_encoding($val['tags'])."\">";
 
 	echo "
 		<td><button class=\"mini ui primary button\" data-symbol=\"".$val['symbol']."\">".QuoteComputing::getQuoteNameWithoutExtension($val['symbol'])."</button></td>
 		<td data-value=\"".$tags_infos['icon_tag']."\" data-tootik=\"".$tags_infos['tooltip']."\" class=\"collapsing\"><i data-secteur=\"".$tags_infos['icon_tag']."\" class=\"inverted grey ".$tags_infos['icon']." icon\"></i></td>
-		<td>".mb_convert_encoding($val['name'], 'ISO-8859-1', 'UTF-8')."</td>
+		<td>".tools::UTF8_encoding($val['name'])."</td>
 	";
 	
 	echo "

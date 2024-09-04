@@ -38,7 +38,7 @@ if (isset($search) && $search != "") {
             foreach ($data["bestMatches"] as $key => $val) {
                 echo "<tr>
                     <td>" . $val["1. symbol"] . "</td>
-                    <td><div class=\"td_name\">" . mb_convert_encoding($val["2. name"], 'ISO-8859-1', 'UTF-8') . "</div></td>
+                    <td><div class=\"td_name\">" . tools::UTF8_encoding($val["2. name"]) . "</div></td>
                     <td>" . $val["3. type"] . "</td>
                     <td>" . $val["4. region"] . "</td>
                     <td>" . $val["8. currency"] . "</td>
@@ -46,7 +46,7 @@ if (isset($search) && $search != "") {
                 </tr>";
 /*                 echo "<tr>
                     <td>" . $val["1. symbol"] . "</td>
-                    <td><div class=\"td_name\">" . mb_convert_encoding($val["2. name", 'ISO-8859-1', 'UTF-8']) . "</div></td>
+                    <td><div class=\"td_name\">" . tools::UTF8_encoding($val["2. name") . "</div></td>
                     <td>" . $val["3. type"] . "</td>
                     <td>" . $val["4. region"] . "</td>
                     <td>" . $val["5. marketOpen"] . "</td>
@@ -78,7 +78,6 @@ if (isset($search) && $search != "") {
         </div>
         <div class="ui icon input">
             <select class="ui fluid search dropdown" id="f_search_type">
-                <option value="">Choisir</option>
                 <? foreach (uimx::$type_actif as $key => $val) echo '<option value="'.$val.'">'.$val.'</option>'; ?>
             </select>
         </div>
