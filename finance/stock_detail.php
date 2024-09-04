@@ -55,7 +55,7 @@ $devises = cacheData::readCacheData("cache/CACHE_GS_DEVISES.json");
 $quotes = calc::getIndicatorsLastQuote();
 
 // Gestion des tags
-$tags = array_flip(explode("|", mb_convert_encoding($row_stock['tags'], 'ISO-8859-1', 'UTF-8')));
+$tags = array_flip(explode("|", tools::UTF8_encoding($row_stock['tags'])));
 
 // Computing portfolio/quotes
 $sc = new StockComputing($quotes, $aggregate_ptf, $devises);
@@ -85,7 +85,7 @@ $lst_trend_following = $sc->getTrendFollowing();
 
     <h2 class="ui left">
         <span>
-            <?= mb_convert_encoding($name, 'ISO-8859-1', 'UTF-8'); // VFE - EX UT8_ENCODE 
+            <?= tools::UTF8_encoding($name); // VFE - EX UT8_ENCODE 
             ?>
         </span>
         <? if ($sess_context->isSuperAdmin()) { ?>
@@ -1262,9 +1262,10 @@ if ($debug == 1) {
             options_Stock_Graphe.plugins.bubbles = is_user_connected && isCN('graphe_av_bt', '<?= $bt_av_colr ?>') ? bubbles_data : [];
             options_Stock_Graphe.scales['y1'].max = l_max * 1.1;
             options_Stock_Graphe.scales['y1'].min = l_min * 0.7;
-            options_Stock_Graphe.scales['y2'].max = <?= round($top_value_volume / (1.5 * 1000), 0) ?>;
+            coef = getIntervalStatus() == 'D' ? 1000 : (getIntervalStatus() == 'W' ? 100 : 25);
+            options_Stock_Graphe.scales['y2'].max = <?= round($top_value_volume / 1.5, 0) ?> / coef;
             options_Stock_Graphe.scales['y2'].min = 0;
-            options_Stock_Graphe.scales['y2'].stepSize = <?= round($top_value_volume / (1.5 * 1000 * 5), 0) ?>;
+            options_Stock_Graphe.scales['y2'].stepSize = <?= round($top_value_volume / (1.5 * 5), 0) ?> / coef;
             myChart1 = update_graph_chart(myChart1, ctx1, options_Stock_Graphe, g_days, datasets1, [insiderText, rightAxeText, horizontal, vertical, bubbles]);
 
             // Update Chart RSI

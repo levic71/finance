@@ -127,7 +127,7 @@ function insertIntoIndicators($symbol, $day, $period, $item) {
 }
 
 // Si all = 0, on insert tout, sinon on insert le nb indiqué
-function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
+function computeIndicatorsAndInsertIntoBD($symbol, $data, $period, $all = 0) {
 
     $ret = 0;
 
@@ -192,12 +192,12 @@ function computeAndInsertIntoIndicators($symbol, $data, $period, $all = 0) {
     return $ret;
 }
 
-function computeAndInsertIndicatorsAllDates($symbol, $data, $period, $all = 0) {
-    return computeAndInsertIntoIndicators($symbol, $data, $period, $all);
+function computeIndicatorsAllDatesAndInsertIntoDB($symbol, $data, $period, $all = 0) {
+    return computeIndicatorsAndInsertIntoBD($symbol, $data, $period, $all);
 }
 
-function computeAndInsertIndicatorsLastDate($symbol, $data, $period) {
-    return computeAndInsertIntoIndicators($symbol, $data, $period, 1);
+function computeIndicatorsLastDateAndInsertIntoDB($symbol, $data, $period) {
+    return computeIndicatorsAndInsertIntoBD($symbol, $data, $period, 1);
 }
 
 function calculMoyenne($tab_data) {
@@ -304,7 +304,7 @@ function computePeriodIndicatorsSymbol($symbol, $limited, $period) {
     }
 
     // INSERT INDICATORS
-    $ret = computeAndInsertIndicatorsAllDates($symbol, $data, $period, $limited == 1 ? 30 : 0);
+    $ret = computeIndicatorsAllDatesAndInsertIntoDB($symbol, $data, $period, $limited == 1 ? 30 : 0);
     
     logger::info("INDIC", $symbol, "[".$period."] [insert=".$ret.", data=".count($data)."]");
 }
@@ -344,7 +344,7 @@ function computeDailyIndicatorsSymbol($symbol) {
         if ($add_today) $data[] = $row2;
 
         // INSERT ALL INDICATORS
-        $ret = computeAndInsertIndicatorsLastDate($symbol, $data, "DAILY");
+        $ret = computeIndicatorsLastDateAndInsertIntoDB($symbol, $data, "DAILY");
         
         logger::info("INDIC", $symbol, "[QUOTES] [insert=".$ret.", data=".count($data)."]");
     }

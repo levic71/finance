@@ -68,5 +68,5 @@ if ($action == "upt" && isset($strategie_id) && $strategie_id != "") {
 <script>
     go({ action: 'home_content', id: 'main', url: 'home_content.php' });
     var p = loadPrompt();
-    p.success('Stratégie <?= mb_convert_encoding($f_name, 'ISO-8859-1', 'UTF-8').($action == "new" || $action == "copy"? " ajoutée": ($action == "upt" ? " modifiée" : " supprimée")) ?>');
+    p.success('Stratégie <?= tools::UTF8_encoding($f_name).($action == "new" || $action == "copy"? " ajoutée": ($action == "upt" ? " modifiée" : " supprimée")) ?>');
 </script>

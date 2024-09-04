@@ -173,7 +173,7 @@ if ($action == "reload") {
 
             cacheData::deleteCacheSymbol($symbol);
         } else {
-            $ret = cacheData::insertAllDataQuoteFromGS($row['symbol'], $row['gf_symbol'], $row['type']);
+            $ret = cacheData::insertAllDataQuoteFromGS($row['symbol'], $row['gf_symbol'], $row['type'], $row['currency']);
         }
 
         updateSymbolData($row['symbol'], $row['engine']);
@@ -193,7 +193,7 @@ if ($action == "upt") {
         $links = json_encode(array("link1" => $f_link1, "link2" => $f_link2));
 
         // Mise a jour des data informatives de l'actif
-        $req = "UPDATE stocks SET type='".$f_type."', links='".$links."', pea=".$pea.", ISIN='".$f_isin."', provider='".$f_provider."', categorie='".$f_categorie."', frais='".$f_frais."', actifs='".$f_actifs."', distribution='".$f_distribution."', gf_symbol='".$f_gf_symbol."', rating='".$f_rating."', tags='".$f_tags."', dividende_annualise='".$f_dividende."', date_dividende='".$f_date_dividende."' WHERE symbol='".$symbol."'";
+        $req = "UPDATE stocks SET type='".$f_type."', links='".$links."', pea=".$pea.", ISIN='".$f_isin."', provider='".$f_provider."', categorie='".$f_categorie."', frais='".$f_frais."', actifs=".($f_actifs ? $f_actifs : 0).", distribution='".$f_distribution."', gf_symbol='".$f_gf_symbol."', rating=".$f_rating.", tags='".$f_tags."', dividende_annualise=".($f_dividende ? $f_dividende : 0).", date_dividende=".($f_date_dividende ? "'".$f_date_dividende."'" : "NULL")." WHERE symbol='".$symbol."'";
         $res = dbc::execSql($req);
 
         logger::info("STOCK", $symbol, "[OK]");

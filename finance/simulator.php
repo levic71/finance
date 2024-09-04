@@ -199,7 +199,7 @@ $final_info = '
         <th>Duree</th>
     </tr>
     <tr>
-        <td>'.mb_convert_encoding($row['title'], 'ISO-8859-1', 'UTF-8').'</td>
+        <td>'.tools::UTF8_encoding($row['title']).'</td>
         <td>'.sprintf("%.2f", $sim['valo_pf']).' &euro;</td>
         <td>'.sprintf("%.2f", $sim['sum_invest']).' &euro;</td>
         <td class="'.($sim['perf_pf'] >= 0 ? "aaf-positive" : "aaf-negative").'">'.sprintf("%.2f", $sim['perf_pf']).' %</td>
@@ -388,7 +388,7 @@ getDataset = function(mydata, mylabel, bc, bg, myfill) {
 var mydatasets = [];
 mydatasets.push(getDataset(invts,    'Investissement',        'rgba(97, 194, 97, 0.75)',  'rgba(97, 194, 97, 1)',    false));
 mydatasets.push(getDataset(valos_RC, '<?= $sim['sym_RC'] ?>', 'rgba(23, 109, 181, 0.75)', 'rgba(23, 109, 181, 1)',   false));
-mydatasets.push(getDataset(valos,    '<?= mb_convert_encoding($row['title'], 'ISO-8859-1', 'UTF-8') ?>',  'rgba(238, 130, 6, 0.75)',  'rgba(238, 130, 6, 0.05)', true));
+mydatasets.push(getDataset(valos,    '<?= tools::UTF8_encoding($row['title']) ?>',  'rgba(238, 130, 6, 0.75)',  'rgba(238, 130, 6, 0.05)', true));
 
 var ctx = document.getElementById('sim_canvas1').getContext('2d');
 el("sim_canvas1").height = document.body.offsetWidth > 700 ? 100 : 300;
