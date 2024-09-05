@@ -81,8 +81,8 @@ if ($action == "add") {
 
             // Attention le symbol dans ce cas la est le gf_symbol et le ":" pose pb en tant que clé symbol donc on remplace pas "."
             $gf_symbol = $symbol;
-            $symbol = str_replace(':', '.', $symbol);
-            $ret = cacheData::insertAllDataQuoteFromGS($symbol, $gf_symbol, $f_search_type);
+            //$symbol = str_replace(':', '.', $symbol);
+            $ret = cacheData::getAndInsertAllDataQuoteFromGS($symbol, $f_search_type);
 
             $ret_add = $ret ? 1 : 0;
 

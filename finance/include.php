@@ -2105,6 +2105,37 @@ class cacheData {
 
     }
 
+    public static function getAndInsertAllDataQuoteFromGS($symbol, $type) {
+
+        $ret = false;
+
+        // Fichier cache
+        $filename = 'cache/GS_QUOTE_'.$symbol.'.json';
+
+        // Récupération des data (information + daily) depuis GS
+        $data = cacheData::getAllDataStockFromGS($symbol, $symbol, $type);
+
+        if (count($data['daily'])) {
+
+            // Calcul des data weekly/Monthly avec les daily
+            list($data['weekly'], $data['monthly']) = cacheData::aggregateDailyInWeeklyAndMonthly($data['daily']);
+
+            // Ecriture en cache des data
+            cacheData::writeCacheData($filename, $data);
+
+            // Ecriture en BD des data
+            cacheData::insertOrUpdateDataQuoteFromGS($data);
+
+            // Reset des caches TMP pour recalcul
+            cacheData::deleteTMPFiles();
+
+            $ret = true;
+        }
+
+        return $ret;
+
+    }
+
     public static function buildCacheOverview($symbol) {
 
         $ret = false;
