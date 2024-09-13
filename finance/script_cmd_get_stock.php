@@ -31,6 +31,12 @@ if (!$symbol || !$type) { echo "paramètre manquant ..."; exit(0); }
 
 if ($type != "Equity" && $type != "ETF" && $type != "INDICE") { echo "type incorrect ..."; exit(0); }
 
-cacheData::getAndInsertAllDataQuoteFromGS($symbol, $type);
+logger::info("SCRIPT", "#####", "###########################################################");
+logger::info("SCRIPT", "BEGIN", "[".sprintf("%40s", "script_cmd_get_stock")."]");
+
+$ret = cacheData::getAndInsertAllDataQuoteFromGSPlusIndicators($symbol, $type);
+
+cacheData::deleteTMPFiles();
+
 
 ?>

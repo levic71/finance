@@ -371,41 +371,53 @@ function resetData($filter) {
     $res= dbc::execSql($sql);
 }
 
-ini_set('max_execution_time', '300'); //300 seconds = 5 minutes
+function computeDWMIndicators($symbol, $engine) {
 
-// FORCE Computing
-$indicators_force   = 0;
-$indicators_reset   = 0;
-$indicators_limited = 0;
-$indicators_filter  = "";
-$indicators_aggregate = false;
+    $time_series_tables = [ "daily" => "daily_time_series_adjusted", "weekly" => "weekly_time_series_adjusted", "monthly" => "monthly_time_series_adjusted" ];
 
-foreach(['indicators_force', 'indicators_reset', 'indicators_limited', 'indicators_filter', 'indicators_aggregate'] as $key)
-    $$key = isset($_GET[$key]) ? $_GET[$key] : (isset($$key) ? $$key : "");
+	foreach($time_series_tables as $serie => $table) {
 
-if ($indicators_aggregate == 1) $indicators_aggregate = true;
+		$nb_entries = 0;
+		$data = [];
 
-$db = dbc::connect();
+		// Réccupération des data series
+		$req2 = "SELECT * FROM ".$table." WHERE symbol='".$symbol."' ORDER BY day ASC";
+		$res2 = dbc::execSql($req2);
+		while($row2 = mysqli_fetch_array($res2)) {
+			foreach([ "open", "close", "adjusted_close", "high", "low", "volume" ] as $col) $row2[$col] = floatval($row2[$col]);
+			$data[] = $row2;
+		}
 
-if ($indicators_reset == 1) resetData($indicators_filter);
+		if (count($data)) $nb_entries = computeIndicatorsAndInsertIntoBD($symbol, $data, $serie, 0);
 
-if ($indicators_force == 1) {
+		logger::info("SCRIPT", $symbol, "[".sprintf("%40s", "computeIndicatorsAndInsertIntoBD")."] [".sprintf("%7s", $serie)."] [".sprintf("%8d", $nb_entries)." item(s)]");
 
-    logger::info("DIRECT", "---------", "---------------------------------------------------------");
+		// On regarde s'il y a des data en weekly et monthly et le cas échéant on réalise l'aggregation
+		if ($serie == 'daily') {
 
-    // All indicators All preriods (D/W/M)
-    $req = "SELECT * FROM stocks WHERE symbol LIKE \"%".$indicators_filter."%\"";
-    $res = dbc::execSql($req);
-    while($row = mysqli_fetch_assoc($res)) {
-        computeDailyIndicatorsSymbol($row['symbol']);
-        // computeIndicatorsForSymbolWithOptions($row['symbol'], $options = array("aggregate" => false, "limited" => 0, "periods" => ['DAILY']));
-        // computeIndicatorsForSymbolWithOptions($row['symbol'], array("aggregate" => $indicators_aggregate, "limited" => 0, "periods" => $indicators_periods));         
-    }
+			$req3 = "SELECT COUNT(*) total FROM (SELECT day FROM ".$time_series_tables['weekly']." WHERE symbol='".$symbol."' UNION SELECT day FROM ".$time_series_tables['monthly']." WHERE symbol='".$symbol."') as T";
+			$res3 = dbc::execSql($req3);
+			$row3 = mysqli_fetch_array($res3);
 
-    cacheData::deleteTMPFiles();
-    
-    logger::info("DIRECT", "---------", "---------------------------------------------------------");
+			// Si aucune data weekly et monthly ou si data en provenance de GS
+			if ($row3['total'] == 0 || $engine == "google") {
 
-    echo "Done";
+				// Calcul des data weekly/Monthly avec les data daily
+				list($weekly, $monthly) = cacheData::aggregateDailyInWeeklyAndMonthly($engine == "google" ? cacheData::transformAlphaDataBeforeAggregate($data) : $data);
+
+				// Ecriture en BD des data weekly aggrégées
+				$ret = cacheData::insertOrUpdateTimeSeriesData($symbol, $weekly,  $time_series_tables['weekly']);
+				logger::info("SCRIPT", $symbol, "[".sprintf("%40s", "insertOrUpdateTimeSeriesData")."] [".sprintf("%7s", "weekly")."] [".sprintf("%8d", $ret)." item(s)]");
+
+				// Ecriture en BD des data monthly aggrégées
+				$ret = cacheData::insertOrUpdateTimeSeriesData($symbol, $monthly, $time_series_tables['monthly']);
+				logger::info("SCRIPT", $symbol, "[".sprintf("%40s", "insertOrUpdateTimeSeriesData")."] [".sprintf("%7s", "monthly")."] [".sprintf("%8d", $ret)." item(s)]");
+
+			}
+		}
+	}
+
 }
 
+
+?>

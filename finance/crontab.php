@@ -44,8 +44,6 @@ if (tools::useGoogleFinanceService()) {
     // $GSAlertes = calc::getGSAlertes();
 }
 
-
-
 ?> <div class="ui container inverted segment"><?
 
 logger::info("CRON", "BEGIN", "###########################################################");
