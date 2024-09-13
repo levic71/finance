@@ -2,6 +2,7 @@
 
 // //////////////////////////////////////////
 // NE PAS METTRE DE SESSION SINON PB CRONTAB
+// Execution CRON en semaine uniquement, 1 x le matin, 1 x le midi et 1 x le soir
 // //////////////////////////////////////////
 
 use Google\Service\AndroidEnterprise\WebApp;
@@ -17,34 +18,26 @@ if (!is_dir("cache/")) mkdir("cache/");
     
 $db = dbc::connect();
 
-$time_series_tables = [ "daily" => "daily_time_series_adjusted", "weekly" => "weekly_time_series_adjusted", "monthly" => "monthly_time_series_adjusted" ];
+logger::info("SCRIPT", "#####", "###########################################################");
+logger::info("SCRIPT", "BEGIN", "[".sprintf("%40s", "script_compute_indicators")."]");
 
 // ////////////////////////////////////////////////////////
 // Parcours des actifs suivis
 // ////////////////////////////////////////////////////////
-$filter = "%";
+$filter = "%%";
+$nb_quotes = 0;
 
 $req = "SELECT * FROM stocks WHERE symbol LIKE '".$filter."' ORDER BY symbol";
 $res = dbc::execSql($req);
 
 while($row = mysqli_fetch_array($res)) {
 
-	
-	foreach($time_series_tables as $serie => $table) {
-
-		$data = [];
-
-		$req2 = "SELECT * FROM ".$table." WHERE symbol='".$row['symbol']."' ORDER BY day ASC";
-		$res2 = dbc::execSql($req2);
-
-		while($row2 = mysqli_fetch_array($res2)) $data[] = $row2;
-
-		$ret = computeIndicatorsAndInsertIntoBD($row['symbol'], $data, $serie, 0);
-
-		logger::info("SCRIPT", $row['symbol'], "[computeIndicatorsAndInsertIntoBD] [".sprintf("%7s", $serie)."] [".sprintf("%8d", $ret)." item(s)]");
-	}
+	computeDWMIndicators($row['symbol'], $row['engine']);
+	$nb_quotes++;
 
 }
+
+logger::info("SCRIPT", "END", "[".sprintf("%40s", "script_compute_indicators")."] [".sprintf("%7d", $nb_quotes)."] [".sprintf("%8s", "item(s)")."]");
 
 cacheData::deleteTMPFiles();
 

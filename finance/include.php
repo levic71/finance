@@ -255,7 +255,7 @@ class StockComputing {
     }
 
     public function getSavedQuote($symbol)    { return $this->save_quotes[$symbol]; }
-    public function getQuote($symbol)         { return isset($this->quotes['stocks'][$symbol]) ? $this->quotes['stocks'][$symbol] : [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0]; }
+    public function getQuote($symbol)         { return isset($this->quotes['stocks'][$symbol]) ? $this->quotes['stocks'][$symbol] : [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0, "currency" => "EUR"]; }
     public function getDeviseTaux($currency)  { return $currency == "EUR" ? 1 : calc::getCurrencyRate($currency."EUR", $this->devises); }
     public function getPtfName()              { return $this->infos['name']; }
     public function getCountPositionsInPtf()  { return count($this->positions); }
@@ -372,8 +372,8 @@ class QuoteComputing {
     public function getName()          { return $this->getQuoteAttr(('name')); /* Concatenation de 2 strings */ }
     public function getPName()         { return $this->symbol.($this->getOtherName() ? '(*)' : ''); /* Concatenation de 2 strings */ }
     public function getValo()          { return sprintf("%.2f", $this->sc->getPositionAttr($this->symbol, 'nb') * $this->price); }
-    public function getPctMM200()      { return $this->getQuoteAttr('MM200') ? (($this->getQuoteAttr('MM200') - $this->price) * 100) / $this->price : 0; }
-    public function getPerf()          { return round($this->getPru() ? ($this->getPru() * 100) / $this->getPru() : 0, 2); }
+    public function getPctMM200()      { return $this->getQuoteAttr('MM200') && floatval($this->price) ? (($this->getQuoteAttr('MM200') - $this->price) * 100) / $this->price : 0; }
+    public function getPerf()          { return $this->getPru() ? round($this->getPru() ? ($this->getPru() * 100) / $this->getPru() : 0, 2) : 0; }
     public function getPerfIndicator() { return calc::getPerfIndicator($this->quote); }
     public function getEstimationDividende() { return $this->getDividendeAnnuel() * $this->sc->getPositionAttr($this->symbol, 'nb') * $this->getTaux(); }
 
@@ -739,8 +739,8 @@ class QuoteComputing {
             <td id="f_perf_pru_'.$i.'" class="center aligned"></td>
             <td id="f_rand_'.$i.'"     class="center aligned">
                 <div>
-                    <label>'.($dividende == 0 || !$isInPtf ? "-" : sprintf("%.2f%%", ($dividende * 100) / $position_pru)).'</label>
-                    <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", ($dividende * 100) / $price)).'</label>
+                    <label>'.($dividende == 0 || !$isInPtf ? "-" : sprintf("%.2f%%", $position_pru ? ($dividende * 100) / $position_pru : 0)).'</label>
+                    <label>'.($dividende == 0 ? "-" : sprintf("%.2f%%", $price ? ($dividende * 100) / $price : 0)).'</label>
                 </div>
             </td>
             <td class="center aligned"><div class="ui '.$avis_bg_colr.' horizontal label">'.$avis_lib.'</div></td>
@@ -1820,6 +1820,11 @@ class cacheData {
     public static function isMarketAfterClosing($market_status) { return ($market_status == -1); }
     public static function isMarketOnWeekend($market_status) { return ($market_status == -2); }
 
+    public static function checkColsFloatValue($cols, $data) {
+        foreach($cols as $c) $data[$c] = floatval($data[$c]);
+        return $data;
+    }
+
     public static function getMarketStatus($timezone, $market_open, $market_close) {
 
         $ret = 0;
@@ -1873,7 +1878,7 @@ class cacheData {
         $ret = "{}";
     
         if (file_exists($filename)) {
-            logger::info("CACHE", "", "[READ]{".$filename."}");
+            logger::info("CACHE", "READ", "[".$filename."]");
             $ret = file_get_contents($filename);
         }
 
@@ -1930,9 +1935,29 @@ class cacheData {
         return $update_cache;
     }
 
+    public static function transformAlphaDataBeforeAggregate($data) {
+
+        $ret = [];
+
+        $transcodage = [ "day" => "Date", "adjusted_close" => "Close", "open" => "Open", "high" => "High", "low" => "Low", "volume" => "Volume" ];
+
+        foreach($data as $val) {
+            $new_items = [];
+            foreach($transcodage as $key => $trans) {
+                // Convertoin en float des valeurs du tableau
+                $val[$key] = $trans != "Date" ? floatval($val[$key]) : $val[$key];
+                // Création de la nouvelle entrée avec le transcodage
+                $new_items[$trans] = $val[$key];
+            }
+            $ret[] = array_merge($new_items, $val);
+        }
+
+        return $ret;
+    }
+    
     public static function aggregateDailyInWeeklyAndMonthly($data) {
 
-        $ret = array();
+        $ret = [ "weekly" => [], "monthly" => [] ];
     
         foreach($data as $key => $val) {
     
@@ -1947,44 +1972,44 @@ class cacheData {
             
             if (!isset($ret['weekly'][$week_end])) {
                 $ret['weekly'][$week_end]['Date']   = $week_end;
-                $ret['weekly'][$week_end]['Open']   = $val['Open'];
-                $ret['weekly'][$week_end]['Close']  = $val['Close'];
-                $ret['weekly'][$week_end]['High']   = $val['High'];
-                $ret['weekly'][$week_end]['Low']    = $val['Low'];
-                $ret['weekly'][$week_end]['Volume'] = $val['Volume'];
+                $ret['weekly'][$week_end]['Open']   = floatval($val['Open']);
+                $ret['weekly'][$week_end]['Close']  = floatval($val['Close']);
+                $ret['weekly'][$week_end]['High']   = floatval($val['High']);
+                $ret['weekly'][$week_end]['Low']    = floatval($val['Low']);
+                $ret['weekly'][$week_end]['Volume'] = floatval($val['Volume']);
                 $ret['weekly'][$week_end]['day']    = $week_end;     // Pour le calcul des indicateurs plus tard
-                $ret['weekly'][$week_end]['open']   = $val['Open']; // Pour le calcul des indicateurs plus tard
-                $ret['weekly'][$week_end]['adjusted_close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
-                $ret['weekly'][$week_end]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['open']   = floatval($val['Open']); // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['adjusted_close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
             } else {
-                $ret['weekly'][$week_end]['Close']  = $val['Close'];
-                $ret['weekly'][$week_end]['High']   = max($ret['weekly'][$week_end]['High'], $val['High']);
-                $ret['weekly'][$week_end]['Low']    = min($ret['weekly'][$week_end]['Low'], $val['Low']);
-                $ret['weekly'][$week_end]['Volume'] += $val['Volume'];
-                $ret['weekly'][$week_end]['open']  = $val['Open']; // Pour le calcul des indicateurs plus tard
-                $ret['weekly'][$week_end]['adjusted_close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
-                $ret['weekly'][$week_end]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['Close']  = floatval($val['Close']);
+                $ret['weekly'][$week_end]['High']   = max($ret['weekly'][$week_end]['High'], floatval($val['High']));
+                $ret['weekly'][$week_end]['Low']    = min($ret['weekly'][$week_end]['Low'], floatval($val['Low']));
+                $ret['weekly'][$week_end]['Volume'] += floatval($val['Volume']);
+                $ret['weekly'][$week_end]['open']  = floatval($val['Open']); // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['adjusted_close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
+                $ret['weekly'][$week_end]['close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
             }
     
             if (!isset($ret['monthly'][$month])) {
                 $ret['monthly'][$month]['Date']   = $month;
-                $ret['monthly'][$month]['Open']   = $val['Open'];
-                $ret['monthly'][$month]['Close']  = $val['Close'];
-                $ret['monthly'][$month]['High']   = $val['High'];
-                $ret['monthly'][$month]['Low']    = $val['Low'];
-                $ret['monthly'][$month]['Volume'] = $val['Volume'];
+                $ret['monthly'][$month]['Open']   = floatval($val['Open']);
+                $ret['monthly'][$month]['Close']  = floatval($val['Close']);
+                $ret['monthly'][$month]['High']   = floatval($val['High']);
+                $ret['monthly'][$month]['Low']    = floatval($val['Low']);
+                $ret['monthly'][$month]['Volume'] = floatval($val['Volume']);
                 $ret['monthly'][$month]['day']    = $month;        // Pour le calcul des indicateurs plus tard
-                $ret['monthly'][$month]['open']  = $val['Open']; // Pour le calcul des indicateurs plus tard
-                $ret['monthly'][$month]['adjusted_close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
-                $ret['monthly'][$month]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['open']  = floatval($val['Open']); // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['adjusted_close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
             } else {
-                $ret['monthly'][$month]['Close']  = $val['Close'];
-                $ret['monthly'][$month]['High']   = max($ret['monthly'][$month]['High'], $val['High']);
-                $ret['monthly'][$month]['Low']    = min($ret['monthly'][$month]['Low'], $val['Low']);
-                $ret['monthly'][$month]['Volume'] += $val['Volume'];
-                $ret['monthly'][$month]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
-                $ret['monthly'][$month]['adjusted_close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
-                $ret['monthly'][$month]['close']  = $val['Close']; // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['Close']  = floatval($val['Close']);
+                $ret['monthly'][$month]['High']   = max($ret['monthly'][$month]['High'], floatval($val['High']));
+                $ret['monthly'][$month]['Low']    = min($ret['monthly'][$month]['Low'], floatval($val['Low']));
+                $ret['monthly'][$month]['Volume'] += floatval($val['Volume']);
+                $ret['monthly'][$month]['close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['adjusted_close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
+                $ret['monthly'][$month]['close']  = floatval($val['Close']); // Pour le calcul des indicateurs plus tard
             }
     
         }
@@ -1993,6 +2018,62 @@ class cacheData {
     
     }
 
+    public static function getTimeSeriesFromAlpha($symbol, $period) {
+
+        $data = array();
+        $full = true;
+        $file_cache = 'cache/'.strtoupper($period).'_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
+
+        if (self::refreshOnceADayCache($file_cache)) {
+
+            try {
+
+                if ($period == "daily")   $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                if ($period == "weekly")  $data = aafinance::getWeeklyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+                if ($period == "monthly") $data = aafinance::getMonthlyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
+    
+                if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
+    
+                // Pour mieux ancien format vs nouveau format notament qd reload from local cache
+                // $key = aafinance::$premium ? "Weekly Adjusted Time Series" : "Weekly Time Series";
+                $index = "Time Series (Daily)";
+                if ($period == "weekly")  $index = isset($data["Weekly Adjusted Time Series"])  ? "Weekly Adjusted Time Series"  : "Weekly Time Series";
+                if ($period == "monthly") $index = isset($data["Monthly Adjusted Time Series"]) ? "Monthly Adjusted Time Series" : "Monthly Time Series";
+
+                if (isset($data[$index])) {
+                    foreach($data[$index] as $key => $val) {
+
+                        $val['Date']   = $key;
+                        $val['Open']   = $val['1. open'];
+                        $val['High']   = $val['2. high'];
+                        $val['Low']    = $val['3. low'];
+                        $val['Close']  = $val['5. adjusted close']; // $val['4. close']
+                        $val['Volume'] = $val['6. volume'];
+
+                        $data[$index][$key] = $val;
+
+                    }
+    
+                    $fp = fopen($file_cache, 'w');
+                    fwrite($fp, json_encode($data));
+                    fclose($fp);
+    
+                    $ret = true;
+                } else
+                    logger::error("ALPHAV", $symbol, "[".strtoupper($period)."_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [NOK]".print_r($data, true));
+                
+            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[".strtoupper($period)."_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."]".$e->getMessage()); }
+        }
+        else {
+
+            $data = cacheData::readCacheData($file_cache);
+            logger::info("CACHE", $symbol, "[".strtoupper($period)."_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [DATA FROM READ CACHE]");
+
+        }
+
+        return $data;
+    }
+    
     public static function getAllDataStockFromGS($symbol, $gf_symbol, $type) {
 
         // Init de l'object Stock recherché
@@ -2076,36 +2157,90 @@ class cacheData {
 
     }
     
-    public static function insertOrUpdateDataQuoteFromGS($data) {
+    public static function insertOrUpdateTimeSeriesData($symbol, $data, $table) {
+
+        $ret = 0;
+
+        // Check values
+        $check_cols = [ "Open", "High", "Low", "Close", "Volume" ];
+
+        foreach($data as $key => $values) {
+
+            $val = cacheData::checkColsFloatValue($check_cols, $values);
+
+            $req = "INSERT INTO ".$table." (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."','".$val['Date']."', '".$val['Open']."', '".$val['High']."', '".$val['Low']."', '".$val['Close']."', '".$val['Close']."', '".$val['Volume']."', '0', '0') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
+            $res = dbc::execSql($req);
+            if ($res) $ret++;
+        }
+
+        return $ret;
+    }
+
+    public static function insertOrUpdateDataQuoteFromGSPlusIndicators($data) {
+
+        // On remplace les ":" par "." dans le nom du symbol
+        $symbol =str_replace(":" , ".", $data['symbol']);
 
         // RAS data daily/weekly/monthly/indicators
-        calc::removeTimeSeriesAndIndicatorsSymbol($data['symbol']);
+        calc::removeTimeSeriesAndIndicatorsSymbol($symbol);
+
+        // Check values
+        $check_cols = [ "priceopen", "high", "low", "price", "volume", "closeyest", "change", "changepct", "pe", "eps", "beta", "shares", "marketcap" ];
+        $data = cacheData::checkColsFloatValue($check_cols, $data);
 
         // Maj data stock
-        $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$data['symbol']."', '".$data['gf_symbol']."', '".addslashes($data['name'])."', '".$data['type']."', '".$data['region']."', '".$data['marketopen']."', '".$data['marketclose']."', '".$data['timezone']."', '".$data['currency']."', '".$data['engine']."', ".$data['pe'].", ".$data['eps'].", ".$data['beta'].", ".$data['shares'].", ".$data['marketcap'].") AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
+        $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$symbol."', '".$data['gf_symbol']."', '".addslashes($data['name'])."', '".$data['type']."', '".$data['region']."', '".$data['marketopen']."', '".$data['marketclose']."', '".$data['timezone']."', '".$data['currency']."', '".$data['engine']."', ".$data['pe'].", ".$data['eps'].", ".$data['beta'].", ".$data['shares'].", ".$data['marketcap'].") AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
         $res = dbc::execSql($req);
+        logger::info("STOCK", $data['symbol'], "Insert");
 
         // Maj quote quotes
-        $req = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$data['symbol']."','".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['volume']."', '".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['closeyest']."', '".$data['change']."', '".$data['changepct']."') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, price=new.price, volume=new.volume, day=new.day, previous=new.previous, day_change=new.day_change, percent=new.percent";
+        $req = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$symbol."','".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['volume']."', '".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['closeyest']."', '".$data['change']."', '".$data['changepct']."') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, price=new.price, volume=new.volume, day=new.day, previous=new.previous, day_change=new.day_change, percent=new.percent";
         $res = dbc::execSql($req);
+        logger::info("QUOTE", $data['symbol'], "Insert");
 
         // Insert today quotation in daily
-        $req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$data['symbol']."','".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['price']."', '".$data['volume']."', '0', '0') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
+        $req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."','".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['price']."', '".$data['volume']."', '0', '0') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
         $res = dbc::execSql($req);
+        logger::info("DATA", $data['symbol'], "[Insert today quotation in daily]");
 
         // Insert quotations and build indicators
         $time_series_tables = [ "daily" => "daily_time_series_adjusted", "weekly" => "weekly_time_series_adjusted", "monthly" => "monthly_time_series_adjusted" ];
         foreach($time_series_tables as $serie => $table) {
-            foreach($data[$serie] as $key => $val) {
-                $req = "INSERT INTO ".$table." (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$data['symbol']."','".$val['Date']."', '".$val['Open']."', '".$val['High']."', '".$val['Low']."', '".$val['Close']."', '".$val['Close']."', '".$val['Volume']."', '0', '0') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
-                $res = dbc::execSql($req);
-            }
-            computeIndicatorsAndInsertIntoBD($data['symbol'], $data[$serie], $serie, 0);
+            cacheData::insertOrUpdateTimeSeriesData($symbol, $data[$serie], $table);
+            computeIndicatorsAndInsertIntoBD($symbol, $data[$serie], $serie, 0);
+            logger::info("DATA", $data['symbol'], "[".$serie."] [Time series insert + indicators]");
         }
 
     }
 
-    public static function getAndInsertAllDataQuoteFromGS($symbol, $type) {
+    public static function getAndInsertAllDataQuoteFromAlphaPlusIndicators($symbol, $name, $type, $region, $marketopen, $marketclose, $timezone, $currency, $engine) {
+
+        $ret = false;
+
+        $name = urldecode($name);
+
+        // Récupération et insertion des data D/W/M
+        $alpha_ret = cacheData::buildAllCachesSymbol($symbol, true);
+
+        if ($alpha_ret['daily'] && $alpha_ret['weekly'] && $alpha_ret['monthly'] && $alpha_ret['quote'] && $alpha_ret['overview']) {
+
+            // RAS data daily/weekly/monthly/indicators
+            calc::removeTimeSeriesAndIndicatorsSymbol($symbol);
+
+            // Insert/Update into stocks
+            $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$symbol."', '', '".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."', 0, 0, 0, 0, 0) AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
+            $res = dbc::execSql($req);
+
+            // Calcul des indicateurs DWM
+            computeDWMIndicators($symbol, $engine);
+
+            $ret = true;
+        }
+
+        return $ret;
+}
+
+    public static function getAndInsertAllDataQuoteFromGSPlusIndicators($symbol, $type) {
 
         $ret = false;
 
@@ -2123,8 +2258,8 @@ class cacheData {
             // Ecriture en cache des data
             cacheData::writeCacheData($filename, $data);
 
-            // Ecriture en BD des data
-            cacheData::insertOrUpdateDataQuoteFromGS($data);
+            // Suppression anciennes valeurs et écriture en BD des data + calcul indicators
+            cacheData::insertOrUpdateDataQuoteFromGSPlusIndicators($data);
 
             // Reset des caches TMP pour recalcul
             cacheData::deleteTMPFiles();
@@ -2196,165 +2331,25 @@ class cacheData {
             logger::info("CACHE", $symbol, "[INTRADAY] [No update]");    
     }
 
-    public static function buildCacheDailyTimeSeriesAdjusted($symbol, $full = true) {
+    public static function buildCacheGenericTimeSeriesAdjusted($symbol, $period) {
 
-        $ret = false;
+        $ret = 0;
 
-        $file_cache = 'cache/DAILY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
-
-        if (self::refreshOnceADayCache($file_cache)) {
-            try {
-
-                if (aafinance::$cache_load && file_exists($file_cache)) {
-                    $data = cacheData::readCacheData($file_cache);
-                } else {
-//                    if (aafinance::$premium)
-// Ce n'est plus premium 
-//                        $data = aafinance::getDailyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-//                    else
-                        $data = aafinance::getDailyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                }
+        $data = self::getTimeSeriesFromAlpha($symbol, $period);
     
-                if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
-    
-                $key = aafinance::$premium ? "Time Series (Daily)" : "Time Series (Daily)";
+        // Pour mieux ancien format vs nouveau format notament qd reload from local cache
+        // $key = aafinance::$premium ? "Weekly Adjusted Time Series" : "Weekly Time Series";
+        $index = "Time Series (Daily)";
+        if ($period == "weekly")  $index = isset($data["Weekly Adjusted Time Series"])  ? "Weekly Adjusted Time Series"  : "Weekly Time Series";
+        if ($period == "monthly") $index = isset($data["Monthly Adjusted Time Series"]) ? "Monthly Adjusted Time Series" : "Monthly Time Series";
 
-                if (isset($data[$key])) {
-                    foreach($data[$key] as $key => $val) {
+        if (isset($data[$index])) {
 
-//                        if (!aafinance::$premium) {
-                        if (!isset($val['5. adjusted close'])) {
-                            $val['5. adjusted close']    = $val['4. close'];
-                            $val['6. volume']            = $val['5. volume'];
-                            $val['7. dividend amount']   = 0;
-                            $val['8. split coefficient'] = 0;
-                        }
+            $ret = self::insertOrUpdateTimeSeriesData($symbol, $data[$index], $period."_time_series_adjusted");
 
-                        $update = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."', '".$val['8. split coefficient']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."', split_coef='".$val['8. split coefficient']."'";
-                        $res2 = dbc::execSql($update);
-                    }
-    
-                    $fp = fopen($file_cache, 'w');
-                    fwrite($fp, json_encode($data));
-                    fclose($fp);
-    
-                    $ret = true;
-                } else {
-                    logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [NOK]".print_r($data, true));
-                }
-            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."]".$e->getMessage()); }
         }
-        else
-            logger::info("CACHE", $symbol, "[DAILY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
 
-        return $ret;
-    }
-
-    public static function buildCacheWeeklyTimeSeriesAdjusted($symbol, $full = true) {
-
-        $ret = false;
-
-        $file_cache = 'cache/WEEKLY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
-
-        if (self::refreshOnceADayCache($file_cache)) {
-            try {
-
-                if (aafinance::$cache_load && file_exists($file_cache)) {
-                    $data = cacheData::readCacheData($file_cache);
-                } else {
-//                    if (aafinance::$premium)
-                        $data = aafinance::getWeeklyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-//                    else
-//                        $data = aafinance::getWeeklyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                }
-    
-                if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
-
-//                Pour mieux ancien format vs nouveau format notament qd reload from local cache
-//                $key = aafinance::$premium ? "Weekly Adjusted Time Series" : "Weekly Time Series";
-//                if (isset($data[$key])) {
-                if (isset($data["Weekly Adjusted Time Series"]) || isset($data["Weekly Time Series"])) {
-                    foreach($data[isset($data["Weekly Adjusted Time Series"]) ? "Weekly Adjusted Time Series" : "Weekly Time Series"] as $key => $val) {
-
-                        if (isset($data["Weekly Time Series"])) {
-                            $val['5. adjusted close']    = $val['4. close'];
-                            $val['6. volume']            = $val['5. volume'];
-                            $val['7. dividend amount']   = 0;
-                            $val['8. split coefficient'] = 0;
-                        }
-
-                        $update = "INSERT INTO weekly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."'";
-                        $res2 = dbc::execSql($update);
-                    }
-
-                    $fp = fopen($file_cache, 'w');
-                    fwrite($fp, json_encode($data));
-                    fclose($fp);
-
-                    $ret = true;
-
-                } else {
-                    logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [NOK]".print_r($data, true));
-                }
-
-            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."]".$e->getMessage()); }
-        }
-        else
-            logger::info("CACHE", $symbol, "[WEEKLY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
-
-        return $ret;
-    }
-
-    public static function buildCacheMonthlyTimeSeriesAdjusted($symbol, $full = true) {
-
-        $ret = false;
-
-        $file_cache = 'cache/MONTHLY_TIME_SERIES_ADJUSTED_'.($full ? 'FULL' : "COMPACT").'_'.$symbol.'.json';
-
-        if (self::refreshOnceADayCache($file_cache)) {
-            try {
-
-                if (aafinance::$cache_load && file_exists($file_cache)) {
-                    $data = cacheData::readCacheData($file_cache);
-                } else {
-//                    if (aafinance::$premium)
-                        $data = aafinance::getMonthlyTimeSeriesAdjusted($symbol, $full ? "outputsize=full" : "outputsize=compact");
-//                    else
-//                        $data = aafinance::getMonthlyTimeSeries($symbol, $full ? "outputsize=full" : "outputsize=compact");
-                }
-
-                if (is_array($data) && count($data) == 0) logger::warning("CACHE", $symbol, "Array empty, manual db update needed !!!");
-    
-//                Pour mieux ancien format vs nouveau format notament qd reload from local cache
-//                $key = aafinance::$premium ? "Monthly Adjusted Time Series" : "Monthly Time Series";
-//                if (isset($data[$key])) {
-                if (isset($data["Monthly Adjusted Time Series"]) || isset($data["Monthly Time Series"])) {
-                    foreach($data[isset($data["Monthly Adjusted Time Series"]) ? "Monthly Adjusted Time Series" : "Monthly Time Series"] as $key => $val) {
-
-//                        if (!aafinance::$premium) {
-                        if (isset($data["Monthly Time Series"])) {
-                            $val['5. adjusted close']    = $val['4. close'];
-                            $val['6. volume']            = $val['5. volume'];
-                            $val['7. dividend amount']   = 0;
-                            $val['8. split coefficient'] = 0;
-                        }
-
-                        $update = "INSERT INTO monthly_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend) VALUES ('".$symbol."', '".$key."', '".$val['1. open']."', '".$val['2. high']."', '".$val['3. low']."', '".$val['4. close']."', '".$val['5. adjusted close']."', '".$val['6. volume']."', '".$val['7. dividend amount']."') ON DUPLICATE KEY UPDATE open='".$val['1. open']."', high='".$val['2. high']."', low='".$val['3. low']."', close='".$val['4. close']."', adjusted_close='".$val['5. adjusted close']."', volume='".$val['6. volume']."', dividend='".$val['7. dividend amount']."'";
-                        $res2 = dbc::execSql($update);
-                    }
-
-                    $fp = fopen($file_cache, 'w');
-                    fwrite($fp, json_encode($data));
-                    fclose($fp);
-    
-                    $ret = true;
-                } else {
-                    logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [NOK]".print_r($data, true));
-                }
-            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."]".$e->getMessage()); }
-        }
-        else
-            logger::info("CACHE", $symbol, "[MONTHY_TIME_SERIES_ADJUSTED] [".($full ? "FULL" : "COMPACT")."] [No update]");
+        logger::error("ALPHAV", $symbol, "[".strtoupper($period)."_TIME_SERIES_ADJUSTED] [".$ret."] [inserted]");
 
         return $ret;
     }
@@ -2398,11 +2393,15 @@ class cacheData {
         
         $ret = array();
 
+        // Initialisation des codes retours pour chaque option
         foreach($options as $key => $val) $ret[$val] = false;
 
-        if (isset($options['daily']))    $ret["daily"]    = self::buildCacheDailyTimeSeriesAdjusted($symbol, $full);
-        if (isset($options['weekly']))   $ret["weekly"]   = self::buildCacheWeeklyTimeSeriesAdjusted($symbol, $full);
-        if (isset($options['monthly']))  $ret["monthly"]  = self::buildCacheMonthlyTimeSeriesAdjusted($symbol, $full);
+        // Build cache times series data
+        foreach([ "daily", "weekly", "monthly"] as $period)
+            if (isset($options[$period]))
+                $ret[$period]    = self::buildCacheGenericTimeSeriesAdjusted($symbol, $period);
+
+        // Build cache Quote et Overview
         if (isset($options['quote']))    $ret["quote"]    = self::buildCacheQuote($symbol);
         if (isset($options['overview'])) $ret["overview"] = self::buildCacheOverview($symbol);
 
@@ -2433,12 +2432,17 @@ class cacheData {
     public static function deleteTMPFiles() {
         foreach (glob("cache/TMP_*.json") as $filename) {
             unlink($filename);
+            logger::info("CACHE", "DELETE", "[".sprintf("%40s", $filename)."] [deleteTMPFiles]");
         }
     }
 
     public static function deleteCacheSymbol($symbol) {
         foreach(self::$lst_cache as $key)
-            if (file_exists("cache/".$key."_".$symbol.".json")) unlink("cache/".$key."_".$symbol.".json");
+            $filename = "cache/".$key."_".$symbol.".json";
+            if (file_exists($filename)) {
+                unlink($filename);
+                logger::info("CACHE", "DELETE", "[".sprintf("%40s", $filename)."] [deleteCacheSymbol]");
+            }
 
         cacheData::deleteTMPFiles();
     }

@@ -30,7 +30,9 @@ foreach(['search', 'engine'] as $key)
 if (isset($search) && $search != "") {
 
     try {
+
         $data = aafinance::searchSymbol(rawurlencode($search));
+        // $data = json_decode('{ "bestMatches": [ { "1. symbol": "FDX", "2. name": "Fedex Corp", "3. type": "Equity", "4. region": "United States", "5. marketOpen": "09:30", "6. marketClose": "16:30", "7. timezone": "UTC-04", "8. currency": "USD", "9. matchScore": "0.7500" } ] }', true);
 
         if (isset($data["bestMatches"])) {
             echo "<table class=\"ui inverted very compact single line table\" id=\"lst_search_quote\">";
@@ -58,13 +60,13 @@ if (isset($search) && $search != "") {
  */                $i++;
             }
             echo "</table>";
-        }
+        } else 
+            echo "<small><i class=\"inverted exclamation triangle red icon\"></i>".$data['Information']."</small>";
     } catch (RuntimeException $e) {
         if ($e->getCode() == 1) logger::error("CRON", $row['symbole'], $e->getMessage());
         if ($e->getCode() == 2) logger::info("CRON", $row['symbole'], $e->getMessage());
     }
 }
-
 ?>
 </div>
 
