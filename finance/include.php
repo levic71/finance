@@ -1715,6 +1715,10 @@ c8=(MM200<MM50)and(MM200<close)and(MM100<close)and((close<MM50)or(close<MM20))
         calc::removeDataSymbol($symbol, ['daily_time_series_adjusted', 'weekly_time_series_adjusted', 'monthly_time_series_adjusted', 'indicators']);
     }
 
+    public static function removeIndicatorsSymbol($symbol) {
+        calc::removeDataSymbol($symbol, ['indicators']);
+    }
+
     public static function removeSymbol($symbol) {
 
         calc::removeDataSymbol($symbol, ['stocks', 'quotes']);
@@ -2047,8 +2051,8 @@ class cacheData {
                         $val['Open']   = $val['1. open'];
                         $val['High']   = $val['2. high'];
                         $val['Low']    = $val['3. low'];
-                        $val['Close']  = $val['5. adjusted close']; // $val['4. close']
-                        $val['Volume'] = $val['6. volume'];
+                        $val['Close']  = isset($val['5. adjusted close']) ? $val['5. adjusted close'] : $val['4. close'];
+                        $val['Volume'] = isset($val['6. volume']) ? $val['6. volume'] : $val['5. volume'];
 
                         $data[$index][$key] = $val;
 
@@ -2219,13 +2223,13 @@ class cacheData {
 
         $name = urldecode($name);
 
+        // RAS data daily/weekly/monthly/indicators
+        calc::removeTimeSeriesAndIndicatorsSymbol($symbol);
+
         // Récupération et insertion des data D/W/M
         $alpha_ret = cacheData::buildAllCachesSymbol($symbol, true);
 
-        if ($alpha_ret['daily'] && $alpha_ret['weekly'] && $alpha_ret['monthly'] && $alpha_ret['quote'] && $alpha_ret['overview']) {
-
-            // RAS data daily/weekly/monthly/indicators
-            calc::removeTimeSeriesAndIndicatorsSymbol($symbol);
+        if ($alpha_ret['daily'] && $alpha_ret['weekly'] && $alpha_ret['monthly']) {
 
             // Insert/Update into stocks
             $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$symbol."', '', '".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."', 0, 0, 0, 0, 0) AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
@@ -2279,21 +2283,18 @@ class cacheData {
 
         if (self::refreshOnceADayCache($file_cache)) {
 
-            if (aafinance::$cache_load && file_exists($file_cache)) {
-                $data = cacheData::readCacheData($file_cache);
-            } else {
-                $data = aafinance::getOverview($symbol);
-            }
+            $data = aafinance::getOverview($symbol);
 
             if ($data['status'] == 0) {
                 cacheData::writeData($file_cache, $data);
                 $ret = true;
-            } else {
+            } else
                 logger::error("ALPHAV", $symbol, "[OVERVIEW] [NOK]".print_r($data, true));
-            }
+
+        } else {
+            $data = cacheData::readCacheData($file_cache);
+            $ret = true;
         }
-        else
-            logger::info("CACHE", $symbol, "[OVERVIEW] [No update]");
 
         return $ret;
     }
@@ -2357,34 +2358,35 @@ class cacheData {
     public static function buildCacheQuote($symbol) {
 
         $ret = false;
-
         $file_cache = 'cache/QUOTE_'.$symbol.'.json';
-        if (self::refreshOnceADayCache($file_cache)) {
-            try {
 
-                if (aafinance::$cache_load && file_exists($file_cache)) {
-                    $data = cacheData::readCacheData($file_cache);
-                } else {
-                    $data = aafinance::getQuote($symbol);
-                }
-        
+        try {
+
+            if (self::refreshOnceADayCache($file_cache)) {
+
+                $data = aafinance::getQuote($symbol);
+
                 if (isset($data["Global Quote"])) {
-                    $val = $data["Global Quote"];
-                    $update = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$symbol."', '".$val['02. open']."', '".$val['03. high']."', '".$val['04. low']."', '".$val['05. price']."', '".$val['06. volume']."', '".$val['07. latest trading day']."', '".$val['08. previous close']."', '".$val['09. change']."', '".$val['10. change percent']."') ON DUPLICATE KEY UPDATE open='".$val['02. open']."', high='".$val['03. high']."', low='".$val['04. low']."', price='".$val['05. price']."', volume='".$val['06. volume']."', day='".$val['07. latest trading day']."', previous='".$val['08. previous close']."', day_change='".$val['09. change']."', percent='".$val['10. change percent']."'";
-                    $res2 = dbc::execSql($update);
-    
+
                     $fp = fopen($file_cache, 'w');
                     fwrite($fp, json_encode($data));
                     fclose($fp);
     
                     $ret = true;
-                } else {
+
+                } else
                     logger::error("ALPHAV", $symbol, "[GLOBAL_QUOTE] [NOK]".print_r($data, true));
-                }
-            } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[GLOBAL_QUOTE]".$e->getMessage()); }
-        }
-        else
-            logger::info("CACHE", $symbol, "[GLOBAL_QUOTE] [No update]");
+
+            } else {
+                $data = cacheData::readCacheData($file_cache);
+                $ret = true;
+            }
+    
+            $val = $data["Global Quote"];
+            $update = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$symbol."', '".$val['02. open']."', '".$val['03. high']."', '".$val['04. low']."', '".$val['05. price']."', '".$val['06. volume']."', '".$val['07. latest trading day']."', '".$val['08. previous close']."', '".$val['09. change']."', '".$val['10. change percent']."') ON DUPLICATE KEY UPDATE open='".$val['02. open']."', high='".$val['03. high']."', low='".$val['04. low']."', price='".$val['05. price']."', volume='".$val['06. volume']."', day='".$val['07. latest trading day']."', previous='".$val['08. previous close']."', day_change='".$val['09. change']."', percent='".$val['10. change percent']."'";
+            $res2 = dbc::execSql($update);
+
+        } catch(RuntimeException $e) { logger::error("ALPHAV", $symbol, "[GLOBAL_QUOTE]".$e->getMessage()); }
 
         return $ret;
     }
