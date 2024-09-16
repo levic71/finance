@@ -31,8 +31,8 @@ if (isset($search) && $search != "") {
 
     try {
 
-        $data = aafinance::searchSymbol(rawurlencode($search));
-        // $data = json_decode('{ "bestMatches": [ { "1. symbol": "FDX", "2. name": "Fedex Corp", "3. type": "Equity", "4. region": "United States", "5. marketOpen": "09:30", "6. marketClose": "16:30", "7. timezone": "UTC-04", "8. currency": "USD", "9. matchScore": "0.7500" } ] }', true);
+        //$data = aafinance::searchSymbol(rawurlencode($search));
+        $data = json_decode('{ "bestMatches": [ { "1. symbol": "FDX", "2. name": "Fedex Corp", "3. type": "Equity", "4. region": "United States", "5. marketOpen": "09:30", "6. marketClose": "16:30", "7. timezone": "UTC-04", "8. currency": "USD", "9. matchScore": "0.7500" } ] }', true);
 
         if (isset($data["bestMatches"])) {
             echo "<table class=\"ui inverted very compact single line table\" id=\"lst_search_quote\">";
