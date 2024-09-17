@@ -2,8 +2,9 @@
 
 date_default_timezone_set("Europe/Paris");
 
-// ini_set('display_errors', false);
 ini_set('error_log', './finance.log');
+ini_set('display_errors', 1); 
+error_reporting(E_ALL);
 
 //header( 'content-type: text/html; charset=iso-8859-1' );
 header( 'content-type: text/html; charset=iso-8859-1' );
@@ -2172,7 +2173,10 @@ class cacheData {
 
             $val = cacheData::checkColsFloatValue($check_cols, $values);
 
-            $req = "INSERT INTO ".$table." (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."','".$val['Date']."', '".$val['Open']."', '".$val['High']."', '".$val['Low']."', '".$val['Close']."', '".$val['Close']."', '".$val['Volume']."', '0', '0') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
+            $req  = "INSERT INTO ".$table." (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) ";
+            $req .= "VALUES ('".$symbol."','".$val['Date']."', '".$val['Open']."', '".$val['High']."', '".$val['Low']."', '".$val['Close']."', '".$val['Close']."', '".$val['Volume']."', '0', '0') ";
+            $req .= "ON DUPLICATE KEY UPDATE open='".$val['Open']."', high='".$val['High']."', low='".$val['Low']."', close='".$val['Close']."', adjusted_close='".$val['Close']."', volume='".$val['Volume']."', dividend='0', split_coef='0') ";
+//            $req .= "AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
             $res = dbc::execSql($req);
             if ($res) $ret++;
         }
@@ -2193,17 +2197,26 @@ class cacheData {
         $data = cacheData::checkColsFloatValue($check_cols, $data);
 
         // Maj data stock
-        $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$symbol."', '".$data['gf_symbol']."', '".addslashes($data['name'])."', '".$data['type']."', '".$data['region']."', '".$data['marketopen']."', '".$data['marketclose']."', '".$data['timezone']."', '".$data['currency']."', '".$data['engine']."', ".$data['pe'].", ".$data['eps'].", ".$data['beta'].", ".$data['shares'].", ".$data['marketcap'].") AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
+        $req  = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) ";
+        $req .= "VALUES ('".$symbol."', '".$data['gf_symbol']."', '".addslashes($data['name'])."', '".$data['type']."', '".$data['region']."', '".$data['marketopen']."', '".$data['marketclose']."', '".$data['timezone']."', '".$data['currency']."', '".$data['engine']."', ".$data['pe'].", ".$data['eps'].", ".$data['beta'].", ".$data['shares'].", ".$data['marketcap'].") ";
+        $req .= "ON DUPLICATE KEY UPDATE (gf_symbol='".$data['gf_symbol']."', name='".addslashes($data['name'])."', type='".$data['type']."', region='".$data['region']."', 'market_open=".$data['marketopen']."', market_close='".$data['marketclose']."', timezone='".$data['timezone']."', currency='".$data['currency']."', engine='".$data['engine']."', pe=".$data['pe'].", eps=".$data['eps'].", beta=".$data['beta'].", shares=".$data['shares'].", marketcap=".$data['marketcap'].") ";
+//        $req .= "AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
         $res = dbc::execSql($req);
         logger::info("STOCK", $data['symbol'], "Insert");
 
         // Maj quote quotes
-        $req = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) VALUES ('".$symbol."','".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['volume']."', '".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['closeyest']."', '".$data['change']."', '".$data['changepct']."') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, price=new.price, volume=new.volume, day=new.day, previous=new.previous, day_change=new.day_change, percent=new.percent";
+        $req  = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) ";
+        $req .= "VALUES ('".$symbol."','".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['volume']."', '".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['closeyest']."', '".$data['change']."', '".$data['changepct']."') ";
+        $req .= "ON DUPLICATE KEY UPDATE open='".$data['priceopen']."', high='".$data['high']."', low='".$data['low']."', price='".$data['price']."', volume='".$data['volume']."', day='".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', previous='".$data['closeyest']."', day_change='".$data['change']."', percent='".$data['changepct']."') ";
+//        $req .= "AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, price=new.price, volume=new.volume, day=new.day, previous=new.previous, day_change=new.day_change, percent=new.percent";
         $res = dbc::execSql($req);
         logger::info("QUOTE", $data['symbol'], "Insert");
 
         // Insert today quotation in daily
-        $req = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) VALUES ('".$symbol."','".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['price']."', '".$data['volume']."', '0', '0') AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
+        $req  = "INSERT INTO daily_time_series_adjusted (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) ";
+        $req .= "VALUES ('".$symbol."','".substr($data['tradetime'], 6, 4)."-".substr($data['tradetime'], 3, 2)."-".substr($data['tradetime'], 0, 2)."', '".$data['priceopen']."', '".$data['high']."', '".$data['low']."', '".$data['price']."', '".$data['price']."', '".$data['volume']."', '0', '0') ";
+        $req .= "ON DUPLICATE KEY UPDATE open='".$data['priceopen']."', high='".$data['high']."', low='".$data['low']."', close='".$data['price']."', adjusted_close='".$data['price']."', volume='".$data['volume']."', dividend='0', split_coef='0') ";
+//        $req .= "AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
         $res = dbc::execSql($req);
         logger::info("DATA", $data['symbol'], "[Insert today quotation in daily]");
 
@@ -2232,7 +2245,7 @@ class cacheData {
         if ($alpha_ret['daily'] && $alpha_ret['weekly'] && $alpha_ret['monthly']) {
 
             // Insert/Update into stocks
-            $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$symbol."', '', '".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."', 0, 0, 0, 0, 0) AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
+            $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$symbol."', '', '".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."', 0, 0, 0, 0, 0)  gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
             $res = dbc::execSql($req);
 
             // Calcul des indicateurs DWM
