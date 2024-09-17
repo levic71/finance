@@ -8,6 +8,8 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set("url_rewriter.tags", "input=src");
 ini_set('arg_separator.output', '&amp;');
+ini_set('display_errors', 1); 
+error_reporting(E_ALL);
 
 // Creation d'une nouvelle session
 session_cache_expire(60); // En minute
