@@ -7,7 +7,7 @@ session_start();
 include "common.php";
 
 $symbol = "";
-$ptf_id = -1;
+$ptf_id = "";
 $debug  = 0;
 
 $default_button_choice = ['rsi' => 0, 'volume' => 1, 'alarm' => 1, 'av' => 1, 'reg' => 0, 'scale' => 0];
