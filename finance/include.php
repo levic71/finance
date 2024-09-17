@@ -2246,7 +2246,10 @@ class cacheData {
         if ($alpha_ret['daily'] && $alpha_ret['weekly'] && $alpha_ret['monthly']) {
 
             // Insert/Update into stocks
-            $req = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) VALUES ('".$symbol."', '', '".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."', 0, 0, 0, 0, 0)  gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
+            $req  = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) ";
+            $req .= "VALUES ('".$symbol."', '', '".addslashes($name)."', '".$type."', '".$region."', '".$marketopen."', '".$marketclose."', '".$timezone."', '".$currency."', '".$engine."', 0, 0, 0, 0, 0) ";
+            $req .= "ON DUPLICATE KEY UPDATE name='".addslashes($name)."', type='".$type."', region='".$region."', marketopen='".$marketopen."', marketclose='".$marketclose."', timezone='".$timezone."', currency='".$currency."', engine='".$engine."', pe=0, eps=0, beta=0, shares=0, marketcap=0";
+//            $req .= "AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
             $res = dbc::execSql($req);
 
             // Calcul des indicateurs DWM
