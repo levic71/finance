@@ -321,7 +321,7 @@ class QuoteComputing {
     }
 
     public static function getQuoteNameWithoutExtension($name) {
-        $s_search = array('.PAR', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE.', 'INDEXDJX..', 'INDEXEURO.', 'INDEXNASDAQ..', 'INDEXRUSSELL.', 'INDEXSP..', 'NASDAQ:');
+        $s_search = array('.PAR', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE:', 'INDEXDJX:.', 'INDEXEURO:', 'INDEXNASDAQ:.', 'INDEXRUSSELL:', 'INDEXSP:.', 'NASDAQ:', 'NYSE:');
         $s_replace = array('');
         return str_replace($s_search, $s_replace, $name);
     }
@@ -2187,7 +2187,7 @@ class cacheData {
     public static function insertOrUpdateDataQuoteFromGSPlusIndicators($data) {
 
         // On remplace les ":" par "." dans le nom du symbol
-        $symbol =str_replace(":" , ".", $data['symbol']);
+        $symbol = $data['symbol'];
 
         // RAS data daily/weekly/monthly/indicators
         calc::removeTimeSeriesAndIndicatorsSymbol($symbol);
@@ -2199,7 +2199,7 @@ class cacheData {
         // Maj data stock
         $req  = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap) ";
         $req .= "VALUES ('".$symbol."', '".$data['gf_symbol']."', '".addslashes($data['name'])."', '".$data['type']."', '".$data['region']."', '".$data['marketopen']."', '".$data['marketclose']."', '".$data['timezone']."', '".$data['currency']."', '".$data['engine']."', ".$data['pe'].", ".$data['eps'].", ".$data['beta'].", ".$data['shares'].", ".$data['marketcap'].") ";
-        $req .= "ON DUPLICATE KEY UPDATE (gf_symbol='".$data['gf_symbol']."', name='".addslashes($data['name'])."', type='".$data['type']."', region='".$data['region']."', 'market_open=".$data['marketopen']."', market_close='".$data['marketclose']."', timezone='".$data['timezone']."', currency='".$data['currency']."', engine='".$data['engine']."', pe=".$data['pe'].", eps=".$data['eps'].", beta=".$data['beta'].", shares=".$data['shares'].", marketcap=".$data['marketcap']."";
+        $req .= "ON DUPLICATE KEY UPDATE gf_symbol='".$data['gf_symbol']."', name='".addslashes($data['name'])."', type='".$data['type']."', region='".$data['region']."', marketopen='".$data['marketopen']."', marketclose='".$data['marketclose']."', timezone='".$data['timezone']."', currency='".$data['currency']."', engine='".$data['engine']."', pe=".$data['pe'].", eps=".$data['eps'].", beta=".$data['beta'].", shares=".$data['shares'].", marketcap=".$data['marketcap']."";
 //        $req .= "AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap";
         $res = dbc::execSql($req);
         logger::info("STOCK", $data['symbol'], "Insert");
