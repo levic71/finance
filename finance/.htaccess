@@ -2,5 +2,5 @@ DirectoryIndex index.php
 Options -Indexes
 ErrorDocument 404 /404.php
 
-php_value error_reporting 1
+php_value error_log  /homez.476/jorkers/www/Prod/php_error.log
 
