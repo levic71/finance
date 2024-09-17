@@ -2176,7 +2176,6 @@ class cacheData {
             $req  = "INSERT INTO ".$table." (symbol, day, open, high, low, close, adjusted_close, volume, dividend, split_coef) ";
             $req .= "VALUES ('".$symbol."','".$val['Date']."', '".$val['Open']."', '".$val['High']."', '".$val['Low']."', '".$val['Close']."', '".$val['Close']."', '".$val['Volume']."', '0', '0') ";
             $req .= "ON DUPLICATE KEY UPDATE open='".$val['Open']."', high='".$val['High']."', low='".$val['Low']."', close='".$val['Close']."', adjusted_close='".$val['Close']."', volume='".$val['Volume']."', dividend='0', split_coef='0'";
-            echo $req;
 //            $req .= "AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, close=new.close, adjusted_close=new.adjusted_close, volume=new.volume, dividend=new.dividend, split_coef=new.split_coef";
             $res = dbc::execSql($req);
             if ($res) $ret++;
