@@ -44,10 +44,9 @@ if (isset($aggregate_ptf['trend_following'])) $trend_following = $aggregate_ptf[
 	<div class="ui stackable grid container" id="portfolio_market" style="display: flex; justify-content: center; padding: 5px 0px;">
 	<?
 					foreach([ 'INDEXEURO:PX1', 'INDEXSP:.INX', 'INDEXDJX:.DJI', 'INDEXNASDAQ:.IXIC', 'INDEXCBOE:VIX' ] as $key => $val) {
-						$x = str_replace(':', '.', $val);
-						if (isset($data2['stocks'][$x])) {
-							$stock = $data2['stocks'][$x];
-							$seuils = isset($trend_following[$x]['seuils']) ? $trend_following[$x]['seuils'] : "";
+						if (isset($data2['stocks'][$val])) {
+							$stock = $data2['stocks'][$val];
+							$seuils = isset($trend_following[$val]['seuils']) ? $trend_following[$val]['seuils'] : "";
 							echo '<div class="ui buttons"><button class="mini ui grey button">'.$stock['name'].'</button><button class="mini ui button '.($stock['percent'] >= 0 ? "green" : "red").'">'.sprintf("%.2f", $stock['percent']).'%</button></div>';
 						}
 					}

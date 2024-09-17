@@ -98,10 +98,9 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 		<tbody>
 			<?
 				foreach($indicateurs_a_suivre as $key => $val) {
-					$x = str_replace(':', '.', $val);
-					if (isset($data2['stocks'][$x])) {
-						$stock = $data2['stocks'][$x];
-						$seuils = isset($trend_following[$x]['seuils']) ? $trend_following[$x]['seuils'] : "";
+					if (isset($data2['stocks'][$val])) {
+						$stock = $data2['stocks'][$val];
+						$seuils = isset($trend_following[$val]['seuils']) ? $trend_following[$val]['seuils'] : "";
 						echo '<tr>
 								<td><button class="mini ui primary button" data-symbol="'.$stock['symbol'].'">'.$stock['name'].'</button></td>
 								<td class="center aligned"><button class="mini ui secondary button" data-tootik="'.$seuils.'" data-tootik-conf="right">'.($seuils == "" ? 0 : count(explode(';', $seuils))).'</button></td>

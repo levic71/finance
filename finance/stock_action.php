@@ -37,6 +37,7 @@ if ($action == "add" || $action == "reload") {
         if ($row = mysqli_fetch_array($res)) {
             $name   = $row['name'];
             $f_type = $row['type'];
+            $f_search_type = $row['type'];
             $region = $row['region'];
             $marketopen  = $row['marketopen'];
             $marketclose = $row['marketclose'];
@@ -56,7 +57,7 @@ if ($action == "add" || $action == "reload") {
     if ($engine == "google") {
 
         $gf_symbol = $symbol;
-        $ret_add = cacheData::getAndInsertAllDataQuoteFromGSPlusIndicators($symbol, $f_type) ? 1 : 0;
+        $ret_add = cacheData::getAndInsertAllDataQuoteFromGSPlusIndicators($symbol, $f_search_type) ? 1 : 0;
 
     }
 
