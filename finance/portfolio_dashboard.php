@@ -179,8 +179,8 @@ $lst_orders_futur = $sc->getOrdersFutur();
 			<label>Actif</label>
 			<select id="f_product_name" class="ui dropdown">
 				<option value="">All</option>
-				<option value="cash">Cash</option>
-				<? foreach ($quotes['lst_actifs'] as $key => $val) echo "<option value=\"".$key."\">".$val."</option>"; ?>
+				<option value="Cash">Cash</option>
+				<? foreach ($sc->getListActifsAchetes() as $key => $val) echo "<option value=\"".$key."\">".$val."</option>"; ?>
 				<option value="other">Autre</option>
 			</select>
 		</div>
@@ -230,7 +230,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 								$td_gain = '<td data-value="' . $order_gain . '" class="' . ($val['price'] > $val['pru'] ? "aaf-positive" : "aaf-negative") . '">' . ($val['price'] > $val['pru'] ? "+" : "") . sprintf("%.2f", $order_gain) . uimx::getCurrencySign($val['devise']) . '</td>';
 							}
 
-							echo '<tr>
+							echo '<tr data-value="'.$val['product_name'].'">
 						<td data-value="' . $val['date'] . '"><i class="inverted ' . str_replace(["left", "right"], ["sign out", "sign in"], $val['icon']) . ' icon"></i> ' . $val['date'] . '</td>
 						<td>' . $val['shortname'] . '</td>
 						<td>' . QuoteComputing::getQuoteNameWithoutExtension($val['product_name']) . '</td>
@@ -522,7 +522,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 					if (filter_date && mytds[0].childNodes[1].nodeValue.trim().toLowerCase() != filter_date.toLowerCase())
 						hide_line = true;
 
-					if (filter_product_name && mytds[2].innerHTML.toLowerCase() != filter_product_name.toLowerCase())
+					if (filter_product_name && children[i].getAttributeNode("data-value").value != filter_product_name)
 						hide_line = true;
 
 					if (filter_action && filter_action.toLowerCase() != "achatvente" && mytds[3].innerHTML.toLowerCase() != filter_action.toLowerCase())

@@ -96,14 +96,22 @@ if ($action == "upt") {
 
 if ($action == "del") {
 
-    logger::info("STOCK", "DEL", "###########################################################");
-
-    $req = "SELECT * FROM stocks WHERE symbol='".$symbol."'";
+    $req = "SELECT count(*) total FROM orders WHERE product_name='".$symbol."' AND portfolio_id in (SELECT portfolio_id FROM portfolios WHERE user_id=".$sess_context->getUserId().")";
     $res = dbc::execSql($req);
+    $row = mysqli_fetch_array($res);
+    $del_ret = $row['total'];
 
-    if ($row = mysqli_fetch_array($res)) {
-        calc::removeSymbol($symbol);
-        logger::info("STOCK", $symbol, "[OK]");
+    if ($del_ret == 0) {
+
+        logger::info("STOCK", "DEL", "###########################################################");
+
+        $req = "SELECT * FROM stocks WHERE symbol='".$symbol."'";
+        $res = dbc::execSql($req);
+
+        if ($row = mysqli_fetch_array($res)) {
+            calc::removeSymbol($symbol);
+            logger::info("STOCK", $symbol, "[OK]");
+        }
     }
 }
 
@@ -124,10 +132,13 @@ var p = loadPrompt();
     <? } ?>
 <? } ?>
 
-<? if ($action == "del") { ?>
-    go({ action: 'home_content', id: 'main', url: 'home_content.php' });
-    p.success('Actif <?= $symbol ?> supprimé');
-<? } ?>
+<? if ($action == "del" && $del_ret == 1) { ?>
+        go({ action: 'home_content', id: 'main', url: 'home_content.php' });
+        p.success('Actif <?= $symbol ?> supprimé');
+    <? } else { ?>
+        go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?symbol=<?= $symbol ?>&ptf_id=<?= $ptf_id ?>', loading_area: 'main' });
+        p.error('Actif <?= $symbol ?> non supprimé. Nb ordres existants = <?= $del_ret ?>');
+    <? } ?>
 
 <? if ($action == "add") { ?>
     <? if ($ret_add) { ?>
