@@ -26,3 +26,4 @@ finance/.vscode/tasks.json
 finance.log
 .gitignore
 finance/phpinfo.php
+finance.code-workspace

@@ -180,9 +180,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 			<select id="f_product_name" class="ui dropdown">
 				<option value="">All</option>
 				<option value="cash">Cash</option>
-				<? foreach ($quotes["stocks"] as $key => $val) { ?>
-					<option value="<?= $val['symbol'] ?>"><?= $val['symbol'] ?></option>
-				<? } ?>
+				<? foreach ($quotes['lst_actifs'] as $key => $val) echo "<option value=\"".$key."\">".$val."</option>"; ?>
 				<option value="other">Autre</option>
 			</select>
 		</div>

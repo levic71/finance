@@ -321,8 +321,10 @@ class QuoteComputing {
     }
 
     public static function getQuoteNameWithoutExtension($name) {
+
         $s_search = array('.PAR', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE:', 'INDEXDJX:.', 'INDEXEURO:', 'INDEXNASDAQ:.', 'INDEXRUSSELL:', 'INDEXSP:.', 'NASDAQ:', 'NYSE:');
         $s_replace = array('');
+
         return str_replace($s_search, $s_replace, $name);
     }
 
@@ -1093,7 +1095,7 @@ class calc {
         $portfolio['positions']  = $positions;
         $portfolio['mvvr']       = ($sum_mv / $portfolio['valo_ptf']) * 100; // Risque exposition (poids des lignes en MV vs valo ptf - <10 expo faible, entre 10 et 30 modéré, >30 fort)
         $portfolio['interval_year']  = $interval_year;
-        $portfolio['interval_month'] = $interval_month;
+        $portfolio['interval_month'] = $interval_month;    
  
         return $portfolio;
     } 
@@ -1586,6 +1588,13 @@ class calc {
                 // On isole les perfs pour pouvoir trier par performance decroissante
                 $ret["perfs"][$symbol] = $row['DM'];
             }
+
+            // Création de la liste des actifs triés par leurs noms normalisés
+            $t = array_combine(array_keys($ret['stocks']), array_column($ret['stocks'], "symbol"));
+
+            $ret['lst_actifs'] = array();
+            foreach($t as $key => $val) $ret['lst_actifs'][$key] = QuoteComputing::getQuoteNameWithoutExtension($val);
+            sort($ret['lst_actifs']);
 
             cacheData::writeCacheData($file_cache, $ret);
 

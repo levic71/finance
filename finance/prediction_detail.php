@@ -64,7 +64,7 @@ if ($action == "upt") {
             <select id="f_actif" class="ui dropdown">
 				<option value=""></option>
                 <? foreach ($quotes["stocks"] as $key => $val) { ?>
-                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $row['symbol'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= $val['symbol'] ?></option>
+                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $row['symbol'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= QuoteComputing::getQuoteNameWithoutExtension($val['symbol']) ?></option>
                 <? } ?>
             </select>
         </div>
