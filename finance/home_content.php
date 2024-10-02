@@ -249,7 +249,7 @@ foreach($data2["stocks"] as $key => $val) {
 
 	echo "
 		<td><button class=\"mini ui primary button\" data-symbol=\"".$val['symbol']."\">".QuoteComputing::getQuoteNameWithoutExtension($val['symbol'])."</button></td>
-		<td data-value=\"".$tags_infos['icon_tag']."\" data-tootik=\"".$tags_infos['tooltip']."\" class=\"collapsing\"><i data-secteur=\"".$tags_infos['icon_tag']."\" class=\"inverted grey ".$tags_infos['icon']." icon\"></i></td>
+		<td data-value=\"".$tags_infos['icon_tag']."\" data-tootik=\"".$tags_infos['tooltip']."\" class=\"collapsing\"><i data-secteur=\"".$tags_infos['icon_tag']."\" class=\"inverted grey ".($tags_infos['icon'] == "" ? "copyright outline" : $tags_infos['icon'])." icon\"></i></td>
 		<td>".tools::UTF8_encoding($val['name'])."</td>
 	";
 	
