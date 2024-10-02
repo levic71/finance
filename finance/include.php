@@ -207,6 +207,7 @@ class StockComputing {
     protected $orders_futur    = [];
     protected $trend_following = [];
     protected $save_quotes = [];
+    protected $lst_actifs_achetes = [];
     protected $strat_ptf   = 1;
 
     public function __construct($quotes, $ptf, $devises) {
@@ -245,6 +246,18 @@ class StockComputing {
                 }
             }
         }
+    }
+
+    public function getListActifsAchetes() {
+
+        $ret = array();
+
+        foreach ($this->orders as $key => $val) $ret[$val['product_name']] = QuoteComputing::getQuoteNameWithoutExtension($val['product_name']);
+        if (isset($ret['Cash'])) unset($ret['Cash']);
+        asort($ret);
+
+        return $ret;
+
     }
 
     public function getPositionAttr($symbol, $attr, $def = null) {
@@ -1594,7 +1607,7 @@ class calc {
 
             $ret['lst_actifs'] = array();
             foreach($t as $key => $val) $ret['lst_actifs'][$key] = QuoteComputing::getQuoteNameWithoutExtension($val);
-            sort($ret['lst_actifs']);
+            asort($ret['lst_actifs']);
 
             cacheData::writeCacheData($file_cache, $ret);
 
