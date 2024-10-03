@@ -2,11 +2,12 @@
 
 // //////////////////////////////////////////
 // NE PAS METTRE DE SESSION SINON PB CRONTAB
+//
+// Lancer par cron-job
+//
 // //////////////////////////////////////////
 
 include "include.php";
-include "indicators.php";
-include "googlesheet/sheet.php";
 
 ini_set('max_execution_time', '300'); //300 seconds = 5 minutes
 
@@ -17,15 +18,9 @@ if (!is_dir("cache/")) mkdir("cache/");
 
 $db = dbc::connect();
 
-// On récupère les portefeuilles de l'utilisateur
-$req = "SELECT * FROM users";
-$res = dbc::execSql($req);
-while($row = mysqli_fetch_array($res)) {
+// Recuperation des DM en BD
+$data2 = calc::getIndicatorsLastQuote();
 
-	$portfolio_data = calc::getAggregatePortfoliosByUser($row['id']);
+// var_dump($data2);
 
-	if (count($portfolio_data) == 0) continue;
-
-}
-	
 ?>

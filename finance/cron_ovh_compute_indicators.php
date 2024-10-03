@@ -3,6 +3,9 @@
 // //////////////////////////////////////////
 // NE PAS METTRE DE SESSION SINON PB CRONTAB
 // Execution CRON en semaine uniquement, 1 x le matin, 1 x le midi et 1 x le soir
+//
+// Lancer par cron-ovh
+//
 // //////////////////////////////////////////
 
 use Google\Service\AndroidEnterprise\WebApp;
