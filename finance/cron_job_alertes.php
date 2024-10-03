@@ -2,6 +2,9 @@
 
 // //////////////////////////////////////////
 // NE PAS METTRE DE SESSION SINON PB CRONTAB
+//
+// Lancer par cron-job
+//
 // //////////////////////////////////////////
 
 // Alerte (id, date YYY-MM-JJ, user_id, actif, mail, lue, type, sens, couleur, icone, libelle, seuil)
