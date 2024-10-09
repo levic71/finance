@@ -154,7 +154,12 @@ class dbc {
 
     public static function execSQL($requete)
     {
-        $res = mysqli_query(self::$link, $requete) or die("Error on request : " . $requete);
+        $res = false;
+        try {
+            $res = mysqli_query(self::$link, $requete);
+        } catch (Exception $e) {
+            echo $requete;   
+        }
         return $res;
     }
 

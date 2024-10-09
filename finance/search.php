@@ -12,6 +12,9 @@ $engine = "alpha";
 foreach(['search', 'engine'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
+// Recuperation de tous les actifs
+$quotes = calc::getIndicatorsLastQuote();
+
 ?>
 
 <div class="ui container inverted segment">
@@ -24,15 +27,14 @@ foreach(['search', 'engine'] as $key)
     </div>
 </div>
 
-<div class="ui container inverted segment">
-<?
+<? if (isset($search) && $search != "") {
 
-if (isset($search) && $search != "") {
+    echo "<div class=\"ui container inverted segment\">";
 
     try {
 
-        $data = aafinance::searchSymbol(rawurlencode($search));
-        // $data = json_decode('{ "bestMatches": [ { "1. symbol": "FDX", "2. name": "Fedex Corp", "3. type": "Equity", "4. region": "United States", "5. marketOpen": "09:30", "6. marketClose": "16:30", "7. timezone": "UTC-04", "8. currency": "USD", "9. matchScore": "0.7500" } ] }', true);
+        // $data = aafinance::searchSymbol(rawurlencode($search));
+        $data = json_decode('{ "bestMatches": [ { "1. symbol": "FDX", "2. name": "Fedex Corp", "3. type": "Equity", "4. region": "United States", "5. marketOpen": "09:30", "6. marketClose": "16:30", "7. timezone": "UTC-04", "8. currency": "USD", "9. matchScore": "0.7500" } ] }', true);
 
         if (isset($data["bestMatches"])) {
             echo "<table class=\"ui inverted very compact single line table\" id=\"lst_search_quote\">";
@@ -66,15 +68,15 @@ if (isset($search) && $search != "") {
         if ($e->getCode() == 1) logger::error("CRON", $row['symbole'], $e->getMessage());
         if ($e->getCode() == 2) logger::info("CRON", $row['symbole'], $e->getMessage());
     }
+    echo "</div>";
 }
 ?>
-</div>
 
 <div class="ui container inverted segment">OU</div>
 
 <div class="ui container inverted segment">
-<div class="ui search">
-<div class="ui icon input">
+    <div class="ui search">
+        <div class="ui icon input">
             <input class="search" id="search2" name="search2" type="text" placeholder="Google Finance Quote"  value="" />
             <i class="search icon"></i>
         </div>
@@ -87,6 +89,37 @@ if (isset($search) && $search != "") {
     </div>
 </div>
 
+<div class="ui container inverted segment">OU</div>
+
+<div class="ui container inverted segment">
+    <div class="ui search">
+        <div class="ui icon input">
+            <input class="search" id="search3" name="search3" type="text" placeholder="CALL/PUT"  value="" />
+        </div>
+        <div class="ui icon input">
+            <select class="ui fluid search dropdown" id="f_search_type3">
+                <option value="CALL">CALL</option>
+                <option value="PUT">PUT</option>
+            </select>
+        </div>
+        <div class="ui icon input">
+            <select class="ui fluid search dropdown" id="f_level">
+                <? foreach([ 1, 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 ] as $key => $val) echo "<option value=\"".$val."\">X".$val."</option>"; ?>
+            </select>
+        </div>
+        <div class="ui icon input">
+            <select id="f_product_name" class="ui fluid dropdown">
+                <? foreach ($quotes["lst_actifs"] as $key => $val) { $q = $quotes["stocks"][$key]; ?>
+                    <option value="<?= $key ?>" data-price="<?= sprintf("%.2f", $q['price']) ?>" data-currency="<?= $q['currency'] ?>"><?= $val ?></option>
+                <? } ?>
+            </select>
+        </div>
+        <div class="ui icon input">
+            <input class="search" id="f_init_val" name="search3" type="text" placeholder="Initial value"  value="" />
+        </div>
+        <div class="ui primary small button" id="search3_bt">Add</div>
+    </div>
+</div>
 
 <script>
 	Dom.addListener(Dom.id('search_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('search')  != '') go({ action: 'search',    id: 'main', url: 'search.php?engine=alpha&search='+valof('search'), loading_area: 'search_bt' }); });

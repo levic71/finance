@@ -127,14 +127,14 @@ if ($action == "new" && $from_stock_detail == 1) {
             <label>Actif</label>
             <select id="f_product_name" class="ui dropdown">
                 <option value="Cash" data-price="0" <?= $my_order['product_name'] == "Cash" ? "selected=\"selected\"" : "" ?>>Cash</option>
-                <? foreach ($quotes["stocks"] as $key => $val) { ?>
-                    <? if ($my_order['product_name'] == $val['symbol']) {
-                            if (!isset($my_order['price'])) $my_order['price'] = $val['price'];
+                <? foreach ($quotes["lst_actifs"] as $key => $val) { $q = $quotes["stocks"][$key]; ?>
+                    <? if ($my_order['product_name'] == $key) {
+                            if (!isset($my_order['price'])) $my_order['price'] = $q['price'];
                             if (!isset($my_order['action'])) $my_order['action'] = 1;
-                            $my_order['devise'] = $val['currency'];
-                            $my_order['taux_change'] = calc::getCurrencyRate($val['currency']."EUR", $devises);
+                            $my_order['devise'] = $q['currency'];
+                            $my_order['taux_change'] = calc::getCurrencyRate($q['currency']."EUR", $devises);
                     } ?>
-                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $my_order['product_name'] == $val['symbol'] ? "selected=\"selected\"" : "" ?>><?= QuoteComputing::getQuoteNameWithoutExtension($val['symbol']) ?></option>
+                    <option value="<?= $key ?>" data-price="<?= sprintf("%.2f", $q['price']) ?>" data-currency="<?= $q['currency'] ?>" <?= $my_order['product_name'] == $key ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
                 <? } ?>
                 <option value="AUTRE" data-price="0" <?= substr($my_order['product_name'], 0, 5) == "AUTRE" ? "selected=\"selected\"" : "" ?>>Autre:new</option>
                 <? foreach ($lst_produits_autres as $key => $val) { ?>
