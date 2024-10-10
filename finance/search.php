@@ -33,8 +33,8 @@ $quotes = calc::getIndicatorsLastQuote();
 
     try {
 
-        // $data = aafinance::searchSymbol(rawurlencode($search));
-        $data = json_decode('{ "bestMatches": [ { "1. symbol": "FDX", "2. name": "Fedex Corp", "3. type": "Equity", "4. region": "United States", "5. marketOpen": "09:30", "6. marketClose": "16:30", "7. timezone": "UTC-04", "8. currency": "USD", "9. matchScore": "0.7500" } ] }', true);
+        $data = aafinance::searchSymbol(rawurlencode($search));
+        // $data = json_decode('{ "bestMatches": [ { "1. symbol": "FDX", "2. name": "Fedex Corp", "3. type": "Equity", "4. region": "United States", "5. marketOpen": "09:30", "6. marketClose": "16:30", "7. timezone": "UTC-04", "8. currency": "USD", "9. matchScore": "0.7500" } ] }', true);
 
         if (isset($data["bestMatches"])) {
             echo "<table class=\"ui inverted very compact single line table\" id=\"lst_search_quote\">";
@@ -103,19 +103,19 @@ $quotes = calc::getIndicatorsLastQuote();
             </select>
         </div>
         <div class="ui icon input">
-            <select class="ui fluid search dropdown" id="f_level">
+            <select class="ui fluid search dropdown" id="f_levier">
                 <? foreach([ 1, 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 ] as $key => $val) echo "<option value=\"".$val."\">X".$val."</option>"; ?>
             </select>
         </div>
         <div class="ui icon input">
-            <select id="f_product_name" class="ui fluid dropdown">
+            <select id="f_sousjacent" class="ui fluid dropdown">
                 <? foreach ($quotes["lst_actifs"] as $key => $val) { $q = $quotes["stocks"][$key]; ?>
                     <option value="<?= $key ?>" data-price="<?= sprintf("%.2f", $q['price']) ?>" data-currency="<?= $q['currency'] ?>"><?= $val ?></option>
                 <? } ?>
             </select>
         </div>
         <div class="ui icon input">
-            <input class="search" id="f_init_val" name="search3" type="text" placeholder="Initial value"  value="" />
+            <input class="search" id="f_init_val" name="f_init_val" type="text" placeholder="Initial value"  value="" />
         </div>
         <div class="ui primary small button" id="search3_bt">Add</div>
     </div>
@@ -123,5 +123,6 @@ $quotes = calc::getIndicatorsLastQuote();
 
 <script>
 	Dom.addListener(Dom.id('search_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('search')  != '') go({ action: 'search',    id: 'main', url: 'search.php?engine=alpha&search='+valof('search'), loading_area: 'search_bt' }); });
-	Dom.addListener(Dom.id('search2_bt'), Dom.Event.ON_CLICK, function(event) { if (valof('f_search_type') == '') { alert('Type invalide !'); return; } if (valof('search2') != '') go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=google&symbol='+valof('search2')+'&f_search_type='+valof('f_search_type'), loading_area: 'search2_bt' }); });
+	Dom.addListener(Dom.id('search2_bt'), Dom.Event.ON_CLICK, function(event) { if (valof('search2') != '') go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=google&symbol='+valof('search2')+'&f_search_type='+valof('f_search_type'),  loading_area: 'search2_bt' }); });
+	Dom.addListener(Dom.id('search3_bt'), Dom.Event.ON_CLICK, function(event) { if (valof('search3') != '') go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=manual&symbol='+valof('search3')+'&f_search_type='+valof('f_search_type3')+'&f_levier='+valof('f_levier')+'&f_sousjacent='+valof('f_sousjacent')+'&f_init_val='+valof('f_init_val'), loading_area: 'search3_bt' }); });
 </script>
