@@ -499,7 +499,7 @@ Sortable.initTable(el("lst_stock"));
 addCN("strategie_swiper", "showmine");
 <? if ($sess_context->isSuperAdmin() || !$sess_context->isUserConnected()) { ?>
 	<? if ($sess_context->isUserConnected()) { ?>
-		[ 'lst_filter1_bt', 'lst_filter2_bt', 'lst_filter3_bt', 'lst_filter4_bt', 'lst_filter5_bt', 'lst_filter6_bt', 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter9_bt', 'lst_filter10_bt', 'lst_filter11_bt', 'lst_filter12_bt' ].forEach(function(elt) {
+		[ 'lst_filter1_bt', 'lst_filter2_bt', 'lst_filter3_bt', 'lst_filter4_bt', 'lst_filter5_bt', 'lst_filter6_bt', 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter9_bt', 'lst_filter10_bt', 'lst_filter11_bt', 'lst_filter12_bt', 'lst_filter13_bt' ].forEach(function(elt) {
 			if (getCookie(elt) == 1) switchColorElement(elt, 'orange', 'grey');
 		});
 		if (getCookie('strategie_default_bt') != 1) filterLstStrategies('strategie_default_bt');
