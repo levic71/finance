@@ -744,22 +744,26 @@ class QuoteComputing {
         $avis         = $this->getScoreAvis($this->getAvis());
         $avis_lib     = $this->getLabelAvis($avis);
         $avis_bg_colr = $this->getBGColorAvis($avis);
+        $prefix_sort  = "";
 
         // En dur aussi dans la classe HomeContent.php
         if ($type == "CALL" || $type == "PUT") {
             $tags_infos['icon_tag'] = "Turbo";
             $tags_infos['tooltip'] = "Turbo CALL/PUT";
             $tags_infos['icon'] = "rocket";
+            $prefix_sort  = "ZZZ_";
         }
 
 //        echo $this->symbol; var_dump($avis);
 
-        $ret .= '<tr id="tr_item_'.$i.'" data-tags="'.tools::UTF8_encoding($tags).'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
+        $ret .= '
+        <tr id="tr_item_'.$i.'" data-tags="'.tools::UTF8_encoding($tags).'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
+
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.($tags_infos['icon'] == "" ? "copyright outline" : $tags_infos['icon']).' icon"></i>
             </td>
 
-            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.tools::UTF8_encoding($this->getName()).'" data-pname="'.$this->symbol.'"><button class="tiny ui primary button">'.QuoteComputing::getQuoteNameWithoutExtension($pname).'</button></td>
+            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.tools::UTF8_encoding($this->getName()).'" data-value="'.$prefix_sort.$this->symbol.'" data-pname="'.$this->symbol.'"><button class="tiny ui primary button">'.QuoteComputing::getQuoteNameWithoutExtension($pname).'</button></td>
 
             <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'" data-value="'.sprintf("%.2f", $position_pru * $position_nb).'"><div>
                 <button class="tiny ui button">'.sprintf("%.2f%s", $position_pru, uimx::getCurrencySign($currency)).'</button>
