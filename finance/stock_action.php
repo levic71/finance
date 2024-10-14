@@ -24,6 +24,12 @@ $f_expire = 0;
 foreach(['action', 'engine', 'symbol', 'f_search_type', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_ticker', 'f_callput', 'f_emetteur', 'f_levier', 'f_sousjacent', 'f_val_init', 'f_expire'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
+// Suppression des espaces
+$symbol = str_replace(' ', '', $symbol);
+
+// Remplacement
+$f_val_init = str_replace(',', '.', $f_val_init);
+
 if ($symbol == "" && $f_callput == "") tools::do_redirect("index.php");
 
 $db = dbc::connect();
