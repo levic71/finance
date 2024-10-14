@@ -71,8 +71,6 @@ if ($action == "upt") {
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
 
-var_dump($quotes['lst_turbos']);
-
 // Recuperation liste de mes ptf
 $lst_ptfs = array();
 $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND synthese = 0";
