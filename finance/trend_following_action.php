@@ -27,8 +27,8 @@ if ($action == "stops") {
 if ($action == "manual_price") {
 
     $req = "
-        INSERT INTO trend_following (user_id, symbol, manual_price)
-        VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_quote)."')
+        INSERT INTO trend_following (user_id, symbol, manual_price, stop_loss, stop_profit, objectif, seuils)
+        VALUES (".$sess_context->getUserId().", '".$symbol."', '".sprintf("%2.f", $f_quote)."', '', '', '', '')
         ON DUPLICATE KEY UPDATE
         manual_price='".sprintf("%2.f", $f_quote)."'
     ";
