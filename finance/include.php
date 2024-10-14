@@ -354,9 +354,13 @@ class QuoteComputing {
         $this->currency = $this->getOtherName() ? $sc->getPositionAttr($symbol, 'devise') : $this->quote['currency'];
     }
 
+    public static function getComplexQuoteName($emetteur, $sousjacent, $callput, $levier, $ticker) {
+        return $emetteur."_".$sousjacent."_".$callput."_X".$levier."_".$ticker;
+    }
+
     public static function getQuoteNameWithoutExtension($name) {
 
-        $s_search = array('.PAR', 'EPA:', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE:', 'INDEXDJX:.', 'INDEXEURO:', 'INDEXNASDAQ:.', 'INDEXRUSSELL:', 'INDEXSP:.', 'NASDAQ:', 'NYSE:');
+        $s_search = array('FRA:', '.PAR', 'EPA:', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE:', 'INDEXDJX:.', 'INDEXEURO:', 'INDEXNASDAQ:.', 'INDEXRUSSELL:', 'INDEXSP:.', 'NASDAQ:', 'NYSE:');
         $s_replace = array('');
 
         // TURBO
@@ -2294,7 +2298,7 @@ class cacheData {
 
     public static function insertOrUpdateDataComplexQuote($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_init_val) {
 
-        $symbol = $f_emetteur."_".$sousjacent['symbol']."_".$f_callput."_X".$f_levier."_".$f_ticker;
+        $symbol = QuoteComputing::getComplexQuoteName($f_emetteur, $sousjacent['symbol'], $f_callput, $f_levier, $f_ticker);
         $name = $f_emetteur." ".$sousjacent['symbol']." ".$f_callput." X".$f_levier;
         $type = $f_callput;
         $init_val = $f_init_val;
