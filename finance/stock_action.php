@@ -73,7 +73,7 @@ if ($action == "add" || $action == "reload") {
         $quotes = calc::getIndicatorsLastQuote();
         $sousjacent = $quotes["stocks"][$f_sousjacent];
 
-        $symbol = $f_emetteur." ".$f_sousjacent." ".$f_callput." X".$f_levier;
+        $symbol = QuoteComputing::getComplexQuoteName($f_emetteur, $f_sousjacent, $f_callput, $f_levier, $f_ticker);
         $ret_add = cacheData::insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_init_val) ? 1 : 0;
 
     }

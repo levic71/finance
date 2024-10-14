@@ -14,7 +14,7 @@ $db = dbc::connect();
 
 // SQL SCHEMA UPDATE
 // $ret = dbc::addColTable("stocks", "dividende_annualise", "ALTER TABLE `stocks` ADD `dividende_annualise` FLOAT NOT NULL AFTER `rating`, ADD `date_dividende` DATE NOT NULL AFTER `dividende_annualise`;");
-$ret = dbc::addColTable("stocks", "pc_emetteur", "ALTER TABLE `stocks` ADD `pc_emetteur` VARCHAR(32) NOT NULL AFTER `pc_sousjacent`, ADD `pc_ticker` VARCHAR(32) NOT NULL AFTER `pc_emetteur`, ADD `pc_expire` INT NOT NULL DEFAULT '0' AFTER `pc_ticker`;");
+// $ret = dbc::addColTable("stocks", "pc_emetteur", "ALTER TABLE `stocks` ADD `pc_emetteur` VARCHAR(32) NOT NULL AFTER `pc_sousjacent`, ADD `pc_ticker` VARCHAR(32) NOT NULL AFTER `pc_emetteur`, ADD `pc_expire` INT NOT NULL DEFAULT '0' AFTER `pc_ticker`;");
 
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
