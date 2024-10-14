@@ -36,7 +36,7 @@ $quotes = calc::getIndicatorsLastQuote();
         $data = aafinance::searchSymbol(rawurlencode($search));
         // $data = json_decode('{ "bestMatches": [ { "1. symbol": "FDX", "2. name": "Fedex Corp", "3. type": "Equity", "4. region": "United States", "5. marketOpen": "09:30", "6. marketClose": "16:30", "7. timezone": "UTC-04", "8. currency": "USD", "9. matchScore": "0.7500" } ] }', true);
 
-        if (isset($data["bestMatches"])) {
+        if (count($data["bestMatches"]) > 0) {
             echo "<table class=\"ui inverted very compact single line table\" id=\"lst_search_quote\">";
             $i = 0;
             foreach ($data["bestMatches"] as $key => $val) {
@@ -63,7 +63,7 @@ $quotes = calc::getIndicatorsLastQuote();
             }
             echo "</table>";
         } else 
-            echo "<small><i class=\"inverted exclamation triangle red icon\"></i>".$data['Information']."</small>";
+            echo "<i class=\"inverted exclamation triangle red icon\"></i>Pas d'actif trouvé";
     } catch (RuntimeException $e) {
         if ($e->getCode() == 1) logger::error("CRON", $row['symbole'], $e->getMessage());
         if ($e->getCode() == 2) logger::info("CRON", $row['symbole'], $e->getMessage());
@@ -94,10 +94,16 @@ $quotes = calc::getIndicatorsLastQuote();
 <div class="ui container inverted segment">
     <div class="ui search">
         <div class="ui icon input">
-            <input class="search" id="search3" name="search3" type="text" placeholder="CALL/PUT"  value="" />
+            <select class="ui fluid search dropdown" id="f_emetteur">
+                <option value="SG">SG</option>
+                <option value="BNP">BNP</option>
+            </select>
         </div>
         <div class="ui icon input">
-            <select class="ui fluid search dropdown" id="f_search_type3">
+            <input class="search" id="f_ticker" name="f_ticker" type="text" placeholder="Ticker"  value="" />
+        </div>
+        <div class="ui icon input">
+            <select class="ui fluid search dropdown" id="f_callput">
                 <option value="CALL">CALL</option>
                 <option value="PUT">PUT</option>
             </select>
@@ -122,7 +128,22 @@ $quotes = calc::getIndicatorsLastQuote();
 </div>
 
 <script>
-	Dom.addListener(Dom.id('search_bt'),  Dom.Event.ON_CLICK, function(event) { if (valof('search')  != '') go({ action: 'search',    id: 'main', url: 'search.php?engine=alpha&search='+valof('search'), loading_area: 'search_bt' }); });
-	Dom.addListener(Dom.id('search2_bt'), Dom.Event.ON_CLICK, function(event) { if (valof('search2') != '') go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=google&symbol='+valof('search2')+'&f_search_type='+valof('f_search_type'),  loading_area: 'search2_bt' }); });
-	Dom.addListener(Dom.id('search3_bt'), Dom.Event.ON_CLICK, function(event) { if (valof('search3') != '') go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=manual&symbol='+valof('search3')+'&f_search_type='+valof('f_search_type3')+'&f_levier='+valof('f_levier')+'&f_sousjacent='+valof('f_sousjacent')+'&f_init_val='+valof('f_init_val'), loading_area: 'search3_bt' }); });
+	Dom.addListener(Dom.id('search_bt'),  Dom.Event.ON_CLICK, function(event) {
+        if (valof('search')  != '')
+            go({ action: 'search',    id: 'main', url: 'search.php?engine=alpha&search='+valof('search'), loading_area: 'search_bt' });
+    });
+	Dom.addListener(Dom.id('search2_bt'), Dom.Event.ON_CLICK, function(event) {
+        if (valof('search2') != '')
+            go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=google&symbol='+valof('search2')+'&f_search_type='+valof('f_search_type'),  loading_area: 'search2_bt' });
+        });
+	Dom.addListener(Dom.id('search3_bt'), Dom.Event.ON_CLICK, function(event) {
+
+        if (!check_alphanum(valof('f_ticker'), "Ticker actif", 3))
+            return false;
+
+        if (!format_and_check_num('f_init_val', 'Initial price', 0, 999999999999))
+		    return false;
+
+        go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=manual&f_ticker='+valof('f_ticker')+'&f_emetteur='+valof('f_emetteur')+'&f_callput='+valof('f_callput')+'&f_levier='+valof('f_levier')+'&f_sousjacent='+valof('f_sousjacent')+'&f_init_val='+valof('f_init_val'), loading_area: 'search3_bt' });
+    });
 </script>

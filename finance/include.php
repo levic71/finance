@@ -273,8 +273,24 @@ class StockComputing {
         return isset($this->trend_following[$symbol][$attr]) ? $this->trend_following[$symbol][$attr] : $def; 
     }
 
+    public function getQuote($symbol) {
+
+        $ret = [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0, "currency" => "EUR"];
+
+        // Actif classique
+        if (isset($this->quotes['stocks'][$symbol])) $ret = $this->quotes['stocks'][$symbol];
+
+        // Turbo
+        if (isset($this->quotes['lst_turbos'][$symbol])) {
+            $ret = $this->quotes['lst_turbos'][$symbol];
+            $ret['tags'] = "rocket|Turbo|Turbo CALL/PUT|";
+        }
+
+        return $ret;
+
+    }
+
     public function getSavedQuote($symbol)    { return $this->save_quotes[$symbol]; }
-    public function getQuote($symbol)         { return isset($this->quotes['stocks'][$symbol]) ? $this->quotes['stocks'][$symbol] : [ 'DM' => 0, 'MM7' => 0, "MM20" => 0, "MM50" => 0, "MM100" => 0, "MM200" => 0, "currency" => "EUR"]; }
     public function getDeviseTaux($currency)  { return $currency == "EUR" ? 1 : calc::getCurrencyRate($currency."EUR", $this->devises); }
     public function getPtfName()              { return $this->infos['name']; }
     public function getCountPositionsInPtf()  { return count($this->positions); }
@@ -340,8 +356,14 @@ class QuoteComputing {
 
     public static function getQuoteNameWithoutExtension($name) {
 
-        $s_search = array('.PAR', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE:', 'INDEXDJX:.', 'INDEXEURO:', 'INDEXNASDAQ:.', 'INDEXRUSSELL:', 'INDEXSP:.', 'NASDAQ:', 'NYSE:');
+        $s_search = array('.PAR', 'EPA:', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE:', 'INDEXDJX:.', 'INDEXEURO:', 'INDEXNASDAQ:.', 'INDEXRUSSELL:', 'INDEXSP:.', 'NASDAQ:', 'NYSE:');
         $s_replace = array('');
+
+        // TURBO
+        if (strstr($name, "CALL") || strstr($name, "PUT")) {
+            $t = explode("_", $name);
+            $name = substr($t[2], 0, 1)."-".$t[1]."-".$t[3];
+        }
 
         return str_replace($s_search, $s_replace, $name);
     }
@@ -691,7 +713,7 @@ class QuoteComputing {
         $dividende = $this->getDividendeAnnuel();            // Dividende annualise s'il existe
         $price     = $this->getPrice();                      // Prix de l'actif
         $pct       = $this->getPct();
-        $pname     = '<button class="tiny ui primary button">'.$this->getPName().'</button>';
+        $pname     = $this->getPName();
         $isAlerteActive = $this->isAlerteActive();
         $isWatchlist = $this->isWatchlist();
         $stop_loss   = $this->getStopLoss();
@@ -719,14 +741,21 @@ class QuoteComputing {
         $avis_lib     = $this->getLabelAvis($avis);
         $avis_bg_colr = $this->getBGColorAvis($avis);
 
+        // En dur aussi dans la classe HomeContent.php
+        if ($type == "CALL" || $type == "PUT") {
+            $tags_infos['icon_tag'] = "Turbo";
+            $tags_infos['tooltip'] = "Turbo CALL/PUT";
+            $tags_infos['icon'] = "rocket";
+        }
+
 //        echo $this->symbol; var_dump($avis);
 
         $ret .= '<tr id="tr_item_'.$i.'" data-tags="'.tools::UTF8_encoding($tags).'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
-                <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.$tags_infos['icon'].' icon"></i>
+                <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.($tags_infos['icon'] == "" ? "copyright outline" : $tags_infos['icon']).' icon"></i>
             </td>
 
-            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.tools::UTF8_encoding($this->getName()).'" data-pname="'.$this->symbol.'">'.QuoteComputing::getQuoteNameWithoutExtension($pname).'</td>
+            <td class="center aligned" id="f_actif_'.$i.'" data-tootik-conf="right" data-tootik="'.tools::UTF8_encoding($this->getName()).'" data-pname="'.$this->symbol.'"><button class="tiny ui primary button">'.QuoteComputing::getQuoteNameWithoutExtension($pname).'</button></td>
 
             <td class="center aligned" id="f_pru_'.$i.'" data-nb="'.$position_nb.'" data-pru="'.sprintf("%.2f", $position_pru).'" data-value="'.sprintf("%.2f", $position_pru * $position_nb).'"><div>
                 <button class="tiny ui button">'.sprintf("%.2f%s", $position_pru, uimx::getCurrencySign($currency)).'</button>
@@ -1614,6 +1643,12 @@ class calc {
             foreach($t as $key => $val) $ret['lst_actifs'][$key] = QuoteComputing::getQuoteNameWithoutExtension($val);
             asort($ret['lst_actifs']);
 
+            // Liste des turbos
+            $ret["lst_turbos"] = array();
+            $req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol=q.symbol WHERE s.type in ('PUT', 'CALL') ORDER BY s.symbol"; 
+            $res = dbc::execSql($req);
+            while($row = mysqli_fetch_assoc($res)) $ret["lst_turbos"][$row['symbol']] = $row;
+
             cacheData::writeCacheData($file_cache, $ret);
 
         } else {
@@ -1676,12 +1711,12 @@ class calc {
         $ret = 0;
 
         //Indicateur tendance
-        $MM7   = $data['MM7'];
-        $MM20  = $data['MM20'];
-        $MM50  = $data['MM50'];
-        $MM100 = $data['MM100'] != "" ? $data['MM100'] : ($data['MM200'] + $data['MM50']) / 2;
-        $MM200 = $data['MM200'];
-        $close = $data['price'];
+        $MM7   = isset($data['MM7'])   ? $data['MM7']   : 0; 
+        $MM20  = isset($data['MM20'])  ? $data['MM20']  : 0;
+        $MM50  = isset($data['MM50'])  ? $data['MM50']  : 0;
+        $MM200 = isset($data['MM200']) ? $data['MM200'] : 0;
+        $MM100 = isset($data['MM100']) && $data['MM100'] != "" ? $data['MM100'] : ($MM200 + $MM50) / 2;
+        $close = isset($data['price']) ? $data['price'] : 0;
 
         // Si les MM sont a zero, bye bye
         if ($MM7 == 0 && $MM200 == 0) return $ret;
@@ -2257,6 +2292,32 @@ class cacheData {
 
     }
 
+    public static function insertOrUpdateDataComplexQuote($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_init_val) {
+
+        $symbol = $f_emetteur."_".$sousjacent['symbol']."_".$f_callput."_X".$f_levier."_".$f_ticker;
+        $name = $f_emetteur." ".$sousjacent['symbol']." ".$f_callput." X".$f_levier;
+        $type = $f_callput;
+        $init_val = $f_init_val;
+        $levier = $f_levier;
+
+        // Maj data stock
+        $req  = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap, pc_levier, pc_sousjacent, pc_emetteur, pc_ticker) ";
+        $req .= "VALUES ('".$symbol."', '', '".$name."', '".$type."', '".$sousjacent['region']."', '".$sousjacent['marketopen']."', '".$sousjacent['marketclose']."', '".$sousjacent['timezone']."', '".$sousjacent['currency']."', 'manual', 0, 0, 0, 0, 0, ".$levier.", '".$sousjacent['symbol']."', '".$f_emetteur."', '".$f_ticker."') ";
+        $req .= "ON DUPLICATE KEY UPDATE gf_symbol='".$symbol."', name='".$name."', type='".$type."', region='".$sousjacent['region']."', marketopen='".$sousjacent['marketopen']."', marketclose='".$sousjacent['marketclose']."', timezone='".$sousjacent['timezone']."', currency='".$sousjacent['currency']."', engine='manual', pe=0, eps=0, beta=0, shares=0, marketcap=0, pc_levier=".$levier.", pc_sousjacent='".$sousjacent['symbol']."', pc_emetteur='".$f_emetteur."', pc_ticker='".$f_ticker."'";
+//        $req .= "AS NEW ON DUPLICATE KEY UPDATE gf_symbol=new.gf_symbol, name=new.name, type=new.type, region=new.region, marketopen=new.marketopen, marketclose=new.marketclose, timezone=new.timezone, currency=new.currency, engine=new.engine, pe=new.pe, eps=new.eps, beta=new.beta, shares=new.shares, marketcap=new.marketcap, pc_levier=new.levier, pc_sousjacent=new.sousjacent";
+        $res = dbc::execSql($req);
+        logger::info("STOCK", $symbol, "Insert");
+
+        // Maj quote quotes
+        $req  = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) ";
+        $req .= "VALUES ('".$symbol."','".$init_val."', '".$init_val."', '".$init_val."', '".$init_val."', '0', '".date("Y-m-d")."', '', '', '') ";
+        $req .= "ON DUPLICATE KEY UPDATE open='".$init_val."', high='".$init_val."', low='".$init_val."', price='".$init_val."', volume='0', day='".date("Y-m-d")."', previous='', day_change='', percent=''";
+//        $req .= "AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, price=new.price, volume=new.volume, day=new.day, previous=new.previous, day_change=new.day_change, percent=new.percent";
+        $res = dbc::execSql($req);
+        logger::info("QUOTE", $symbol, "Insert");
+
+    }
+
     public static function getAndInsertAllDataQuoteFromAlphaPlusIndicators($symbol, $name, $type, $region, $marketopen, $marketclose, $timezone, $currency, $engine) {
 
         $ret = false;
@@ -2317,6 +2378,22 @@ class cacheData {
         return $ret;
 
     }
+
+    public static function insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_init_val) {
+
+        $ret = true;
+
+        // Ecriture en BD des data
+        cacheData::insertOrUpdateDataComplexQuote($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_init_val);
+
+        // Reset des caches TMP pour recalcul
+        cacheData::deleteTMPFiles();
+
+        return $ret;
+
+    }
+
+
 
     public static function buildCacheOverview($symbol) {
 
@@ -2550,7 +2627,7 @@ class uimx {
     public static $invest_methode      = [ 1 => 'Dual Momemtum', 2 => 'DCA', 3 => 'Super Dual Momemtum' ];
     public static $invest_methode_icon = [ 1 => 'diamond', 2 => 'cubes', 3 => 'paper plane' ];
     public static $invest_distribution = [ 0 => "Capitalisation", 1 => "Distribution" ];
-    public static $type_actif          = [ 0 => "ETF", 1 => "Equity", 2 => "INDICE" ];
+    public static $type_actif          = [ 0 => "ETF", 1 => "Equity", 2 => "INDICE", 3 => "CALL", 4 => "PUT" ];
     public static $invest_market = [
         0 => [ "tag" => "Marché développé", "desc" => "" ],
         1 => [ "tag" => "Marché émergent",  "desc" => "" ]
@@ -2574,7 +2651,7 @@ class uimx {
         8  => [ "tag" => "Services publics",    "icon" => "universal access", "desc" => "Se compose de sociétés gazières, d'électricité et de services d'eau, ainsi que d'entreprises qui agissent à titre de producteurs ou de distributeurs d'énergie." ],
         9  => [ "tag" => "Santé",               "icon" => "first aid", "desc" => "Comprend des entreprises qui fabriquent du matériel et des fournitures de soins de santé ou offrent des services de soins de santé. Il inclut aussi des sociétés qui se consacrent principalement à la recherche, au développement, à la production ainsi qu'à la commercialisation de produits pharmaceutiques et biotechnologiques." ],
         10 => [ "tag" => "Immobilier",          "icon" => "building outline", "desc" => "" ],
-        11 => [ "tag" => "Global",              "icon" => "world", "desc" => "" ]
+        11 => [ "tag" => "Global",              "icon" => "world", "desc" => "" ]       
     ];
     public static $invest_zone_geo = [
         0  => [ "tag" => "Monde",            "desc" => "" ],
@@ -2671,7 +2748,7 @@ class uimx {
 
     public static function getRedGreenColr($x, $y) {
 
-        if ($x == 0) return 0;
+        if ($x == 0 || $x == "") return 0;
 
         $colr = 6;
         $ratio = ((($y - $x) * 100) / $x);

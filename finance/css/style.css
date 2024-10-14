@@ -12,6 +12,8 @@ button.aaf-negative { background: rgb(228, 69, 64) !important; color: white !imp
 button.equity { background: #2185d0 !important; color: white !important; }
 button.indice { background: brown !important; color: white !important; }
 button.etf { background: #21ba45 !important; color: white !important; }
+button.call { background: aquamarine !important; color: darkgreen !important; }
+button.put { background: aquamarine !important; color: darkgreen !important; }
 
 .ui.segment {
     padding: 1em 0em !important;

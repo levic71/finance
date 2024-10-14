@@ -113,7 +113,7 @@ Dom.addListener(Dom.id('portfolio_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_C
         return false;
 
     if (!check_alphanumext(valof('f_nom_court'), "Nom court", 2))
-    return false;
+        return false;
 
     params = '?action=<?= $action ?>&'+attrs(['portfolio_id', 'f_nom', 'f_nom_court', 'f_strategie_id' ]);
 

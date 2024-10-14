@@ -114,6 +114,9 @@ toogle_table2 = function(id_row) {
 	el(id_row).style.display = el(id_row).style.display == "none" || el(id_row).style.display == "" ? 'contents' : "none";
 }
 
+isInteger = function(x) { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
+isFloat = function (x) { return !!(x % 1); }
+
 check_email = function(txt) {
 	var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	return re.test(txt);
@@ -130,8 +133,10 @@ check_JJMMAAAA = function(str, label)
 
 format_num = function(id)
 {
-	if (el(id) && el(id).type == 'text')
-		el(id).value = parseFloat(el(id).value.replace(/\,/g, '.').replace(/\s/g, ''));
+	if (el(id) && el(id).type == 'text' && el(id).value != '') {
+		x = parseFloat(el(id).value.replace(/\,/g, '.').replace(/\s/g, ''));
+		if (isFloat(x)) el(id).value = x;
+	}
 }
 check_num = function(num, label, min, max, display_err = true)
 {
