@@ -471,7 +471,7 @@ var overlay = {
 			let turbo = Dom.attribute(element.parentNode.parentNode.parentNode, 'data-turbo');
 			let pname = Dom.attribute(element.parentNode.parentNode.parentNode, 'data-pname');
 
-			if (other == 1 || turbo == 1) {
+			if (other == 1) {
 				Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 
 					// On récupère la valeur dans le button
