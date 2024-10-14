@@ -71,6 +71,8 @@ if ($action == "upt") {
 // Recuperation de tous les actifs
 $quotes = calc::getIndicatorsLastQuote();
 
+var_dump($quotes['lst_turbos']);
+
 // Recuperation liste de mes ptf
 $lst_ptfs = array();
 $req = "SELECT * FROM portfolios WHERE user_id=".$sess_context->getUserId()." AND synthese = 0";
@@ -81,7 +83,7 @@ if (count($lst_ptfs) == 0) exit(0);
 // Récupération des actifs de type AUTRE dans la liste des ordres achats passés pour les ajouter à la liste des produits sélectionnables
 $lst_produits_autres = array();
 if ($portfolio_id != -1) {
-    $req = "SELECT DISTINCT(product_name) product_name, devise, price, datetime FROM orders WHERE action = 1 AND product_name LIKE \"%AUTRE%\" AND portfolio_id=".$portfolio_id." ORDER BY product_name, datetime ASC;";
+    $req = "SELECT DISTINCT(product_name) product_name, devise, price, datetime FROM orders WHERE action = 1 AND product_name LIKE \"%AUTRE%\" AND portfolio_id IN (".implode(',', array_keys($lst_ptfs)).") ORDER BY product_name, datetime ASC;";
     $res = dbc::execSql($req);
     while ($autre = mysqli_fetch_assoc($res)) $lst_produits_autres[$autre['product_name']] = $autre;
 }
@@ -90,7 +92,7 @@ if ($portfolio_id != -1) {
 if ($action == "new" && $from_stock_detail == 1) {
     $my_order['action'] = 1;
     $my_order['product_name'] = $symbol;
-    $my_order['price'] = $quotes["stocks"][$symbol]['price'];
+    $my_order['price'] = isset($quotes["stocks"][$symbol]['price']) ? $quotes["stocks"][$symbol]['price'] : 0;
 } 
 
 ?>
@@ -127,7 +129,7 @@ if ($action == "new" && $from_stock_detail == 1) {
             <label>Actif</label>
             <select id="f_product_name" class="ui dropdown">
                 <option value="Cash" data-price="0" <?= $my_order['product_name'] == "Cash" ? "selected=\"selected\"" : "" ?>>Cash</option>
-                <? foreach ($quotes["lst_actifs"] as $key => $val) { $q = $quotes["stocks"][$key]; ?>
+                <? foreach($quotes["lst_actifs"] as $key => $val) { $q = $quotes["stocks"][$key]; ?>
                     <? if ($my_order['product_name'] == $key) {
                             if (!isset($my_order['price'])) $my_order['price'] = $q['price'];
                             if (!isset($my_order['action'])) $my_order['action'] = 1;
@@ -139,6 +141,9 @@ if ($action == "new" && $from_stock_detail == 1) {
                 <option value="AUTRE" data-price="0" <?= substr($my_order['product_name'], 0, 5) == "AUTRE" ? "selected=\"selected\"" : "" ?>>Autre:new</option>
                 <? foreach ($lst_produits_autres as $key => $val) { ?>
                     <option value="<?= $val['product_name'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['devise'] ?>"><?= QuoteComputing::getQuoteNameWithoutExtension($val['product_name']) ?></option>
+                <? } ?>
+                <? foreach ($quotes["lst_turbos"] as $key => $val) { ?>
+                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $my_order['product_name'] == $key ? "selected=\"selected\"" : "" ?>><?= QuoteComputing::getQuoteNameWithoutExtension($val['symbol']) ?></option>
                 <? } ?>
             </select>
             <input type="text" id="f_other_name" value="<?= substr($my_order['product_name'], 0, 5) == "AUTRE" ? substr($my_order['product_name'], 6) : "" ?>" style="<?= substr($my_order['product_name'], 0, 5) == "AUTRE" ? "" : "display: none;" ?> margin-top: 5px;" />
@@ -279,7 +284,9 @@ Dom.addListener(Dom.id('order_<?= $libelle_action_bt ?>_bt'), Dom.Event.ON_CLICK
 
 // Del button
 <? if ($action == "upt") { ?>
-	Dom.addListener(Dom.id('order_delete_bt'), Dom.Event.ON_CLICK, function(event) { go({ action: 'order', id: 'main', url: 'order_action.php?action=del&order_id=<?= $order_id ?>&portfolio_id=<?= $portfolio_id ?>&id_synthese='+<?= $id_synthese ?>, loading_area: 'main', confirmdel: 1 }); });
+	Dom.addListener(Dom.id('order_delete_bt'), Dom.Event.ON_CLICK, function(event) {
+        go({ action: 'order', id: 'main', url: 'order_action.php?action=del&order_id=<?= $order_id ?>&portfolio_id=<?= $portfolio_id ?>&id_synthese='+<?= $id_synthese ?>, loading_area: 'main', confirmdel: 1 });
+    });
 <? } ?>
 
 </script>

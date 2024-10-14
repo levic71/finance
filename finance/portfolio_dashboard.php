@@ -137,6 +137,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 						$div_per_year = 0;
 						foreach ($lst_positions as $key => $val) {
 
+							// SG_AAPL_CALL_X1_12345
 							$qc = new QuoteComputing($sc, $key);
 							echo $qc->getHtmlTableLine($i++);
 							$div_per_year += $qc->getEstimationDividende();    // Estimation dividende annuel

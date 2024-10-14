@@ -13,11 +13,17 @@ if (!$sess_context->isSuperAdmin()) tools::do_redirect("index.php");
 
 $pea = 0;
 $engine = "alpha";
+$f_levier = 1;
+$f_sousjacent = "";
+$f_ticker = "";
+$f_callput = "";
+$f_emetteur = "";
+$f_init_val = 0;
 
-foreach(['action', 'engine', 'symbol', 'f_search_type', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende'] as $key)
+foreach(['action', 'engine', 'symbol', 'f_search_type', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_ticker', 'f_callput', 'f_emetteur', 'f_levier', 'f_sousjacent', 'f_init_val'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
-if ($symbol == "") tools::do_redirect("index.php");
+if ($symbol == "" && $f_callput == "") tools::do_redirect("index.php");
 
 $db = dbc::connect();
 
@@ -58,6 +64,17 @@ if ($action == "add" || $action == "reload") {
 
         $gf_symbol = $symbol;
         $ret_add = cacheData::getAndInsertAllDataQuoteFromGSPlusIndicators($symbol, $f_search_type) ? 1 : 0;
+
+    }
+
+    if ($engine == "manual") {
+
+        // Recuperation de tous les actifs
+        $quotes = calc::getIndicatorsLastQuote();
+        $sousjacent = $quotes["stocks"][$f_sousjacent];
+
+        $symbol = $f_emetteur." ".$f_sousjacent." ".$f_callput." X".$f_levier;
+        $ret_add = cacheData::insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_init_val) ? 1 : 0;
 
     }
 

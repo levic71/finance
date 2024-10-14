@@ -1162,6 +1162,12 @@ if ($debug == 1) {
 
         update_all_charts = function(bt) {
 
+            // Si aucune donnée, pas d'affichage de graphe
+            if (!g_new_data || g_new_data.length == 0) {
+                hide('canvas_area');
+                return;
+            }
+
             // Ajustement des buttons
             update_graphe_buttons(bt);
 

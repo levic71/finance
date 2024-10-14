@@ -14,7 +14,7 @@ $db = dbc::connect();
 
 // SQL SCHEMA UPDATE
 // $ret = dbc::addColTable("stocks", "dividende_annualise", "ALTER TABLE `stocks` ADD `dividende_annualise` FLOAT NOT NULL AFTER `rating`, ADD `date_dividende` DATE NOT NULL AFTER `dividende_annualise`;");
-$ret = dbc::addColTable("stocks", "pc_levier", "ALTER TABLE `stocks` ADD `pc_levier` INT NOT NULL DEFAULT '1' AFTER `engine`, ADD `pc_sousjacent` VARCHAR(32) NOT NULL DEFAULT '' AFTER `pc_levier`;");
+$ret = dbc::addColTable("stocks", "pc_emetteur", "ALTER TABLE `stocks` ADD `pc_emetteur` VARCHAR(32) NOT NULL AFTER `pc_sousjacent`, ADD `pc_ticker` VARCHAR(32) NOT NULL AFTER `pc_emetteur`, ADD `pc_expire` INT NOT NULL DEFAULT '0' AFTER `pc_ticker`;");
 
 //UPDATE `orders` SET devise='EUR', taux_change='1'
 
@@ -183,6 +183,7 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 			<button id="lst_filter7_bt"  class="mini ui grey button">ETF</button>
 			<button id="lst_filter8_bt"  class="mini ui grey button">Action</button>
 			<button id="lst_filter11_bt" class="mini ui grey button">Indice</button>
+			<button id="lst_filter13_bt" class="mini ui grey button">Turbo</button>
 			<button id="lst_filter1_bt"  class="mini ui grey button">PEA</button>
 			<button id="lst_filter2_bt"  class="mini ui grey button">EUR</button>
 			<button id="lst_filter3_bt"  class="mini ui grey button">USD</button>
@@ -216,7 +217,6 @@ while ($row = mysqli_fetch_assoc($res)) $notifs[] = $row;
 
 		<? uimx::displayHeadTable([ ["l" => "Symbole", "c" => "" ], ["l" => "", "c" => "" ], ["l" => "Nom", "c" => "four wide" ], ["l" => "", "c" => "" ], ["l" => "Frais", "c" => "" ], ["l" => "Actif", "c" => "" ], ["l" => "", "c" => "" ], ["l" => "Prix", "c" => "", "o" => "data-sortable-type=\"numeric\"" ], ["l" => "Var", "c" => "", "o" => "data-sortable-type=\"numeric\"" ], ["l" => "DM", "c" => "", "o" => "data-sortable-type=\"numeric\"" ], ["l" => "", "c" => "", "o" => "data-sortable=\"false\"" ], ["l" => "", "c" => "", "o" => "data-sortable=\"false\"" ], ["l" => "", "c" => "", "o" => "data-sortable=\"false\"" ]  ]); ?>
 
-
 		<tbody id="lst_stock_body">
 <?
 
@@ -225,9 +225,13 @@ $x = 0;
 // GET MAX HISTO FOR ALL SYMBOL && METTRE EN CACHE
 $max_histo_tab = calc::getAllMaxHistoryDate();
 
-foreach($data2["stocks"] as $key => $val) {
+foreach(array_merge($data2["stocks"], $data2["lst_turbos"]) as $key => $val) {
 
 	$symbol = $key;
+
+	// Certaines infos ne sont pas affichées pour les indices et turbos
+	$hideExtraInfos1 = $val['type'] == "INDICE" || $val['type'] == "CALL" || $val['type'] == "PUT" ? true : false; 
+	$hideExtraInfos2 = $val['type'] == "CALL" || $val['type'] == "PUT" ? true : false; 
 
 	$isAlerteActive = isset($trend_following[$key]['active']) && $trend_following[$key]['active'] == 1 ? true : false;
 	$isWatchlist    = isset($trend_following[$key]['watchlist']) && $trend_following[$key]['watchlist'] == 1 ? true : false;
@@ -250,7 +254,15 @@ foreach($data2["stocks"] as $key => $val) {
 	$tags_infos = uimx::getIconTooltipTag($val['tags']);
 
 	$curr  = $val['type'] == 'INDICE' ? "" : ($val['currency'] == "EUR" ? "&euro;" : "$");
-	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : ($val['type'] == "INDICE" ? "IND" : "EQY"))." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
+	$class = $val['currency']." ".($val['pea'] == 1 ? "PEA" : "")." ".($val['frais'] <= 0.3 ? "FRAIS" : "")." ".($val['actifs'] >= 150 ? "ACTIFS" : "")." ".($val['type'] == "ETF" ? "ETF" : ($val['type'] == "INDICE" ? "IND" : ($val['type'] == "CALL" || $val['type'] == "PUT" ? "TURBO" : "EQY")))." ".(isset($favoris[$val['symbol']]) ? "FAV" : "");
+
+	// Ajustement des valeurs pour les PUT/CALL (on ne peut pas utiliser getIconTooltipTag car les valeurs ne sont pas dans les var globales)
+	if ($val['type'] == 'CALL' || $val['type'] == 'PUT') {
+		$val['DM'] = 0;
+		$tags_infos['icon_tag'] = "Turbo";
+		$tags_infos['tooltip'] = "Turbo CALL/PUT";
+		$tags_infos['icon'] = "rocket";
+	}
 
 	$now = time();
 	$your_date = strtotime($val['day']);
@@ -268,15 +280,15 @@ foreach($data2["stocks"] as $key => $val) {
 	
 	echo "
 		<td><button data-tootik-conf=\"right  multiline\" data-tootik=\"".$val['type']."\" class=\"mini ui ".strtolower($val['type'])." button badge\">".(substr($val['type'] == 'Equity' ? 'Action' : $val['type'], 0, 1))."</button></td>
-		<td data-value=\"".$val['frais']."\">".sprintf("%.2f", $val['frais'])." %</td>
-		<td data-value=\"".$val['actifs']."\">".$val['actifs']." M</td>
+		<td data-value=\"".$val['frais']."\">".($hideExtraInfos1 ? "-" : sprintf("%.2f %%", $val['frais']))."</td>
+		<td data-value=\"".$val['actifs']."\">".($hideExtraInfos1 ? "-" : sprintf("%s M", $val['actifs']))."</td>
 		<td>
 			<span data-tootik-conf=\"left  multiline\" data-tootik=\"Dernière cotation le ".($val['date_update'] == NULL ? "N/A" : $val['date_update'])."\"><a class=\"ui circular\"><i class=\"inverted calendar ".($val['date_update'] == date("Y-m-d") ? "grey" : ($diff_days > 3 ? "red" : "orange"))." alternate icon\"></i></a></span>
 			<span data-tootik-conf=\"right multiline\" data-tootik=\"Alertes\"><a class=\"ui circular\"><i data-pname=\"".$symbol."\" data-value=\"".$val['price']."\" data-active=\"".($isAlerteActive ? 1 : 0)."\" data-watchlist=\"".($isWatchlist ? 1 : 0)."\" data-stoploss=\"".$stoploss."\" data-objectif=\"".$objectif."\" data-stopprofit=\"".$stopprofit."\" data-seuils=\"".$seuils."\" data-options=\"".$options."\" data-strat-type=\"".$strat_type."\" data-reg-type=\"".$reg_type."\" data-reg-period=\"".$reg_period."\" class=\"inverted alarm ".($isAlerteActive ? "blue" : "black")." icon\"></i></a></span>
 		</td>
 		<td data-value=\"".$val['price']."\">".($val['price'] == NULL ? "N/A" : sprintf("%.2f", $val['price']).$curr)."</td>
 		<td data-value=\"".$val['percent']."\" class=\"".($val['percent'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['percent'])." %</td>
-		<td data-value=\"".$val['DM']."\"      class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".sprintf("%.2f", $val['DM'])." %</td>
+		<td data-value=\"".$val['DM']."\"      class=\"".($val['DM'] >= 0 ? "aaf-positive" : "aaf-negative")."\">".($hideExtraInfos2 ? "-" : sprintf("%.2f", $val['DM']))." %</td>
 	";
 
 	echo "<td><span data-tootik-conf=\"left multiline\" data-tootik=\"".uimx::$perf_indicator_libs[$perf_indicator]."\"><a class=\"ui empty ".uimx::$perf_indicator_colrs[$perf_indicator]." circular label\"></a></span></td>";
@@ -293,6 +305,7 @@ foreach($data2["stocks"] as $key => $val) {
 		</tbody>
 	</table>
 	<div id="lst_stock_box"></div>
+
 </div>
 
 <script>
@@ -360,6 +373,7 @@ filterLstStocks = function() {
 	f10_on = Dom.hasClass(Dom.id('lst_filter10_bt'), 'orange');
 	f11_on = Dom.hasClass(Dom.id('lst_filter11_bt'), 'orange');
 	f12_on = Dom.hasClass(Dom.id('lst_filter12_bt'), 'orange');
+	f13_on = Dom.hasClass(Dom.id('lst_filter13_bt'), 'orange');
 
 	var filter_tags = [];
 	Dom.find('#other_tags button.bt_tags').forEach(function(item) {
@@ -370,7 +384,7 @@ filterLstStocks = function() {
 	for (const element of tab_stocks) Dom.css(element, {'display' : 'table-row'});
 
 	// On passe en revue toutes les lignes et on cache celles qui ne correspondent pas aux boutons allumés
-	if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false && f10_on == false && f11_on == false && f12_on == false)) {
+	if (!(f1_on == false && f2_on == false && f3_on == false && f4_on == false && f5_on == false && f7_on == false && f8_on == false && f9_on == false && f10_on == false && f11_on == false && f12_on == false && f13_on == false)) {
 		for (const element of tab_stocks) {
 
 			let in_ptf = Dom.attribute(element, 'data-ptf');
@@ -386,6 +400,7 @@ filterLstStocks = function() {
 				(!f8_on  || (f8_on && Dom.hasClass(element, 'EQY')))    &&
 				(!f9_on  || (f9_on && Dom.hasClass(element, 'FAV')))    &&
 				(!f11_on || (f11_on && Dom.hasClass(element, 'IND')))   &&
+				(!f13_on || (f13_on && Dom.hasClass(element, 'TURBO'))) &&
 				(!f12_on || (f12_on && in_alerte == 1))                 &&
 				(!f10_on || (f10_on && in_ptf == 1))
 			) continue;
@@ -446,8 +461,8 @@ Dom.addListener(Dom.id('lst_filter4_bt'),  Dom.Event.ON_CLICK, function(event) {
 Dom.addListener(Dom.id('lst_filter5_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter5_bt'); });
 Dom.addListener(Dom.id('lst_filter6_bt'),  Dom.Event.ON_CLICK, function(event) { toogle('other_tags'); });
 
-// ETF/Equity/INDICE
-[ 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter11_bt' ].forEach(function(elt) { Dom.addListener(Dom.id(elt),  Dom.Event.ON_CLICK, function(event) { onlyOneActiveButton([ 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter11_bt' ], elt);  }); });
+// ETF/Equity/INDICE/Turbo
+[ 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter11_bt', 'lst_filter13_bt' ].forEach(function(elt) { Dom.addListener(Dom.id(elt),  Dom.Event.ON_CLICK, function(event) { onlyOneActiveButton([ 'lst_filter7_bt', 'lst_filter8_bt', 'lst_filter11_bt', 'lst_filter13_bt' ], elt);  }); });
 
 Dom.addListener(Dom.id('lst_filter9_bt'),  Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter9_bt'); });
 Dom.addListener(Dom.id('lst_filter10_bt'), Dom.Event.ON_CLICK, function(event) { filterLstAction('lst_filter10_bt'); });
@@ -550,7 +565,7 @@ Dom.find("#lst_stock tbody tr td:nth-child(7) span:nth-child(2) i").forEach(func
 		var reg_type   = parseInt(Dom.attribute(element, 'data-reg-type'));
 		var reg_period = parseInt(Dom.attribute(element, 'data-reg-period'));
 
-		console.log(pname+':'+price+':'+watchlist+':'+active+':'+stoploss+':'+objectif+':'+stopprofit+':'+seuils+':'+options+':'+strat_type+':'+reg_type+':'+reg_period);
+		// console.log(pname+':'+price+':'+watchlist+':'+active+':'+stoploss+':'+objectif+':'+stopprofit+':'+seuils+':'+options+':'+strat_type+':'+reg_type+':'+reg_period);
 		tf_ui_html = trendfollowing_ui.getHtml(pname, price, watchlist, active, stoploss, objectif, stopprofit, seuils, options, strat_type, reg_type, reg_period);
 
 		Swal.fire({
