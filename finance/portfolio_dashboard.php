@@ -135,14 +135,19 @@ $lst_orders_futur = $sc->getOrdersFutur();
 						$i = 1;
 						ksort($lst_positions);
 						$div_per_year = 0;
+						$lines_display = "";
+						$lines_turbos = "";
 						foreach ($lst_positions as $key => $val) {
 
-							// SG_AAPL_CALL_X1_12345
 							$qc = new QuoteComputing($sc, $key);
-							echo $qc->getHtmlTableLine($i++);
+							if ($qc->getType() == "CALL" || $qc->getType() == "PUU") 
+								$lines_turbos .= $qc->getHtmlTableLine($i++);
+							else
+								$lines_display .= $qc->getHtmlTableLine($i++);
 							$div_per_year += $qc->getEstimationDividende();    // Estimation dividende annuel
 
 						}
+						echo $lines_display.$lines_turbos;
 						?>
 					</tbody>
 					<tfoot>
