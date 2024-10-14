@@ -745,9 +745,10 @@ class QuoteComputing {
         $avis_lib     = $this->getLabelAvis($avis);
         $avis_bg_colr = $this->getBGColorAvis($avis);
         $prefix_sort  = "";
+        $isTurbo     = $type == "CALL" || $type == "PUT" ? true : false;
 
         // En dur aussi dans la classe HomeContent.php
-        if ($type == "CALL" || $type == "PUT") {
+        if ($isTurbo) {
             $tags_infos['icon_tag'] = "Turbo";
             $tags_infos['tooltip'] = "Turbo CALL/PUT";
             $tags_infos['icon'] = "rocket";
@@ -757,7 +758,7 @@ class QuoteComputing {
 //        echo $this->symbol; var_dump($avis);
 
         $ret .= '
-        <tr id="tr_item_'.$i.'" data-tags="'.tools::UTF8_encoding($tags).'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
+        <tr id="tr_item_'.$i.'" data-tags="'.tools::UTF8_encoding($tags).'" data-in-ptf="'.($isInPtf ? 1 : 0).'" data-pname="'.$this->symbol.'" data-other="'.($other_name ? 1 : 0).'" data-turbo="'.($isTurbo ? 1 : 0).'" data-taux-moyen="'.$taux_change_moyen.'" data-taux="'.$taux.'" data-sum-valo-in-euro="'.$sum_valo_in_euro.'" data-iuc="'.($sess_context->isUserConnected() ? 1 : 0).'" class="'.strtolower($type).'">
 
             <td data-geo="'.$tags_infos['geo'].'" data-value="'.$tags_infos['icon_tag'].'" data-tootik-conf="right" data-tootik="'.$tags_infos['tooltip'].'" class="center align collapsing">
                 <i data-secteur="'.$tags_infos['icon_tag'].'" class="inverted grey '.($tags_infos['icon'] == "" ? "copyright outline" : $tags_infos['icon']).' icon"></i>
@@ -776,8 +777,8 @@ class QuoteComputing {
             </div></td>
         
             <td class="center aligned" data-value="'.$pct_mm200.'"><div>
-                <button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%.2f%s", $mm200, $type == "INDICE" ? "" : uimx::getCurrencySign($currency)).'</button>
-                <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.sprintf("%s%.2f", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200).'%</label>
+                <button class="tiny ui button" style="background: '.uimx::getRedGreenColr($mm200, $price).'">'.($isTurbo ? "-" : sprintf("%.2f%s", $mm200, $type == "INDICE" ? "" : uimx::getCurrencySign($currency))).'</button>
+                <label style="color: '.uimx::getRedGreenColr($mm200, $price).'">'.($isTurbo ? "-" : sprintf("%s%.2f%%", ($pct_mm200 >= 0 ? '+' : ''), $pct_mm200)).'</label>
             </div></td>
 
             <td class="center aligned" data-watchlist="'.($isWatchlist ? 1 : 0).'" data-active="'.($isAlerteActive ? 1 : 0).'" data-value="'.$price.'" data-seuils="'.sprintf("%s", $seuils).'" data-options="'.$options.'" data-strat-type="'.$strat_type.'" data-reg-type="'.$reg_type.'" data-reg-period="'.$reg_period.'"><div class="small ui right group input" data-pname="'.$this->symbol.'">
@@ -786,7 +787,7 @@ class QuoteComputing {
                 <div class="'.(!$isAlerteActive || intval($stop_profit) == 0 ? "grey" : "").' floating ui label">'.sprintf("%.2f", $stop_profit).'</div>
             </div></td>
 
-            <td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.$dm.'%</td>
+            <td id="f_dm_'.$i.'"       class="center aligned '.($dm >= 0 ? "aaf-positive" : "aaf-negative").'" data-value="'.$dm.'">'.($isTurbo ? "-" : $dm."%").'</td>
             <td id="f_tendance_'.$i.'" class="center aligned" data-value="'.$perf_indicator.'">'.$perf_bullet.'</td>
 
             <td id="f_valo2_'.$i.'" class="center aligned" data-value="0">
@@ -2307,6 +2308,12 @@ class cacheData {
         $type = $f_callput;
         $init_val = $f_init_val;
         $levier = $f_levier;
+
+        // Les turbos achetés sont des turbos français SG ou BNP
+        $sousjacent['currency'] = "EUR";
+        $sousjacent['marketopen'] = "08:00";
+        $sousjacent['marketclose'] = "22:00";
+        $sousjacent['timezone'] = "UTC+2";
 
         // Maj data stock
         $req  = "INSERT INTO stocks (symbol, gf_symbol, name, type, region, marketopen, marketclose, timezone, currency, engine, pe, eps, beta, shares, marketcap, pc_levier, pc_sousjacent, pc_emetteur, pc_ticker) ";
