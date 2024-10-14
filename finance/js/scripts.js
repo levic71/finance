@@ -453,8 +453,10 @@ var overlay = {
 			Dom.addListener(element, Dom.Event.ON_CLICK, function(event) {
 				other = Dom.attribute(element.parentNode.parentNode, 'data-other');
 				pname = Dom.attribute(element.parentNode.parentNode, 'data-pname');
-				if (other == 1)
-					Swal.fire('Actif non suivi');
+				if (other == 1) {
+					var p = loadPrompt();
+					p.success('Actif non suivi');
+				}
 				else
 					go({ action: 'stock_detail', id: 'main', url: 'stock_detail.php?ptf_id=' + ptf_id + '&symbol=' + pname, loading_area: 'main' });
 			});
@@ -495,7 +497,8 @@ var overlay = {
 							element.innerHTML = valof('f_quote') + '&euro;';
 							Dom.attribute(element, { 'data-value': valof('f_quote') });
 							updateDataPage('change');
-							Swal.fire('Données modifiées');
+							var p = loadPrompt();
+							p.success('Données modifiées');
 						}
 					});
 
@@ -568,7 +571,9 @@ var overlay = {
 							Dom.attribute(element.parentNode, { 'data-watchlist'  : valof('f_watchlist') == 0 ? 0 : 1 });
 							Dom.attribute(element.parentNode, { 'data-active'  : valof('f_active') == 0 ? 0 : 1 });
 
-							Swal.fire('Données modifiées');
+							var p = loadPrompt();
+							p.success('Données modifiées');
+
 						}
 					});
 				
