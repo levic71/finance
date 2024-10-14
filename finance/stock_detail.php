@@ -364,7 +364,7 @@ foreach ($data_daily as $key => $val) if ($val['volume'] > $top_value_volume) $t
                         <select class="ui fluid search dropdown" id="f_type">
                             <option value="">Choisir</option>
                             <?
-                            foreach (uimx::$type_actif as $key => $val)
+                            foreach (array_merge(uimx::$type_actif, uimx::$type_turbo) as $key => $val)
                                 echo '<option value="' . $val . '" ' . ($qc->getQuoteAttr('type') == $val ? 'selected="selected"' : '') . '>' . $val . '</option>';
                             ?>
                         </select>
@@ -408,6 +408,54 @@ foreach ($data_daily as $key => $val) if ($val['volume'] > $top_value_volume) $t
                     </div>
                 </div>
             </div>
+            <div class="six fields turbo_area">
+                <div class="field">
+                    <label>Emetteur</label>
+                    <? if (!$readonly) { ?>
+                        <select class="ui fluid search dropdown" id="f_emetteur">
+                            <? foreach(uimx::$invest_emetteur as $key => $val) echo "<option ".($qc->getQuoteAttr('pc_emetteur') == $val ? "selected=\"selected\"" : "")." value=\"".$val."\">".$val."</option>"; ?>
+                        </select>
+                    <? } else { ?>
+                        <input type="text" id="f_emetteur" value="<?= $qc->getQuoteAttr('pc_emetteur') ?>" placeholder="">
+                    <? } ?>
+                </div>
+                <div class="field">
+                    <label>Ticker</label>
+                    <input type="text" id="f_ticker" value="<?= $qc->getQuoteAttr('pc_ticker') ?>" placeholder="Ticker">
+                </div>
+                <div class="field">
+                    <label>Levier</label>
+                    <? if (!$readonly) { ?>
+                        <select class="ui fluid search dropdown" id="f_levier">
+                            <? foreach(range(1, 10) as $key => $val) echo "<option ".($qc->getQuoteAttr('pc_levier') == $val ? "selected=\"selected\"" : "")." value=\"".$val."\">".$val."</option>"; ?>
+                        </select>
+                    <? } else { ?>
+                        <input type="text" id="f_levier" value="<?= $qc->getQuoteAttr('pc_levier') ?>" placeholder="">
+                    <? } ?>
+                </div>
+                <div class="field">
+                    <label>Sous jacent</label>
+                    <input type="text" id="f_sousjacent" value="<?= $qc->getQuoteAttr('pc_sousjacent') ?>" placeholder="0">
+                </div>
+                <div class="field">
+                    <label>Valeur</label>
+                    <input type="text" size="10" id="f_val_init" value="<?= $qc->getQuoteAttr('price') ?>">
+                </div>
+                <div class="field">
+                    <? if (!$readonly) { ?>
+                        <label>&nbsp;</label>
+                        <div class="ui toggle inverted checkbox" onclick="toogleCheckBox('f_expire');">
+                            <input type="checkbox" id="f_expire" <?= $qc->getQuoteAttr('pc_expire') == 1 ? 'checked="checked' : '' ?> tabindex="0" class="hidden">
+                            <label>Expiré</label>
+                        </div>
+                    <? } else { ?>
+                        <label>Expiré</label>
+                        <input type="text" id="f_expire" value="<?= $qc->getQuoteAttr('pc_expire') == 0 ? "Non" : "Oui" ?>" placeholder="">
+                    <? } ?>
+                </div>
+
+            </div>
+
         </div>
     </form>
 </div>
@@ -1163,9 +1211,9 @@ if ($debug == 1) {
         update_all_charts = function(bt) {
 
             // Si aucune donnée, pas d'affichage de graphe
-            if (!g_new_data || g_new_data.length == 0) {
-                hide('canvas_area');
-                return;
+            if (!new_data_daily || new_data_daily.length == 0) {
+               hide('canvas_area');
+               return;
             }
 
             // Ajustement des buttons
@@ -1334,7 +1382,7 @@ if ($debug == 1) {
     <? if (!$readonly) { ?>
 
         getFormValues = function() {
-            params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1);
+            params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_emetteur', 'f_ticker', 'f_levier', 'f_sousjacent', 'f_val_init']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1) + '&f_expire=' + (valof('f_expire') == 0 ? 0 : 1);
 
             var tags = '';
             Dom.find('button.bt_tags').forEach(function(item) {

@@ -95,8 +95,7 @@ $quotes = calc::getIndicatorsLastQuote();
     <div class="ui search">
         <div class="ui icon input">
             <select class="ui fluid search dropdown" id="f_emetteur">
-                <option value="SG">SG</option>
-                <option value="BNP">BNP</option>
+                <? foreach(uimx::$invest_emetteur as $key => $val) echo "<option value=\"".$val."\">".$val."</option>"; ?>
             </select>
         </div>
         <div class="ui icon input">
@@ -104,13 +103,12 @@ $quotes = calc::getIndicatorsLastQuote();
         </div>
         <div class="ui icon input">
             <select class="ui fluid search dropdown" id="f_callput">
-                <option value="CALL">CALL</option>
-                <option value="PUT">PUT</option>
+                <? foreach(uimx::$type_turbo as $key => $val) echo "<option value=\"".$val."\">".$val."</option>"; ?>
             </select>
         </div>
         <div class="ui icon input">
             <select class="ui fluid search dropdown" id="f_levier">
-                <? foreach([ 1, 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 ] as $key => $val) echo "<option value=\"".$val."\">X".$val."</option>"; ?>
+                <? foreach(range(1, 10) as $key => $val) echo "<option value=\"".$val."\">X".$val."</option>"; ?>
             </select>
         </div>
         <div class="ui icon input">
@@ -121,7 +119,7 @@ $quotes = calc::getIndicatorsLastQuote();
             </select>
         </div>
         <div class="ui icon input">
-            <input class="search" id="f_init_val" name="f_init_val" type="text" placeholder="Initial value"  value="" />
+            <input class="search" id="f_val_init" name="f_val_init" type="text" placeholder="Initial value"  value="" />
         </div>
         <div class="ui primary small button" id="search3_bt">Add</div>
     </div>
@@ -141,9 +139,9 @@ $quotes = calc::getIndicatorsLastQuote();
         if (!check_alphanum(valof('f_ticker'), "Ticker actif", 3))
             return false;
 
-        if (!format_and_check_num('f_init_val', 'Initial price', 0, 999999999999))
+        if (!format_and_check_num('f_val_init', 'Initial price', 0, 999999999999))
 		    return false;
 
-        go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=manual&f_ticker='+valof('f_ticker')+'&f_emetteur='+valof('f_emetteur')+'&f_callput='+valof('f_callput')+'&f_levier='+valof('f_levier')+'&f_sousjacent='+valof('f_sousjacent')+'&f_init_val='+valof('f_init_val'), loading_area: 'search3_bt' });
+        go({ action: 'stock_add', id: 'main', url: 'stock_action.php?action=add&engine=manual&f_ticker='+valof('f_ticker')+'&f_emetteur='+valof('f_emetteur')+'&f_callput='+valof('f_callput')+'&f_levier='+valof('f_levier')+'&f_sousjacent='+valof('f_sousjacent')+'&f_val_init='+valof('f_val_init'), loading_area: 'search3_bt' });
     });
 </script>

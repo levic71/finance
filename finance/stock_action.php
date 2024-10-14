@@ -18,9 +18,10 @@ $f_sousjacent = "";
 $f_ticker = "";
 $f_callput = "";
 $f_emetteur = "";
-$f_init_val = 0;
+$f_val_init = 0;
+$f_expire = 0;
 
-foreach(['action', 'engine', 'symbol', 'f_search_type', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_ticker', 'f_callput', 'f_emetteur', 'f_levier', 'f_sousjacent', 'f_init_val'] as $key)
+foreach(['action', 'engine', 'symbol', 'f_search_type', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_ticker', 'f_callput', 'f_emetteur', 'f_levier', 'f_sousjacent', 'f_val_init', 'f_expire'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 if ($symbol == "" && $f_callput == "") tools::do_redirect("index.php");
@@ -67,14 +68,14 @@ if ($action == "add" || $action == "reload") {
 
     }
 
-    if ($engine == "manual") {
+    if ($engine == "manual" && $action == "add") { // pas de reload pour les turbos
 
         // Recuperation de tous les actifs
         $quotes = calc::getIndicatorsLastQuote();
         $sousjacent = $quotes["stocks"][$f_sousjacent];
 
         $symbol = QuoteComputing::getComplexQuoteName($f_emetteur, $f_sousjacent, $f_callput, $f_levier, $f_ticker);
-        $ret_add = cacheData::insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_init_val) ? 1 : 0;
+        $ret_add = cacheData::insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init) ? 1 : 0;
 
     }
 
@@ -88,7 +89,8 @@ if ($action == "indic") {
     $res = dbc::execSql($req);
 
     if ($row = mysqli_fetch_array($res)) {
-        computeDWMIndicators($row['symbol'], $row['engine']);
+        if ($row['type'] != "CALL" || $row['type'] != "PUT")
+            computeDWMIndicators($row['symbol'], $row['engine']);
     }
 }
 
@@ -104,8 +106,14 @@ if ($action == "upt") {
         $links = json_encode(array("link1" => $f_link1, "link2" => $f_link2));
 
         // Mise a jour des data informatives de l'actif
-        $req = "UPDATE stocks SET type='".$f_type."', links='".$links."', pea=".$pea.", ISIN='".$f_isin."', provider='".$f_provider."', categorie='".$f_categorie."', frais='".$f_frais."', actifs=".($f_actifs ? $f_actifs : 0).", distribution='".$f_distribution."', gf_symbol='".$f_gf_symbol."', rating=".$f_rating.", tags='".$f_tags."', dividende_annualise=".($f_dividende ? $f_dividende : 0).", date_dividende=".($f_date_dividende ? "'".$f_date_dividende."'" : "NULL")." WHERE symbol='".$symbol."'";
+        $req = "UPDATE stocks SET type='".$f_type."', links='".$links."', pea=".$pea.", ISIN='".$f_isin."', provider='".$f_provider."', categorie='".$f_categorie."', frais='".$f_frais."', actifs=".($f_actifs ? $f_actifs : 0).", distribution='".$f_distribution."', gf_symbol='".$f_gf_symbol."', rating=".$f_rating.", tags='".$f_tags."', dividende_annualise=".($f_dividende ? $f_dividende : 0).", date_dividende=".($f_date_dividende ? "'".$f_date_dividende."'" : "NULL").", pc_emetteur='".$f_emetteur."', pc_ticker='".$f_ticker."', pc_levier='".$f_levier."', pc_sousjacent='".$f_sousjacent."', pc_expire='".$f_expire."' WHERE symbol='".$symbol."'";
         $res = dbc::execSql($req);
+
+        // Mise à jour de la valeur previous dans la table quote pour les turbos
+        if ($row['type'] != "CALL" || $row['type'] != "PUT") {
+            $req = "UPDATE quotes SET open='".$f_val_init."', high='".$f_val_init."', low='".$f_val_init."', price='".$f_val_init."', day='".date("Y-m-d")."', previous='".$f_val_init."' WHERE symbol='".$symbol."'";
+            $res = dbc::execSql($req);    
+        }
 
         logger::info("STOCK", $symbol, "[OK]");
     }
@@ -133,6 +141,8 @@ if ($action == "del") {
         }
     }
 }
+
+cacheData::deleteTMPFiles();
 
 ?>
 
