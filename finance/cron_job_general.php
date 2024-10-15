@@ -98,6 +98,7 @@ foreach($stocks2update as $key => $val) {
 
                 // echo $cotation_turbo_veille.":X".$cotation_turbo_levier.":".$cotation_sousjacent_percent."%:".$cotation_turbo_new."\n";
 
+                logger::info("CRON", $key, "[Automatic new cotation cal] [".$cotation_turbo_veille."][".$cotation_turbo_new."]");
             }
 
         }
