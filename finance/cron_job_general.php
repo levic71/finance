@@ -82,7 +82,7 @@ foreach($stocks2update as $key => $val) {
 
             if (cacheData::isMarketOpen($market_status_sousjacent)) {
 
-                $cotation_turbo_veille = $val['price'];
+                $cotation_turbo_veille = $val['previous'];
                 $cotation_turbo_levier = $val['pc_levier'];
                 $cotation_sousjacent_percent = $GSValues[$val['pc_sousjacent']][10];
 
