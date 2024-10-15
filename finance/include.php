@@ -2301,12 +2301,13 @@ class cacheData {
 
     }
 
-    public static function insertOrUpdateDataComplexQuote($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init) {
+    public static function insertOrUpdateDataComplexQuote($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init, $f_val_prev) {
 
         $symbol = QuoteComputing::getComplexQuoteName($f_emetteur, $sousjacent['symbol'], $f_callput, $f_levier, $f_ticker);
         $name = $f_emetteur." ".$sousjacent['symbol']." ".$f_callput." X".$f_levier;
         $type = $f_callput;
         $init_val = $f_val_init;
+        $prev_val = $f_val_prev;
         $levier = $f_levier;
 
         // Les turbos achetés sont des turbos français SG ou BNP
@@ -2326,7 +2327,7 @@ class cacheData {
         // Maj quote quotes
         $req  = "INSERT INTO quotes (symbol, open, high, low, price, volume, day, previous, day_change, percent) ";
         $req .= "VALUES ('".$symbol."','".$init_val."', '".$init_val."', '".$init_val."', '".$init_val."', '0', '".date("Y-m-d")."', '".$init_val."', '', '') ";
-        $req .= "ON DUPLICATE KEY UPDATE open='".$init_val."', high='".$init_val."', low='".$init_val."', price='".$init_val."', volume='0', day='".date("Y-m-d")."', previous='".$init_val."', day_change='', percent=''";
+        $req .= "ON DUPLICATE KEY UPDATE open='".$init_val."', high='".$init_val."', low='".$init_val."', price='".$init_val."', volume='0', day='".date("Y-m-d")."', previous='".$prev_val."', day_change='', percent=''";
 //        $req .= "AS NEW ON DUPLICATE KEY UPDATE open=new.open, high=new.high, low=new.low, price=new.price, volume=new.volume, day=new.day, previous=new.previous, day_change=new.day_change, percent=new.percent";
         $res = dbc::execSql($req);
         logger::info("QUOTE", $symbol, "Insert");
@@ -2394,12 +2395,12 @@ class cacheData {
 
     }
 
-    public static function insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init) {
+    public static function insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init, $f_val_prev) {
 
         $ret = true;
 
         // Ecriture en BD des data
-        cacheData::insertOrUpdateDataComplexQuote($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init);
+        cacheData::insertOrUpdateDataComplexQuote($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init, $f_val_prev);
 
         // Reset des caches TMP pour recalcul
         cacheData::deleteTMPFiles();
