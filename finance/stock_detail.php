@@ -408,7 +408,7 @@ foreach ($data_daily as $key => $val) if ($val['volume'] > $top_value_volume) $t
                     </div>
                 </div>
             </div>
-            <div class="six fields turbo_area">
+            <div class="seven fields turbo_area">
                 <div class="field">
                     <label>Emetteur</label>
                     <? if (!$readonly) { ?>
@@ -440,6 +440,10 @@ foreach ($data_daily as $key => $val) if ($val['volume'] > $top_value_volume) $t
                 <div class="field">
                     <label>Valeur</label>
                     <input type="text" size="10" id="f_val_init" value="<?= $qc->getQuoteAttr('price') ?>">
+                </div>
+                <div class="field">
+                    <label>Previous</label>
+                    <input type="text" size="10" id="f_val_prev" value="<?= $qc->getQuoteAttr('previous') ?>">
                 </div>
                 <div class="field">
                     <? if (!$readonly) { ?>
@@ -1382,7 +1386,7 @@ if ($debug == 1) {
     <? if (!$readonly) { ?>
 
         getFormValues = function() {
-            params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_emetteur', 'f_ticker', 'f_levier', 'f_sousjacent', 'f_val_init']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1) + '&f_expire=' + (valof('f_expire') == 0 ? 0 : 1);
+            params = attrs(['f_isin', 'f_provider', 'f_frais', 'f_actifs', 'f_gf_symbol', 'f_rating', 'f_distribution', 'f_type', 'f_link1', 'f_link2', 'f_dividende', 'f_date_dividende', 'f_emetteur', 'f_ticker', 'f_levier', 'f_sousjacent', 'f_val_init', 'f_val_prev']) + '&pea=' + (valof('f_pea') == 0 ? 0 : 1) + '&f_expire=' + (valof('f_expire') == 0 ? 0 : 1);
 
             var tags = '';
             Dom.find('button.bt_tags').forEach(function(item) {

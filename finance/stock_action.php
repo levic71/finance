@@ -19,9 +19,10 @@ $f_ticker = "";
 $f_callput = "";
 $f_emetteur = "";
 $f_val_init = 0;
+$f_val_prev = 0;
 $f_expire = 0;
 
-foreach(['action', 'engine', 'symbol', 'f_search_type', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_ticker', 'f_callput', 'f_emetteur', 'f_levier', 'f_sousjacent', 'f_val_init', 'f_expire'] as $key)
+foreach(['action', 'engine', 'symbol', 'f_search_type', 'ptf_id', 'pea', 'name', 'region', 'marketopen', 'marketclose', 'timezone', 'currency', 'f_type', 'f_gf_symbol', 'f_isin', 'f_provider', 'f_categorie', 'f_frais', 'f_actifs', 'f_distribution', 'f_link1', 'f_link2', 'f_rating', 'f_tags', 'f_dividende', 'f_date_dividende', 'f_ticker', 'f_callput', 'f_emetteur', 'f_levier', 'f_sousjacent', 'f_val_init', 'f_val_prev', 'f_expire'] as $key)
     $$key = isset($_POST[$key]) ? $_POST[$key] : (isset($$key) ? $$key : "");
 
 // Suppression des espaces
@@ -29,6 +30,7 @@ $symbol = str_replace(' ', '', $symbol);
 
 // Remplacement
 $f_val_init = str_replace(',', '.', $f_val_init);
+$f_val_prev = str_replace(',', '.', $f_val_prev);
 
 if ($symbol == "" && $f_callput == "") tools::do_redirect("index.php");
 
@@ -81,7 +83,7 @@ if ($action == "add" || $action == "reload") {
         $sousjacent = $quotes["stocks"][$f_sousjacent];
 
         $symbol = QuoteComputing::getComplexQuoteName($f_emetteur, $f_sousjacent, $f_callput, $f_levier, $f_ticker);
-        $ret_add = cacheData::insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init) ? 1 : 0;
+        $ret_add = cacheData::insertComplexProduct($f_emetteur, $f_ticker, $f_callput, $f_levier, $sousjacent, $f_val_init, $f_val_prev) ? 1 : 0;
 
     }
 
@@ -117,7 +119,7 @@ if ($action == "upt") {
 
         // Mise à jour de la valeur previous dans la table quote pour les turbos
         if ($row['type'] != "CALL" || $row['type'] != "PUT") {
-            $req = "UPDATE quotes SET open='".$f_val_init."', high='".$f_val_init."', low='".$f_val_init."', price='".$f_val_init."', day='".date("Y-m-d")."', previous='".$f_val_init."' WHERE symbol='".$symbol."'";
+            $req = "UPDATE quotes SET open='".$f_val_init."', high='".$f_val_init."', low='".$f_val_init."', price='".$f_val_init."', day='".date("Y-m-d")."', previous='".$f_val_prev."' WHERE symbol='".$symbol."'";
             $res = dbc::execSql($req);    
         }
 
