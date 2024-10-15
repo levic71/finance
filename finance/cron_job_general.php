@@ -39,12 +39,6 @@ if (tools::useGoogleFinanceService()) {
     // Recuperation des cotations Google Sheet
     $GSValues = updateGoogleSheet();
 
-    // Recuperation des devises Google Sheet et mise en cache
-    $GSDevises = calc::getGSDevises();
-
-    // Plus nécessaire
-    // Recuperatoin des alertes Google Sheet et mise en cache
-    // $GSAlertes = calc::getGSAlertes();
 }
 
 ?> <div class="ui container inverted segment"><?
@@ -60,9 +54,9 @@ $limited_computing = 0; // 0 => pas de limite, 1 => on calcule que sur les 300 d
 $counter = 0; // Permet de compter le nombre d'actifs traités à chaque appel de cron
 $stocks2update = array();
 
-$req = "SELECT * FROM stocks ORDER BY last_indicators_update DESC, symbol";
+$req = "SELECT * FROM stocks s LEFT JOIN quotes q ON s.symbol = q.symbol ORDER BY last_indicators_update DESC, s.symbol";
 $res = dbc::execSql($req);
-while($row = mysqli_fetch_array($res)) $stocks2update[] = $row;
+while($row = mysqli_fetch_array($res)) $stocks2update[$row['symbol']] = $row;
 
 // Mise à jour des cotations quotidiennes provenant de GSheet
 foreach($stocks2update as $key => $val) {
@@ -72,13 +66,40 @@ foreach($stocks2update as $key => $val) {
     // Mise à jour des cotations les jours ouvrés et pendant les heures de cotation de chaque action uniquement
     if (cacheData::isMarketOpen($market_status)) {
     
-        // Mise à jour de la cote de l'actif
+        // Mise à jour de la cote de l'actif si valeur suivi par dans Google Sheet
         if (isset($GSValues[$val['symbol']])) {
 
             // Mise à jour de la cote avec GSheet
             updateQuotesWithGSData($GSValues[$val['symbol']]);
     
             logger::info("CRON", $val['symbol'], "[updateQuotesWithGSData] OK");
+        }
+
+        // Si Turbo, calcul nouvelle valeur en fonction variation du jour du sousjacent
+        if ($val['type'] == 'CALL' || $val['type'] == 'PUT') {
+
+            $market_status_sousjacent = cacheData::getMarketStatus($stocks2update[$val['pc_sousjacent']]['timezone'], $stocks2update[$val['pc_sousjacent']]['marketopen'], $stocks2update[$val['pc_sousjacent']]['marketclose']);
+
+            if (cacheData::isMarketOpen($market_status_sousjacent)) {
+
+                $cotation_turbo_veille = $val['price'];
+                $cotation_turbo_levier = $val['pc_levier'];
+                $cotation_sousjacent_percent = $GSValues[$val['pc_sousjacent']][10];
+
+                // Calcul nouvelle cotation turbo
+                $cotation_turbo_new = $cotation_turbo_veille + ($cotation_turbo_veille * ($cotation_sousjacent_percent * $cotation_turbo_levier)) / 100;
+
+                // Insertion nouvelle cotation turbo
+                $req = "UPDATE quotes SET price='".$cotation_turbo_new."', open='".$cotation_turbo_new."', high='".$cotation_turbo_new."', low='".$cotation_turbo_new."', percent='".($cotation_sousjacent_percent * $cotation_turbo_levier)."' WHERE symbol='".$key."'";
+                $res = dbc::execSql($req);
+
+                $req = "UPDATE stocks SET date_update='".date('Y-m-d')."' WHERE symbol='".$key."'";
+                $res = dbc::execSql($req);
+
+                // echo $cotation_turbo_veille.":X".$cotation_turbo_levier.":".$cotation_sousjacent_percent."%:".$cotation_turbo_new."\n";
+
+            }
+
         }
 
     }
