@@ -37,7 +37,7 @@ if (strstr($action, "new")) {
 
     $synthese = $action == "new_synthese" ? 1 : 0;
 
-    $req = "INSERT INTO portfolios (name, shortname, user_id, strategie_id, synthese, all_ids) VALUES ('".$f_nom."', '".$f_nom_court."', ".$sess_context->getUserId().", ".$f_strategie_id.", ".$synthese.", '".$all_ids."')";
+    $req = "INSERT INTO portfolios (name, shortname, user_id, strategie_id, synthese, all_ids, quotes, ordre, creation) VALUES ('".$f_nom."', '".$f_nom_court."', ".$sess_context->getUserId().", ".$f_strategie_id.", ".$synthese.", '".$all_ids."', '', 0, '".date("Y-m-d")."')";
     $res = dbc::execSql($req);
 
 }
