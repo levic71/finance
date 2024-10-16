@@ -1149,7 +1149,7 @@ class calc {
         $portfolio['commission'] = $sum_commission;
         $portfolio['ttf']        = $sum_ttf;
         $portfolio['positions']  = $positions;
-        $portfolio['mvvr']       = ($sum_mv / $portfolio['valo_ptf']) * 100; // Risque exposition (poids des lignes en MV vs valo ptf - <10 expo faible, entre 10 et 30 modéré, >30 fort)
+        $portfolio['mvvr']       = $portfolio['valo_ptf'] == 0 ? 0 : ($sum_mv / $portfolio['valo_ptf']) * 100; // Risque exposition (poids des lignes en MV vs valo ptf - <10 expo faible, entre 10 et 30 modéré, >30 fort)
         $portfolio['interval_year']  = $interval_year;
         $portfolio['interval_month'] = $interval_month;    
  
