@@ -362,7 +362,6 @@ foreach ($data_daily as $key => $val) if ($val['volume'] > $top_value_volume) $t
                     <div class="field">
                         <label>Type actif</label>
                         <select class="ui fluid search dropdown" id="f_type">
-                            <option value="">Choisir</option>
                             <?
                             foreach (array_merge(uimx::$type_actif, uimx::$type_turbo) as $key => $val)
                                 echo '<option value="' . $val . '" ' . ($qc->getQuoteAttr('type') == $val ? 'selected="selected"' : '') . '>' . $val . '</option>';
@@ -408,7 +407,7 @@ foreach ($data_daily as $key => $val) if ($val['volume'] > $top_value_volume) $t
                     </div>
                 </div>
             </div>
-            <div class="seven fields turbo_area">
+            <div class="seven fields" id="turbo_area">
                 <div class="field">
                     <label>Emetteur</label>
                     <? if (!$readonly) { ?>
@@ -1466,6 +1465,24 @@ if ($debug == 1) {
             });
         });
     <? } ?>
+
+    <? if (!$readonly) { ?>
+    showHideTurbo = function() {
+        element = Dom.id('f_type');
+        if (element) {
+            var selection = "";
+            for (i = 0; i < element.length; i++)
+                if (element[i].selected) selection = element[i].value;        
+            hide('turbo_area');
+            if (selection == "PUT" || selection == "CALL") showflex('turbo_area');
+        }
+    };
+    Dom.addListener(Dom.id('f_type'), Dom.Event.ON_CHANGE, function(event) { showHideTurbo(); });
+    <? } ?>
+
+    <? if ($qc->getQuoteAttr('type') != 'CALL' && $qc->getQuoteAttr('type') != 'PUT') { ?>
+        hide('turbo_area');
+    <? } ?> 
 
     // Changement etat bouttons tags
     changeState = function(item) {
