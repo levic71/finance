@@ -78,9 +78,9 @@ foreach($stocks2update as $key => $val) {
         // Si Turbo, calcul nouvelle valeur en fonction variation du jour du sousjacent
         if ($val['type'] == 'CALL' || $val['type'] == 'PUT') {
 
-            $market_status_sousjacent = cacheData::getMarketStatus($stocks2update[$val['pc_sousjacent']]['timezone'], $stocks2update[$val['pc_sousjacent']]['marketopen'], $stocks2update[$val['pc_sousjacent']]['marketclose']);
+            $market_status= cacheData::getMarketStatus($val['timezone'], $val['marketopen'], $val['marketclose']);
 
-            if (cacheData::isMarketOpen($market_status_sousjacent)) {
+            if (cacheData::isMarketOpen($market_status)) {
 
                 $cotation_turbo_veille = floatval($val['previous']);
                 $cotation_turbo_levier = $val['pc_levier'];
