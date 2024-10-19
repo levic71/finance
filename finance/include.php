@@ -966,7 +966,7 @@ class calc {
         $valo_ptf       = 0;
         $valo_turbos    = 0; // Valorisation des turbos
         $invest_turbos  = 0; // Somme des investissements dans les turbos
-        $perf_turbos    = 0;
+        $gains_turbos   = 0; // Gains/pertes cumulés globalement
         $cash           = 0;
         $ampplt         = 0; // Apports moyen ponderes par le temps
         $sum_mv         = 0; // Somme des positions en MV
@@ -1014,7 +1014,7 @@ class calc {
         $interval_month = 0;
         $today = new DateTime(date("Y-m-d"));
 
-        // Récupération et TRT des ordres passes
+        // Récupération et TRT des ordres passés
         $req = "SELECT  o.*, p.shortname FROM orders o, portfolios p WHERE date <= '".date('Y-m-d')."' AND portfolio_id IN (".($portfolio['infos']['synthese'] == 1 ? $portfolio['infos']['all_ids'] : $infos['id']).") AND o.portfolio_id = p.id ORDER BY date, datetime ASC";
         $res = dbc::execSql($req);
         while($row = mysqli_fetch_assoc($res)) {
@@ -1038,6 +1038,12 @@ class calc {
             // Ajustement nom produit
             $pname = calc::getPName($row['product_name']);
             $row['product_name'] = $pname;
+
+            $isTurbo = isset($quotes['lst_turbos'][$row['product_name']]) ? true : false;
+
+            if ($isTurbo && $row['action'] == -1) {
+                $gains_turbos += ($row['price'] - $row['pru']) * $row['quantity'] * $row['taux_change'];
+            }
 
             // Init compteur ttf
             $row['ttf'] = 0;
@@ -1126,10 +1132,15 @@ class calc {
         
         // On retire des positions les actifs dont le nb = 0 (plus dans le portefeuille)
         foreach($positions as $key => $val) {
-            if ($val['nb'] == 0)
+
+            $isTurbo = isset($quotes['lst_turbos'][$key]) ? true : false;
+
+            if ($val['nb'] == 0) {
+
                 unset($positions[$key]);
-            else {
-                $isTurbo = isset($quotes['lst_turbos'][$key]) ? true : false;
+
+            } else {
+
                 $taux_du_jour = calc::getCurrencyRate($val['devise']."EUR", $devises);
                 $last_price = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : (isset($quotes['lst_turbos'][$key]) ? $quotes['lst_turbos'][$key]['price'] : $val['pru']);
                 // On applique le dernier taux connu
@@ -1143,7 +1154,9 @@ class calc {
                 }
                 // Cumul des positions en MV de plus de 20%
                 $sum_mv += $last_price < ($val['pru'] * 0.8) ? $current_valo : 0;
+
             }
+
         }
 
         $portfolio['cash']       = $cash - $sum_commission - $sum_ttf;
@@ -1151,7 +1164,9 @@ class calc {
         $portfolio['valo_turbos'] = $valo_turbos;
         $portfolio['invest_turbos'] = $invest_turbos;
         $portfolio['gain_perte_turbo'] = $valo_turbos - $invest_turbos;
-        $portfolio['perf_turbos'] = $invest_turbos == 0 ? 0 : (($valo_turbos - $invest_turbos) * 100) / $invest_turbos;
+        $portfolio['perf_turbos']  = $invest_turbos == 0 ? 0 : (($valo_turbos - $invest_turbos) * 100) / $invest_turbos;
+        $portfolio['ratio_turbos'] = $valo_ptf == 0 ? 0 : ($invest_turbos * 100) / $valo_ptf;
+        $portfolio['gains_turbos'] = $gains_turbos;
         $portfolio['depot']      = $sum_depot;
         $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot - $sum_retrait; // Est-ce qu'on enlève les retraits ?
         $portfolio['ampplt']     = $ampplt;
