@@ -117,7 +117,12 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		</div>
 	</div>
 
-	<? echo "MVVR: ".sprintf("%.2f%%", $portfolio_data['mvvr']); ?>
+	<?
+		echo "MVVR: ".sprintf("%.2f%%", $portfolio_data['mvvr']);
+		echo " Valo Turbos: ".sprintf("%.2f&euro;", $portfolio_data['valo_turbos']);
+		echo " Invest Turbos: ".sprintf("%.2f&euro;", $portfolio_data['invest_turbos']);
+		echo " Perf Turbos: ".sprintf("%.2f%%", $portfolio_data['perf_turbos']);
+	?>
 
 	<div class="ui hidden divider"></div>
 
