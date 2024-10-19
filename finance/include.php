@@ -964,6 +964,9 @@ class calc {
         $sum_commission = 0;
         $sum_ttf        = 0; // Taxe Transaction financiere sur achat actifs FR de 0,3%
         $valo_ptf       = 0;
+        $valo_turbos    = 0; // Valorisation des turbos
+        $invest_turbos  = 0; // Somme des investissements dans les turbos
+        $perf_turbos    = 0;
         $cash           = 0;
         $ampplt         = 0; // Apports moyen ponderes par le temps
         $sum_mv         = 0; // Somme des positions en MV
@@ -1126,12 +1129,18 @@ class calc {
             if ($val['nb'] == 0)
                 unset($positions[$key]);
             else {
+                $isTurbo = isset($quotes['lst_turbos'][$key]) ? true : false;
                 $taux_du_jour = calc::getCurrencyRate($val['devise']."EUR", $devises);
-                $last_price = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : $val['pru'];
+                $last_price = isset($quotes['stocks'][$key]) ? $quotes['stocks'][$key]['price'] : (isset($quotes['lst_turbos'][$key]) ? $quotes['lst_turbos'][$key]['price'] : $val['pru']);
                 // On applique le dernier taux connu
                 $current_valo = $val['nb'] * $last_price * $taux_du_jour;
                 // Cumul des positions totales
                 $valo_ptf += $current_valo;
+                // Cumul des positions totales des turbos
+                if ($isTurbo) {
+                    $valo_turbos += $current_valo;
+                    $invest_turbos += $val['nb'] * $val['pru'] * $taux_du_jour;
+                }
                 // Cumul des positions en MV de plus de 20%
                 $sum_mv += $last_price < ($val['pru'] * 0.8) ? $current_valo : 0;
             }
@@ -1139,6 +1148,10 @@ class calc {
 
         $portfolio['cash']       = $cash - $sum_commission - $sum_ttf;
         $portfolio['valo_ptf']   = $valo_ptf + $cash;
+        $portfolio['valo_turbos'] = $valo_turbos;
+        $portfolio['invest_turbos'] = $invest_turbos;
+        $portfolio['gain_perte_turbo'] = $valo_turbos - $invest_turbos;
+        $portfolio['perf_turbos'] = $invest_turbos == 0 ? 0 : (($valo_turbos - $invest_turbos) * 100) / $invest_turbos;
         $portfolio['depot']      = $sum_depot;
         $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot - $sum_retrait; // Est-ce qu'on enlève les retraits ?
         $portfolio['ampplt']     = $ampplt;
