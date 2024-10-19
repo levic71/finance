@@ -122,6 +122,8 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		echo " Valo Turbos: ".sprintf("%.2f&euro;", $portfolio_data['valo_turbos']);
 		echo " Invest Turbos: ".sprintf("%.2f&euro;", $portfolio_data['invest_turbos']);
 		echo " Perf Turbos: ".sprintf("%.2f%%", $portfolio_data['perf_turbos']);
+		echo " Ratio Turbos/Ptf: ".sprintf("%.2f%%", $portfolio_data['ratio_turbos']);
+		echo " Gains cumulés réalisés : ".sprintf("%.2f&euro;", $portfolio_data['gains_turbos']);
 	?>
 
 	<div class="ui hidden divider"></div>
