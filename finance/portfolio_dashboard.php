@@ -118,18 +118,15 @@ $lst_orders_futur = $sc->getOrdersFutur();
 	</div>
 
 	<?
-		echo '<div class="ui grid"><div class="five column row">';
-		echo '<div class="column">MVVR: '.sprintf("%.2f%%", $portfolio_data['mvvr'])."</div>";
-		echo '<div class="column">Turbos Valo = '.sprintf("%.2f&euro;", $portfolio_data['valo_turbos'])."</div>";
-		echo '<div class="column">Invest = '.sprintf("%.2f&euro;", $portfolio_data['invest_turbos'])."</div>";
-		echo '<div class="column">PV =  '.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']-$portfolio_data['invest_turbos'])."</div>";
-		echo '<div class="column">Perf = '.sprintf("%.2f%%", $portfolio_data['perf_turbos'])."</div>";
-		echo '</div></div>';
-		echo '<div class="ui grid"><div class="five column row">';
-		echo '<div class="column"></div>';
-		echo '<div class="column">Ratio = '.sprintf("%.2f%%", $portfolio_data['ratio_turbos'])."</div>";
-		echo '<div class="column">Gains cumulés = '.sprintf("%.2f&euro;", $portfolio_data['gains_turbos'])."</div>";
-		echo '</div></div>';
+		echo '<div class="ui stackable column grid"><div class="row"><div class="ui grid"><div class=" column row inverted readonly form ui">';
+		echo '<div class="field"><label>MVVR</label><input type="text" value="'.sprintf("%.2f%%", $portfolio_data['mvvr']).'" readonly="" /></div>';
+		echo '<div class="field"><label>Turbos Valo</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']).'" readonly="" /></div>';
+		echo '<div class="field"><label>Invest</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['invest_turbos']).'" readonly="" /></div>';
+		echo '<div class="field"><label>PV</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']-$portfolio_data['invest_turbos']).'" readonly="" /></div>';
+		echo '<div class="field"><label>Perf</label><input type="text" value="'.sprintf("%.2f%%", $portfolio_data['perf_turbos']).'" readonly="" /></div>';
+		echo '<div class="field"><label>Ratio</label><input type="text" value="'.sprintf("%.2f%%", $portfolio_data['ratio_turbos']).'" readonly="" /></div>';
+		echo '<div class="field"><label>Gains cumulés</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['gains_turbos']).'" readonly="" /></div>';
+		echo '</div></div></div></div>';
 	?>
 
 	<div class="ui hidden divider"></div>
