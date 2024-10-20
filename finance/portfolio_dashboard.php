@@ -118,13 +118,18 @@ $lst_orders_futur = $sc->getOrdersFutur();
 	</div>
 
 	<?
-		echo "MVVR: ".sprintf("%.2f%%", $portfolio_data['mvvr']);
-		echo " Valo Turbos: ".sprintf("%.2f&euro;", $portfolio_data['valo_turbos']);
-		echo " Invest Turbos: ".sprintf("%.2f&euro;", $portfolio_data['invest_turbos']);
-		echo " PV: ".sprintf("%.2f&euro;", $portfolio_data['valo_turbos']-$portfolio_data['invest_turbos']);
-		echo " Perf Turbos: ".sprintf("%.2f%%", $portfolio_data['perf_turbos']);
-		echo " Ratio Turbos/Ptf: ".sprintf("%.2f%%", $portfolio_data['ratio_turbos']);
-		echo " Gains cumulés réalisés : ".sprintf("%.2f&euro;", $portfolio_data['gains_turbos']);
+		echo '<div class="ui grid"><div class="five column row">';
+		echo '<div class="column">MVVR: '.sprintf("%.2f%%", $portfolio_data['mvvr'])."</div>";
+		echo '<div class="column">Turbos Valo = '.sprintf("%.2f&euro;", $portfolio_data['valo_turbos'])."</div>";
+		echo '<div class="column">Invest = '.sprintf("%.2f&euro;", $portfolio_data['invest_turbos'])."</div>";
+		echo '<div class="column">PV =  '.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']-$portfolio_data['invest_turbos'])."</div>";
+		echo '<div class="column">Perf = '.sprintf("%.2f%%", $portfolio_data['perf_turbos'])."</div>";
+		echo '</div></div>';
+		echo '<div class="ui grid"><div class="five column row">';
+		echo '<div class="column"></div>';
+		echo '<div class="column">Ratio = '.sprintf("%.2f%%", $portfolio_data['ratio_turbos'])."</div>";
+		echo '<div class="column">Gains cumulés = '.sprintf("%.2f&euro;", $portfolio_data['gains_turbos'])."</div>";
+		echo '</div></div>';
 	?>
 
 	<div class="ui hidden divider"></div>
