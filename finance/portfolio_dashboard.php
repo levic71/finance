@@ -120,10 +120,11 @@ $lst_orders_futur = $sc->getOrdersFutur();
 	<?
 		echo '<div class="ui stackable column grid"><div class="row"><div class="forteen wide column ptf_infos"><div class="ui grid"><div class="column row inverted readonly form ui">';
 		echo '<div class="field"><label>MVVR</label><input type="text" value="'.sprintf("%.2f%%", $portfolio_data['mvvr']).'" readonly="" /></div>';
-		echo '<div class="field"><label>Turbo Invest</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['invest_turbos']).' ('.sprintf("%.2f%%", $portfolio_data['ratio_turbos']).')" readonly="" /></div>';
+		echo '<div class="field"><label>&sum; Invest. Turbos</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['invest_turbos']).' ('.sprintf("%.2f%%", $portfolio_data['ratio_turbos']).')" readonly="" /></div>';
 		echo '<div class="field"><label>Valo</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']).'" readonly="" /></div>';
-		echo '<div class="field"><label>PV en cours</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']-$portfolio_data['invest_turbos']).' ('.sprintf("%.2f%%", $portfolio_data['perf_turbos']).')" readonly="" /></div>';
-		echo '<div class="field"><label>Perf cumulée</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['gains_turbos']).'" readonly="" /></div>';
+		echo '<div class="field"><label>PV</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']-$portfolio_data['invest_turbos']).' ('.sprintf("%.2f%%", $portfolio_data['perf_turbos']).')" readonly="" /></div>';
+		echo '<div class="field"><label>&sum; Octobre - &sum; 2024</label><input type="text" value="'.sprintf("%.2f&euro; - %.2f&euro;", $portfolio_data['gains_turbos_month'], $portfolio_data['gains_turbos_year']).'" readonly="" /></div>';
+		echo '<div class="field"><label>&sum; gains total</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['gains_turbos']).'" readonly="" /></div>';
 		echo '</div></div></div></div></div>';
 	?>
 
