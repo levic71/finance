@@ -967,6 +967,8 @@ class calc {
         $valo_turbos    = 0; // Valorisation des turbos
         $invest_turbos  = 0; // Somme des investissements dans les turbos
         $gains_turbos   = 0; // Gains/pertes cumulés globalement
+        $gains_turbos_month = 0; // Gains/pertes cumulés sur le mois courrant
+        $gains_turbos_year  = 0; // Gains/pertes cumulés sur l'année courrante
         $cash           = 0;
         $ampplt         = 0; // Apports moyen ponderes par le temps
         $sum_mv         = 0; // Somme des positions en MV
@@ -1043,6 +1045,10 @@ class calc {
 
             if ($isTurbo && $row['action'] == -1) {
                 $gains_turbos += ($row['price'] - $row['pru']) * $row['quantity'] * $row['taux_change'];
+                if (date("Y") == substr($row['date'], 0, 4) && date("m") == substr($row['date'], 5, 2))
+                    $gains_turbos_month += ($row['price'] - $row['pru']) * $row['quantity'] * $row['taux_change'];
+                if (date("Y") == substr($row['date'], 0, 4))
+                    $gains_turbos_year  += ($row['price'] - $row['pru']) * $row['quantity'] * $row['taux_change'];
             }
 
             // Init compteur ttf
@@ -1167,6 +1173,8 @@ class calc {
         $portfolio['perf_turbos']  = $invest_turbos == 0 ? 0 : (($valo_turbos - $invest_turbos) * 100) / $invest_turbos;
         $portfolio['ratio_turbos'] = $valo_ptf == 0 ? 0 : ($invest_turbos * 100) / $valo_ptf;
         $portfolio['gains_turbos'] = $gains_turbos;
+        $portfolio['gains_turbos_month'] = $gains_turbos_month;
+        $portfolio['gains_turbos_year']  = $gains_turbos_year;
         $portfolio['depot']      = $sum_depot;
         $portfolio['gain_perte'] = $portfolio['valo_ptf'] - $sum_depot - $sum_retrait; // Est-ce qu'on enlève les retraits ?
         $portfolio['ampplt']     = $ampplt;
