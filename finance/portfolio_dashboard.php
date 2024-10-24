@@ -124,7 +124,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		echo '<div class="field"><label>Valo</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']).'" readonly="" /></div>';
 		echo '<div class="field"><label>PV</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['valo_turbos']-$portfolio_data['invest_turbos']).' ('.sprintf("%.2f%%", $portfolio_data['perf_turbos']).')" readonly="" /></div>';
 		echo '<div class="field"><label>&sum; '.date("M").' / &sum; '.date('Y').'</label><input type="text" value="'.sprintf("%.2f&euro; / %.2f&euro;", $portfolio_data['gains_turbos_month'], $portfolio_data['gains_turbos_year']).'" readonly="" /></div>';
-		echo '<div class="field"><label>&sum; gains réalisés</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['gains_turbos']).'" readonly="" /></div>';
+		echo '<div class="field"><label>&sum; gains réalisés/potentiel</label><input type="text" value="'.sprintf("%.2f&euro;", $portfolio_data['gains_turbos']).' / '.sprintf("%.2f&euro;", $portfolio_data['gains_turbos'] + $portfolio_data['valo_turbos'] - $portfolio_data['invest_turbos']).'" readonly="" /></div>';
 		echo '</div></div></div></div></div>';
 	?>
 
