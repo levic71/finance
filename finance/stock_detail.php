@@ -1218,7 +1218,7 @@ if ($debug == 1) {
                hide('canvas_area');
                return;
             }
-
+            
             // Ajustement des buttons
             update_graphe_buttons(bt);
 

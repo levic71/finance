@@ -574,7 +574,7 @@ var overlay = {
 
 							var p = loadPrompt();
 							p.success('Données modifiées');
-
+							
 						}
 					});
 				

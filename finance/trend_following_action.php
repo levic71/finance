@@ -39,5 +39,4 @@ $res = dbc::execSql($req);
 
 calc::resetCacheUserPortfolio($sess_context->getUserId());
 
-
 ?>
