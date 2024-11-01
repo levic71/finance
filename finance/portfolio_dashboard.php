@@ -253,7 +253,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 						<td data-value="' . $val['quantity'] . '">' . $val['quantity'] . '</td>
 						<td data-value="' . $val['price'] . '">' . $val['price_signed'] . '</td>
 						<td data-value="' . sprintf("%.2f", $val['valo']) . '" class="' . $val['action_colr'] . '">' . $val['valo_signed'] . '</td>
-						<td data-value="' . $val['commission'] . '">' . sprintf("%.2f", $val['commission']) . '&euro;/' . sprintf("%.2f", $val['ttf']) . '</td>
+						<td data-value="' . $val['commission'] . '">' . sprintf("%.2f", $val['commission']) . '&euro;/' . sprintf("%.2f", $val['ttf']) . '&euro;</td>
 						' . $td_gain . '
 						<td data-value="' . $val['confirme'] . '"><i class="ui ' . ($val['confirme'] == 1 ? "check green" : "clock outline orange") . ' icon"></i></td>
 						<td class="collapsing"><i id="order_edit_' . $val['id'] . '_' . $val['portfolio_id'] . '_bt" class="edit inverted icon"></i></td>
@@ -263,9 +263,9 @@ $lst_orders_futur = $sc->getOrdersFutur();
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="6"></td>
+							<td colspan="7"></td>
 							<td class="right aligned"><span id="sum_comm"></span>/<span id="sum_ttf"></span></td>
-							<td></td>
+							<td colspan="3"></td>
 					</tfoot>
 				</table>
 				<div id="lst_order_box"></div>
@@ -374,8 +374,8 @@ $lst_orders_futur = $sc->getOrdersFutur();
 			infos_area.v[4] = retraits.toFixed(2) + '\u20AC';
 			infos_area.l[5] = "&sum; Dividendes (Div to Depot)";
 			infos_area.v[5] = dividendes.toFixed(2) + '\u20AC' + ' (' + div2depot.toFixed(2) + '%)';
-			setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + '&euro;');
-			setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + '&euro;');
+			// setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + '&euro;');
+			// setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + '&euro;');
 			Dom.id('subtitle').innerHTML = ' (<?= $portfolio_data['interval_year'] > 0 ? $portfolio_data['interval_year'] . ($portfolio_data['interval_year'] > 1 ? " ans " : " an") : "" ?> <?= $portfolio_data['interval_month'] ?> mois)';
 		}
 
@@ -441,7 +441,8 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		paginator({
 			table: document.getElementById("lst_order"),
 			box: document.getElementById("lst_order_box"),
-			get_rows: get_orders_list
+			get_rows: filter_orders_list,
+			tail_call: update_footer
 		});
 
 		hide('filters');
@@ -514,7 +515,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		});
 	});
 
-	get_orders_list = function() {
+	filter_orders_list = function() {
 
 		let filter_date = valof('f_date');
 		let filter_product_name = valof('f_product_name');
@@ -526,7 +527,7 @@ $lst_orders_futur = $sc->getOrdersFutur();
 		children = tbody.children;
 		var trs = [];
 		for (var i = 0; i < children.length; i++) {
-			if (children[i].nodeType = "tr") {
+			if (children[i].nodeName == "TR") {
 
 				var mytds = children[i].getElementsByTagName("td");
 
@@ -550,11 +551,42 @@ $lst_orders_futur = $sc->getOrdersFutur();
 						children[i].style.display = "none";
 					else
 						trs.push(children[i]);
+					
 				}
 			}
 		}
 
 		return trs;
+	}
+
+	update_footer = function() {
+
+		let commissions = 0; let ttf = 0;
+
+		var table = document.getElementById("lst_order");
+		var tbody = table.getElementsByTagName("tbody")[0] || table;
+		children = tbody.children;
+
+		for (var i = 0; i < children.length; i++) {
+			if (children[i].nodeName == "TR") {
+
+				var mytds = children[i].getElementsByTagName("td");
+
+				if (mytds.length > 0) {
+
+					if (children[i].style.display == "") {
+						let x = mytds[7].innerHTML.split('/');
+						commissions += parseFloat(x[0]);
+						ttf += parseFloat(x[1]);
+					}
+
+				}
+			}
+		}
+
+		setColNumericTab('sum_comm', commissions, commissions.toFixed(2) + '&euro;');
+		setColNumericTab('sum_ttf', ttf, ttf.toFixed(2) + '&euro;');
+
 	}
 
 	// Show/hide portfolio select menu
@@ -577,7 +609,8 @@ $lst_orders_futur = $sc->getOrdersFutur();
 	paginator({
 		table: document.getElementById("lst_order"),
 		box: document.getElementById("lst_order_box"),
-		get_rows: get_orders_list
+		get_rows: filter_orders_list,
+		tail_call: update_footer
 	});
 
 	// Aide a la sasie date
