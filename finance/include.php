@@ -360,7 +360,7 @@ class QuoteComputing {
 
     public static function getQuoteNameWithoutExtension($name) {
 
-        $s_search = array('FRA:', '.PAR', 'EPA:', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE:', 'INDEXDJX:.', 'INDEXEURO:', 'INDEXNASDAQ:.', 'INDEXRUSSELL:', 'INDEXSP:.', 'NASDAQ:', 'NYSE:');
+        $s_search = array('FRA:', '.PAR', 'EPA:', 'EPA.', '.DEX', 'SWX.', '.LON', '.AMX', '.LIS', '.AMS', 'INDEXCBOE:', 'INDEXDJX:.', 'INDEXEURO:', 'INDEXNASDAQ:.', 'INDEXRUSSELL:', 'INDEXSP:.', 'NASDAQ:', 'NYSE:', 'BIT:');
         $s_replace = array('');
 
         // TURBO
