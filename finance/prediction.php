@@ -47,7 +47,7 @@ calc::prediction_update($sess_context->getUserId());
 		<tbody>
 <?
 			$tab_extend = [];
-			$req = "SELECT * FROM prediction p, stocks s WHERE user_id=".$sess_context->getUserId()." AND p.symbol = s.symbol ORDER BY date_avis DESC";
+			$req = "SELECT *, p.id p_id FROM prediction p, stocks s WHERE user_id=".$sess_context->getUserId()." AND p.symbol = s.symbol ORDER BY date_avis DESC";
 			$res = dbc::execSql($req);
         	while($row = mysqli_fetch_array($res)) {
 
@@ -116,7 +116,7 @@ calc::prediction_update($sess_context->getUserId());
 					<td><?= uimx::$conseillers[$row['conseiller']] ?></td>
 					<td class="center aligned"><?= $lib_diff ?></td>
 					<td class="center aligned" data-value="<?= $row['status'] ?>" data-tootik="<?= $row['date_status'] ?>"><i class="inverted <?= $row['status'] == 1 ? "calendar check outline green" : ($row['status'] == -1 ? "calendar times outline red" : ($row['status'] == -2 ? "calendar minus outline red" : "clock outline")) ?> icon"></i></td>
-					<td class="center aligned collapsing"><i data-value="<?= $row['id'] ?>" class="edit inverted icon"></i></td>
+					<td class="center aligned collapsing"><i data-value="<?= $row['p_id'] ?>" class="edit inverted icon"></i></td>
 				<tr>
 <?
 			}
