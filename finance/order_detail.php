@@ -134,14 +134,14 @@ if ($action == "new" && $from_stock_detail == 1) {
                             $my_order['devise'] = $q['currency'];
                             $my_order['taux_change'] = calc::getCurrencyRate($q['currency']."EUR", $devises);
                     } ?>
-                    <option value="<?= $key ?>" data-price="<?= sprintf("%.2f", $q['price']) ?>" data-currency="<?= $q['currency'] ?>" <?= $my_order['product_name'] == $key ? "selected=\"selected\"" : "" ?>><?= $val ?></option>
+                    <option value="<?= $key ?>" data-price="<?= sprintf("%.2f", $q['price']) ?>" data-currency="<?= $q['currency'] ?>" <?= $my_order['product_name'] == $key ? "selected=\"selected\"" : "" ?>><?= sprintf("%s [%.2f%s]", $val, $q['price'], uimx::getCurrencySign($my_order['devise'])) ?></option>
                 <? } ?>
                 <option value="AUTRE" data-price="0" <?= substr($my_order['product_name'], 0, 5) == "AUTRE" ? "selected=\"selected\"" : "" ?>>Autre:new</option>
                 <? foreach ($lst_produits_autres as $key => $val) { ?>
-                    <option value="<?= $val['product_name'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['devise'] ?>"><?= QuoteComputing::getQuoteNameWithoutExtension($val['product_name']) ?></option>
+                    <option value="<?= $val['product_name'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['devise'] ?>"><?= sprintf("%s [%.2f%s]", QuoteComputing::getQuoteNameWithoutExtension($val['product_name']), $val['price'], uimx::getCurrencySign($val['devise'])) ?></option>
                 <? } ?>
                 <? foreach ($quotes["lst_turbos"] as $key => $val) { ?>
-                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $my_order['product_name'] == $key ? "selected=\"selected\"" : "" ?>><?= QuoteComputing::getQuoteNameWithoutExtension($val['symbol']) ?></option>
+                    <option value="<?= $val['symbol'] ?>" data-price="<?= sprintf("%.2f", $val['price']) ?>" data-currency="<?= $val['currency'] ?>" <?= $my_order['product_name'] == $key ? "selected=\"selected\"" : "" ?>><?= sprintf("%s [%.2f%s]", QuoteComputing::getQuoteNameWithoutExtension($val['symbol']), $val['price'], uimx::getCurrencySign($val['currency'])) ?></option>
                 <? } ?>
             </select>
             <input type="text" id="f_other_name" value="<?= substr($my_order['product_name'], 0, 5) == "AUTRE" ? substr($my_order['product_name'], 6) : "" ?>" style="<?= substr($my_order['product_name'], 0, 5) == "AUTRE" ? "" : "display: none;" ?> margin-top: 5px;" />
